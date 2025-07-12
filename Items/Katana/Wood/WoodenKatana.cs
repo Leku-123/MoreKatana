@@ -1,10 +1,6 @@
-﻿using Terraria;
+﻿using MoreKatana.System;
+using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.DataStructures;
-using Terraria.IO;
-using Terraria.UI;
-using Microsoft.Xna.Framework;
 
 namespace MoreKatana.Items.Katana.Wood
 {
@@ -34,6 +30,25 @@ namespace MoreKatana.Items.Katana.Wood
                 .AddIngredient(ItemID.Wood, 10)//木材１０個
                 .AddTile(TileID.WorkBenches)//作業台で
                 .Register();//製作可能にする
+        }
+
+        public override void ModifyHitNPC(Player player, NPC target, ref NPC.HitModifiers modifiers)
+        {
+            if (target.life < 1)
+                return;
+            modifiers.SetMaxDamage(target.life - 1);
+        }
+
+        public override void ModifyHitPvp(Player player, Player target, ref Player.HurtModifiers modifiers)
+        {
+            if (target.statLife < 1)
+                return;
+            modifiers.SetMaxDamage(target.statLife - 1);
+        }
+
+        public override void UpdateAccessory(Player player, bool hideVisual)
+        {
+            player.GetModPlayer<MKPlayer>().Equip_WoodenKatana = true;
         }
     }
 }
