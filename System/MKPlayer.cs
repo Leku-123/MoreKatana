@@ -128,6 +128,17 @@ namespace MoreKatana.System
             if (EquipTinKatana && !target.friendly)
                 target.damage -= 1;
 
+            if (EquipSilverKatana)
+            {
+                if (
+                       target.type == NPCID.Vampire
+                    || target.type == NPCID.VampireBat
+                    || target.type == NPCID.Werewolf
+                   )
+                {
+                    modifiers.SetInstantKill();
+                }
+            }
         }
 
         public void Katana(in NPC target, ref NPC.HitModifiers modifiers)
