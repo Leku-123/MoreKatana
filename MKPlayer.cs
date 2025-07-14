@@ -2,7 +2,7 @@
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace MoreKatana.System
+namespace MoreKatana
 {
     public class MKPlayer : ModPlayer
     {
@@ -30,7 +30,7 @@ namespace MoreKatana.System
         /// <summary>
         /// 銅の刀
         /// </summary>
-        public bool EquipCopperKatana = false;
+        //public bool EquipCopperKatana = false;
         /// <summary>
         /// 金の刀
         /// </summary>
@@ -61,7 +61,7 @@ namespace MoreKatana.System
         {
             EquipKatana = false;
             EquipMuramasa = false;
-            EquipCopperKatana = false;
+            //EquipCopperKatana = false;
             EquipGoldKatana = false;
             EquipLeadKatana = false;
             EquipPlatinumKatana = false;
@@ -78,8 +78,8 @@ namespace MoreKatana.System
                 Player.endurance += 0.05f;
             }
 
-            if (EquipCopperKatana)
-                Player.statDefense += 1;
+            //if (EquipCopperKatana)
+            //    Player.statDefense += 1;
 
             if (EquipTinKatana)
                 Player.statDefense += 2;
@@ -113,7 +113,7 @@ namespace MoreKatana.System
                 {
                     bonus = (int)(coin /= 1000);
                 }
-                Player.statDefense += (3 + bonus);
+                Player.statDefense += 3 + bonus;
             }
 
             if (EquipPlatinumKatana)
@@ -125,8 +125,8 @@ namespace MoreKatana.System
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            if (EquipCopperKatana)
-                CopperKatana(target);
+            //if (EquipCopperKatana)
+            //    CopperKatana(target);
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
@@ -159,9 +159,9 @@ namespace MoreKatana.System
             Player.GetArmorPenetration<GenericDamageClass>() = armorPen;
         }
 
-        public void CopperKatana(NPC target)
+        /*public void CopperKatana(NPC target)
         {
             target.AddBuff(BuffID.Poisoned, 60 * Main.rand.Next(5, 11));
-        }
+        }*/
     }
 }

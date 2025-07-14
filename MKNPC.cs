@@ -1,7 +1,7 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
-namespace MoreKatana.System
+namespace MoreKatana
 {
     public class MKNPC : GlobalNPC
     {

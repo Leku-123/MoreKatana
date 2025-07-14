@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ModLoader;
 
 namespace MoreKatana
 {
-	public class MoreKatana : Mod
-	{
+    public class MoreKatana : Mod
+    {
 
-	}
+    }
 }

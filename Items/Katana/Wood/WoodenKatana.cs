@@ -6,7 +6,7 @@ namespace MoreKatana.Items.Katana.Wood
     /// <summary>
     /// 木製の刀（木刀）
     /// </summary>
-    public class WoodenKatana : Basic_Katana
+    public class WoodenKatana : KatanaItem
     {
         public override void SetDefaults()
         {

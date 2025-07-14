@@ -1,10 +1,9 @@
-﻿using MoreKatana.System;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 
 namespace MoreKatana.Items.Katana.Metal
 {
-    public class TungstenKatana : Basic_Katana
+    public class TungstenKatana : KatanaItem
     {
         public override void SetDefaults()
         {

@@ -8,7 +8,7 @@ using Terraria.UI;
 
 namespace MoreKatana.Items.Katana.Metal
 {
-    public class GoldKatana : Basic_Katana
+    public class GoldKatana : KatanaItem
     {
         public override void SetDefaults()
         {
