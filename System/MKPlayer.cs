@@ -109,6 +109,12 @@ namespace MoreKatana.System
                 }
                 Player.statDefense += (3 + bonus);
             }
+
+            if (EquipPlatinumKatana)
+            {
+                Player.buffImmune[BuffID.Frostburn] = true;
+                Player.buffImmune[BuffID.Chilled] = true;
+            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
