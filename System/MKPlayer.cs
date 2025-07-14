@@ -23,7 +23,7 @@ namespace MoreKatana.System
         /// <summary>
         /// 木材の刀
         /// </summary>
-        public bool EquipWoodenKatana = false;
+        //public bool EquipWoodenKatana = false;
 
         // プレハード金属刀
 
@@ -61,7 +61,13 @@ namespace MoreKatana.System
         {
             EquipKatana = false;
             EquipMuramasa = false;
-            EquipWoodenKatana = false;
+            EquipCopperKatana = false;
+            EquipGoldKatana = false;
+            EquipLeadKatana = false;
+            EquipPlatinumKatana = false;
+            EquipSilverKatana = false;
+            EquipTinKatana = false;
+            EquipTungstenKatana = false;
         }
 
         public override void PreUpdate()
@@ -128,8 +134,6 @@ namespace MoreKatana.System
             if (EquipKatana)
                 Katana(target, ref modifiers);
 
-            if (EquipWoodenKatana)
-                WoodenKatana(target, ref modifiers);
         }
 
         public override void ModifyHurt(ref Player.HurtModifiers modifiers)
@@ -153,13 +157,6 @@ namespace MoreKatana.System
             target.SimpleStrikeNPC(dam / 10, modifiers.HitDirection);
 
             Player.GetArmorPenetration<GenericDamageClass>() = armorPen;
-        }
-
-        public void WoodenKatana(in NPC target, ref NPC.HitModifiers modifiers)
-        {
-            if (target.life < 1)
-                return;
-            modifiers.SetMaxDamage(target.life - 1);
         }
 
         public void CopperKatana(NPC target)

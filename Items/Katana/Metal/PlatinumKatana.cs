@@ -29,11 +29,6 @@ namespace MoreKatana.Items.Katana.Metal
                 .Register();//製作可能にする
         }
 
-        public override void UpdateAccessory(Player player, bool hideVisual)
-        {
-            player.GetModPlayer<MKPlayer>().EquipPlatinumKatana = true;
-        }
-
         public override void HoldItem(Player player)
         {
             player.GetModPlayer<MKPlayer>().EquipPlatinumKatana = true;

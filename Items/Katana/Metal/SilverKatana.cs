@@ -41,11 +41,6 @@ namespace MoreKatana.Items.Katana.Metal
             }
         }
 
-        public override void UpdateAccessory(Player player, bool hideVisual)
-        {
-            player.GetModPlayer<MKPlayer>().EquipSilverKatana = true;
-        }
-
         public override void HoldItem(Player player)
         {
             player.GetModPlayer<MKPlayer>().EquipSilverKatana = true;

@@ -35,11 +35,6 @@ namespace MoreKatana.Items.Katana.Metal
                 target.damage -= 1;
         }
 
-        public override void UpdateAccessory(Player player, bool hideVisual)
-        {
-            player.GetModPlayer<MKPlayer>().EquipTinKatana = true;
-        }
-
         public override void HoldItem(Player player)
         {
             player.GetModPlayer<MKPlayer>().EquipTinKatana = true;

@@ -1,5 +1,4 @@
-﻿using MoreKatana.System;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 
 namespace MoreKatana.Items.Katana.Wood
@@ -46,9 +45,5 @@ namespace MoreKatana.Items.Katana.Wood
             modifiers.SetMaxDamage(target.statLife - 1);
         }
 
-        public override void UpdateAccessory(Player player, bool hideVisual)
-        {
-            player.GetModPlayer<MKPlayer>().EquipWoodenKatana = true;
-        }
     }
 }

@@ -34,11 +34,6 @@ namespace MoreKatana.Items.Katana.Metal
             target.AddBuff(BuffID.Poisoned, 60 * Main.rand.Next(5, 11));
         }
 
-        public override void UpdateAccessory(Player player, bool hideVisual)
-        {
-            player.GetModPlayer<MKPlayer>().EquipCopperKatana = true;
-        }
-
         public override void HoldItem(Player player)
         {
             player.GetModPlayer<MKPlayer>().EquipCopperKatana = true;
