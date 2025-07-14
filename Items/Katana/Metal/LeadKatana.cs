@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using MoreKatana.System;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.IO;
-using Terraria.ModLoader;
-using Terraria.UI;
 
 namespace MoreKatana.Items.Katana.Metal
 {
@@ -31,6 +27,16 @@ namespace MoreKatana.Items.Katana.Metal
                 .AddIngredient(ItemID.LeadBar, 10)//鉛インゴット１０個を
                 .AddTile(TileID.Anvils)//金床で使うことで
                 .Register();//製作可能にする
+        }
+
+        public override void UpdateAccessory(Player player, bool hideVisual)
+        {
+            player.GetModPlayer<MKPlayer>().EquipLeadKatana = true;
+        }
+
+        public override void HoldItem(Player player)
+        {
+            player.GetModPlayer<MKPlayer>().EquipLeadKatana = true;
         }
     }
 }

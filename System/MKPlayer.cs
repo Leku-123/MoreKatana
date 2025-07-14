@@ -132,6 +132,12 @@ namespace MoreKatana.System
                 WoodenKatana(target, ref modifiers);
         }
 
+        public override void ModifyHurt(ref Player.HurtModifiers modifiers)
+        {
+            if (EquipMuramasa)
+                modifiers.FinalDamage *= 1.1f;
+        }
+
         public void Katana(in NPC target, ref NPC.HitModifiers modifiers)
         {
             if (target.friendly) return;
