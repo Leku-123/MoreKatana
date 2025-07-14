@@ -29,6 +29,12 @@ namespace MoreKatana.Items.Katana.Metal
                 .Register();//製作可能にする
         }
 
+        public override void ModifyHitNPC(Player player, NPC target, ref NPC.HitModifiers modifiers)
+        {
+            if (!target.friendly)
+                target.damage -= 1;
+        }
+
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
             player.GetModPlayer<MKPlayer>().EquipTinKatana = true;

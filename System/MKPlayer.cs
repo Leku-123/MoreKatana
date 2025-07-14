@@ -131,9 +131,6 @@ namespace MoreKatana.System
             if (EquipWoodenKatana)
                 WoodenKatana(target, ref modifiers);
 
-            if (EquipTinKatana && !target.friendly)
-                target.damage -= 1;
-
             if (EquipSilverKatana)
             {
                 if (
