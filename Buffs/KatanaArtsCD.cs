@@ -2,7 +2,7 @@
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace KatanaTest.Buffs
+namespace MoreKatana.Buffs
 {
     public class KatanaArtsCD : ModBuff
     {
