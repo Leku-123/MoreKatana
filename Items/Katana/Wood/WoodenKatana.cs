@@ -48,7 +48,7 @@ namespace MoreKatana.Items.Katana.Wood
 
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
-            player.GetModPlayer<MKPlayer>().Equip_WoodenKatana = true;
+            player.GetModPlayer<MKPlayer>().EquipWoodenKatana = true;
         }
     }
 }
