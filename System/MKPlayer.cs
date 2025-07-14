@@ -144,15 +144,15 @@ namespace MoreKatana.System
 
             Item heldItem = Player.HeldItem;
 
-            float armorPen = Player.GetArmorPenetration(heldItem.DamageType);
+            float armorPen = Player.GetArmorPenetration<GenericDamageClass>();
 
             int dam = Player.GetWeaponDamage(heldItem);
 
-            Player.GetArmorPenetration(heldItem.DamageType) = int.MaxValue;
+            Player.GetArmorPenetration<GenericDamageClass>() = int.MaxValue;
 
             target.SimpleStrikeNPC(dam / 10, modifiers.HitDirection);
 
-            Player.GetArmorPenetration(heldItem.DamageType) = armorPen;
+            Player.GetArmorPenetration<GenericDamageClass>() = armorPen;
         }
 
         public void WoodenKatana(in NPC target, ref NPC.HitModifiers modifiers)
