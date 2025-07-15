@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -8,6 +9,14 @@ namespace MoreKatana.Items.Katana
 {
     public abstract class KatanaItem : ModItem
     {
+        public LocalizedText FunctionText => this.GetLocalization(nameof(FunctionText));
+
+        public override void AutoStaticDefaults()
+        {
+            base.AutoStaticDefaults();
+            _ = FunctionText;
+        }
+
         /// <summary>
         /// アクティブスキル
         /// </summary>
@@ -36,6 +45,9 @@ namespace MoreKatana.Items.Katana
                 return;
 
             TooltipLine functionTooltip = Enumerable.FirstOrDefault(tooltips, (TooltipLine x) => x.Text.Contains("[FUNC]") && x.Mod == "Terraria");
+
+            if (functionTooltip == null) return;
+
             if (!ItemSlot.ShiftInUse)
             {
                 functionTooltip.Text = (string)Mod.GetLocalization($"{nameof(KatanaItem)}.DefaultText");

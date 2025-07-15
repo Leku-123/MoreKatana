@@ -2,6 +2,7 @@ Items: {
 	WoodenKatana: {
 		DisplayName: Wooden Katana
 		Tooltip: Hard and sturdy.
+		FunctionText: Mods.MoreKatana.Items.WoodenKatana.FunctionText
 	}
 
 	CopperKatana: {
@@ -23,31 +24,37 @@ Items: {
 	GoldKatana: {
 		DisplayName: Gold Katana
 		Tooltip: ""
+		FunctionText: Mods.MoreKatana.Items.GoldKatana.FunctionText
 	}
 
 	LeadKatana: {
 		DisplayName: Lead Katana
 		Tooltip: ""
+		FunctionText: Mods.MoreKatana.Items.LeadKatana.FunctionText
 	}
 
 	PlatinumKatana: {
 		DisplayName: Platinum Katana
 		Tooltip: ""
+		FunctionText: Mods.MoreKatana.Items.PlatinumKatana.FunctionText
 	}
 
 	SilverKatana: {
 		DisplayName: Silver Katana
 		Tooltip: ""
+		FunctionText: Mods.MoreKatana.Items.SilverKatana.FunctionText
 	}
 
 	TinKatana: {
 		DisplayName: Tin Katana
 		Tooltip: ""
+		FunctionText: Mods.MoreKatana.Items.TinKatana.FunctionText
 	}
 
 	TungstenKatana: {
 		DisplayName: Tungsten Katana
 		Tooltip: ""
+		FunctionText: Mods.MoreKatana.Items.TungstenKatana.FunctionText
 	}
 }
 
