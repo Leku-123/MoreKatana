@@ -1,4 +1,4 @@
-displayName = More Katana
+displayName = [c/cc0000:More Katana]
 author = Katudonsan,Moririn
 version = 0.3
 includeSource = true
