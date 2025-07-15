@@ -24,6 +24,7 @@ namespace MoreKatana.Items
         {
             item.DamageType = DamageClass.Melee;
             item.useStyle = ItemUseStyleID.Swing;
+            item.UseSound = SoundID.Item1;
             item.accessory = equipment;
             item.autoReuse = true;
             Katana = true;

@@ -12,7 +12,6 @@ namespace MoreKatana.Items.Katana.Metal
 
             Item.useTime = 18;
             Item.useAnimation = 18;
-            Item.UseSound = SoundID.Item1;
 
             Item.damage = 10;
             Item.knockBack = 6;
