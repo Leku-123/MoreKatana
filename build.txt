@@ -1,5 +1,5 @@
 displayName = More Katana
-author = Katudonsan
+author = Katudonsan,Moririn
 version = 0.3
 includeSource = true
 homepage = https://github.com/Katudonsan/MoreKatana
