@@ -40,7 +40,7 @@ namespace MoreKatana.Items.Katana
             {
                 functionTooltip.Text = (string)Mod.GetLocalization($"{nameof(KatanaItem)}.DefaultText");
             }
-            if (ItemSlot.ShiftInUse)
+            else
             {
                 functionTooltip.Text = ILocalizedModTypeExtensions.GetLocalizedValue((ILocalizedModType)(object)this, "FunctionText");
             }
