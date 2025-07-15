@@ -18,7 +18,6 @@ namespace MoreKatana.Items.Katana.Metal
             Item.knockBack = 6;
 
             Item.value = Item.sellPrice(silver: 1);
-            Item.rare = ItemRarityID.Blue;
 
             Item.GetGlobalItem<MKItem>().SetKatanaDefaults(Item, 300, true);
         }

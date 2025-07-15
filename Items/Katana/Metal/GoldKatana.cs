@@ -1,10 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.DataStructures;
+﻿using Terraria;
 using Terraria.ID;
-using Terraria.IO;
-using Terraria.ModLoader;
-using Terraria.UI;
 
 namespace MoreKatana.Items.Katana.Metal
 {
@@ -23,6 +18,8 @@ namespace MoreKatana.Items.Katana.Metal
             Item.knockBack = 7;//与えるノックバック
 
             Item.value = Item.sellPrice(silver: 20);
+
+            Item.GetGlobalItem<MKItem>().SetKatanaDefaults(Item, 300, true);
         }
 
         public override void AddRecipes()

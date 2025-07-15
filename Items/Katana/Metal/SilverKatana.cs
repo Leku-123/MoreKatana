@@ -18,6 +18,8 @@ namespace MoreKatana.Items.Katana.Metal
             Item.knockBack = 6;//与えるノックバック
 
             Item.value = Item.sellPrice(silver: 10);
+
+            Item.GetGlobalItem<MKItem>().SetKatanaDefaults(Item, 300, true);
         }
 
         public override void AddRecipes()
@@ -40,9 +42,9 @@ namespace MoreKatana.Items.Katana.Metal
             }
         }
 
-        public override void HoldItem(Player player)
+        public override void PassiveSkill(Player player, bool equipment)
         {
-            player.GetModPlayer<MKPlayer>().EquipSilverKatana = true;
+            player.statDefense += 2;
         }
     }
 }

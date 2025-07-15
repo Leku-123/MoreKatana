@@ -18,6 +18,8 @@ namespace MoreKatana.Items.Katana.Metal
             Item.knockBack = 6;//与えるノックバック
 
             Item.value = Item.sellPrice(silver: 5, copper: 80);
+
+            Item.GetGlobalItem<MKItem>().SetKatanaDefaults(Item, 300, true);
         }
 
         public override void AddRecipes()

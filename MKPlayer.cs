@@ -1,5 +1,4 @@
 ﻿using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace MoreKatana
@@ -42,19 +41,19 @@ namespace MoreKatana
         /// <summary>
         /// プラチナの刀
         /// </summary>
-        public bool EquipPlatinumKatana = false;
+        //public bool EquipPlatinumKatana = false;
         /// <summary>
         /// 銀の刀
         /// </summary>
-        public bool EquipSilverKatana = false;
+        //public bool EquipSilverKatana = false;
         /// <summary>
         /// 錫の刀
         /// </summary>
-        public bool EquipTinKatana = false;
+        //public bool EquipTinKatana = false;
         /// <summary>
         /// タングステンの刀
         /// </summary>
-        public bool EquipTungstenKatana = false;
+        //public bool EquipTungstenKatana = false;
 
 
         public override void ResetEffects()
@@ -64,10 +63,10 @@ namespace MoreKatana
             //EquipCopperKatana = false;
             EquipGoldKatana = false;
             EquipLeadKatana = false;
-            EquipPlatinumKatana = false;
-            EquipSilverKatana = false;
-            EquipTinKatana = false;
-            EquipTungstenKatana = false;
+            //EquipPlatinumKatana = false;
+            //EquipSilverKatana = false;
+            //EquipTinKatana = false;
+            //EquipTungstenKatana = false;
         }
 
         public override void PreUpdate()
@@ -81,18 +80,18 @@ namespace MoreKatana
             //if (EquipCopperKatana)
             //    Player.statDefense += 1;
 
-            if (EquipTinKatana)
-                Player.statDefense += 2;
+            //if (EquipTinKatana)
+            //    Player.statDefense += 2;
 
-            if (EquipTungstenKatana)
-            {
-                Player.statDefense += 5;
-                Player.fireWalk = true;
-                Player.buffImmune[BuffID.OnFire] = true;
-            }
+            //if (EquipTungstenKatana)
+            //{
+            //    Player.statDefense += 5;
+            //    Player.fireWalk = true;
+            //    Player.buffImmune[BuffID.OnFire] = true;
+            //}
 
-            if (EquipPlatinumKatana)
-                Player.statDefense += 7;
+            //if (EquipPlatinumKatana)
+            //    Player.statDefense += 7;
 
             if (EquipLeadKatana)
             {
@@ -100,8 +99,8 @@ namespace MoreKatana
                 Player.moveSpeed *= 0.9f;
             }
 
-            if (EquipSilverKatana)
-                Player.statDefense += 2;
+            //if (EquipSilverKatana)
+            //    Player.statDefense += 2;
 
             if (EquipGoldKatana)
             {
@@ -116,11 +115,11 @@ namespace MoreKatana
                 Player.statDefense += 3 + bonus;
             }
 
-            if (EquipPlatinumKatana)
-            {
-                Player.buffImmune[BuffID.Frostburn] = true;
-                Player.buffImmune[BuffID.Chilled] = true;
-            }
+            //if (EquipPlatinumKatana)
+            //{
+            //    Player.buffImmune[BuffID.Frostburn] = true;
+            //    Player.buffImmune[BuffID.Chilled] = true;
+            //}
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

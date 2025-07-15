@@ -21,6 +21,8 @@ namespace MoreKatana.Items.Katana.Wood
             Item.knockBack = 5;//与えるノックバック
 
             Item.value = Item.sellPrice(copper: 25);//２５カッパーで売却可能
+
+            Item.GetGlobalItem<MKItem>().SetKatanaDefaults(Item, 300, true);
         }
 
         public override void AddRecipes()
