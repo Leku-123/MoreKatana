@@ -23,5 +23,24 @@ namespace MoreKatana.Items.Katana
         {
 
         }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        {
+            if (tooltips == null)
+                return;
+
+            if (Main.player[Main.myPlayer] == null)
+                return;
+
+            TooltipLine functionTooltip = Enumerable.FirstOrDefault(tooltips, (TooltipLine x) => x.Text.Contains("[FUNC]") && x.Mod == "Terraria");
+            if (!ItemSlot.ShiftInUse)
+            {
+                functionTooltip.Text = (string)Mod.GetLocalization($"{nameof(KatanaItem)}.DefaultText");
+            }
+            if (ItemSlot.ShiftInUse)
+            {
+                functionTooltip.Text = ILocalizedModTypeExtensions.GetLocalizedValue((ILocalizedModType)(object)this, "FunctionText");
+            }
+        }
     }
 }

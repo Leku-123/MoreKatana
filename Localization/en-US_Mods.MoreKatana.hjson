@@ -6,7 +6,18 @@ Items: {
 
 	CopperKatana: {
 		DisplayName: Copper Katana
-		Tooltip: ""
+		Tooltip:
+			'''
+			Test
+			[FUNC]
+			'''
+		FunctionText:
+			'''
+			Katana Spell
+			- Test1
+			Katana Arts
+			- Test1
+			'''
 	}
 
 	GoldKatana: {
@@ -40,6 +51,7 @@ Items: {
 	}
 }
 
+KatanaItem.DefaultText: "[c/DC143C:- Shift-click to learn more -]"
 KatanaSlot.Katana: Katana
 
 Buffs: {
