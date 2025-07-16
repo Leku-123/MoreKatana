@@ -13,19 +13,17 @@ namespace MoreKatana.UI.Katanary
     {
         public List<IBestiaryInfoElement> Info { get; private set; }
 
-        // Token: 0x060047A6 RID: 18342 RVA: 0x00645965 File Offset: 0x00643B65
         public KatanaryEntryItem()
         {
             Info = new List<IBestiaryInfoElement>();
         }
 
-        // Token: 0x060047A7 RID: 18343 RVA: 0x00645978 File Offset: 0x00643B78
         public static KatanaryEntryItem Katana(int itemType)
         {
             KatanaItem katana = ModContent.GetModItem(itemType) as KatanaItem;
             List<IBestiaryInfoElement> list =
             [
-                new KatanaNetIdKatanaryInfoElement(itemType),
+                new KatanaNetIdKatanaryInfoElement(katana.Item.netID),
                 new NamePlateInfoElement(Lang.GetItemName(itemType).Key, itemType),
                 new NPCPortraitInfoElement(katana.StarRarity),
                 new KatanaStatsReportInfoElement(itemType),
