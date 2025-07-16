@@ -11,6 +11,11 @@ namespace MoreKatana.Items.Katana
     {
         public LocalizedText FunctionText => this.GetLocalization(nameof(FunctionText));
 
+        /// <summary>
+        /// 刀のレア度（星アイコンの数＝ベスティアリ用）
+        /// </summary>
+        public virtual int StarRarity => 1;
+
         public override void AutoStaticDefaults()
         {
             base.AutoStaticDefaults();
