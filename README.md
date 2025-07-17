@@ -1,6 +1,6 @@
 # More Katana／モアカタナ
 
-ver0.2
+ver0.3
 
 <p>ー　English ー</p>
 <p>Note: Translated by DeepL.</p>
