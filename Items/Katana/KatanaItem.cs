@@ -9,12 +9,39 @@ namespace MoreKatana.Items.Katana
 {
     public abstract class KatanaItem : ModItem
     {
+        /// <summary>
+        /// シフト状態での説明文
+        /// </summary>
         public LocalizedText FunctionText => this.GetLocalization(nameof(FunctionText));
+
+        /// <summary>
+        /// 刀を追加しているMod名
+        /// </summary>
+        public string ParentMod => Mod.Name;
 
         /// <summary>
         /// 刀のレア度（星アイコンの数＝ベスティアリ用）
         /// </summary>
         public virtual int StarRarity => 1;
+
+        /// <summary>
+        /// 図鑑上の刀ID
+        /// </summary>
+        public virtual int KatanaID { get; set; }
+
+        /// <summary>
+        /// 図鑑に登録されるか
+        /// </summary>
+        public virtual bool IsCollectable { get; private set; } = true;
+
+        /*
+         今後必要なプロパティ
+         ・図鑑用説明文（ローカライゼーションテキストのリスト）
+         ・メインカテゴリ（列挙型）
+         ・ヒント用説明文（ローカライゼーションテキストのリスト）
+         ・サブカテゴリプロパティ（列挙型のリスト）
+         */
+
 
         public override void AutoStaticDefaults()
         {
