@@ -3,11 +3,11 @@ using Terraria.ModLoader;
 
 namespace MoreKatana
 {
-    public class MKNPC : GlobalNPC
+    public class MoreKatanaGlobalNPC : GlobalNPC
     {
         public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
         {
-            if (player.GetModPlayer<MKPlayer>().EquipMuramasa)
+            if (player.MKPlayer().EquipMuramasa)
                 spawnRate += spawnRate / 4;
         }
     }

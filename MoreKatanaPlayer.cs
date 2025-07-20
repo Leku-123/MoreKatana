@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 
 namespace MoreKatana
 {
-    public class MKPlayer : ModPlayer
+    public class MoreKatanaPlayer : ModPlayer
     {
         // バニラ刀 //
         /// <summary>

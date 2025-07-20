@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 namespace MoreKatana
 {
-    public class MKRecipe : ModSystem
+    public class MoreKatanaRecipe : ModSystem
     {
         public override void AddRecipes()
         {

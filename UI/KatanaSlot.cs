@@ -56,14 +56,9 @@ namespace MoreKatana.UI
         public override bool CanAcceptItem(Item checkItem, AccessorySlotType context)
         {
             if (AccessorySystem.KatanaSlots != Type)
-            {
                 AccessorySystem.KatanaSlots = Type;
-            }
-            if (checkItem.GetGlobalItem<MKItem>().Katana) // Katanaならスロットに入れられる
-            {
-                return true;
-            }
-            return false;
+
+            return checkItem.MKItem().Katana; // Katanaならスロットに入れられる
         }
 
         public override void OnMouseHover(AccessorySlotType context)
