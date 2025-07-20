@@ -19,7 +19,7 @@ namespace MoreKatana.Items.Katana.Metal
 
             Item.value = Item.sellPrice(silver: 30);
 
-            Item.GetGlobalItem<MKItem>().SetKatanaDefaults(Item, 300, true);
+            Item.MKItem().SetKatanaDefaults(Item, 300, true);
         }
 
         public override void AddRecipes()

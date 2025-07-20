@@ -5,9 +5,9 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace MoreKatana.Items
+namespace MoreKatana
 {
-    public class MKItem : GlobalItem
+    public class MoreKatanaGlobalItem : GlobalItem
     {
         public override bool InstancePerEntity => true;
 
@@ -163,11 +163,11 @@ namespace MoreKatana.Items
         {
             if (item.type == ItemID.Katana)
             {
-                player.GetModPlayer<MKPlayer>().EquipKatana = true;
+                player.MKPlayer().EquipKatana = true;
             }
             if (item.type == ItemID.Muramasa)
             {
-                player.GetModPlayer<MKPlayer>().EquipMuramasa = true;
+                player.MKPlayer().EquipMuramasa = true;
             }
         }
     }
