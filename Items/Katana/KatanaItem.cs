@@ -15,6 +15,17 @@ namespace MoreKatana.Items.Katana
         public LocalizedText FunctionText => this.GetLocalization(nameof(FunctionText));
 
         /// <summary>
+        /// 未入手状態でのヒント
+        /// </summary>
+        public LocalizedText HintText => this.GetLocalization(nameof(HintText));
+
+        /// <summary>
+        /// 刀図鑑での説明文
+        /// </summary>
+        public LocalizedText KatanatiaryText => this.GetLocalization(nameof(KatanatiaryText));
+
+
+        /// <summary>
         /// 刀を追加しているMod名
         /// </summary>
         public string ParentMod => Mod.Name;
@@ -36,9 +47,7 @@ namespace MoreKatana.Items.Katana
 
         /*
          今後必要なプロパティ
-         ・図鑑用説明文（ローカライゼーションテキストのリスト）
          ・メインカテゴリ（列挙型）
-         ・ヒント用説明文（ローカライゼーションテキストのリスト）
          ・サブカテゴリプロパティ（列挙型のリスト）
          */
 
@@ -47,6 +56,8 @@ namespace MoreKatana.Items.Katana
         {
             base.AutoStaticDefaults();
             _ = FunctionText;
+            _ = HintText;
+            _ = KatanatiaryText;
         }
 
         /// <summary>
