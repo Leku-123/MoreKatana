@@ -1,5 +1,8 @@
-﻿using Terraria;
+﻿using MoreKatana.Projectiles;
+using MoreKatana.Projectiles.Base;
+using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace MoreKatana.Items.Katana.Metal
 {
@@ -19,6 +22,10 @@ namespace MoreKatana.Items.Katana.Metal
             Item.value = Item.sellPrice(silver: 1);
 
             Item.MKItem().SetKatanaDefaults(Item, 300, true);
+            Item.shoot = ModContent.ProjectileType<GlobalSword>();
+            Item.shootSpeed = 1;
+            Item.noUseGraphic = true;
+            Item.noMelee = true;
         }
 
         public override void PassiveSkill(Player player, bool equipment)

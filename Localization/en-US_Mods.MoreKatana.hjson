@@ -67,3 +67,8 @@ Buffs: {
 		Description: Katana Arts is in cooldown.
 	}
 }
+
+Projectiles: {
+	GlobalSword.DisplayName: Global Sword
+	IceBoltProjectile.DisplayName: Ice Bolt Projectile
+}
