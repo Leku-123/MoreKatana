@@ -74,15 +74,13 @@ namespace MoreKatana.Projectiles.Base
 
         public bool invisible;       // 剣を描画を無くすかどうか
         public bool timerStop;       // 剣の振りのタイマーを止めるかどうか
-        private bool primsCreated;   // トレイルを描画したかどうか
+        protected bool primsCreated;   // トレイルを描画したかどうか
 
         /// <summary>
         /// 雑多な変数
         /// </summary>
-        protected float swordOffset;           // 剣の描画のオフセットの調節
         protected bool continuousSwing;        // 全ての振りを連続的に行うかどうか
         protected bool fixedDirection;         // 全ての振りの方向を固定するかどうか
-        protected bool customTrail;            // カスタムのトレイルを使用するかどうか
         protected Color trailColor;            // トレイルの色
 
         protected Player Owner => Main.player[Projectile.owner];
@@ -379,9 +377,9 @@ namespace MoreKatana.Projectiles.Base
         /// トレイル
         /// </summary>
         /// <param name="dir"></param>
-        private void DrawTrail(int dir)
+        public virtual void DrawTrail(int dir)
         {
-            if (!customTrail && Timer != 0f)
+            if (Timer != 0f)
             {
                 // トレイルを描画する
                 if (!primsCreated)
@@ -394,8 +392,8 @@ namespace MoreKatana.Projectiles.Base
                 if (Main.netMode != NetmodeID.Server)
                 {
                     // トレイルの設定
-                    trail._direction = Owner.direction * -dir;
-                    trail.primCenter = Owner.MountedCenter;
+                    trail.Direction = Owner.direction * -dir;
+                    trail.PrimCenter = Owner.MountedCenter;
                     trail.Points.Add(Projectile.Center - Owner.MountedCenter);
 
                     // 剣を描画しない場合トレイルを消す
@@ -484,8 +482,7 @@ namespace MoreKatana.Projectiles.Base
 
             Texture2D texture = TextureAssets.Item[SwordItem.type].Value;
 
-            Vector2 offset = MoreKatanaUtil.PolarVector(swordOffset, (Projectile.Center - Owner.MountedCenter).ToRotation());
-            Vector2 position = Projectile.Center - offset - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
+            Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
             Rectangle? rectangle = new Rectangle?(Main.itemAnimations[SwordItem.type] == null ? texture.Frame(1, 1, 0, 0, 0, 0) : Main.itemAnimations[SwordItem.type].GetFrame(texture, -1));
 
             float frame = Main.itemAnimations[SwordItem.type] == null ? 1 : Main.itemAnimations[SwordItem.type].FrameCount;

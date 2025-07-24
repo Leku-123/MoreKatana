@@ -2,7 +2,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
-namespace MoreKatana
+namespace MoreKatana.Projectiles
 {
     public class MoreKatanaGlobalProjectile : GlobalProjectile
     {

@@ -1,11 +1,10 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Prim;
-using ReLogic.Content;
 using System;
 using System.Linq;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace MoreKatana.Projectiles.PrimTrails
 {
@@ -23,10 +22,9 @@ namespace MoreKatana.Projectiles.PrimTrails
 
         public override void SetDefaults() => AlphaValue = 0.7f;
 
-        public int _direction = 1;
-        public Vector2 primCenter;
-        public string Texture = "MoreKatana/Assets/ExtraTextures/Trails/SwordSlashTrail_0";
-        public int TrailType;
+        public int TextureType;
+        public int Direction = 1;
+        public Vector2 PrimCenter;
 
         public override void PrimStructure(SpriteBatch spriteBatch)
         {
@@ -34,8 +32,6 @@ namespace MoreKatana.Projectiles.PrimTrails
                 return;
 
             float widthVar;
-            //var proj = Entity as Projectile;
-            //primCenter = Main.player[proj.owner].Center;
             for (int i = 0; i < Points.Count; i++)
             {
                 if (i == 0)
@@ -60,25 +56,25 @@ namespace MoreKatana.Projectiles.PrimTrails
                         Vector2 firstDown = Points[i] + normal * Width;
                         Vector2 secondUp = Points[i + 1] - normalAhead * Width;
                         Vector2 secondDown = Points[i + 1] + normalAhead * Width;
-                        if (_direction == 1)
+                        if (Direction == 1)
                         {
-                            AddVertex(firstDown + primCenter, c * AlphaValue, new Vector2(i / (float)Cap, 1));
-                            AddVertex(firstUp + primCenter, c * AlphaValue, new Vector2(i / (float)Cap, 0));
-                            AddVertex(secondDown + primCenter, CBT * AlphaValue, new Vector2((i + 1) / (float)Cap, 1));
+                            AddVertex(firstDown + PrimCenter, c * AlphaValue, new Vector2(i / (float)Cap, 1));
+                            AddVertex(firstUp + PrimCenter, c * AlphaValue, new Vector2(i / (float)Cap, 0));
+                            AddVertex(secondDown + PrimCenter, CBT * AlphaValue, new Vector2((i + 1) / (float)Cap, 1));
 
-                            AddVertex(secondUp + primCenter, CBT * AlphaValue, new Vector2((i + 1) / (float)Cap, 0));
-                            AddVertex(secondDown + primCenter, CBT * AlphaValue, new Vector2((i + 1) / (float)Cap, 1));
-                            AddVertex(firstUp + primCenter, c * AlphaValue, new Vector2(i / (float)Cap, 0));
+                            AddVertex(secondUp + PrimCenter, CBT * AlphaValue, new Vector2((i + 1) / (float)Cap, 0));
+                            AddVertex(secondDown + PrimCenter, CBT * AlphaValue, new Vector2((i + 1) / (float)Cap, 1));
+                            AddVertex(firstUp + PrimCenter, c * AlphaValue, new Vector2(i / (float)Cap, 0));
                         }
                         else
                         {
-                            AddVertex(firstDown + primCenter, c * AlphaValue, new Vector2(i / (float)Cap, 0));
-                            AddVertex(firstUp + primCenter, c * AlphaValue, new Vector2(i / (float)Cap, 1));
-                            AddVertex(secondDown + primCenter, CBT * AlphaValue, new Vector2((i + 1) / (float)Cap, 0));
+                            AddVertex(firstDown + PrimCenter, c * AlphaValue, new Vector2(i / (float)Cap, 0));
+                            AddVertex(firstUp + PrimCenter, c * AlphaValue, new Vector2(i / (float)Cap, 1));
+                            AddVertex(secondDown + PrimCenter, CBT * AlphaValue, new Vector2((i + 1) / (float)Cap, 0));
 
-                            AddVertex(secondUp + primCenter, CBT * AlphaValue, new Vector2((i + 1) / (float)Cap, 1));
-                            AddVertex(secondDown + primCenter, CBT * AlphaValue, new Vector2((i + 1) / (float)Cap, 0));
-                            AddVertex(firstUp + primCenter, c * AlphaValue, new Vector2(i / (float)Cap, 1));
+                            AddVertex(secondUp + PrimCenter, CBT * AlphaValue, new Vector2((i + 1) / (float)Cap, 1));
+                            AddVertex(secondDown + PrimCenter, CBT * AlphaValue, new Vector2((i + 1) / (float)Cap, 0));
+                            AddVertex(firstUp + PrimCenter, c * AlphaValue, new Vector2(i / (float)Cap, 1));
                         }
                     }
                 }
@@ -88,7 +84,7 @@ namespace MoreKatana.Projectiles.PrimTrails
         public override void SetShaders()
         {
             Effect effect = MoreKatana.PrimitiveTextureMap;
-            effect.Parameters["uTexture"].SetValue(ModContent.Request<Texture2D>(Texture, AssetRequestMode.ImmediateLoad).Value);
+            effect.Parameters["uTexture"].SetValue(MoreKatanaTextureRegistry.SwordTrailTexture(TextureType).Value);
             effect.Parameters["additive"].SetValue(true);
             effect.Parameters["repeats"].SetValue(1);
             effect.Parameters["intensify"].SetValue(true);

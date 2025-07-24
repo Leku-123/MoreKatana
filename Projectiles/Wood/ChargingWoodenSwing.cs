@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MoreKatana.Projectiles.Base;
+using MoreKatana.Projectiles.PrimTrails;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -10,6 +11,35 @@ namespace MoreKatana.Projectiles.Wood
     {
         private bool attackable;
         private bool collision;
+
+        private CustomSwordPrimTrail trail;
+
+        public override void DrawTrail(int dir)
+        {
+            if (Timer != 0f && attackable)
+            {
+                // トレイルを描画する
+                if (!primsCreated)
+                {
+                    primsCreated = true;
+                    trail = new CustomSwordPrimTrail(Projectile, trailColor, SwordLength, (int)(SwingTime * 1.5f));
+                    MoreKatana.primitives.CreateTrail(trail);
+                }
+
+                if (Main.netMode != NetmodeID.Server)
+                {
+                    // トレイルの設定
+                    trail.TextureType = 2;
+                    trail.Direction = Owner.direction * -dir;
+                    trail.PrimCenter = Owner.MountedCenter;
+                    trail.Points.Add(Projectile.Center - Owner.MountedCenter);
+
+                    // 剣を描画しない場合トレイルを消す
+                    if (invisible || progress >= 0.98f)
+                        trail?.OnDestroy();
+                }
+            }
+        }
 
         public override void Initialization(Item item, int type)
         {
@@ -49,6 +79,7 @@ namespace MoreKatana.Projectiles.Wood
         public override void AdditionalAI(Item item, int type, bool onDelay)
         {
             Owner.SetDummyItemTime(2);
+            Projectile.timeLeft = 2;
 
             if (!onDelay)
             {

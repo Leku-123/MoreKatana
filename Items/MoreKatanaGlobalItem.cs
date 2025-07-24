@@ -8,7 +8,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace MoreKatana
+namespace MoreKatana.Items
 {
     public class MoreKatanaGlobalItem : GlobalItem
     {
@@ -31,12 +31,12 @@ namespace MoreKatana
             item.DamageType = DamageClass.Melee;
             item.useStyle = ItemUseStyleID.Swing;
 
-            item.accessory = equipment;
-
             item.autoReuse = true;
             item.useTurn = false;
             item.noUseGraphic = true;
             item.noMelee = true;
+
+            item.accessory = equipment;
 
             // 発射体が指定されていない場合、ダミーの発射体を発射する
             // Shoot()を適用させたいため
@@ -49,6 +49,10 @@ namespace MoreKatana
             SwingComboCount = combo;
         }
 
+        /// <summary>
+        /// クールダウンを有効化します
+        /// </summary>
+        /// <param name="player"></param>
         public void ActivateCooldown(Player player) => player.AddBuff(ModContent.BuffType<KatanaArtsCD>(), ActiveSkillDelay);
 
         public override void SetDefaults(Item item)
@@ -198,7 +202,7 @@ namespace MoreKatana
         {
             if (item.type == ItemID.Katana)
             {
-                //player.MKPlayer().EquipKatana = true;
+
             }
             if (item.type == ItemID.Muramasa)
             {

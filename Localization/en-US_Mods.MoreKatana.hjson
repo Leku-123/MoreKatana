@@ -8,26 +8,16 @@ Items: {
 			'''
 		FunctionText:
 			'''
-			Katana Spell [c/A3A3A3:- None -]
-			Katana Arts [c/a6512b:- Charge Attack -]
+			Katana Spell [c/A3A3A3:< None >]
+			Katana Arts [c/a6512b:< Charge Attack >]
 			- Swing down heavily. Damage * 5 to the enemy.
 			'''
 	}
 
 	CopperKatana: {
 		DisplayName: Copper Katana
-		Tooltip:
-			'''
-			Test
-			[FUNC]
-			'''
-		FunctionText:
-			'''
-			Katana Spell
-			- Test1
-			Katana Arts
-			- Test1
-			'''
+		Tooltip: ""
+		FunctionText: Mods.MoreKatana.Items.GoldKatana.FunctionText
 	}
 
 	GoldKatana: {

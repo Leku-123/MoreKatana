@@ -1,5 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Items;
+using MoreKatana.Projectiles;
 using System;
 using Terraria;
 using Terraria.ID;

@@ -7,17 +7,13 @@ namespace MoreKatana.Items.Katana.Metal
     {
         public override void SetDefaultsItem()
         {
-            Item.width = 48;
-            Item.height = 54;
-
+            Item.width = 44;
+            Item.height = 50;
             Item.useTime = 18;
             Item.useAnimation = 18;
-
             Item.damage = 10;
             Item.knockBack = 6;
-
             Item.value = Item.sellPrice(silver: 1);
-
             Item.MKItem().SetKatanaDefaults(Item, 300, true);
         }
 
@@ -28,17 +24,7 @@ namespace MoreKatana.Items.Katana.Metal
 
         public override void ActiveSkill(Player player)
         {
-
-        }
-
-        public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
-        {
-            target.AddBuff(BuffID.Poisoned, 60 * Main.rand.Next(5, 11));
-        }
-
-        public override void OnHitPvp(Player player, Player target, Player.HurtInfo hurtInfo)
-        {
-            target.AddBuff(BuffID.Poisoned, 60 * Main.rand.Next(5, 11));
+            Item.MKItem().ActivateCooldown(player);
         }
 
         public override void AddRecipes()

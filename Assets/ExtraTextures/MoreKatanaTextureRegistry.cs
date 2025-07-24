@@ -6,7 +6,7 @@ namespace MoreKatana.Assets.ExtraTextures
 {
     public static class MoreKatanaTextureRegistry
     {
-        public const string TexturePath = "WeaponsOverhaul/Assets/ExtraTextures/";
+        public const string TexturePath = "MoreKatana/Assets/ExtraTextures/";
         public const string AdditivePath = TexturePath + "AdditiveTextures/";
         public const string TrailPath = TexturePath + "Trails/";
 
@@ -15,7 +15,7 @@ namespace MoreKatana.Assets.ExtraTextures
         #endregion
 
         #region Trail Textures
-        public static Asset<Texture2D> SwordTrailTexture(int num) => Request<Texture2D>(TrailPath + "SwordSlashTrail_" + System.Math.Min(num, 4), AssetRequestMode.ImmediateLoad);
+        public static Asset<Texture2D> SwordTrailTexture(int num) => Request<Texture2D>(TrailPath + "SwordSlashTrail_" + System.Math.Min(num, 2), AssetRequestMode.ImmediateLoad);
         public static Asset<Texture2D> EnergyTrailTexture => Request<Texture2D>(TrailPath + "Trail_0", AssetRequestMode.ImmediateLoad);
         public static Asset<Texture2D> FlameTrailTexture => Request<Texture2D>(TrailPath + "Trail_1", AssetRequestMode.ImmediateLoad);
         public static Asset<Texture2D> StraightlineTrailTexture => Request<Texture2D>(TrailPath + "Trail_2", AssetRequestMode.ImmediateLoad);
