@@ -3,7 +3,7 @@ using Terraria;
 
 namespace MoreKatana.Projectiles
 {
-    public class GlobalSword : CustomSword
+    public class GlobalKatanaSwing : CustomSword
     {
         public override void Initialization(Item item, int type)
         {
@@ -17,9 +17,9 @@ namespace MoreKatana.Projectiles
             float y = Utils.SelectRandom(Main.rand, 0.7f, 0.9f);
             GetEllipse(x, y);
 
-            float swingRange = Main.rand.NextFloat(0.6f, 0.7f);
-            float num = Owner.itemAnimationMax / 3f;
-            SwingStats(num * 2, swingRange, (1f - swingRange) / 2f, type % 2 != 0);
+            float swingRange = Main.rand.NextFloat(0.7f, 0.8f);
+            float num = Owner.itemAnimationMax / 4f;
+            SwingStats(num * 3, swingRange, (0.9f - swingRange) / 2f, type % 2 != 0);
 
             DelayTimer = num;
 

@@ -12,8 +12,8 @@ using Terraria.ModLoader.IO;
 namespace MoreKatana.Projectiles.Base
 {
     /// <summary>
-    /// TO-DO
-    /// <see cref="EaseFunction"/>の対応できないクラスをなんとかする(<see cref="progress"/>の値がNaNになっちゃう)
+    /// progressを再調節するとき、<see cref="EaseFunction"/>で使えないクラスがあります
+    /// ワンチャン<see cref="EaseFunction"/>が悪い
     /// </summary>
     public abstract class CustomSword : ModProjectile
     {
@@ -176,7 +176,6 @@ namespace MoreKatana.Projectiles.Base
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.alpha = 255;
             Projectile.extraUpdates = 5;
             Projectile.ownerHitCheck = true;
             Projectile.usesLocalNPCImmunity = true;
@@ -250,9 +249,6 @@ namespace MoreKatana.Projectiles.Base
             {
                 AttackPattern(SwordItem, SwingType);
 
-                Projectile.friendly = false;
-                Projectile.alpha = 0;
-
                 if (!fixedDirection)
                     Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
 
@@ -265,12 +261,12 @@ namespace MoreKatana.Projectiles.Base
                     Projectile.netUpdate = true;
             }
 
-            // タイマーを増加(止めない限り)
-            if (!timerStop)
-                Timer++;
-
             SetSwordPosition();
             SwingAnimation();
+
+            // タイマーを増加 (手動で止めない限り)
+            if (!timerStop)
+                Timer++;
         }
 
         /// <summary>
@@ -335,7 +331,6 @@ namespace MoreKatana.Projectiles.Base
             }
             else
             {
-                Main.NewText($"{progress}");
                 if (DelayTimer > 0f)
                     DelayTimer--;
 

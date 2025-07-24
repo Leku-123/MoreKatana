@@ -31,8 +31,11 @@ namespace MoreKatana
             item.DamageType = DamageClass.Melee;
             item.useStyle = ItemUseStyleID.Swing;
             item.UseSound = SoundID.Item1;
+
             item.accessory = equipment;
+
             item.autoReuse = true;
+            item.useTurn = false;
             item.noUseGraphic = true;
             item.noMelee = true;
 
@@ -43,7 +46,7 @@ namespace MoreKatana
 
             Katana = true;
             ActiveSkillDelay = delay;
-            SwordType = type == ProjectileID.None ? ModContent.ProjectileType<GlobalSword>() : type;
+            SwordType = type == ProjectileID.None ? ModContent.ProjectileType<GlobalKatanaSwing>() : type;
             SwingComboCount = combo;
         }
 
@@ -51,12 +54,12 @@ namespace MoreKatana
         {
             if (item.type == ItemID.Katana)
             {
-                SetKatanaDefaults(item, 300, true);
+                SetKatanaDefaults(item, 300, true, combo: 2);
                 item.StatsModifiedBy.Add(Mod);
             }
             if (item.type == ItemID.Muramasa)
             {
-                SetKatanaDefaults(item, 300, true);
+                SetKatanaDefaults(item, 300, true, combo: 2);
                 item.StatsModifiedBy.Add(Mod);
             }
         }
