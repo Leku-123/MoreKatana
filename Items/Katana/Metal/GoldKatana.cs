@@ -5,7 +5,7 @@ namespace MoreKatana.Items.Katana.Metal
 {
     public class GoldKatana : KatanaItem
     {
-        public override void SetDefaults()
+        public override void SetDefaultsItem()
         {
             Item.width = 50;//アイテム判定の横幅（拾得する際に使用）
             Item.height = 60;//アイテム判定の縦幅（拾得する際に使用）

@@ -1,8 +1,17 @@
 Items: {
 	WoodenKatana: {
 		DisplayName: Wooden Katana
-		Tooltip: Hard and sturdy.
-		FunctionText: Mods.MoreKatana.Items.WoodenKatana.FunctionText
+		Tooltip:
+			'''
+			[FUNC]
+			"Hard and sturdy."
+			'''
+		FunctionText:
+			'''
+			Katana Spell [c/A3A3A3:- None -]
+			Katana Arts [c/a6512b:- Charge Attack -]
+			- Swing down heavily. Damage * 5 to the enemy.
+			'''
 	}
 
 	CopperKatana: {

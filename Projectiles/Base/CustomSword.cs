@@ -451,6 +451,11 @@ namespace MoreKatana.Projectiles.Base
             return false;
         }
 
+        //public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
+        //{
+        //    return true;
+        //}
+
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
             // ノックバックをプレイヤーから遠ざける

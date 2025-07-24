@@ -30,7 +30,6 @@ namespace MoreKatana
         {
             item.DamageType = DamageClass.Melee;
             item.useStyle = ItemUseStyleID.Swing;
-            item.UseSound = SoundID.Item1;
 
             item.accessory = equipment;
 
@@ -49,6 +48,8 @@ namespace MoreKatana
             SwordType = type == ProjectileID.None ? ModContent.ProjectileType<GlobalKatanaSwing>() : type;
             SwingComboCount = combo;
         }
+
+        public void ActivateCooldown(Player player) => player.AddBuff(ModContent.BuffType<KatanaArtsCD>(), ActiveSkillDelay);
 
         public override void SetDefaults(Item item)
         {
@@ -85,15 +86,13 @@ namespace MoreKatana
                     {
                         // バニラのアクティブスキル
                         VanillaActiveSkill(item, player);
+                        ActivateCooldown(player);
                     }
                     else
                     {
                         // Modのアクティブスキル
                         (item.ModItem as KatanaItem).ActiveSkill(player);
                     }
-
-                    // CD
-                    player.AddBuff(ModContent.BuffType<KatanaArtsCD>(), ActiveSkillDelay);
                 }
             }
             return base.CanUseItem(item, player);
@@ -112,6 +111,8 @@ namespace MoreKatana
                 {
                     // Modのパッシブスキル
                     (item.ModItem as KatanaItem).PassiveSkill(player, false);
+
+                    (item.ModItem as KatanaItem).SetDefaultsItem();
                 }
             }
         }

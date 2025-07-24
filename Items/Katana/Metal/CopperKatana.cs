@@ -5,7 +5,7 @@ namespace MoreKatana.Items.Katana.Metal
 {
     public class CopperKatana : KatanaItem
     {
-        public override void SetDefaults()
+        public override void SetDefaultsItem()
         {
             Item.width = 48;
             Item.height = 54;

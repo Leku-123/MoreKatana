@@ -22,6 +22,16 @@ namespace MoreKatana.Items.Katana
             _ = FunctionText;
         }
 
+        public sealed override void SetDefaults()
+        {
+            SetDefaultsItem();
+        }
+
+        public virtual void SetDefaultsItem()
+        {
+
+        }
+
         /// <summary>
         /// アクティブスキル
         /// </summary>
@@ -51,16 +61,13 @@ namespace MoreKatana.Items.Katana
 
             TooltipLine functionTooltip = Enumerable.FirstOrDefault(tooltips, (TooltipLine x) => x.Text.Contains("[FUNC]") && x.Mod == "Terraria");
 
-            if (functionTooltip == null) return;
+            if (functionTooltip == null)
+                return;
 
             if (!ItemSlot.ShiftInUse)
-            {
                 functionTooltip.Text = (string)Mod.GetLocalization($"{nameof(KatanaItem)}.DefaultText");
-            }
             else
-            {
                 functionTooltip.Text = ILocalizedModTypeExtensions.GetLocalizedValue((ILocalizedModType)(object)this, "FunctionText");
-            }
         }
     }
 }
