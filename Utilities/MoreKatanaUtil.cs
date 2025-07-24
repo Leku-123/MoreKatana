@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.ID;
 
 namespace MoreKatana
 {
@@ -34,6 +35,13 @@ namespace MoreKatana
                 fallback = Vector2.Zero;
 
             return (destination - entity.Center).SafeNormalize(fallback.Value);
+        }
+
+        public static void ScreenShake(this Player player, int timer, int strength)
+        {
+            MoreKatanaPlayer mk = player.MKPlayer();
+            mk.ScreenShakeTimer = timer;
+            mk.ScreenShakeStrength = strength;
         }
 
         /// <summary>

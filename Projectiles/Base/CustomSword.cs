@@ -249,6 +249,8 @@ namespace MoreKatana.Projectiles.Base
             {
                 AttackPattern(SwordItem, SwingType);
 
+                Projectile.alpha = 0;
+
                 if (!fixedDirection)
                     Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
 
@@ -261,12 +263,12 @@ namespace MoreKatana.Projectiles.Base
                     Projectile.netUpdate = true;
             }
 
-            SetSwordPosition();
-            SwingAnimation();
-
             // タイマーを増加 (手動で止めない限り)
             if (!timerStop)
                 Timer++;
+
+            SetSwordPosition();
+            SwingAnimation();
         }
 
         /// <summary>

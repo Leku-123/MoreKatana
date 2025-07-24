@@ -197,7 +197,7 @@ namespace MoreKatana
         {
             if (item.type == ItemID.Katana)
             {
-                player.MKPlayer().EquipKatana = true;
+                //player.MKPlayer().EquipKatana = true;
             }
             if (item.type == ItemID.Muramasa)
             {

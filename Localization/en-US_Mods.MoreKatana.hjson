@@ -71,4 +71,5 @@ Buffs: {
 Projectiles: {
 	Empty.DisplayName: Empty
 	GlobalKatanaSwing.DisplayName: Global Katana Swing
+	ChargingWoodenSwing.DisplayName: Charging Wooden Swing
 }

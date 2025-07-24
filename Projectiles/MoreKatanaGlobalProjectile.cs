@@ -18,7 +18,7 @@ namespace MoreKatana
 
             if (SourceIsItemUse)
             {
-                if (source is not EntitySource_ItemUse_WithAmmo)
+                if (source is not EntitySource_ItemUse_WithAmmo && source is not EntitySource_ItemUse)
                     projectile.Kill();
             }
         }

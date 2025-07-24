@@ -32,7 +32,7 @@ namespace MoreKatana.Items.Katana.Metal
 
         public override void HoldItem(Player player)
         {
-            player.MKPlayer().EquipLeadKatana = true;
+            //player.MKPlayer().EquipLeadKatana = true;
         }
     }
 }
