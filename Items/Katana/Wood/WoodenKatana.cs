@@ -12,18 +12,6 @@ namespace MoreKatana.Items.Katana.Wood
         {
             Item.width = 46;
             Item.height = 48;
-<<<<<<< Updated upstream
-
-            Item.useTime = 15;
-            Item.useAnimation = 15;
-
-            Item.damage = 8;
-            Item.knockBack = 5;
-
-            Item.value = Item.sellPrice(copper: 25);
-
-            Item.MKItem().SetKatanaDefaults(Item, 300, true);
-=======
             Item.useTime = 15;
             Item.useAnimation = 15;
             Item.UseSound = SoundID.Item1;
@@ -38,14 +26,6 @@ namespace MoreKatana.Items.Katana.Wood
             Item.UseSound = MoreKatanaSounds.MuteSound;
             player.ChangeDir(Main.MouseWorld.X - player.Center.X > 0 ? 1 : -1);
             Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.MountedCenter, new Vector2(player.direction, 0), ModContent.ProjectileType<ChargingWoodenSwing>(), Item.damage * 5, Item.knockBack * 2f, player.whoAmI);
->>>>>>> Stashed changes
-        }
-
-        public override void ActiveSkill(Player player)
-        {
-            Main.NewText("a");
-            var source = player.GetSource_ItemUse(Item);
-            Projectile.NewProjectile(source, player.MountedCenter, new Vector2(player.direction, 0), ModContent.ProjectileType<ChargingWoodenSwing>(), Item.damage * 3, Item.knockBack * 2f, player.whoAmI);
         }
 
         public override void AddRecipes()

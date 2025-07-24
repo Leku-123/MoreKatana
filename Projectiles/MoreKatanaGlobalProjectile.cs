@@ -23,11 +23,7 @@ namespace MoreKatana
 
             if (SourceIsItemUse)
             {
-<<<<<<< Updated upstream
-                if (source is not EntitySource_ItemUse_WithAmmo && source is not EntitySource_ItemUse)
-=======
                 if (source is not EntitySource_ItemUse)
->>>>>>> Stashed changes
                     projectile.Kill();
             }
         }

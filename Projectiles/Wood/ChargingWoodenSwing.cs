@@ -13,25 +13,17 @@ namespace MoreKatana.Projectiles.Wood
 
         public override void Initialization(Item item, int type)
         {
-<<<<<<< Updated upstream
-            Projectile.localNPCHitCooldown = 20 * Projectile.MaxUpdates;
-=======
             Projectile.localNPCHitCooldown = 30 * Projectile.MaxUpdates;
             Projectile.MKProjectile().ActivateCD = true;
->>>>>>> Stashed changes
             continuousSwing = true;
             fixedDirection = true;
             GetTextureValues(this, item);
 
             if (type == 1)
-<<<<<<< Updated upstream
-                Projectile.tileCollide = true;
-=======
             {
                 Projectile.tileCollide = true;
                 SoundEngine.PlaySound(SoundID.Item1, Owner.Center);
             }
->>>>>>> Stashed changes
         }
 
         public override bool AttackPattern(Item item, int type)
@@ -58,29 +50,18 @@ namespace MoreKatana.Projectiles.Wood
         {
             Owner.SetDummyItemTime(2);
 
-<<<<<<< Updated upstream
-            if (collision)
-                Projectile.tileCollide = false;
-
-=======
->>>>>>> Stashed changes
             if (!onDelay)
             {
                 Projectile.friendly = type == 1;
             }
             else
             {
-<<<<<<< Updated upstream
-                if (type == 0)
-                {
-=======
                 Projectile.friendly = false;
 
                 if (type == 0)
                 {
                     Projectile.Center += Main.rand.NextVector2Unit();
 
->>>>>>> Stashed changes
                     if (!attackable)
                     {
                         attackable = true;
@@ -89,12 +70,6 @@ namespace MoreKatana.Projectiles.Wood
 
                     if (Projectile.owner == Main.myPlayer && Main.mouseRight)
                         DelayTimer = 10;
-<<<<<<< Updated upstream
-
-                    Projectile.friendly = false;
-                    Projectile.Center += Main.rand.NextVector2Unit() * 2f;
-=======
->>>>>>> Stashed changes
                 }
             }
         }
@@ -107,20 +82,11 @@ namespace MoreKatana.Projectiles.Wood
             {
                 collision = true;
                 Owner.ScreenShake(4, 10);
-<<<<<<< Updated upstream
-                SoundEngine.PlaySound(SoundID.NPCHit42, Owner.Center);
-=======
                 SoundEngine.PlaySound(SoundID.Dig, Owner.Center);
->>>>>>> Stashed changes
             }
             return false;
         }
 
-<<<<<<< Updated upstream
-        public override void OnKill(int timeLeft)
-        {
-            //Projectile.OverhaulProjectile().ActivateCD = true;
-=======
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             for (int i = 0; i < 5; i++)
@@ -141,7 +107,6 @@ namespace MoreKatana.Projectiles.Wood
                 Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(15));
                 Main.dust[newDust].velocity *= Main.rand.NextFloat(0.5f, 2f);
             }
->>>>>>> Stashed changes
         }
     }
 }
