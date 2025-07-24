@@ -71,4 +71,6 @@ Buffs: {
 Projectiles: {
 	GlobalSword.DisplayName: Global Sword
 	IceBoltProjectile.DisplayName: Ice Bolt Projectile
+	GlobalKatana.DisplayName: Global Katana
+	Empty.DisplayName: Empty
 }

@@ -1,7 +1,10 @@
+using Microsoft.Xna.Framework;
 using MoreKatana.Buffs;
 using MoreKatana.Items.Katana;
+using MoreKatana.Projectiles;
 using MoreKatana.UI;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -11,8 +14,11 @@ namespace MoreKatana
     {
         public override bool InstancePerEntity => true;
 
-        public bool Katana;          // 刀
-        public int ActiveSkillDelay; // アクティブスキルのCDの時間
+        public bool Katana;              // 刀
+        public int ActiveSkillDelay;     // アクティブスキルのCDの時間
+        private int SwingComboCount = 1; // 振りのコンボ数
+        private int SwordType = 0;       // 振りタイプ(発射体)の種類
+        private int AIType;
 
         /// <summary>
         /// 刀の基本的なステータス
@@ -20,15 +26,25 @@ namespace MoreKatana
         /// <param name="item"></param>
         /// <param name="delay"> アクティブスキルのCD </param>
         /// <param name="equipment"> 装備可能かどうか </param>
-        public void SetKatanaDefaults(Item item, int delay, bool equipment)
+        public void SetKatanaDefaults(Item item, int delay, bool equipment = false, int type = ProjectileID.None, int combo = 1)
         {
             item.DamageType = DamageClass.Melee;
             item.useStyle = ItemUseStyleID.Swing;
             item.UseSound = SoundID.Item1;
             item.accessory = equipment;
             item.autoReuse = true;
+            item.noUseGraphic = true;
+            item.noMelee = true;
+
+            // 発射体が指定されていない場合、ダミーの発射体を発射する
+            // Shoot()を適用させたいため
+            item.shoot = item.shoot == ProjectileID.None ? ModContent.ProjectileType<Empty>() : item.shoot;
+            item.shootSpeed = 1f;
+
             Katana = true;
             ActiveSkillDelay = delay;
+            SwordType = type == ProjectileID.None ? ModContent.ProjectileType<GlobalSword>() : type;
+            SwingComboCount = combo;
         }
 
         public override void SetDefaults(Item item)
@@ -60,7 +76,7 @@ namespace MoreKatana
         {
             if (Katana)
             {
-                if (player.altFunctionUse == 2)
+                if (player.IsUsingAlt())
                 {
                     if (item.type is ItemID.Katana or ItemID.Muramasa)
                     {
@@ -95,6 +111,21 @@ namespace MoreKatana
                     (item.ModItem as KatanaItem).PassiveSkill(player, false);
                 }
             }
+        }
+
+        public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            if (Katana)
+            {
+                if (!player.IsUsingAlt())
+                {
+                    Projectile.NewProjectile(source, position, velocity, SwordType, damage, knockback, player.whoAmI, AIType);
+                    AIType = (AIType + 1) % SwingComboCount;
+                    return false;
+                }
+            }
+
+            return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
         }
 
         public override void UpdateAccessory(Item item, Player player, bool hideVisual)

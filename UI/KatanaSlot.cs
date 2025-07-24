@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using MoreKatana.Items;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.Localization;

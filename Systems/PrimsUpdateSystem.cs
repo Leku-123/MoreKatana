@@ -1,9 +1,9 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
-namespace MoreKatana
+namespace MoreKatana.Systems
 {
-    internal class MoreKatanaSystem : ModSystem
+    internal class PrimsUpdateSystem : ModSystem
     {
         public override void PreUpdateItems()
         {

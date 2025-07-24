@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace MoreKatana.Prim
 {
@@ -23,21 +21,6 @@ namespace MoreKatana.Prim
 
             public void ApplyShader<T>(Effect effect, T trail, List<Vector2> positions, string esp, float progressParam)
             {
-                if (effect.HasParameter("vnoise"))
-                    effect.Parameters["vnoise"].SetValue(ModContent.Request<Texture2D>("MoreKatana/Assets/ExtraTextures/Noise/vnoise", AssetRequestMode.ImmediateLoad).Value);
-
-                if (effect.HasParameter("noiseTexture"))
-                    effect.Parameters["noiseTexture"].SetValue(ModContent.Request<Texture2D>("MoreKatana/Assets/ExtraTextures/Noise/noise", AssetRequestMode.ImmediateLoad).Value);
-
-                if (effect.HasParameter("spotTexture"))
-                    effect.Parameters["spotTexture"].SetValue(ModContent.Request<Texture2D>("MoreKatana/Assets/ExtraTextures/Noise/Spot", AssetRequestMode.ImmediateLoad).Value);
-
-                if (effect.HasParameter("ripperTexture"))
-                    effect.Parameters["ripperTexture"].SetValue(ModContent.Request<Texture2D>("MoreKatana/Assets/ExtraTextures/Misc/RipperSlug", AssetRequestMode.ImmediateLoad).Value);
-
-                if (effect.HasParameter("arcLashColorTwo"))
-                    effect.Parameters["arcLashColorTwo"].SetValue(new Vector3(1.0f, 1.0f, 1.0f));
-
                 try
                 {
                     effect.Parameters["progress"].SetValue(progressParam);

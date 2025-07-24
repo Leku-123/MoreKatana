@@ -12,8 +12,8 @@ using Terraria.ModLoader.IO;
 namespace MoreKatana.Projectiles.Base
 {
     /// <summary>
-    /// <see cref="EaseFunction"/>のCircular系は対応できてません(<see cref="progress"/>の値がNaNになっちゃう)
-    /// <see cref="GetProgress(int)"/>を行う際は注意
+    /// TO-DO
+    /// <see cref="EaseFunction"/>の対応できないクラスをなんとかする(<see cref="progress"/>の値がNaNになっちゃう)
     /// </summary>
     public abstract class CustomSword : ModProjectile
     {
@@ -82,7 +82,6 @@ namespace MoreKatana.Projectiles.Base
         protected float swordOffset;           // 剣の描画のオフセットの調節
         protected bool continuousSwing;        // 全ての振りを連続的に行うかどうか
         protected bool fixedDirection;         // 全ての振りの方向を固定するかどうか
-        protected bool notConsiderAttackSpeed; // 近接速度ボーナスを無視するかどうか
         protected bool customTrail;            // カスタムのトレイルを使用するかどうか
         protected Color trailColor;            // トレイルの色
 
@@ -302,8 +301,8 @@ namespace MoreKatana.Projectiles.Base
         private void SwingAnimation()
         {
             // Timerを剣の振る速度で除算してprogressを計算する
-            // 速度ボーナスも考慮する (notConsiderAttackSpeedの場合を除く)
-            progress = Timer / (SwingTime * Projectile.MaxUpdates / (!notConsiderAttackSpeed ? Owner.GetTotalAttackSpeed(Projectile.DamageType) : 1));
+            // 速度ボーナスも適用する
+            progress = Timer / (SwingTime * Projectile.MaxUpdates / Owner.GetTotalAttackSpeed(Projectile.DamageType));
             progress = MathHelper.Clamp(GetProgress(SwingType), 0f, 1f);
 
             float swingRange = (float)Math.PI * 2f * Projectile.spriteDirection * SwingRange; // 振る回転角
@@ -336,6 +335,7 @@ namespace MoreKatana.Projectiles.Base
             }
             else
             {
+                Main.NewText($"{progress}");
                 if (DelayTimer > 0f)
                     DelayTimer--;
 

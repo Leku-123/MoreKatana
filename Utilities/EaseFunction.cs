@@ -2,6 +2,10 @@ using System;
 
 namespace MoreKatana
 {
+    /// <summary>
+    /// イージング関数です
+    /// もっといいのがあったら変更してください
+    /// </summary>
     public abstract class EaseFunction
     {
         public static readonly EaseFunction Linear = new PolynomialEase((float x) => { return x; });
