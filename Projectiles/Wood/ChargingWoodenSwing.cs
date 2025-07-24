@@ -18,7 +18,6 @@ namespace MoreKatana.Projectiles.Wood
         {
             if (Timer != 0f && attackable)
             {
-                // トレイルを描画する
                 if (!primsCreated)
                 {
                     primsCreated = true;
@@ -28,14 +27,12 @@ namespace MoreKatana.Projectiles.Wood
 
                 if (Main.netMode != NetmodeID.Server)
                 {
-                    // トレイルの設定
                     trail.TextureType = 2;
                     trail.Direction = Owner.direction * -dir;
                     trail.PrimCenter = Owner.MountedCenter;
                     trail.Points.Add(Projectile.Center - Owner.MountedCenter);
 
-                    // 剣を描画しない場合トレイルを消す
-                    if (invisible || progress >= 0.98f)
+                    if (progress >= 0.98f)
                         trail?.OnDestroy();
                 }
             }
@@ -107,15 +104,14 @@ namespace MoreKatana.Projectiles.Wood
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            base.OnTileCollide(oldVelocity);
-
             if (!collision)
             {
                 collision = true;
                 Owner.ScreenShake(4, 10);
                 SoundEngine.PlaySound(SoundID.Dig, Owner.Center);
             }
-            return false;
+
+            return base.OnTileCollide(oldVelocity);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
