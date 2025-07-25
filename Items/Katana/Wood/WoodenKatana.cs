@@ -18,7 +18,7 @@ namespace MoreKatana.Items.Katana.Wood
             Item.damage = 8;
             Item.knockBack = 5;
             Item.value = Item.sellPrice(copper: 25);
-            Item.MKItem().SetKatanaDefaults(Item, 0, false);
+            Item.MKItem().SetKatanaDefaults(Item, 0);
         }
 
         public override void ActiveSkill(Player player)

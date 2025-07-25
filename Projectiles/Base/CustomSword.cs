@@ -70,11 +70,11 @@ namespace MoreKatana.Projectiles.Base
         /// </summary>
         private Vector2 swordPos;    // 剣の位置
         private float startRotation; // 剣の初期位置
-        public float progress;       // 剣の振りの進行状況
+        protected float progress;    // 剣の振りの進行状況
 
-        public bool invisible;       // 剣を描画を無くすかどうか
         public bool timerStop;       // 剣の振りのタイマーを止めるかどうか
-        protected bool primsCreated;   // トレイルを描画したかどうか
+        protected bool invisible;    // 剣を描画を無くすかどうか
+        protected bool primsCreated; // トレイルを描画したかどうか
 
         /// <summary>
         /// 雑多な変数
