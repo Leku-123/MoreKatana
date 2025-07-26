@@ -61,6 +61,12 @@ Items: {
 		DisplayName: Amethyst Katana
 		Tooltip: ""
 	}
+
+	TestKatana: {
+		FunctionText: Mods.MoreKatana.Items.TestKatana.FunctionText
+		DisplayName: Test Katana
+		Tooltip: ""
+	}
 }
 
 KatanaItem.DefaultText: "[c/DC143C:- Shift-click to learn more -]"
@@ -78,4 +84,5 @@ Projectiles: {
 	GlobalKatanaSwing.DisplayName: Global Katana Swing
 	ChargingWoodenSwing.DisplayName: Charging Wooden Swing
 	AmethystShards.DisplayName: Amethyst Shards
+	CustomDashSlash.DisplayName: Custom Dash Slash
 }
