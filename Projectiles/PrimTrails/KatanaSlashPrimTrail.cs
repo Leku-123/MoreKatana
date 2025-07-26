@@ -1,16 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Prim;
-using ReLogic.Content;
 using System;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace MoreKatana.Projectiles.PrimTrails
 {
     public class KatanaSlashPrimTrail : PrimTrail
     {
-        public KatanaSlashPrimTrail(Projectile projectile, Color color, int width = 6)
+        public KatanaSlashPrimTrail(Projectile projectile, Color color, int width = 8)
         {
             Entity = projectile;
             EntityType = projectile.type;
@@ -22,7 +21,7 @@ namespace MoreKatana.Projectiles.PrimTrails
         public override void SetDefaults()
         {
             AlphaValue = 0.9f;
-            Cap = 10;
+            Cap = 80;
         }
 
         public override void PrimStructure(SpriteBatch spriteBatch)
@@ -30,8 +29,7 @@ namespace MoreKatana.Projectiles.PrimTrails
             if (PointCount <= 6)
                 return;
 
-            float widthVar = Width;
-
+            float widthVar;
             for (int i = 0; i < Points.Count; i++)
             {
                 if (i == 0)
@@ -55,7 +53,7 @@ namespace MoreKatana.Projectiles.PrimTrails
                     Color CBT = Color;
                     Vector2 normal = CurveNormal(Points, i);
                     Vector2 normalAhead = CurveNormal(Points, i + 1);
-                    float j = (Cap + (float)Math.Sin(Counter / 10f) * 1 - i * 0.1f) / Cap;
+                    float j = (Cap + ((float)Math.Sin(Counter / 10f) * 1) - (i * 0.1f)) / Cap;
                     widthVar *= j;
                     Vector2 firstUp = Points[i] - normal * widthVar;
                     Vector2 firstDown = Points[i] + normal * widthVar;
@@ -76,7 +74,7 @@ namespace MoreKatana.Projectiles.PrimTrails
         public override void SetShaders()
         {
             Effect effect = MoreKatana.PrimitiveTextureMap;
-            effect.Parameters["uTexture"].SetValue(ModContent.Request<Texture2D>("MoreKatana/Assets/ExtraTextures/Trails/SwordSlashTrail_0", AssetRequestMode.ImmediateLoad).Value);
+            effect.Parameters["uTexture"].SetValue(MoreKatanaTextureRegistry.StraightlineTrailTexture.Value);
             effect.Parameters["additive"].SetValue(true);
             effect.Parameters["intensify"].SetValue(true);
             PrepareShader(effect, "MainPS", Counter);
@@ -93,7 +91,7 @@ namespace MoreKatana.Projectiles.PrimTrails
             if (Cap < PointCount / 6)
                 Points.RemoveAt(0);
 
-            if (!Entity.active && Entity != null || Destroyed)
+            if ((!Entity.active && Entity != null) || Destroyed)
                 OnDestroy();
             else
                 Points.Add(Entity.Center);

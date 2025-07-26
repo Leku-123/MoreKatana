@@ -1,6 +1,6 @@
-﻿using Terraria;
+﻿using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 
 namespace MoreKatana
 {
@@ -12,23 +12,32 @@ namespace MoreKatana
         public int ScreenShakeTimer;
         public int ScreenShakeStrength;
 
+        // -------- Dash --------
+        public bool DashState;
+        public bool GeneralDash;
+        public bool SuddenStop;
+        public int DashDistance;
+        public float DashTimer;
+        public float DashTimerMax;
+        public Vector2 DashDirection, DashStartPos, DashEndPos;
 
-
-
-
-        public bool EquipMuramasa = false;
+        public bool EquipMuramasa;
 
         public override void ResetEffects()
         {
             ScreenLockPos = Player.position;
             if (ScreenShakeTimer > 0)
                 ScreenShakeTimer--;
-
-
-
-
-
+            DashState = false;
+            if (!GeneralDash)
+                DashTimer = 0f;
             EquipMuramasa = false;
+        }
+
+        public override void UpdateDead()
+        {
+            ResetEffects();
+            GeneralDash = false;
         }
 
         public override void ModifyScreenPosition()
@@ -54,7 +63,21 @@ namespace MoreKatana
 
         public override void PreUpdate()
         {
-            /*if (EquipGoldKatana)
+            // 汎用のダッシュのステータス
+            if (DashState)
+            {
+                Player.immune = true;
+                Player.immuneTime = 60;
+                Player.immuneNoBlink = true;
+                Player.noFallDmg = true;
+                Player.controlJump = false;
+                Player.maxFallSpeed = 2000f;
+                Player.RemoveAllGrapplingHooks();
+                if (Player.mount.Active)
+                    Player.mount.Dismount(Player);
+            }
+
+            /*if (GoldKatana)
             {
                 long coin = Utils.CoinsCount(out bool over, Player.inventory);
                 int bonus = 0;
@@ -66,26 +89,56 @@ namespace MoreKatana
             }*/
         }
 
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        public override void PostUpdateRunSpeeds()
         {
-            // Katana(target, ref modifiers);
+            // 汎用の簡単なダッシュ
+            if (GeneralDash && DashTimerMax != 0)
+            {
+                if (DashTimer == 0)
+                {
+                    DashStartPos = Player.MountedCenter;
+                    DashDirection.Normalize();
+                    DashDirection *= DashDistance;
+                    DashEndPos = DashStartPos + DashDirection;
+                }
+
+                float currentProgress = DashTimer / DashTimerMax;
+                float nextProgress = (DashTimer + 1) / DashTimerMax;
+
+                if (currentProgress < 1f)
+                {
+                    var currentPoint = Vector2.Lerp(DashStartPos, DashEndPos, currentProgress);
+                    var nextPoint = Vector2.Lerp(DashStartPos, DashEndPos, nextProgress);
+                    Player.velocity = nextPoint - currentPoint;
+                }
+                else
+                {
+                    GeneralDash = false;
+                    DashTimer = 0f;
+                    DashTimerMax = 0f;
+
+                    if (SuddenStop)
+                        Player.velocity = Vector2.Zero;
+                }
+
+                DashTimer++;
+            }
         }
 
-        /*public void Katana(in NPC target, ref NPC.HitModifiers modifiers)
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
-            if (target.friendly) return;
+            /*if (Katana)
+            {
+                if (target.friendly)
+                    return;
 
-            Item heldItem = Player.HeldItem;
-
-            float armorPen = Player.GetArmorPenetration<GenericDamageClass>();
-
-            int dam = Player.GetWeaponDamage(heldItem);
-
-            Player.GetArmorPenetration<GenericDamageClass>() = int.MaxValue;
-
-            target.SimpleStrikeNPC(dam / 10, modifiers.HitDirection);
-
-            Player.GetArmorPenetration<GenericDamageClass>() = armorPen;
-        }*/
+                Item heldItem = Player.HeldItem;
+                float armorPen = Player.GetArmorPenetration<GenericDamageClass>();
+                int dam = Player.GetWeaponDamage(heldItem);
+                Player.GetArmorPenetration<GenericDamageClass>() = int.MaxValue;
+                target.SimpleStrikeNPC(dam / 10, modifiers.HitDirection);
+                Player.GetArmorPenetration<GenericDamageClass>() = armorPen;
+            }*/
+        }
     }
 }

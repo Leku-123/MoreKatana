@@ -17,7 +17,7 @@ namespace MoreKatana.Items
         public bool Katana;              // 刀
         public int ActiveSkillDelay;     // アクティブスキルのCDの時間
         private int SwingComboCount = 1; // 振りのコンボ数
-        private int SwordType = 0;       // 振りタイプ(発射体)の種類
+        private int SwingType = 0;       // 振りタイプ(発射体)の種類
         private int AIType;
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace MoreKatana.Items
 
             Katana = true;
             ActiveSkillDelay = delay;
-            SwordType = type == ProjectileID.None ? ModContent.ProjectileType<GlobalKatanaSwing>() : type;
+            SwingType = type == ProjectileID.None ? ModContent.ProjectileType<GeneralKatanaSwing>() : type;
             SwingComboCount = combo;
         }
 
@@ -127,7 +127,7 @@ namespace MoreKatana.Items
             {
                 if (!player.IsUsingAlt())
                 {
-                    Projectile.NewProjectile(source, position, velocity, SwordType, damage, knockback, player.whoAmI, AIType);
+                    Projectile.NewProjectile(source, position, velocity, SwingType, damage, knockback, player.whoAmI, AIType);
                     AIType = (AIType + 1) % SwingComboCount;
                     return false;
                 }

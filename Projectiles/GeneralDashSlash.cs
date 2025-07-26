@@ -1,0 +1,130 @@
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Projectiles.PrimTrails;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.ID;
+using Terraria.ModLoader;
+
+namespace MoreKatana.Projectiles
+{
+    public class GeneralDashSlash : ModProjectile
+    {
+        public Vector2 DashDirection;
+        public int DashDistance;
+        public float DashTimerMax;
+        public bool SuddenStop;
+
+        private KatanaSlashPrimTrail trail;
+
+        private Player Owner => Main.player[Projectile.owner];
+        private Item ActiveItem => Owner.ActiveItem();
+
+        public override string Texture => MoreKatana.EmptyTexture;
+
+        public override void SetDefaults()
+        {
+            Projectile.width = Player.defaultWidth;
+            Projectile.height = Player.defaultHeight;
+            Projectile.aiStyle = -1;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.timeLeft = (int)DashTimerMax + 10;
+            Projectile.penetrate = -1;
+            Projectile.friendly = true;
+            Projectile.hostile = false;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.ownerHitCheck = true;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.noEnchantmentVisuals = true;
+            Projectile.MKProjectile().SourceIsItemUse = true;
+            Projectile.MKProjectile().DashProjectile = true;
+        }
+
+        public override void AI()
+        {
+
+            if (Projectile.ai[0] == 0)
+            {
+                Projectile.ai[0] = 1;
+                Owner.GeneralDashEffect(DashDirection, DashDistance, DashTimerMax, SuddenStop);
+
+                if (Main.netMode != NetmodeID.Server)
+                {
+                    Color[] colors = MoreKatanaUtil.GetColors(TextureAssets.Item[ActiveItem.type].Value);
+                    int a = 0;
+                    Vector4 vector4 = new Vector4(0, 0, 0, 0);
+                    for (int i = 0; i < colors.Length; i++)
+                    {
+                        if (colors[i] != new Color(0, 0, 0, 0))
+                        {
+                            a++;
+                            vector4 += colors[i].ToVector4();
+                        }
+                    }
+                    vector4 /= a * 2;
+
+                    trail = new KatanaSlashPrimTrail(Projectile, new Color(vector4.X, vector4.Y, vector4.Z, 0));
+                    MoreKatana.primitives.CreateTrail(trail);
+                }
+
+                for (int i = 0; i < 12; i++)
+                {
+                    int newDust = Dust.NewDust(Owner.MountedCenter, 32, 32, DustID.Smoke, 0f, 0f, 100, default, 2f);
+                    Main.dust[newDust].velocity -= DashDirection * 2f;
+                    Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(15));
+                    Main.dust[newDust].velocity *= Main.rand.NextFloat(1f, 3f);
+                }
+            }
+
+            Projectile.Center = Owner.MountedCenter;
+            Projectile.spriteDirection = Owner.direction;
+
+            if (Projectile.spriteDirection == 1)
+                Projectile.rotation = DashDirection.ToRotation() + MathHelper.ToRadians(45f);
+            else
+                Projectile.rotation = DashDirection.ToRotation() + MathHelper.ToRadians(135f);
+
+            Owner.heldProj = Projectile.whoAmI;
+            Owner.SetDummyItemTime(2);
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, DashDirection.ToRotation() - MathHelper.ToRadians(90f));
+            Owner.armorEffectDrawShadow = true;
+        }
+
+        public override void OnKill(int timeLeft)
+        {
+            if (Main.netMode != NetmodeID.Server)
+                trail?.OnDestroy();
+        }
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+            Texture2D texture = TextureAssets.Item[ActiveItem.type].Value;
+
+            DrawAnimation animation = Main.itemAnimations[ActiveItem.type];
+
+            Vector2 offset = DashDirection * (texture.Width - 4);
+            Vector2 position = Projectile.Center + offset - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
+            Rectangle? rectangle = new Rectangle?(animation == null ? texture.Frame(1, 1, 0, 0, 0, 0) : animation.GetFrame(texture, -1));
+
+            float frame = animation == null ? 1 : animation.FrameCount;
+            Vector2 origin = new Vector2(texture.Width / 2, texture.Height / frame / 2);
+
+            SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+            float backglowAmount = 12f;
+            for (int i = 0; i < backglowAmount; i++)
+            {
+                Vector2 backglowOffset = (MathHelper.TwoPi * i / backglowAmount).ToRotationVector2() * 2f;
+                Color backglowColor = Color.White;
+                backglowColor.A = 0;
+                Main.EntitySpriteDraw(texture, position + backglowOffset, rectangle, backglowColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
+            }
+
+            Main.EntitySpriteDraw(texture, position, rectangle, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
+
+            return false;
+        }
+    }
+}

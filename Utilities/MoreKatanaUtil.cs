@@ -4,7 +4,9 @@ using MoreKatana.Items;
 using MoreKatana.Projectiles;
 using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace MoreKatana
 {
@@ -46,8 +48,25 @@ namespace MoreKatana
             mk.ScreenShakeStrength = strength;
         }
 
+        public static void ScreenLock(this Player player, Entity entity, Vector2? screenLockPos = null)
+        {
+            MoreKatanaPlayer mk = player.MKPlayer();
+            mk.ScreenLockEntity = entity;
+            mk.ScreenLockPos = screenLockPos == null ? entity.Center : (Vector2)screenLockPos;
+        }
+
+        public static void GeneralDashEffect(this Player player, Vector2 direction, int distance, float timer, bool stop = false)
+        {
+            MoreKatanaPlayer mk = player.MKPlayer();
+            mk.GeneralDash = true;
+            mk.DashDirection = direction;
+            mk.DashDistance = distance;
+            mk.DashTimerMax = timer;
+            mk.SuddenStop = stop;
+        }
+
         /// <summary>
-        /// 指定した地点から近くの敵対NPCを検出する
+        /// 指定した地点から近くの敵対NPCを取得する
         /// </summary>
         /// <param name="origin"> NPCをチェックする位置 </param>
         /// <param name="maxDistanceToCheck"> originを中心にチェックする距離 </param>
@@ -109,6 +128,16 @@ namespace MoreKatana
                 }
             }
             return closestTarget;
+        }
+
+        public static void CreateDashSlash(this Player player, IEntitySource source, int damage, float knockBack, int distance, float timer, Vector2? dir = null, bool stop = true)
+        {
+            int p = Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<GeneralDashSlash>(), damage, knockBack, player.whoAmI);
+            GeneralDashSlash dash = (GeneralDashSlash)Main.projectile[p].ModProjectile;
+            dash.DashDirection = dir == null ? player.SafeDirectionTo(Main.MouseWorld) : (Vector2)dir;
+            dash.DashDistance = distance;
+            dash.DashTimerMax = timer;
+            dash.SuddenStop = stop;
         }
 
         /// <summary>

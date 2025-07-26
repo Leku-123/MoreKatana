@@ -5,27 +5,31 @@ namespace MoreKatana.Items.Katana.Metal
 {
     public class LeadKatana : KatanaItem
     {
-        public override KatanaIndex KatanaID => KatanaIndex.LeadKatana;
+        public override KatanaID ID => KatanaID.Lead;
+
         public override void SetDefaultsItem()
         {
             Item.width = 48;
             Item.height = 54;
             Item.useTime = 18;
             Item.useAnimation = 18;
+            Item.UseSound = SoundID.Item1;
             Item.damage = 15;
             Item.knockBack = 6;
             Item.value = Item.sellPrice(silver: 5, copper: 80);
-            Item.MKItem().SetKatanaDefaults(Item, 300, true);
+            Item.MKItem().SetKatanaDefaults(Item, 0, true);
         }
 
         public override void PassiveSkill(Player player, bool equipment)
         {
-
+            player.statDefense += 2;
         }
 
         public override void ActiveSkill(Player player)
         {
+            Item.UseSound = SoundID.Item71;
             Item.MKItem().ActivateCooldown(player);
+            player.CreateDashSlash(player.GetSource_ItemUse(Item), Item.damage, Item.knockBack, 400, 10f);
         }
 
         public override void AddRecipes()

@@ -9,8 +9,8 @@ namespace MoreKatana.Projectiles
         public override bool InstancePerEntity => true;
 
         public bool SourceIsItemUse;
-
         public bool ActivateCD;
+        public bool DashProjectile;
 
         private Item OwnerItem;
 
@@ -26,6 +26,14 @@ namespace MoreKatana.Projectiles
                 if (source is not EntitySource_ItemUse)
                     projectile.Kill();
             }
+        }
+
+        public override void AI(Projectile projectile)
+        {
+            Player player = Main.player[projectile.owner];
+
+            if (DashProjectile)
+                player.MKPlayer().DashState = true;
         }
 
         public override void OnKill(Projectile projectile, int timeLeft)

@@ -11,7 +11,7 @@ namespace MoreKatana.Items.Katana
     {
         public LocalizedText FunctionText => this.GetLocalization(nameof(FunctionText));
 
-        public abstract KatanaIndex KatanaID { get; }
+        public abstract KatanaID ID { get; }
 
         /// <summary>
         /// 刀のレア度（星アイコンの数＝ベスティアリ用）
