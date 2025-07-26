@@ -8,8 +8,8 @@ namespace MoreKatana.Items.Katana.Metal
         public override KatanaIndex KatanaID => KatanaIndex.PlatinumKatana;
         public override void SetDefaultsItem()
         {
-            Item.width = 48;
-            Item.height = 54;
+            Item.width = 50;
+            Item.height = 60;
             Item.useTime = 16;
             Item.useAnimation = 16;
             Item.damage = 18;
