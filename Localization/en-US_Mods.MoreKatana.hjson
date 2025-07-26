@@ -109,6 +109,12 @@ Items: {
 		DisplayName: Amethyst Katana
 		Tooltip: ""
 	}
+
+	TestKatana: {
+		FunctionText: Mods.MoreKatana.Items.TestKatana.FunctionText
+		DisplayName: Test Katana
+		Tooltip: ""
+	}
 }
 
 KatanaItem.DefaultText: "[c/DC143C:- Shift-click to learn more -]"
