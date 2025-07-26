@@ -5,6 +5,7 @@ namespace MoreKatana.Items.Katana.Metal
 {
     public class TungstenKatana : KatanaItem
     {
+        public override KatanaIndex KatanaID => KatanaIndex.TungstenKatana;
         public override void SetDefaultsItem()
         {
             Item.width = 48;

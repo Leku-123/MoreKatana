@@ -8,6 +8,8 @@ namespace MoreKatana.Items.Katana.Gem
 {
     public class AmethystKatana : KatanaItem
     {
+        public override KatanaIndex KatanaID => KatanaIndex.AmethystKatana;
+
         public const int TotalNumberOfGems = 3;
 
         public override void SetDefaultsItem()

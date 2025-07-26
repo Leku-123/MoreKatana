@@ -7,6 +7,8 @@ namespace MoreKatana.Items.Katana
 {
     public class TestKatana : KatanaItem
     {
+        public override KatanaIndex KatanaID => KatanaIndex.TestKatana;
+
         public override void SetDefaultsItem()
         {
             Item.width = 46;
