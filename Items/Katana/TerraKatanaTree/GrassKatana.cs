@@ -21,7 +21,7 @@ namespace MoreKatana.Items.Katana.TerraKatanaTree
             Item.knockBack = 4.5f;
             Item.value = Item.sellPrice(silver: 55);
             Item.rare = ItemRarityID.Orange;
-            Item.MKItem().SetKatanaDefaults(Item, 0);
+            Item.MKItem().SetKatanaDefaults(Item, 0, type: ModContent.ProjectileType<GrassKatanaSwing>(), combo: 3);
         }
 
         public override void PassiveSkill(Player player, bool equipment)
@@ -40,6 +40,12 @@ namespace MoreKatana.Items.Katana.TerraKatanaTree
         {
             if (Main.rand.NextBool(3))
                 Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustID.GrassBlades);
+        }
+
+        public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            if (Main.rand.NextBool(4))
+                target.AddBuff(BuffID.Poisoned, 60 * 7);
         }
 
         public override void AddRecipes()

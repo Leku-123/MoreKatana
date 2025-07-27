@@ -42,6 +42,7 @@ namespace MoreKatana.Projectiles.Wood
         {
             Projectile.localNPCHitCooldown = 30 * Projectile.MaxUpdates;
             Projectile.MKProjectile().ActivateCD = true;
+
             continuousSwing = true;
             fixedDirection = true;
             GetTextureValues(this, item);

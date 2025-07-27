@@ -1,0 +1,192 @@
+TestKatana: {
+	FunctionText: Mods.MoreKatana.Items.TestKatana.FunctionText
+	DisplayName: Test Katana
+	Tooltip: ""
+}
+
+WoodenKatana: {
+	DisplayName: Wooden Katana
+	Tooltip:
+		'''
+		[FUNC]
+		"Hard and sturdy."
+		'''
+	FunctionText:
+		'''
+		Katana Spell [c/A3A3A3:<None>]
+		Katana Arts [c/A6512B:<Charge Attack>]
+		- Swing down heavily. Damage * 5 to the enemy.
+		'''
+}
+
+TinKatana: {
+	DisplayName: Tin Katana
+	Tooltip: "[FUNC]"
+	FunctionText:
+		'''
+		Katana Spell [c/ADAC58:<Tin Protection>]
+		- +1 defense
+		Katana Arts [c/FFFFFF:<Flash Attack>]
+		- Dash and attack the enemy.
+		'''
+}
+
+CopperKatana: {
+	DisplayName: Copper Katana
+	Tooltip: "[FUNC]"
+	FunctionText:
+		'''
+		Katana Spell [c/C56A2B:<Copper Protection>]
+		- +1 defense
+		Katana Arts [c/FFFFFF:<Flash Attack>]
+		- Dash and attack the enemy.
+		'''
+}
+
+LeadKatana: {
+	DisplayName: Lead Katana
+	Tooltip: "[FUNC]"
+	FunctionText:
+		'''
+		Katana Spell [c/6B8C9E:<Lead Protection>]
+		- +2 defense
+		Katana Arts [c/FFFFFF:<Flash Attack>]
+		- Dash and attack the enemy.
+		'''
+}
+
+SilverKatana: {
+	DisplayName: Silver Katana
+	Tooltip: "[FUNC]"
+	FunctionText:
+		'''
+		Katana Spell [c/B5BCBF:<Silver Protection>]
+		- +3 defense
+		Katana Arts [c/FFFFFF:<Flash Attack>]
+		- Dash and attack the enemy.
+		'''
+}
+
+TungstenKatana: {
+	DisplayName: Tungsten Katana
+	Tooltip: "[FUNC]"
+	FunctionText:
+		'''
+		Katana Spell [c/C4E5C2:<Tungsten Protection>]
+		- +3 defense
+		Katana Arts [c/FFFFFF:<Flash Attack>]
+		- Dash and attack the enemy.
+		'''
+}
+
+GoldKatana: {
+	DisplayName: Gold Katana
+	Tooltip: "[FUNC]"
+	FunctionText:
+		'''
+		Katana Spell [c/D5DA5D:<Gold Protection>]
+		- +4 defense
+		Katana Arts [c/FFFFFF:<Flash Attack>]
+		- Dash and attack the enemy.
+		'''
+}
+
+PlatinumKatana: {
+	DisplayName: Platinum Katana
+	Tooltip: "[FUNC]"
+	FunctionText:
+		'''
+		Katana Spell [c/E6E6E6:<Platinum Protection>]
+		- +4 defense
+		Katana Arts [c/FFFFFF:<Flash Attack>]
+		- Dash and attack the enemy.
+		'''
+}
+
+AmethystKatana: {
+	DisplayName: Amethyst Katana
+	Tooltip: "[FUNC]"
+	FunctionText:
+		'''
+		Katana Spell <Gem Shards>
+		- Spawn gems that revolve around the player.
+		Katana Arts <Gem Crusher>
+		- Shot compressed gems.
+		'''
+}
+
+TopazKatana: {
+	DisplayName: Topaz Katana
+	Tooltip: "[FUNC]"
+	FunctionText:
+		'''
+		Katana Spell <Gem Shards>
+		- Spawn gems that revolve around the player.
+		Katana Arts <Gem Crusher>
+		- Shot compressed gems.
+		'''
+}
+
+SapphireKatana: {
+	DisplayName: Sapphire Katana
+	Tooltip: "[FUNC]"
+	FunctionText:
+		'''
+		Katana Spell <Gem Shards>
+		- Spawn gems that revolve around the player.
+		Katana Arts <Gem Crusher>
+		- Shot compressed gems.
+		'''
+}
+
+EmeraldKatana: {
+	DisplayName: Emerald Katana
+	Tooltip: "[FUNC]"
+	FunctionText:
+		'''
+		Katana Spell <Gem Shards>
+		- Spawn gems that revolve around the player.
+		Katana Arts <Gem Crusher>
+		- Shot compressed gems.
+		'''
+}
+
+RubyKatana: {
+	DisplayName: Ruby Katana
+	Tooltip: "[FUNC]"
+	FunctionText:
+		'''
+		Katana Spell <Gem Shards>
+		- Spawn gems that revolve around the player.
+		Katana Arts <Gem Crusher>
+		- Shot compressed gems.
+		'''
+}
+
+DiamondKatana: {
+	DisplayName: Diamond Katana
+	Tooltip: "[FUNC]"
+	FunctionText:
+		'''
+		Katana Spell <Gem Shards>
+		- Spawn gems that revolve around the player.
+		Katana Arts <Gem Crusher>
+		- Shot compressed gems.
+		'''
+}
+
+GrassKatana: {
+	DisplayName: Kusanagi
+	Tooltip:
+		'''
+		[FUNC]
+		"This legendary Japanese sword is made of grass...?"
+		'''
+	FunctionText:
+		'''
+		Katana Spell <>
+		- 
+		Katana Arts [c/ADFF2F:<Grass Dance>]
+		- Swinging the katana in all directions and firing leaves.
+		'''
+}

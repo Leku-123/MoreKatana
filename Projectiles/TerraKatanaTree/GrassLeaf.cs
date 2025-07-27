@@ -39,17 +39,34 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override void AI()
         {
-            Player player = Main.player[Projectile.owner];
+            if (PrepareCompletion < 1)
+                Projectile.velocity *= 0.92f; // 減速
 
+            if (PrepareCompletion == 1)
+            {
+                if (Projectile.localAI[0] == 0)
+                {
+                    Projectile.localAI[0] = 1;
+
+                    SoundEngine.PlaySound(SoundID.Grass, Projectile.Center);
+                    MoreKatanaUtil.DrawRing(Projectile.Center, DustID.GrassBlades, 24, 6f);
+
+                    // マウスの方向に加速させる
+                    if (Projectile.owner == Main.myPlayer)
+                    {
+                        Vector2 direct = Projectile.DirectionTo(Main.MouseWorld);
+                        float speed = 25f;
+                        Projectile.velocity += direct * speed;
+                        Projectile.netUpdate = true;
+                    }
+                }
+            }
+
+            // 発射体の向きと回転
             Projectile.direction = Projectile.spriteDirection = (Projectile.velocity.X > 0f) ? 1 : -1;
             Projectile.rotation = Projectile.velocity.ToRotation() + (Projectile.spriteDirection == -1 ? MathHelper.Pi : 0);
 
-            if (++Projectile.frameCounter >= 4)
-            {
-                Projectile.frameCounter = 0;
-                Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];
-            }
-
+            // フェードイン
             if (Projectile.alpha > 0)
             {
                 Projectile.alpha -= 25;
@@ -57,23 +74,22 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     Projectile.alpha = 0;
             }
 
-            if (PrepareCompletion < 1)
-                Projectile.velocity *= 0.92f;
-
-            if (Timer == PrepareTime)
+            // アニメーションフレーム
+            if (++Projectile.frameCounter >= 4)
             {
-                SoundEngine.PlaySound(SoundID.Grass, Projectile.Center);
-
-                if (Projectile.owner == Main.myPlayer)
-                {
-                    Vector2 direct = Projectile.DirectionTo(Main.MouseWorld);
-                    float speed = 25f;
-                    Projectile.velocity += direct * speed;
-                    Projectile.netUpdate = true;
-                }
+                Projectile.frameCounter = 0;
+                Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];
             }
 
             Timer++;
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            target.AddBuff(BuffID.Poisoned, 60 * 7);
+
+            for (int i = 0; i < 5; i++)
+                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.GrassBlades, Projectile.oldVelocity.X * 0.2f, Projectile.oldVelocity.Y * 0.2f);
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -102,7 +118,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             {
                 Vector2 backglowOffset = (MathHelper.TwoPi * i / backglowAmount).ToRotationVector2();
                 backglowOffset *= PrepareCompletion;
-                Color backglowColor = color;
+                Color backglowColor = Color.White * (1f - (Projectile.alpha / 255f));
                 backglowColor.A = 0;
                 Main.EntitySpriteDraw(texture, position + backglowOffset, rectangle, backglowColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
             }

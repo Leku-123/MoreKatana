@@ -9,18 +9,17 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 {
     public class GrassKatanaDance : CustomSword
     {
-        public static readonly int MoveSpeedBonus = 8;
-
         public override void Initialization(Item item, int type)
         {
             Projectile.velocity = Vector2.UnitY.RotatedByRandom(MathHelper.TwoPi);
             Projectile.localNPCHitCooldown = 20 * Projectile.MaxUpdates;
             Projectile.MKProjectile().ActivateCD = true;
+
             continuousSwing = true;
             fixedDirection = true;
             noSpeedBonus = true;
+
             GetTextureValues(this, item);
-            SoundEngine.PlaySound(SoundID.Item1 with { Pitch = +0.5f }, Owner.Center);
             SpawnLeaf(out _);
         }
 
@@ -40,23 +39,20 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             if (progress == 0.5f)
             {
-                SoundEngine.PlaySound(SoundID.Item1 with { Pitch = +0.5f }, Owner.Center);
+                SpawnLeaf(out Vector2 vel);
 
                 if (Projectile.owner == Main.myPlayer && type != 4)
-                {
-                    SpawnLeaf(out Vector2 vel);
                     Projectile.NewProjectile(Owner.GetSource_ItemUse(item), Owner.MountedCenter, vel, ModContent.ProjectileType<GrassKatanaDance2>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
-                }
             }
         }
 
         private void SpawnLeaf(out Vector2 vel)
         {
+            SoundEngine.PlaySound(SoundID.Item1 with { Pitch = +0.5f }, Owner.Center);
+
             vel = Vector2.UnitY.RotatedByRandom(MathHelper.TwoPi);
             if (Projectile.owner == Main.myPlayer)
-            {
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.MountedCenter, vel * 16f, ModContent.ProjectileType<GrassLeaf>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
-            }
         }
 
         public override void OnKill(int timeLeft) => Owner.FlipEffect(0);

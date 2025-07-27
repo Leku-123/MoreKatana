@@ -158,6 +158,29 @@ namespace MoreKatana
         public static void ExpandHitboxBy(this Projectile projectile, float expandRatio) => projectile.ExpandHitboxBy((int)(projectile.width * expandRatio), (int)(projectile.height * expandRatio));
 
         /// <summary>
+        /// リング状にダストをスポーンする
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="dustType"></param>
+        /// <param name="density"></param>
+        /// <param name="speed"></param>
+        /// <param name="color"></param>
+        /// <param name="dustSize"></param>
+        /// <param name="noLight"></param>
+        public static void DrawRing(Vector2 position, int dustType, int density, float speed, Color color = default, float dustSize = 1f, bool noLight = false)
+        {
+            for (int i = 0; i < density; i++)
+            {
+                Vector2 velocity = speed * Vector2.UnitY.RotatedBy(MathHelper.TwoPi / density * i);
+                int d = Dust.NewDust(position, 0, 0, dustType, newColor: color);
+                Main.dust[d].noLight = noLight;
+                Main.dust[d].noGravity = true;
+                Main.dust[d].velocity = velocity;
+                Main.dust[d].scale = dustSize;
+            }
+        }
+
+        /// <summary>
         /// <see cref="Texture2D"/> から全ての色を取得し<see cref="Color"/>配列として返す
         /// </summary>
         /// <param name="texture"> 読み込むテクスチャ </param>
