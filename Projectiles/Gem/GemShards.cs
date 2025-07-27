@@ -14,7 +14,16 @@ namespace MoreKatana.Projectiles.Gem
 {
     public abstract class GemShards : ModProjectile
     {
-        public abstract int DustType { get; }
+        private readonly Color GlowColor;
+        private readonly int DustType;
+        private readonly int ItemType;
+
+        public GemShards(Color glowColor, int dustType, int itemType)
+        {
+            GlowColor = glowColor;
+            DustType = dustType;
+            ItemType = itemType;
+        }
 
         private ref float Timer => ref Projectile.ai[0];
 
@@ -49,7 +58,7 @@ namespace MoreKatana.Projectiles.Gem
                 Projectile.Kill();
                 return;
             }
-            if (player.HeldItem.type != ModContent.ItemType<AmethystKatana>())
+            if (player.HeldItem.type != ItemType)
             {
                 Projectile.Kill();
                 return;
@@ -197,7 +206,7 @@ namespace MoreKatana.Projectiles.Gem
             Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
             SpriteEffects spriteEffects = (Projectile.spriteDirection == -1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            Main.EntitySpriteDraw(bloomTex, position, null, Color.Magenta with { A = 0 }, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.15f, 0, 0);
+            Main.EntitySpriteDraw(bloomTex, position, null, GlowColor with { A = 0 }, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.15f, 0, 0);
 
             float backglowAmount = 12f;
             for (int i = 0; i < backglowAmount; i++)
@@ -209,13 +218,33 @@ namespace MoreKatana.Projectiles.Gem
                 Main.EntitySpriteDraw(texture, position + backglowOffset, rectangle, backglowColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
             }
 
-            Main.EntitySpriteDraw(texture, position, new Rectangle?(rectangle), Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
+            Main.EntitySpriteDraw(texture, position, rectangle, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
             return false;
         }
     }
 
-    public class AmethystShards : GemShards
+    public class GemShards_Amethyst : GemShards
     {
-        public override int DustType => DustID.GemAmethyst;
+        public GemShards_Amethyst() : base(Color.Magenta, DustID.GemAmethyst, ModContent.ItemType<AmethystKatana>()) { }
+    }
+    public class GemShards_Topaz : GemShards
+    {
+        public GemShards_Topaz() : base(Color.Orange, DustID.GemTopaz, ModContent.ItemType<TopazKatana>()) { }
+    }
+    public class GemShards_Sapphire : GemShards
+    {
+        public GemShards_Sapphire() : base(Color.DeepSkyBlue, DustID.GemSapphire, ModContent.ItemType<SapphireKatana>()) { }
+    }
+    public class GemShards_Emerald : GemShards
+    {
+        public GemShards_Emerald() : base(Color.SpringGreen, DustID.GemEmerald, ModContent.ItemType<EmeraldKatana>()) { }
+    }
+    public class GemShards_Ruby : GemShards
+    {
+        public GemShards_Ruby() : base(Color.Red, DustID.GemRuby, ModContent.ItemType<RubyKatana>()) { }
+    }
+    public class GemShards_Diamond : GemShards
+    {
+        public GemShards_Diamond() : base(Color.White, DustID.GemDiamond, ModContent.ItemType<DiamondKatana>()) { }
     }
 }

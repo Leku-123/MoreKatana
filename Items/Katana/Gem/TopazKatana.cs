@@ -7,9 +7,9 @@ using Terraria.ModLoader;
 
 namespace MoreKatana.Items.Katana.Gem
 {
-    public class AmethystKatana : KatanaItem
+    public class TopazKatana : KatanaItem
     {
-        public override KatanaID ID => KatanaID.Amethyst;
+        public override KatanaID ID => KatanaID.Topaz;
 
         public const int TotalNumberOfGems = 3;
 
@@ -20,16 +20,16 @@ namespace MoreKatana.Items.Katana.Gem
             Item.useTime = 24;
             Item.useAnimation = 24;
             Item.UseSound = SoundID.Item1;
-            Item.damage = 14;
+            Item.damage = 15;
             Item.knockBack = 5;
-            Item.value = Item.sellPrice(0, 0, 22, 50);
+            Item.value = Item.sellPrice(0, 0, 45, 0);
             Item.rare = ItemRarityID.White;
             Item.MKItem().SetKatanaDefaults(Item, 0);
         }
 
         public override void PassiveSkill(Player player, bool equipment)
         {
-            int gem = ModContent.ProjectileType<GemShards_Amethyst>();
+            int gem = ModContent.ProjectileType<GemShards_Topaz>();
             if (player.ownedProjectileCounts[gem] < TotalNumberOfGems)
                 Projectile.NewProjectile(player.GetSource_FromThis(), player.MountedCenter, Vector2.Zero, gem, Item.damage / 2, 0f, player.whoAmI);
         }
@@ -43,13 +43,13 @@ namespace MoreKatana.Items.Katana.Gem
         {
             CreateRecipe()
                 .AddIngredient(ModContent.ItemType<CopperKatana>())
-                .AddIngredient(ItemID.Amethyst, 8)
+                .AddIngredient(ItemID.Topaz, 8)
                 .AddTile(TileID.Anvils)
                 .Register();
 
             CreateRecipe()
                 .AddIngredient(ModContent.ItemType<TinKatana>())
-                .AddIngredient(ItemID.Amethyst, 8)
+                .AddIngredient(ItemID.Topaz, 8)
                 .AddTile(TileID.Anvils)
                 .Register();
         }

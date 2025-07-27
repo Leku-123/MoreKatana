@@ -109,6 +109,36 @@ Items: {
 		DisplayName: Amethyst Katana
 		Tooltip: ""
 	}
+
+	DiamondKatana: {
+		FunctionText: Mods.MoreKatana.Items.DiamondKatana.FunctionText
+		DisplayName: Diamond Katana
+		Tooltip: ""
+	}
+
+	EmeraldKatana: {
+		FunctionText: Mods.MoreKatana.Items.EmeraldKatana.FunctionText
+		DisplayName: Emerald Katana
+		Tooltip: ""
+	}
+
+	RubyKatana: {
+		FunctionText: Mods.MoreKatana.Items.RubyKatana.FunctionText
+		DisplayName: Ruby Katana
+		Tooltip: ""
+	}
+
+	SapphireKatana: {
+		FunctionText: Mods.MoreKatana.Items.SapphireKatana.FunctionText
+		DisplayName: Sapphire Katana
+		Tooltip: ""
+	}
+
+	TopazKatana: {
+		FunctionText: Mods.MoreKatana.Items.TopazKatana.FunctionText
+		DisplayName: Topaz Katana
+		Tooltip: ""
+	}
 }
 
 KatanaItem.DefaultText: "[c/DC143C:- Shift-click to learn more -]"
@@ -129,4 +159,10 @@ Projectiles: {
 	CustomDashSlash.DisplayName: Custom Dash Slash
 	GeneralDashSlash.DisplayName: General Dash Slash
 	GeneralKatanaSwing.DisplayName: General Katana Swing
+	GemShards_Amethyst.DisplayName: Gem Shards_ Amethyst
+	GemShards_Diamond.DisplayName: Gem Shards_ Diamond
+	GemShards_Emerald.DisplayName: Gem Shards_ Emerald
+	GemShards_Ruby.DisplayName: Gem Shards_ Ruby
+	GemShards_Sapphire.DisplayName: Gem Shards_ Sapphire
+	GemShards_Topaz.DisplayName: Gem Shards_ Topaz
 }

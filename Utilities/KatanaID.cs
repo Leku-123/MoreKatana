@@ -12,10 +12,10 @@ public enum KatanaID
     Gold,
     Platinum,
     Amethyst,
-    Ruby,
-    Emerald,
-    Sapphire,
     Topaz,
+    Sapphire,
+    Emerald,
+    Ruby,
     Diamond,
     Ornaments,
 }
