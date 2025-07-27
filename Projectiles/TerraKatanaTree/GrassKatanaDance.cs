@@ -21,11 +21,12 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             noSpeedBonus = true;
             GetTextureValues(this, item);
             SoundEngine.PlaySound(SoundID.Item1 with { Pitch = +0.5f }, Owner.Center);
+            SpawnLeaf(out _);
         }
 
         public override bool AttackPattern(Item item, int type)
         {
-            GetEllipse(1.8f, 0.6f);
+            GetEllipse(1.8f, 0.5f);
             SwingStats(20f, 1.25f, 0f, Main.rand.NextBool());
             return type != 4;
         }
@@ -43,13 +44,22 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
                 if (Projectile.owner == Main.myPlayer && type != 4)
                 {
-                    Vector2 randomVel = Vector2.UnitY.RotatedByRandom(MathHelper.TwoPi);
-                    Projectile.NewProjectile(Owner.GetSource_ItemUse(item), Owner.MountedCenter, randomVel, ModContent.ProjectileType<GrassKatanaDance2>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+                    SpawnLeaf(out Vector2 vel);
+                    Projectile.NewProjectile(Owner.GetSource_ItemUse(item), Owner.MountedCenter, vel, ModContent.ProjectileType<GrassKatanaDance2>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
                 }
             }
         }
 
-        public override void OnKill(int timeLeft) => Main.player[Projectile.owner].FlipEffect(0);
+        private void SpawnLeaf(out Vector2 vel)
+        {
+            vel = Vector2.UnitY.RotatedByRandom(MathHelper.TwoPi);
+            if (Projectile.owner == Main.myPlayer)
+            {
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.MountedCenter, vel * 16f, ModContent.ProjectileType<GrassLeaf>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+            }
+        }
+
+        public override void OnKill(int timeLeft) => Owner.FlipEffect(0);
     }
 
     public class GrassKatanaDance2 : CustomSword
@@ -62,7 +72,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override bool AttackPattern(Item item, int type)
         {
-            GetEllipse(1.8f, 0.6f);
+            GetEllipse(1.8f, 0.5f);
             SwingStats(20f, 1.25f, 0f, Main.rand.NextBool());
             return base.AttackPattern(item, type);
         }
