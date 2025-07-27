@@ -140,6 +140,17 @@ namespace MoreKatana
             dash.SuddenStop = stop;
         }
 
+        public static void ExpandHitboxBy(this Projectile projectile, int width, int height)
+        {
+            projectile.position = projectile.Center;
+            projectile.width = width;
+            projectile.height = height;
+            projectile.position -= projectile.Size * 0.5f;
+        }
+        public static void ExpandHitboxBy(this Projectile projectile, int newSize) => projectile.ExpandHitboxBy(newSize, newSize);
+        public static void ExpandHitboxBy(this Projectile projectile, Vector2 newSize) => projectile.ExpandHitboxBy((int)newSize.X, (int)newSize.Y);
+        public static void ExpandHitboxBy(this Projectile projectile, float expandRatio) => projectile.ExpandHitboxBy((int)(projectile.width * expandRatio), (int)(projectile.height * expandRatio));
+
         /// <summary>
         /// <see cref="Texture2D"/> から全ての色を取得し<see cref="Color"/>配列として返す
         /// </summary>

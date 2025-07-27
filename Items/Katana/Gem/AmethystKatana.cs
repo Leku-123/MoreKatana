@@ -34,9 +34,7 @@ namespace MoreKatana.Items.Katana.Gem
 
         public override void ActiveSkill(Player player)
         {
-            //Item.UseSound = MoreKatanaSounds.MuteSound;
-            //player.ChangeDir(Main.MouseWorld.X - player.Center.X > 0 ? 1 : -1);
-            //Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.MountedCenter, new Vector2(player.direction, 0), ModContent.ProjectileType<ChargingWoodenSwing>(), Item.damage * 5, Item.knockBack * 2f, player.whoAmI);
+            Item.MKItem().ActivateCooldown(player);
         }
 
         public override void AddRecipes()

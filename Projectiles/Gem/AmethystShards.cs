@@ -5,13 +5,24 @@ using MoreKatana.Items.Katana.Gem;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace MoreKatana.Projectiles.Gem
 {
-    public class AmethystShards : ModProjectile
+    public abstract class GemShards : ModProjectile
     {
+        public abstract int DustType { get; }
+
+        private ref float Timer => ref Projectile.ai[0];
+
+        public const int AssembleTime = 120;
+        public float AssembleCompletion => MathHelper.Clamp(Timer / AssembleTime, 0f, 1f);
+
+        private bool activateSkill;
+
         public override void SetStaticDefaults() => Main.projFrames[Projectile.type] = 3;
 
         public override void SetDefaults()
@@ -44,8 +55,6 @@ namespace MoreKatana.Projectiles.Gem
                 return;
             }
 
-            Projectile.timeLeft = 2;
-
             if (Projectile.frameCounter == 0)
             {
                 Projectile.frameCounter = 1;
@@ -53,20 +62,96 @@ namespace MoreKatana.Projectiles.Gem
                 Projectile.rotation = Main.rand.NextFloat() * ((float)Math.PI * 2f);
             }
 
-            float aroundTime = 90;
-            float globalTimer = Main.GlobalTimeWrappedHourly * 24 * 2;
+            if (player.IsUsingAlt())
+                activateSkill = true;
 
-            Projectile.rotation += (float)Math.PI / 200f;
+            if (activateSkill)
+                Timer++;
+
             AI_GetMyGroupIndexAndFillBlackList(null, out var index, out var totalIndexesInGroup);
-            float f = (index / (float)totalIndexesInGroup + (globalTimer / aroundTime)) * ((float)Math.PI * 2f);
-            float scaleFactor = 18f + totalIndexesInGroup * 7f;
-            Vector2 vector = player.position - player.oldPosition;
-            Projectile.Center += vector;
-            Vector2 value = f.ToRotationVector2();
-            Projectile.localAI[0] = value.Y;
-            Vector2 value2 = player.Center + (value * new Vector2(2f, 0.1f) * scaleFactor);
-            Projectile.Center = Vector2.Lerp(Projectile.Center, value2, 0.3f);
-            Projectile.scale = 1f + (Projectile.localAI[0] / 4f);
+
+            if (Timer < AssembleTime)
+            {
+                float aroundTime = !activateSkill ? 90 : 45;
+                float globalTimer = Main.GlobalTimeWrappedHourly * 24 * 2;
+                float f = (index / (float)totalIndexesInGroup + (globalTimer / aroundTime)) * ((float)Math.PI * 2f);
+                float scaleFactor = 18f + totalIndexesInGroup * 7f;
+                Vector2 vector = player.position - player.oldPosition;
+                Projectile.Center += vector;
+                Vector2 value = f.ToRotationVector2();
+                Projectile.localAI[0] = value.Y;
+                Vector2 value2 = player.Center + new Vector2(0, -50 * AssembleCompletion) + (value * new Vector2(2f * (1 - AssembleCompletion), 0.1f) * scaleFactor);
+                Projectile.Center = Vector2.Lerp(Projectile.Center, value2, 0.3f);
+                Projectile.scale = 1f + (Projectile.localAI[0] / 4f);
+                Projectile.scale += 0.5f * AssembleCompletion;
+                Projectile.rotation += (float)Math.PI / (!activateSkill ? 200f : 50f);
+                Projectile.timeLeft = 60;
+                Projectile.ExpandHitboxBy((int)(18 * Projectile.scale));
+
+                if (activateSkill)
+                {
+                    player.SetDummyItemTime(2);
+
+                    float armRot = player.DirectionTo(Projectile.Top).ToRotation() - ((float)Math.PI / 2f);
+                    if (index == 0)
+                        player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRot);
+                    else if (index == 1)
+                        player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRot);
+                }
+
+            }
+            else if (Timer == AssembleTime)
+            {
+                if (Projectile.owner == Main.myPlayer)
+                {
+                    Vector2 direct = Projectile.DirectionTo(Main.MouseWorld);
+                    float speed = 25f;
+                    Projectile.velocity += direct * speed;
+                    Projectile.netUpdate = true;
+                }
+
+                Projectile.penetrate = 1;
+                Projectile.damage *= 2;
+                player.ScreenShake(5, 6);
+                SoundEngine.PlaySound(SoundID.Item29, player.Center);
+
+                if (index == 0)
+                {
+                    for (int i = 0; i < 12; i++)
+                    {
+                        int newDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustType, 0f, 0f, 100, default, 1.5f);
+                        Main.dust[newDust].scale *= Main.rand.NextFloat(1, 2.5f);
+                        Main.dust[newDust].noGravity = true;
+                        Main.dust[newDust].velocity = Vector2.Normalize(Projectile.velocity) * 10f;
+                        Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(30));
+                        Main.dust[newDust].velocity *= Main.rand.NextFloat(1f, 3f);
+                    }
+                }
+            }
+            else
+            {
+                if (index == 0)
+                {
+                    int fourConst = 4;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        float shortXVel = Projectile.velocity.X / 3f * i;
+                        float shortYVel = Projectile.velocity.Y / 3f * i;
+                        int newDust = Dust.NewDust(new Vector2(Projectile.position.X + fourConst, Projectile.position.Y + fourConst), Projectile.width - (fourConst * 2), Projectile.height - (fourConst * 2), DustType, 0f, 0f, 100, default, 1.2f);
+                        Main.dust[newDust].noGravity = true;
+                        Main.dust[newDust].velocity *= 0.1f;
+                        Main.dust[newDust].velocity += Projectile.velocity * 0.1f;
+                        Main.dust[newDust].position.X -= shortXVel;
+                        Main.dust[newDust].position.Y -= shortYVel;
+                    }
+                    if (Main.rand.NextBool(5))
+                    {
+                        int newDust2 = Dust.NewDust(new Vector2(Projectile.position.X + fourConst, Projectile.position.Y + fourConst), Projectile.width - (fourConst * 2), Projectile.height - (fourConst * 2), DustType, 0f, 0f, 100, default, 0.6f);
+                        Main.dust[newDust2].velocity *= 0.25f;
+                        Main.dust[newDust2].velocity += Projectile.velocity * 0.5f;
+                    }
+                }
+            }
         }
 
         private void AI_GetMyGroupIndexAndFillBlackList(List<int> blackListedTargets, out int index, out int totalIndexesInGroup)
@@ -79,12 +164,19 @@ namespace MoreKatana.Projectiles.Gem
                 if (projectile.active && projectile.owner == Projectile.owner && projectile.type == Projectile.type && (projectile.type != 759 || projectile.frame == Main.projFrames[projectile.type] - 1))
                 {
                     if (Projectile.whoAmI > i)
-                    {
                         index++;
-                    }
+
                     totalIndexesInGroup++;
                 }
             }
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            if (!activateSkill || AssembleCompletion != 1)
+                return;
+
+            SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, target.Center);
         }
 
         public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
@@ -106,8 +198,24 @@ namespace MoreKatana.Projectiles.Gem
             SpriteEffects spriteEffects = (Projectile.spriteDirection == -1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
             Main.EntitySpriteDraw(bloomTex, position, null, Color.Magenta with { A = 0 }, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.15f, 0, 0);
+
+            float backglowAmount = 12f;
+            for (int i = 0; i < backglowAmount; i++)
+            {
+                Vector2 backglowOffset = (MathHelper.TwoPi * i / backglowAmount).ToRotationVector2() * 2f;
+                backglowOffset *= AssembleCompletion;
+                Color backglowColor = Color.White;
+                backglowColor.A = 0;
+                Main.EntitySpriteDraw(texture, position + backglowOffset, rectangle, backglowColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
+            }
+
             Main.EntitySpriteDraw(texture, position, new Rectangle?(rectangle), Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
             return false;
         }
+    }
+
+    public class AmethystShards : GemShards
+    {
+        public override int DustType => DustID.GemAmethyst;
     }
 }
