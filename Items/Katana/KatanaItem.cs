@@ -35,20 +35,20 @@ namespace MoreKatana.Items.Katana
         }
 
         /// <summary>
-        /// アクティブスキル
-        /// </summary>
-        /// <param name="player"></param>
-        public virtual void ActiveSkill(Player player)
-        {
-
-        }
-
-        /// <summary>
         /// パッシブスキル
         /// </summary>
         /// <param name="player"></param>
         /// <param name="equipment"> trueの場合、アクセサリーとしての効果 </param>
         public virtual void PassiveSkill(Player player, bool equipment)
+        {
+
+        }
+
+        /// <summary>
+        /// アクティブスキル
+        /// </summary>
+        /// <param name="player"></param>
+        public virtual void ActiveSkill(Player player)
         {
 
         }

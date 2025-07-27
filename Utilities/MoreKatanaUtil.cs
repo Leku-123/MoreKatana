@@ -65,6 +65,12 @@ namespace MoreKatana
             mk.SuddenStop = stop;
         }
 
+        public static void FlipEffect(this Player player, float value)
+        {
+            MoreKatanaPlayer mk = player.MKPlayer();
+            mk.Flipping = value;
+        }
+
         /// <summary>
         /// 指定した地点から近くの敵対NPCを取得する
         /// </summary>

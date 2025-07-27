@@ -1,5 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace MoreKatana
@@ -21,6 +24,8 @@ namespace MoreKatana
         public float DashTimerMax;
         public Vector2 DashDirection, DashStartPos, DashEndPos;
 
+        public float Flipping;
+
         public bool EquipMuramasa;
 
         public override void ResetEffects()
@@ -38,6 +43,7 @@ namespace MoreKatana
         {
             ResetEffects();
             GeneralDash = false;
+            Flipping = 0f;
         }
 
         public override void ModifyScreenPosition()
@@ -139,6 +145,32 @@ namespace MoreKatana
                 target.SimpleStrikeNPC(dam / 10, modifiers.HitDirection);
                 Player.GetArmorPenetration<GenericDamageClass>() = armorPen;
             }*/
+        }
+
+        public static DrawData ManipulateDrawInfo(DrawData input, Player player)
+        {
+            float rotation = player.MKPlayer().Flipping;
+            if (rotation != 0)
+            {
+                float sin = (float)Math.Sin(rotation + 1.57f * player.direction);
+                int off = Math.Abs((int)((input.useDestinationRectangle ? input.destinationRectangle.Width : input.sourceRect?.Width ?? input.texture.Width) * sin));
+
+                SpriteEffects effect = sin > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                if (input.effect == SpriteEffects.FlipHorizontally)
+                    effect = effect == SpriteEffects.FlipHorizontally ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+                var newRect = new Rectangle((int)input.position.X, (int)input.position.Y, off, input.useDestinationRectangle ? input.destinationRectangle.Height : input.sourceRect?.Height ?? input.texture.Height);
+                var newData = new DrawData(input.texture, newRect, input.sourceRect, input.color, input.rotation, input.origin, effect, 0)
+                {
+                    shader = input.shader
+                };
+
+                return newData;
+            }
+            else
+            {
+                return input;
+            }
         }
     }
 }

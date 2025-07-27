@@ -81,6 +81,7 @@ namespace MoreKatana.Projectiles.Base
         /// </summary>
         protected bool continuousSwing;        // 全ての振りを連続的に行うかどうか
         protected bool fixedDirection;         // 全ての振りの方向を固定するかどうか
+        protected bool noSpeedBonus;
         protected Color trailColor;            // トレイルの色
 
         protected Player Owner => Main.player[Projectile.owner];
@@ -298,7 +299,7 @@ namespace MoreKatana.Projectiles.Base
         {
             // Timerを剣の振る速度で除算してprogressを計算する
             // 速度ボーナスも適用する
-            progress = Timer / (SwingTime * Projectile.MaxUpdates / Owner.GetTotalAttackSpeed(Projectile.DamageType));
+            progress = Timer / (SwingTime * Projectile.MaxUpdates / (!noSpeedBonus ? Owner.GetTotalAttackSpeed(Projectile.DamageType) : 1));
             progress = MathHelper.Clamp(GetProgress(SwingType), 0f, 1f);
 
             float swingRange = (float)Math.PI * 2f * Projectile.spriteDirection * SwingRange; // 振る回転角

@@ -139,6 +139,12 @@ Items: {
 		DisplayName: Topaz Katana
 		Tooltip: ""
 	}
+
+	GrassKatana: {
+		FunctionText: Mods.MoreKatana.Items.GrassKatana.FunctionText
+		DisplayName: Grass Katana
+		Tooltip: ""
+	}
 }
 
 KatanaItem.DefaultText: "[c/DC143C:- Shift-click to learn more -]"
@@ -165,4 +171,6 @@ Projectiles: {
 	GemShards_Ruby.DisplayName: Gem Shards_ Ruby
 	GemShards_Sapphire.DisplayName: Gem Shards_ Sapphire
 	GemShards_Topaz.DisplayName: Gem Shards_ Topaz
+	GrassKatanaDance.DisplayName: Grass Katana Dance
+	GrassKatanaDance2.DisplayName: Grass Katana Dance2
 }

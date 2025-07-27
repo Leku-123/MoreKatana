@@ -18,4 +18,5 @@ public enum KatanaID
     Ruby,
     Diamond,
     Ornaments,
+    Grass,
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 
 namespace MoreKatana
 {
@@ -7,6 +8,8 @@ namespace MoreKatana
     {
         public static void Initialize()
         {
+            On_PlayerDrawLayers.DrawPlayer_TransformDrawData += DrawPlayer_TransformDrawData;
+
             On_Main.DrawNPCs += Main_DrawNPCs;
             On_Main.DrawProjectiles += Main_DrawProjectiles;
             On_Main.Update += Main_Update;
@@ -14,9 +17,17 @@ namespace MoreKatana
 
         public static void Unload()
         {
+            On_PlayerDrawLayers.DrawPlayer_TransformDrawData -= DrawPlayer_TransformDrawData;
             On_Main.DrawNPCs -= Main_DrawNPCs;
             On_Main.DrawProjectiles -= Main_DrawProjectiles;
             On_Main.Update -= Main_Update;
+        }
+
+        private static void DrawPlayer_TransformDrawData(On_PlayerDrawLayers.orig_DrawPlayer_TransformDrawData orig, ref PlayerDrawSet drawinfo)
+        {
+            orig.Invoke(ref drawinfo);
+            for (int i = 0; i < drawinfo.DrawDataCache.Count; i++)
+                drawinfo.DrawDataCache[i] = MoreKatanaPlayer.ManipulateDrawInfo(drawinfo.DrawDataCache[i], drawinfo.drawPlayer);
         }
 
         private static void Main_DrawNPCs(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)

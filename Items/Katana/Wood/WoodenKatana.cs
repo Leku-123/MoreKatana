@@ -20,6 +20,7 @@ namespace MoreKatana.Items.Katana.Wood
             Item.damage = 8;
             Item.knockBack = 5;
             Item.value = Item.sellPrice(copper: 25);
+            Item.rare = ItemRarityID.White;
             Item.MKItem().SetKatanaDefaults(Item, 0);
         }
 
