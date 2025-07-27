@@ -3,10 +3,10 @@
 
 ##  for 1.0
 
-|英名|和名|所属/カテゴリ|実装状況|発案|備考|
+|英名|和名|所属/カテゴリ|実装状況|管轄|備考|
 | :-------------:| :------------:| :-------------: | :-------------|-------------|-------------|
-| Katana         | カタナ| Terraria/Vanilla |**Done!**|※既存||
-| Muramasa       | ムラマサ| Terraria/Vanilla |刀式と秘剣を制作中|※既存||
+| Katana         | カタナ| Terraria/Vanilla |**Done!**|かつ丼||
+| Muramasa       | ムラマサ| Terraria/Vanilla |刀式と秘剣を制作中|かつ丼||
 | Wooden Katana  |木刀| Terraria/Wood|**Done!**|かつ丼||
 | Tin Katana     |錫鳴| Terraria/Metal|**Done!**|かつ丼||
 | Copper Katana  |緑青| Terraria/Metal|**Done!**|かつ丼||
