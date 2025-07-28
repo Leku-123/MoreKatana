@@ -22,7 +22,8 @@
 | Topaz Katana| | Terraria/Gem|**Done!**|もりりん||
 | Diamond Katana| | Terraria/Gem|**Done!**|もりりん||
 | Katana of Ornaments| | Terraria/Gem|**WIP...**|もりりん||
-
+| Kusanagi| | Terraria/TerraKatanaTree|**WIP...**|もりりん||
+| Volcano Katana| | Terraria/TerraKatanaTree|**WIP...**|かつ丼||
 
 
 

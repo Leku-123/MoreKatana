@@ -19,4 +19,5 @@ public enum KatanaID
     Diamond,
     Ornaments,
     Grass,
+    Volcano,
 }
