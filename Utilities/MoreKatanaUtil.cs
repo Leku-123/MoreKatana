@@ -2,7 +2,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Items;
 using MoreKatana.Projectiles;
-using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -10,36 +9,24 @@ using Terraria.ModLoader;
 
 namespace MoreKatana
 {
+    /// <summary>
+    /// 今後分ける可能性あるのでpartialです
+    /// </summary>
     public static partial class MoreKatanaUtil
     {
+        #region -------- General Extension Utils --------
         public static MoreKatanaPlayer MKPlayer(this Player player) => player.GetModPlayer<MoreKatanaPlayer>();
         public static MoreKatanaGlobalItem MKItem(this Item item) => item.GetGlobalItem<MoreKatanaGlobalItem>();
         public static MoreKatanaGlobalNPC MKNPC(this NPC npc) => npc.GetGlobalNPC<MoreKatanaGlobalNPC>();
         public static MoreKatanaGlobalProjectile MKProjectile(this Projectile projectile) => projectile.GetGlobalProjectile<MoreKatanaGlobalProjectile>();
+        #endregion
 
+        #region -------- Player Utils --------
         public static Item ActiveItem(this Player player) => player.inventory[player.selectedItem];
 
         public static bool IsUsingAlt(this Player player) => player.altFunctionUse == 2;
 
-        public static Vector2 PolarVector(float radius, float theta) => new Vector2(MathF.Cos(theta), MathF.Sin(theta)) * radius;
-
-        public static Vector2 TurnRight(this Vector2 vec) => new Vector2(-vec.Y, vec.X);
-
-        public static Vector2 TurnLeft(this Vector2 vec) => new Vector2(vec.Y, -vec.X);
-
-        /// <summary>
-        /// エンティティの中心を基準として任意の目的地に向かう単位ベクトルを取得する。<see cref="float.NaN"/>の安全性をfallbackの形で持っている
-        /// </summary>
-        /// <param name="entity"> チェックする対象のエンティティ </param>
-        /// <param name="destination"> 目的地に向かう方向 </param>
-        /// <param name="fallback"> 安全でない正規化が行われた場合に使用するfallback値 </param>
-        public static Vector2 SafeDirectionTo(this Entity entity, Vector2 destination, Vector2? fallback = null)
-        {
-            if (!fallback.HasValue)
-                fallback = Vector2.Zero;
-
-            return (destination - entity.Center).SafeNormalize(fallback.Value);
-        }
+        public static bool CantUseHoldout(this Player player, bool needsToHold = true) => player == null || !player.active || player.dead || (!player.channel && needsToHold) || player.CCed || player.noItems;
 
         public static void ScreenShake(this Player player, int timer, int strength)
         {
@@ -55,6 +42,12 @@ namespace MoreKatana
             mk.ScreenLockPos = screenLockPos == null ? entity.Center : (Vector2)screenLockPos;
         }
 
+        public static void FlipEffect(this Player player, float value)
+        {
+            MoreKatanaPlayer mk = player.MKPlayer();
+            mk.Flipping = value;
+        }
+
         public static void GeneralDashEffect(this Player player, Vector2 direction, int distance, float timer, bool stop = false)
         {
             MoreKatanaPlayer mk = player.MKPlayer();
@@ -64,13 +57,43 @@ namespace MoreKatana
             mk.DashTimerMax = timer;
             mk.SuddenStop = stop;
         }
+        #endregion
 
-        public static void FlipEffect(this Player player, float value)
+        #region -------- Projectile Utils --------
+        public static void ExpandHitboxBy(this Projectile projectile, int width, int height)
         {
-            MoreKatanaPlayer mk = player.MKPlayer();
-            mk.Flipping = value;
+            projectile.position = projectile.Center;
+            projectile.width = width;
+            projectile.height = height;
+            projectile.position -= projectile.Size * 0.5f;
+        }
+        public static void ExpandHitboxBy(this Projectile projectile, int newSize) => projectile.ExpandHitboxBy(newSize, newSize);
+        public static void ExpandHitboxBy(this Projectile projectile, Vector2 newSize) => projectile.ExpandHitboxBy((int)newSize.X, (int)newSize.Y);
+        public static void ExpandHitboxBy(this Projectile projectile, float expandRatio) => projectile.ExpandHitboxBy((int)(projectile.width * expandRatio), (int)(projectile.height * expandRatio));
+
+        public static void CreateDashSlash(this Player player, IEntitySource source, int damage, float knockBack, int distance, float timer, Vector2? dir = null, bool stop = true)
+        {
+            int p = Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<GeneralDashSlash>(), damage, knockBack, player.whoAmI);
+            GeneralDashSlash dash = (GeneralDashSlash)Main.projectile[p].ModProjectile;
+            dash.DashDirection = dir == null ? player.SafeDirectionTo(Main.MouseWorld) : (Vector2)dir;
+            dash.DashDistance = distance;
+            dash.DashTimerMax = timer;
+            dash.SuddenStop = stop;
         }
 
+        public static void ProjectileSplitInAllDirections(IEntitySource source, Vector2 spawnPosition, float projVelocity, int amount, int projType, int damage, float knockback, int owner)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                float rad = MathHelper.TwoPi / amount * i;
+                Vector2 vector = Vector2.UnitY.RotatedBy(rad);
+                vector *= projVelocity;
+                Projectile.NewProjectile(source, spawnPosition, vector, projType, damage, knockback, owner);
+            }
+        }
+        #endregion
+
+        #region -------- NPC Utils --------
         /// <summary>
         /// 指定した地点から近くの敵対NPCを取得する
         /// </summary>
@@ -135,27 +158,25 @@ namespace MoreKatana
             }
             return closestTarget;
         }
+        #endregion
 
-        public static void CreateDashSlash(this Player player, IEntitySource source, int damage, float knockBack, int distance, float timer, Vector2? dir = null, bool stop = true)
-        {
-            int p = Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<GeneralDashSlash>(), damage, knockBack, player.whoAmI);
-            GeneralDashSlash dash = (GeneralDashSlash)Main.projectile[p].ModProjectile;
-            dash.DashDirection = dir == null ? player.SafeDirectionTo(Main.MouseWorld) : (Vector2)dir;
-            dash.DashDistance = distance;
-            dash.DashTimerMax = timer;
-            dash.SuddenStop = stop;
-        }
+        public static Vector2 TurnRight(this Vector2 vec) => new Vector2(-vec.Y, vec.X);
 
-        public static void ExpandHitboxBy(this Projectile projectile, int width, int height)
+        public static Vector2 TurnLeft(this Vector2 vec) => new Vector2(vec.Y, -vec.X);
+
+        /// <summary>
+        /// エンティティの中心を基準として任意の目的地に向かう単位ベクトルを取得する。<see cref="float.NaN"/>の安全性をfallbackの形で持っている
+        /// </summary>
+        /// <param name="entity"> チェックする対象のエンティティ </param>
+        /// <param name="destination"> 目的地に向かう方向 </param>
+        /// <param name="fallback"> 安全でない正規化が行われた場合に使用するfallback値 </param>
+        public static Vector2 SafeDirectionTo(this Entity entity, Vector2 destination, Vector2? fallback = null)
         {
-            projectile.position = projectile.Center;
-            projectile.width = width;
-            projectile.height = height;
-            projectile.position -= projectile.Size * 0.5f;
+            if (!fallback.HasValue)
+                fallback = Vector2.Zero;
+
+            return (destination - entity.Center).SafeNormalize(fallback.Value);
         }
-        public static void ExpandHitboxBy(this Projectile projectile, int newSize) => projectile.ExpandHitboxBy(newSize, newSize);
-        public static void ExpandHitboxBy(this Projectile projectile, Vector2 newSize) => projectile.ExpandHitboxBy((int)newSize.X, (int)newSize.Y);
-        public static void ExpandHitboxBy(this Projectile projectile, float expandRatio) => projectile.ExpandHitboxBy((int)(projectile.width * expandRatio), (int)(projectile.height * expandRatio));
 
         /// <summary>
         /// リング状にダストをスポーンする

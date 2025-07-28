@@ -9,7 +9,6 @@ namespace MoreKatana
         public static void Initialize()
         {
             On_PlayerDrawLayers.DrawPlayer_TransformDrawData += DrawPlayer_TransformDrawData;
-
             On_Main.DrawNPCs += Main_DrawNPCs;
             On_Main.DrawProjectiles += Main_DrawProjectiles;
             On_Main.Update += Main_Update;

@@ -240,7 +240,7 @@ namespace MoreKatana.Projectiles.Base
         public override void AI()
         {
             // 剣が振れるかのチェック
-            if (Owner.noItems || Owner.CCed || Owner.dead || !Owner.active)
+            if (Owner.CantUseHoldout(false))
             {
                 Projectile.Kill();
                 return;

@@ -190,3 +190,9 @@ GrassKatana: {
 		- Swinging the katana in all directions and firing leaves.
 		'''
 }
+
+VolcanoKatana: {
+	FunctionText: Mods.MoreKatana.Items.VolcanoKatana.FunctionText
+	DisplayName: Volcano Katana
+	Tooltip: ""
+}
