@@ -124,41 +124,35 @@ namespace MoreKatana.Projectiles.Gem
                 player.ScreenShake(5, 6);
                 SoundEngine.PlaySound(SoundID.Item29, player.Center);
 
-                if (index == 0)
+                for (int i = 0; i < 3; i++)
                 {
-                    for (int i = 0; i < 12; i++)
-                    {
-                        int newDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustType, 0f, 0f, 100, default, 1.5f);
-                        Main.dust[newDust].scale *= Main.rand.NextFloat(1, 2.5f);
-                        Main.dust[newDust].noGravity = true;
-                        Main.dust[newDust].velocity = Vector2.Normalize(Projectile.velocity) * 10f;
-                        Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(30));
-                        Main.dust[newDust].velocity *= Main.rand.NextFloat(1f, 3f);
-                    }
+                    int newDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustType, 0f, 0f, 100, default, 1.5f);
+                    Main.dust[newDust].scale *= Main.rand.NextFloat(1, 2.5f);
+                    Main.dust[newDust].noGravity = true;
+                    Main.dust[newDust].velocity = Vector2.Normalize(Projectile.velocity) * 10f;
+                    Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(30));
+                    Main.dust[newDust].velocity *= Main.rand.NextFloat(1f, 3f);
                 }
             }
             else
             {
-                if (index == 0)
+                int fourConst = 4;
+                for (int i = 0; i < 2; i++)
                 {
-                    int fourConst = 4;
-                    for (int i = 0; i < 4; i++)
-                    {
-                        float shortXVel = Projectile.velocity.X / 3f * i;
-                        float shortYVel = Projectile.velocity.Y / 3f * i;
-                        int newDust = Dust.NewDust(new Vector2(Projectile.position.X + fourConst, Projectile.position.Y + fourConst), Projectile.width - (fourConst * 2), Projectile.height - (fourConst * 2), DustType, 0f, 0f, 100, default, 1.2f);
-                        Main.dust[newDust].noGravity = true;
-                        Main.dust[newDust].velocity *= 0.1f;
-                        Main.dust[newDust].velocity += Projectile.velocity * 0.1f;
-                        Main.dust[newDust].position.X -= shortXVel;
-                        Main.dust[newDust].position.Y -= shortYVel;
-                    }
-                    if (Main.rand.NextBool(5))
-                    {
-                        int newDust2 = Dust.NewDust(new Vector2(Projectile.position.X + fourConst, Projectile.position.Y + fourConst), Projectile.width - (fourConst * 2), Projectile.height - (fourConst * 2), DustType, 0f, 0f, 100, default, 0.6f);
-                        Main.dust[newDust2].velocity *= 0.25f;
-                        Main.dust[newDust2].velocity += Projectile.velocity * 0.5f;
-                    }
+                    float shortXVel = Projectile.velocity.X / 3f * i;
+                    float shortYVel = Projectile.velocity.Y / 3f * i;
+                    int newDust = Dust.NewDust(new Vector2(Projectile.position.X + fourConst, Projectile.position.Y + fourConst), Projectile.width - (fourConst * 2), Projectile.height - (fourConst * 2), DustType, 0f, 0f, 100, default, 1.2f);
+                    Main.dust[newDust].noGravity = true;
+                    Main.dust[newDust].velocity *= 0.1f;
+                    Main.dust[newDust].velocity += Projectile.velocity * 0.1f;
+                    Main.dust[newDust].position.X -= shortXVel;
+                    Main.dust[newDust].position.Y -= shortYVel;
+                }
+                if (Main.rand.NextBool(5))
+                {
+                    int newDust2 = Dust.NewDust(new Vector2(Projectile.position.X + fourConst, Projectile.position.Y + fourConst), Projectile.width - (fourConst * 2), Projectile.height - (fourConst * 2), DustType, 0f, 0f, 100, default, 0.6f);
+                    Main.dust[newDust2].velocity *= 0.25f;
+                    Main.dust[newDust2].velocity += Projectile.velocity * 0.5f;
                 }
             }
         }

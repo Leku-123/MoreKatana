@@ -42,21 +42,18 @@ namespace MoreKatana.Projectiles.Base
 
         /// <summary>
         /// 剣の振りの動きに関する変数
-        /// <see cref="SwingStats(float, float, float?, bool, float)"/>でまとめて設定できる
+        /// <see cref="SwingStats(float, float, float?, bool)"/>でまとめて設定できる
         /// </summary>
-        protected float SwingTime;          // 剣の振る速度
-        protected float SwingRange;         // 剣の振る範囲
-        protected float ModifiedAngle;      // 剣の初期位置の調整
-        protected bool Backspin;            // 剣の振りと向きを逆方向にするかどうか
-        protected float ModifiedScale = 1f; // 剣のスケールの調整
+        protected float SwingTime;     // 剣の振る速度
+        protected float SwingRange;    // 剣の振る範囲
+        protected float ModifiedAngle; // 剣の初期位置の調整
+        protected bool Backspin;       // 剣の振りと向きを逆方向にするかどうか
 
         /// <summary>
         /// 剣のサイズ
         /// <see cref="SwordSize(int, int)"/>で設定できる
         /// </summary>
         private int SwordWidth, SwordHeight;
-
-        // 剣自体の長さ。トレイルなどに使用する
         protected int SwordLength => (int)((SwordWidth / 2f + SwordHeight / 2f) / 2f / Math.Sin(Math.PI * 45 / 180) * Projectile.scale);
 
         /// <summary>
@@ -72,17 +69,17 @@ namespace MoreKatana.Projectiles.Base
         private float startRotation; // 剣の初期位置
         protected float progress;    // 剣の振りの進行状況
 
-        public bool timerStop;       // 剣の振りのタイマーを止めるかどうか
+        protected bool timerStop;    // 剣の振りのタイマーを止めるかどうか
         protected bool invisible;    // 剣を描画を無くすかどうか
         protected bool primsCreated; // トレイルを描画したかどうか
 
         /// <summary>
         /// 雑多な変数
         /// </summary>
-        protected bool continuousSwing;        // 全ての振りを連続的に行うかどうか
-        protected bool fixedDirection;         // 全ての振りの方向を固定するかどうか
-        protected bool noSpeedBonus;
-        protected Color trailColor;            // トレイルの色
+        protected bool ContinuousSwing;        // 全ての振りを連続的に行うかどうか
+        protected bool FixedDirection;         // 全ての振りの方向を固定するかどうか
+        protected bool NoSpeedBonus;           // 速度ボーナスを無くすかどうか
+        protected Color TrailColor;            // トレイルの色
 
         protected Player Owner => Main.player[Projectile.owner];
         private Item SwordItem => Owner.ActiveItem();
@@ -117,14 +114,12 @@ namespace MoreKatana.Projectiles.Base
         /// <param name="range"> 剣の振る範囲 </param>
         /// <param name="angle"> 剣の初期位置の調整 </param>
         /// <param name="backspin"> 剣の振りと向きを逆方向にするかどうか </param>
-        /// <param name="scale"> 剣のスケールの調整 </param>
-        protected void SwingStats(float time, float range, float? angle = null, bool backspin = false, float scale = 1f)
+        protected void SwingStats(float time, float range, float? angle = null, bool backspin = false)
         {
             SwingTime = time;
             SwingRange = range;
             ModifiedAngle = angle == null ? (1f - range) / 2f : (float)angle;
             Backspin = backspin;
-            ModifiedScale = scale;
         }
 
         /// <summary>
@@ -153,7 +148,7 @@ namespace MoreKatana.Projectiles.Base
                 }
             }
             vector4 /= a * 2;
-            customSword.trailColor = new Color(vector4.X, vector4.Y, vector4.Z, 0);
+            customSword.TrailColor = new Color(vector4.X, vector4.Y, vector4.Z, 0);
         }
         #endregion
 
@@ -162,6 +157,12 @@ namespace MoreKatana.Projectiles.Base
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.HeldProjDoesNotUsePlayerGfxOffY[Type] = true; // ブロックやハーフブロックの昇降時のズレを防ぐ
+            SafeSetStaticDefaults();
+        }
+
+        public virtual void SafeSetStaticDefaults()
+        {
+
         }
 
         public override void SetDefaults()
@@ -180,6 +181,12 @@ namespace MoreKatana.Projectiles.Base
             Projectile.usesLocalNPCImmunity = true;
             Projectile.noEnchantmentVisuals = true;
             Projectile.MKProjectile().SourceIsItemUse = true;
+            SafeSetDefaults();
+        }
+
+        public virtual void SafeSetDefaults()
+        {
+
         }
 
         public override void SendExtraAI(BinaryWriter writer)
@@ -191,7 +198,6 @@ namespace MoreKatana.Projectiles.Base
             writer.Write(SwingTime);
             writer.Write(SwingRange);
             writer.Write(ModifiedAngle);
-            writer.Write(ModifiedScale);
             writer.WriteFlags(Backspin);
         }
 
@@ -204,7 +210,6 @@ namespace MoreKatana.Projectiles.Base
             SwingTime = reader.ReadSingle();
             SwingRange = reader.ReadSingle();
             ModifiedAngle = reader.ReadSingle();
-            ModifiedScale = reader.ReadSingle();
             Backspin = reader.ReadBoolean();
         }
 
@@ -232,8 +237,6 @@ namespace MoreKatana.Projectiles.Base
             Utils.PlotTileLine(top, end, Projectile.scale, DelegateMethods.CutTiles);
         }
 
-        public override bool ShouldUpdatePosition() => false;
-
         public override void AI()
         {
             // 剣が振れるかのチェック
@@ -250,7 +253,7 @@ namespace MoreKatana.Projectiles.Base
 
                 Projectile.alpha = 0;
 
-                if (!fixedDirection)
+                if (!FixedDirection)
                     Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
 
                 startRotation = (-Projectile.velocity).ToRotation(); // Projectile.velocityの反対方向
@@ -276,7 +279,7 @@ namespace MoreKatana.Projectiles.Base
         private void SetSwordPosition()
         {
             // 発射体の位置と向き
-            Projectile.Center = Owner.MountedCenter + swordPos;
+            Projectile.Center = Owner.MountedCenter + (swordPos * Projectile.scale);
             Projectile.spriteDirection = Owner.direction;
 
             // 発射体の回転を調節する。Backspinも考慮する
@@ -299,7 +302,7 @@ namespace MoreKatana.Projectiles.Base
         {
             // Timerを剣の振る速度で除算してprogressを計算する
             // 速度ボーナスも適用する
-            progress = Timer / (SwingTime * Projectile.MaxUpdates / (!noSpeedBonus ? Owner.GetTotalAttackSpeed(Projectile.DamageType) : 1));
+            progress = Timer / (SwingTime * Projectile.MaxUpdates / (!NoSpeedBonus ? Owner.GetTotalAttackSpeed(Projectile.DamageType) : 1));
             progress = MathHelper.Clamp(GetProgress(SwingType), 0f, 1f);
 
             float swingRange = (float)Math.PI * 2f * Projectile.spriteDirection * SwingRange; // 振る回転角
@@ -311,15 +314,23 @@ namespace MoreKatana.Projectiles.Base
             {
                 Projectile.friendly = true;
 
-                // 剣のスケールの調整
-                Projectile.scale = 1f * ModifiedScale;
-
                 // 剣の動き
                 // SwingStatus()から取得した変数、GetEllipse()で取得したXとYをもとにswordPosを求める
                 float x = SwordWidth / 2 * X * MathF.Cos((progress * swingRange + modifiedAngle) * swingDirection);
                 float y = SwordHeight / 2 * Y * MathF.Sin((progress * swingRange + modifiedAngle) * swingDirection);
                 Vector2 ellipse = new Vector2(x, y);
-                swordPos = ellipse.RotatedBy(startRotation, default) * 1.75f * Projectile.scale;
+                swordPos = ellipse.RotatedBy(startRotation, default) * 1.75f;
+
+                // タイル衝突の処理
+                Vector2 collisionBase = Projectile.position;
+                const int checkpoint = 5;
+                for (int j = 0; j < checkpoint; j++)
+                {
+                    collisionBase += (Projectile.Center - Owner.MountedCenter).ToRotation().ToRotationVector2() * SwordLength / checkpoint;
+                    bool validTile = Collision.SolidTiles(collisionBase, 2, 2, true);
+                    if (validTile)
+                        SafeTileCollide(SwordItem, SwingType);
+                }
 
                 // ビジュアル効果
                 if (Main.rand.NextBool(4))
@@ -343,7 +354,7 @@ namespace MoreKatana.Projectiles.Base
 
                     // 連続する振りの場合そのまま次の振りのパターンにする
                     // それ以外は消滅
-                    if (continuousSwing)
+                    if (ContinuousSwing)
                     {
                         if (!AttackPattern(SwordItem, SwingType))
                         {
@@ -351,7 +362,7 @@ namespace MoreKatana.Projectiles.Base
                             return;
                         }
 
-                        if (!fixedDirection) // 全ての振りの方向を固定しない場合
+                        if (!FixedDirection) // 全ての振りの方向を固定しない場合
                         {
                             // Projectile.velocityをマウスの方向にする
                             if (Main.myPlayer == Projectile.owner)
@@ -386,7 +397,7 @@ namespace MoreKatana.Projectiles.Base
                 if (!primsCreated)
                 {
                     primsCreated = true;
-                    trail = new CustomSwordPrimTrail(Projectile, trailColor, SwordLength, (int)(SwingTime * 1.5f));
+                    trail = new CustomSwordPrimTrail(Projectile, TrailColor, SwordLength, (int)(SwingTime * 1.5f));
                     MoreKatana.primitives.CreateTrail(trail);
                 }
 
@@ -441,19 +452,18 @@ namespace MoreKatana.Projectiles.Base
 
         }
 
-        public override bool? CanDamage() => !invisible; // 描画しない場合はダメージを与えないようにする
-
-        public override bool OnTileCollide(Vector2 oldVelocity)
+        /// <summary>
+        /// タイルに衝突したときの処理
+        /// <see cref="OnTileCollide(Vector2)"/>と別物
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="type"></param>
+        public virtual void SafeTileCollide(Item item, int type)
         {
-            if (Timer != 0f)
-                timerStop = true;
-            return false;
+
         }
 
-        //public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
-        //{
-        //    return true;
-        //}
+        public override bool? CanDamage() => !invisible; // 描画しない場合はダメージを与えないようにする
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {

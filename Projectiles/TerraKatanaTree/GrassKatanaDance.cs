@@ -15,9 +15,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.localNPCHitCooldown = 20 * Projectile.MaxUpdates;
             Projectile.MKProjectile().ActivateCD = true;
 
-            continuousSwing = true;
-            fixedDirection = true;
-            noSpeedBonus = true;
+            ContinuousSwing = true;
+            FixedDirection = true;
+            NoSpeedBonus = true;
 
             GetTextureValues(this, item);
             SpawnLeaf(out _);

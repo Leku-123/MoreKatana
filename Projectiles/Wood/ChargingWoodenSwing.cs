@@ -10,7 +10,6 @@ namespace MoreKatana.Projectiles.Wood
     public class ChargingWoodenSwing : CustomSword
     {
         private bool attackable;
-        private bool collision;
 
         private CustomSwordPrimTrail trail;
 
@@ -21,7 +20,7 @@ namespace MoreKatana.Projectiles.Wood
                 if (!primsCreated)
                 {
                     primsCreated = true;
-                    trail = new CustomSwordPrimTrail(Projectile, trailColor, SwordLength, (int)(SwingTime * 1.5f));
+                    trail = new CustomSwordPrimTrail(Projectile, TrailColor, SwordLength, (int)(SwingTime * 1.5f));
                     MoreKatana.primitives.CreateTrail(trail);
                 }
 
@@ -43,15 +42,12 @@ namespace MoreKatana.Projectiles.Wood
             Projectile.localNPCHitCooldown = 30 * Projectile.MaxUpdates;
             Projectile.MKProjectile().ActivateCD = true;
 
-            continuousSwing = true;
-            fixedDirection = true;
+            ContinuousSwing = true;
+            FixedDirection = true;
             GetTextureValues(this, item);
 
             if (type == 1)
-            {
-                Projectile.tileCollide = true;
                 SoundEngine.PlaySound(SoundID.Item1, Owner.Center);
-            }
         }
 
         public override bool AttackPattern(Item item, int type)
@@ -103,16 +99,14 @@ namespace MoreKatana.Projectiles.Wood
             }
         }
 
-        public override bool OnTileCollide(Vector2 oldVelocity)
+        public override void SafeTileCollide(Item item, int type)
         {
-            if (!collision)
+            if (type == 1)
             {
-                collision = true;
+                timerStop = true;
                 Owner.ScreenShake(4, 10);
                 SoundEngine.PlaySound(SoundID.Dig, Owner.Center);
             }
-
-            return base.OnTileCollide(oldVelocity);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
