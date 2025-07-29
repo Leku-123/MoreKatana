@@ -15,7 +15,7 @@ namespace MoreKatana.Items
         public override bool InstancePerEntity => true;
 
         public bool Katana;              // 刀
-        public int ActiveSkillDelay;     // アクティブスキルのCDの時間
+        private int ActiveSkillDelay;    // アクティブスキルのCDの時間
         private int SwingComboCount = 1; // 振りのコンボ数
         private int SwingType = 0;       // 振りタイプ(発射体)の種類
         private int AIType;
@@ -26,6 +26,8 @@ namespace MoreKatana.Items
         /// <param name="item"></param>
         /// <param name="delay"> アクティブスキルのCD </param>
         /// <param name="equipment"> 装備可能かどうか </param>
+        /// <param name="type"> 振りタイプ(発射体)の種類 </param>
+        /// <param name="combo"> 振りのコンボ数 </param>
         public void SetKatanaDefaults(Item item, int delay, bool equipment = false, int type = ProjectileID.None, int combo = 1)
         {
             item.DamageType = DamageClass.Melee;
@@ -45,12 +47,14 @@ namespace MoreKatana.Items
 
             Katana = true;
             ActiveSkillDelay = delay;
+
+            // 何もしない場合汎用の振りが適用される
             SwingType = type == ProjectileID.None ? ModContent.ProjectileType<GeneralKatanaSwing>() : type;
             SwingComboCount = combo;
         }
 
         /// <summary>
-        /// クールダウンを有効化します
+        /// クールダウンを有効化する
         /// </summary>
         /// <param name="player"></param>
         public void ActivateCooldown(Player player) => player.AddBuff(ModContent.BuffType<KatanaArtsCD>(), ActiveSkillDelay);
@@ -73,7 +77,7 @@ namespace MoreKatana.Items
         {
             if (Katana)
             {
-                // デバフを使って右クリを制御する
+                // バフを使って右クリを制御する
                 return !player.HasBuff(ModContent.BuffType<KatanaArtsCD>());
             }
 
@@ -88,13 +92,13 @@ namespace MoreKatana.Items
                 {
                     if (item.type is ItemID.Katana or ItemID.Muramasa)
                     {
-                        // バニラのアクティブスキル
+                        // バニラアイテムのアクティブスキル
                         VanillaActiveSkill(item, player);
                         ActivateCooldown(player);
                     }
                     else
                     {
-                        // Modのアクティブスキル
+                        // Modアイテムのアクティブスキル
                         (item.ModItem as KatanaItem).ActiveSkill(player);
                     }
                 }
@@ -108,14 +112,15 @@ namespace MoreKatana.Items
             {
                 if (item.type is ItemID.Katana or ItemID.Muramasa)
                 {
-                    // バニラのパッシブスキル
+                    // バニラアイテムのパッシブスキル
                     VanillaPassiveSkill(item, player, false);
                 }
                 else
                 {
-                    // Modのパッシブスキル
+                    // Modアイテムのパッシブスキル
                     (item.ModItem as KatanaItem).PassiveSkill(player, false);
 
+                    // アイテムの設定を更新する
                     (item.ModItem as KatanaItem).SetDefaultsItem();
                 }
             }
@@ -158,11 +163,6 @@ namespace MoreKatana.Items
             // ムラマサのヒトダマ発生処理
         }
 
-        public override void ModifyHitPvp(Item item, Player player, Player target, ref Player.HurtModifiers modifiers)
-        {
-            // ムラマサのヒトダマ発生処理
-        }
-
         public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player)
         {
             if ((equippedItem.type is ItemID.Katana or ItemID.Muramasa || equippedItem.ModItem is KatanaItem)
@@ -186,7 +186,7 @@ namespace MoreKatana.Items
             return base.CanEquipAccessory(item, player, slot, modded);
         }
 
-        public void VanillaActiveSkill(Item item, Player player)
+        private void VanillaActiveSkill(Item item, Player player)
         {
             if (item.type == ItemID.Katana)
             {
@@ -198,7 +198,7 @@ namespace MoreKatana.Items
             }
         }
 
-        public void VanillaPassiveSkill(Item item, Player player, bool equipment)
+        private void VanillaPassiveSkill(Item item, Player player, bool equipment)
         {
             if (item.type == ItemID.Katana)
             {

@@ -17,13 +17,18 @@ namespace MoreKatana.Items.Katana.Gem
         {
             Item.width = 46;
             Item.height = 48;
+
             Item.useTime = 24;
             Item.useAnimation = 24;
+
             Item.UseSound = SoundID.Item1;
+
             Item.damage = 14;
             Item.knockBack = 5;
+
             Item.value = Item.sellPrice(0, 0, 22, 50);
             Item.rare = ItemRarityID.White;
+
             Item.MKItem().SetKatanaDefaults(Item, 0);
         }
 
@@ -36,7 +41,9 @@ namespace MoreKatana.Items.Katana.Gem
 
         public override void ActiveSkill(Player player)
         {
+            Item.UseSound = SoundID.MaxMana;
             Item.MKItem().ActivateCooldown(player);
+            MoreKatanaUtil.DrawRing(player.Center, DustID.GemAmethyst, 24, 10f);
         }
 
         public override void AddRecipes()

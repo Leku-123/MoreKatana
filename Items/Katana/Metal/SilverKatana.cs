@@ -11,12 +11,17 @@ namespace MoreKatana.Items.Katana.Metal
         {
             Item.width = 48;
             Item.height = 54;
+
             Item.useTime = 18;
             Item.useAnimation = 18;
             Item.UseSound = SoundID.Item1;
+
             Item.damage = 22;
             Item.knockBack = 6;
+
             Item.value = Item.sellPrice(silver: 10);
+            Item.rare = ItemRarityID.White;
+
             Item.MKItem().SetKatanaDefaults(Item, 300, true);
         }
 

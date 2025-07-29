@@ -28,6 +28,12 @@ namespace MoreKatana
 
         public static bool CantUseHoldout(this Player player, bool needsToHold = true) => player == null || !player.active || player.dead || (!player.channel && needsToHold) || player.CCed || player.noItems;
 
+        /// <summary>
+        /// スクリーンシェイク
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="timer"> 揺らす時間 </param>
+        /// <param name="strength"> 揺らす強度 </param>
         public static void ScreenShake(this Player player, int timer, int strength)
         {
             MoreKatanaPlayer mk = player.MKPlayer();
@@ -35,6 +41,12 @@ namespace MoreKatana
             mk.ScreenShakeStrength = strength;
         }
 
+        /// <summary>
+        /// スクリーンロック
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="entity"> 固定するフラグを立てるエンティティ </param>
+        /// <param name="screenLockPos"> 固定する位置 </param>
         public static void ScreenLock(this Player player, Entity entity, Vector2? screenLockPos = null)
         {
             MoreKatanaPlayer mk = player.MKPlayer();
@@ -42,12 +54,25 @@ namespace MoreKatana
             mk.ScreenLockPos = screenLockPos == null ? entity.Center : (Vector2)screenLockPos;
         }
 
+        /// <summary>
+        /// フリップエフェクト
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="value"></param>
         public static void FlipEffect(this Player player, float value)
         {
             MoreKatanaPlayer mk = player.MKPlayer();
             mk.Flipping = value;
         }
 
+        /// <summary>
+        /// ダッシュエフェクト
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="direction"> ダッシュの方向 </param>
+        /// <param name="distance"> ダッシュの距離 </param>
+        /// <param name="timer"> ダッシュの時間 </param>
+        /// <param name="stop"> ダッシュ後に勢いが止まるかどうか </param>
         public static void GeneralDashEffect(this Player player, Vector2 direction, int distance, float timer, bool stop = false)
         {
             MoreKatanaPlayer mk = player.MKPlayer();
@@ -60,6 +85,9 @@ namespace MoreKatana
         #endregion
 
         #region -------- Projectile Utils --------
+        /// <summary>
+        /// 発射体のヒットボックスを変更する
+        /// </summary>
         public static void ExpandHitboxBy(this Projectile projectile, int width, int height)
         {
             projectile.position = projectile.Center;
@@ -71,6 +99,18 @@ namespace MoreKatana
         public static void ExpandHitboxBy(this Projectile projectile, Vector2 newSize) => projectile.ExpandHitboxBy((int)newSize.X, (int)newSize.Y);
         public static void ExpandHitboxBy(this Projectile projectile, float expandRatio) => projectile.ExpandHitboxBy((int)(projectile.width * expandRatio), (int)(projectile.height * expandRatio));
 
+        /// <summary>
+        /// ダッシュ切り発射体を簡単に処理する
+        /// <param name="source">はItemUse系にしてください
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="source"> ItemUse系 </param>
+        /// <param name="damage"></param>
+        /// <param name="knockBack"></param>
+        /// <param name="distance"> ダッシュの距離 </param>
+        /// <param name="timer"> ダッシュの時間 </param>
+        /// <param name="dir"> ダッシュの方向。デフォルトはマウス方向 </param>
+        /// <param name="stop"> ダッシュ後に勢いが止まるかどうか </param>
         public static void CreateDashSlash(this Player player, IEntitySource source, int damage, float knockBack, int distance, float timer, Vector2? dir = null, bool stop = true)
         {
             int p = Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<GeneralDashSlash>(), damage, knockBack, player.whoAmI);
@@ -81,6 +121,17 @@ namespace MoreKatana
             dash.SuddenStop = stop;
         }
 
+        /// <summary>
+        /// 発射体を全方位に発射させる
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="spawnPosition"> 発射体がスポーンする位置 </param>
+        /// <param name="projVelocity"> 発射体の速度 </param>
+        /// <param name="amount"> 何方位に発射するか </param>
+        /// <param name="projType"> 発射体のタイプ </param>
+        /// <param name="damage"></param>
+        /// <param name="knockback"></param>
+        /// <param name="owner"></param>
         public static void ProjectileSplitInAllDirections(IEntitySource source, Vector2 spawnPosition, float projVelocity, int amount, int projType, int damage, float knockback, int owner)
         {
             for (int i = 0; i < amount; i++)

@@ -184,8 +184,8 @@ GrassKatana: {
 		'''
 	FunctionText:
 		'''
-		Katana Spell <>
-		- 
+		Katana Spell [c/00FF00:<Photosynthesis>]
+		- Applies the Photosynthesis Buff.
 		Katana Arts [c/ADFF2F:<Grass Dance>]
 		- Swinging the katana in all directions and firing leaves.
 		'''

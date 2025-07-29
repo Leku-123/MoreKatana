@@ -2,3 +2,12 @@ KatanaArtsCD: {
 	DisplayName: Katana Arts CD
 	Description: Katana Arts is in cooldown.
 }
+
+PhotosynthesisBuff: {
+	DisplayName: Photosynthesis Buff
+	Description:
+		'''
+		Daytime : +3 defense, +5 life regeneration.
+		Nighttime : Provide green light.
+		'''
+}

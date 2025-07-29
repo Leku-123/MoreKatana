@@ -28,6 +28,11 @@ namespace MoreKatana
 
         public bool EquipMuramasa;
 
+        public override void OnEnterWorld()
+        {
+            Flipping = 0f;
+        }
+
         public override void ResetEffects()
         {
             ScreenLockPos = Player.position;
@@ -36,6 +41,7 @@ namespace MoreKatana
             DashState = false;
             if (!GeneralDash)
                 DashTimer = 0f;
+            Flipping = 0f;
             EquipMuramasa = false;
         }
 
