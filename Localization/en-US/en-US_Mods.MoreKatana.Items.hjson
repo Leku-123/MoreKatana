@@ -1,7 +1,22 @@
+Katana.FunctionText:
+	'''
+	Katana Spell [c/CDDEEF:<Iron Protection>]
+	- +2 defense
+	Katana Arts [c/FFFFFF:<Flash Attack>]
+	- Dash and attack the enemy.
+	'''
+Muramasa.FunctionText:
+	'''
+	Katana Spell
+	-
+	Katana Arts
+	-
+	'''
+
 TestKatana: {
 	FunctionText: Mods.MoreKatana.Items.TestKatana.FunctionText
 	DisplayName: Test Katana
-	Tooltip: ""
+	Tooltip: Test Item
 }
 
 WoodenKatana: {
@@ -194,5 +209,11 @@ GrassKatana: {
 VolcanoKatana: {
 	FunctionText: Mods.MoreKatana.Items.VolcanoKatana.FunctionText
 	DisplayName: Volcano Katana
+	Tooltip: ""
+}
+
+SacredNaginata: {
+	FunctionText: Mods.MoreKatana.Items.SacredNaginata.FunctionText
+	DisplayName: Sacred Naginata
 	Tooltip: ""
 }

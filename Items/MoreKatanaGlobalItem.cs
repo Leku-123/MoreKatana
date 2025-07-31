@@ -3,10 +3,13 @@ using MoreKatana.Buffs;
 using MoreKatana.Items.Katana;
 using MoreKatana.Projectiles;
 using MoreKatana.UI;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.UI;
 
 namespace MoreKatana.Items
 {
@@ -17,7 +20,7 @@ namespace MoreKatana.Items
         public bool Katana;              // 刀
         private int ActiveSkillDelay;    // アクティブスキルのCDの時間
         private int SwingComboCount = 1; // 振りのコンボ数
-        private int SwingType = 0;       // 振りタイプ(発射体)の種類
+        private int SwingType = 0;       // 振りの種類
         private int AIType;
 
         /// <summary>
@@ -26,12 +29,12 @@ namespace MoreKatana.Items
         /// <param name="item"></param>
         /// <param name="delay"> アクティブスキルのCD </param>
         /// <param name="equipment"> 装備可能かどうか </param>
-        /// <param name="type"> 振りタイプ(発射体)の種類 </param>
+        /// <param name="type"> 振りの種類 </param>
         /// <param name="combo"> 振りのコンボ数 </param>
         public void SetKatanaDefaults(Item item, int delay, bool equipment = false, int type = ProjectileID.None, int combo = 1)
         {
             item.DamageType = DamageClass.Melee;
-            item.useStyle = ItemUseStyleID.Swing;
+            item.useStyle = ItemUseStyleID.Shoot;
 
             item.autoReuse = true;
             item.useTurn = false;
@@ -61,15 +64,23 @@ namespace MoreKatana.Items
 
         public override void SetDefaults(Item item)
         {
+            if (item.type is ItemID.Katana or ItemID.Muramasa)
+                item.StatsModifiedBy.Add(Mod);
+
+            SetDefaultsVanillaItem(item);
+        }
+
+        public void SetDefaultsVanillaItem(Item item)
+        {
             if (item.type == ItemID.Katana)
             {
-                SetKatanaDefaults(item, 300, true, combo: 2);
-                item.StatsModifiedBy.Add(Mod);
+                item.UseSound = SoundID.Item1;
+                SetKatanaDefaults(item, 300, true);
             }
             if (item.type == ItemID.Muramasa)
             {
+                item.UseSound = SoundID.Item1;
                 SetKatanaDefaults(item, 300, true, combo: 2);
-                item.StatsModifiedBy.Add(Mod);
             }
         }
 
@@ -114,6 +125,9 @@ namespace MoreKatana.Items
                 {
                     // バニラアイテムのパッシブスキル
                     VanillaPassiveSkill(item, player, false);
+
+                    // アイテムの設定を更新する
+                    SetDefaultsVanillaItem(item);
                 }
                 else
                 {
@@ -158,11 +172,6 @@ namespace MoreKatana.Items
             }
         }
 
-        public override void ModifyHitNPC(Item item, Player player, NPC target, ref NPC.HitModifiers modifiers)
-        {
-            // ムラマサのヒトダマ発生処理
-        }
-
         public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player)
         {
             if ((equippedItem.type is ItemID.Katana or ItemID.Muramasa || equippedItem.ModItem is KatanaItem)
@@ -186,15 +195,37 @@ namespace MoreKatana.Items
             return base.CanEquipAccessory(item, player, slot, modded);
         }
 
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+        {
+            int index = tooltips.FindIndex(x => x.Name == "Material");
+            if (index < 0)
+                return;
+
+            if (item.type is ItemID.Katana or ItemID.Muramasa)
+            {
+                TooltipLine tip;
+                if (!ItemSlot.ShiftInUse)
+                    tip = new TooltipLine(Mod, "DefaultText", Language.GetTextValue($"Mods.MoreKatana.{nameof(KatanaItem)}.DefaultText"));
+                else
+                    tip = new TooltipLine(Mod, "FunctionText", Language.GetTextValue($"Mods.MoreKatana.Items.{item.Name}.FunctionText"));
+
+                tooltips.Insert(index + 1, tip);
+            }
+        }
+
         private void VanillaActiveSkill(Item item, Player player)
         {
             if (item.type == ItemID.Katana)
             {
-
+                item.UseSound = SoundID.Item71;
+                ActivateCooldown(player);
+                player.CreateDashSlash(player.GetSource_ItemUse(item), item.damage, item.knockBack, 400, 10f);
             }
             if (item.type == ItemID.Muramasa)
             {
-
+                // 汎用ダッシュ + 
+                // ダッシュで通った場所から何かしらの発射体をスポーンさせます
+                // or ダッシュ開始時に何かしらの発射体をスポーンさせます
             }
         }
 
@@ -202,11 +233,11 @@ namespace MoreKatana.Items
         {
             if (item.type == ItemID.Katana)
             {
-
+                player.statDefense += 2;
             }
             if (item.type == ItemID.Muramasa)
             {
-                player.MKPlayer().EquipMuramasa = true;
+                // 専用ゲージを用意してダメージを受けなければ攻撃力が上昇するシステムを作りたい
             }
         }
     }

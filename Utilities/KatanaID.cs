@@ -20,4 +20,5 @@ public enum KatanaID
     Ornaments,
     Grass,
     Volcano,
+    Hallowed,
 }

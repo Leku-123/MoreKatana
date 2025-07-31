@@ -15,7 +15,7 @@ namespace MoreKatana.Assets.ExtraTextures
         #endregion
 
         #region Trail Textures
-        public static Asset<Texture2D> SwordTrailTexture(int num) => Request<Texture2D>(TrailPath + "SwordSlashTrail_" + System.Math.Min(num, 2), AssetRequestMode.ImmediateLoad);
+        public static Asset<Texture2D> SwordTrailTexture(int num) => Request<Texture2D>(TrailPath + "SwordSlashTrail_" + System.Math.Min(num, 3), AssetRequestMode.ImmediateLoad);
         public static Asset<Texture2D> EnergyTrailTexture => Request<Texture2D>(TrailPath + "Trail_0", AssetRequestMode.ImmediateLoad);
         public static Asset<Texture2D> FlameTrailTexture => Request<Texture2D>(TrailPath + "Trail_1", AssetRequestMode.ImmediateLoad);
         public static Asset<Texture2D> StraightlineTrailTexture => Request<Texture2D>(TrailPath + "Trail_2", AssetRequestMode.ImmediateLoad);

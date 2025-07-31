@@ -26,8 +26,6 @@ namespace MoreKatana
 
         public float Flipping;
 
-        public bool EquipMuramasa;
-
         public override void OnEnterWorld()
         {
             Flipping = 0f;
@@ -42,7 +40,6 @@ namespace MoreKatana
             if (!GeneralDash)
                 DashTimer = 0f;
             Flipping = 0f;
-            EquipMuramasa = false;
         }
 
         public override void UpdateDead()

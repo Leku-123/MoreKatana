@@ -4,6 +4,7 @@ using MoreKatana.Items;
 using MoreKatana.Projectiles;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -250,6 +251,24 @@ namespace MoreKatana
                 Main.dust[d].velocity = velocity;
                 Main.dust[d].scale = dustSize;
             }
+        }
+
+        public static void DrawPrettyStarSparkle(float opacity, SpriteEffects dir, Vector2 drawpos, Color drawColor, Color shineColor, float flareCounter, float fadeInStart, float fadeInEnd, float fadeOutStart, float fadeOutEnd, float rotation, Vector2 scale, Vector2 fatness)
+        {
+            Texture2D texture2D = TextureAssets.Extra[98].Value;
+            Color color1 = shineColor * opacity * 0.5f;
+            color1.A = 0;
+            Vector2 origin = texture2D.Size() / 2f;
+            Color color2 = drawColor * 0.5f;
+            float num = Utils.GetLerpValue(fadeInStart, fadeInEnd, flareCounter, true) * Utils.GetLerpValue(fadeOutEnd, fadeOutStart, flareCounter, true);
+            Vector2 scale1 = new Vector2((float)(fatness.X * 0.5), scale.X) * num;
+            Vector2 scale2 = new Vector2((float)(fatness.Y * 0.5), scale.Y) * num;
+            Color color3 = color1 * num;
+            Color color4 = color2 * num;
+            Main.EntitySpriteDraw(texture2D, drawpos, new Rectangle?(), color3, 1.570796f + rotation, origin, scale1, dir);
+            Main.EntitySpriteDraw(texture2D, drawpos, new Rectangle?(), color3, 0.0f + rotation, origin, scale2, dir);
+            Main.EntitySpriteDraw(texture2D, drawpos, new Rectangle?(), color4, 1.570796f + rotation, origin, scale1 * 0.6f, dir);
+            Main.EntitySpriteDraw(texture2D, drawpos, new Rectangle?(), color4, 0.0f + rotation, origin, scale2 * 0.6f, dir);
         }
 
         /// <summary>
