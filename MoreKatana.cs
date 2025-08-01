@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Prim;
 using ReLogic.Content;
 using Terraria;
@@ -31,6 +32,7 @@ namespace MoreKatana
         public override void Load()
         {
             MoreKatanaDetours.Initialize();
+            MoreKatanaTextures.LoadTextures();
 
             if (Main.netMode != NetmodeID.Server)
             {
@@ -86,6 +88,7 @@ namespace MoreKatana
             primitives = null;
 
             MoreKatanaDetours.Unload();
+            MoreKatanaTextures.UnloadTextures();
         }
     }
 }

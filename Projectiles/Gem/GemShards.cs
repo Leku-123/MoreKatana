@@ -193,7 +193,7 @@ namespace MoreKatana.Projectiles.Gem
         public override bool PreDraw(ref Color lightColor)
         {
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
-            Texture2D bloomTex = MoreKatanaTextureRegistry.BloomTexture.Value;
+            Texture2D bloomTex = MoreKatanaTextures.BloomTexture.Value;
 
             Rectangle rectangle = texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame);
             Vector2 origin = rectangle.Size() / 2f;

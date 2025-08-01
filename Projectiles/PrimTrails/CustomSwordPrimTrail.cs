@@ -31,23 +31,25 @@ namespace MoreKatana.Projectiles.PrimTrails
             if (PointCount <= 6)
                 return;
 
-            float widthVar;
+            //float widthVar;
             for (int i = 0; i < Points.Count; i++)
             {
                 if (i == 0)
                 {
+                    /*
                     widthVar = (float)Math.Sqrt(Points.Count) * Width;
                     Vector2 normalAhead = CurveNormal(Points, i + 1);
                     Vector2 secondUp = Points[i + 1] - normalAhead * widthVar;
                     Vector2 secondDown = Points[i + 1] + normalAhead * widthVar;
+                    */
                 }
                 else
                 {
                     if (i != Points.Count - 1)
                     {
                         float dist = Math.Abs(Points.Count - i - Counter * 3);
-                        widthVar = (float)Math.Sin(i * (Math.PI / Points.Count)) * Width * i / 300f;
-                        float widthVar2 = (float)Math.Sin((i + 1) * (Math.PI / Points.Count)) * Width * (i + 1) / 300f;
+                        //widthVar = (float)Math.Sin(i * (Math.PI / Points.Count)) * Width * i / 300f;
+                        //float widthVar2 = (float)Math.Sin((i + 1) * (Math.PI / Points.Count)) * Width * (i + 1) / 300f;
                         Color c = Color * ((100 - dist) * 0.01f) * (Counter / 10f);
                         Color CBT = Color * ((100 - dist) * 0.01f) * (Counter / 10f);
                         Vector2 normal = CurveNormal(Points, i);
@@ -84,7 +86,7 @@ namespace MoreKatana.Projectiles.PrimTrails
         public override void SetShaders()
         {
             Effect effect = MoreKatana.PrimitiveTextureMap;
-            effect.Parameters["uTexture"].SetValue(MoreKatanaTextureRegistry.SwordTrailTexture(TextureType).Value);
+            effect.Parameters["uTexture"].SetValue(MoreKatanaTextures.SwordTrailTexture[TextureType].Value);
             effect.Parameters["additive"].SetValue(true);
             effect.Parameters["repeats"].SetValue(1);
             effect.Parameters["intensify"].SetValue(true);

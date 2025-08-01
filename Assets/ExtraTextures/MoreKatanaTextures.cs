@@ -1,0 +1,56 @@
+﻿using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
+using Terraria;
+using static Terraria.ModLoader.ModContent;
+
+namespace MoreKatana.Assets.ExtraTextures
+{
+    public static class MoreKatanaTextures
+    {
+        public const string TexturePath = "MoreKatana/Assets/ExtraTextures/";
+        public const string AdditivePath = TexturePath + "AdditiveTextures/";
+        public const string TrailPath = TexturePath + "Trails/";
+
+        public static Asset<Texture2D> BloomTexture;
+        public static Asset<Texture2D> MagicCircleTexture;
+        public static Asset<Texture2D> MagicRingTexture;
+        public static Asset<Texture2D>[] SwordTrailTexture = new Asset<Texture2D>[4];
+        public static Asset<Texture2D> EnergyTrailTexture;
+        public static Asset<Texture2D> FlameTrailTexture;
+        public static Asset<Texture2D> StraightlineTrailTexture;
+
+        public static void LoadTextures()
+        {
+            if (Main.dedServ)
+                return;
+
+            BloomTexture = Request<Texture2D>(AdditivePath + "CircleGradient");
+            MagicCircleTexture = Request<Texture2D>(AdditivePath + "MagicCircle");
+            MagicRingTexture = Request<Texture2D>(AdditivePath + "MagicRing");
+
+            for (int i = 0; i < SwordTrailTexture.Length; i++)
+                SwordTrailTexture[i] = Request<Texture2D>(TrailPath + "SwordSlashTrail_" + i, AssetRequestMode.ImmediateLoad);
+
+            EnergyTrailTexture = Request<Texture2D>(TrailPath + "Trail_0", AssetRequestMode.ImmediateLoad);
+            FlameTrailTexture = Request<Texture2D>(TrailPath + "Trail_1", AssetRequestMode.ImmediateLoad);
+            StraightlineTrailTexture = Request<Texture2D>(TrailPath + "Trail_2", AssetRequestMode.ImmediateLoad);
+        }
+
+        public static void UnloadTextures()
+        {
+            if (Main.dedServ)
+                return;
+
+            BloomTexture = null;
+            MagicCircleTexture = null;
+            MagicRingTexture = null;
+
+            for (int i = 0; i < SwordTrailTexture.Length; i++)
+                SwordTrailTexture[i] = null;
+
+            EnergyTrailTexture = null;
+            FlameTrailTexture = null;
+            StraightlineTrailTexture = null;
+        }
+    }
+}

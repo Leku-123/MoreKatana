@@ -184,9 +184,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Main.EntitySpriteDraw(texture, position, rectangle, color, Projectile.rotation, texture.Size() / 2, Projectile.scale, spriteEffects, 0);
 
             // 魔法陣の描画
-            Texture2D bloom = MoreKatanaTextureRegistry.BloomTexture.Value;
-            Texture2D circle = MoreKatanaTextureRegistry.MagicCircleTexture.Value;
-            Texture2D ring = MoreKatanaTextureRegistry.MagicRingTexture.Value;
+            Texture2D bloom = MoreKatanaTextures.BloomTexture.Value;
+            Texture2D circle = MoreKatanaTextures.MagicCircleTexture.Value;
+            Texture2D ring = MoreKatanaTextures.MagicRingTexture.Value;
             Vector2 offset = Vector2.Normalize(Projectile.velocity) * 100f;
             float rot = Vector2.Normalize(Projectile.velocity).ToRotation();
 

@@ -74,7 +74,7 @@ namespace MoreKatana.Projectiles.PrimTrails
         public override void SetShaders()
         {
             Effect effect = MoreKatana.PrimitiveTextureMap;
-            effect.Parameters["uTexture"].SetValue(MoreKatanaTextureRegistry.StraightlineTrailTexture.Value);
+            effect.Parameters["uTexture"].SetValue(MoreKatanaTextures.StraightlineTrailTexture.Value);
             effect.Parameters["additive"].SetValue(true);
             effect.Parameters["intensify"].SetValue(true);
             PrepareShader(effect, "MainPS", Counter);
