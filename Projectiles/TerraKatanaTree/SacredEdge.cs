@@ -72,9 +72,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Rectangle rectangle = new Rectangle(0, 0, texture.Width, texture.Height);
             Vector2 origin = rectangle.Size() / 2f;
             Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-            SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             Color color = Projectile.GetAlpha(lightColor);
             Color glowColor = Color.Gold * Projectile.Opacity;
+            SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
             for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Projectile.type]; i++)
             {

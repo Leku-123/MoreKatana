@@ -81,6 +81,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];
             }
 
+            // タイマーを増加
             Timer++;
         }
 
@@ -95,13 +96,13 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         public override bool PreDraw(ref Color lightColor)
         {
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
-
             Rectangle rectangle = texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame);
             Vector2 origin = rectangle.Size() / 2f;
             Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-            SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             Color color = Projectile.GetAlpha(lightColor);
+            SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
+            // トレイル
             for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Projectile.type]; i++)
             {
                 float fade = (float)(ProjectileID.Sets.TrailCacheLength[Projectile.type] - i) / ProjectileID.Sets.TrailCacheLength[Projectile.type];
@@ -113,6 +114,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Main.EntitySpriteDraw(texture, pos + Projectile.Size / 2f - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), rectangle, color2, Projectile.rotation, origin, scale, spriteEffects, 0);
             }
 
+            // アウトライン
             float backglowAmount = 12f;
             for (int i = 0; i < backglowAmount; i++)
             {
@@ -123,6 +125,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Main.EntitySpriteDraw(texture, position + backglowOffset, rectangle, backglowColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
             }
 
+            // 本体の描画
             Main.EntitySpriteDraw(texture, position, rectangle, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
             return false;
         }

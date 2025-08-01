@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Prim;
 using ReLogic.Content;
 using Terraria;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -49,7 +50,8 @@ namespace MoreKatana
                     };
                 });
 
-
+                GameShaders.Misc["Compression"] = new MiscShaderData(ModContent.Request<Effect>("MoreKatana/Effects/Compression", AssetRequestMode.ImmediateLoad), "ShieldPass");
+                
                 PrimitiveTextureMap = ModContent.Request<Effect>("MoreKatana/Effects/PrimitiveTextureMap", AssetRequestMode.ImmediateLoad).Value;
                 primitives = new PrimTrailManager();
                 primitives.LoadContent(Main.graphics.GraphicsDevice);

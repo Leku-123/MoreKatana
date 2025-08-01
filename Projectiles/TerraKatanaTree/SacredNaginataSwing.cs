@@ -12,6 +12,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 {
     public class SacredNaginataSwing : CustomSword
     {
+        public override string Texture => (GetType().Namespace + "." + Name).Replace('.', '/');
+
         private CustomSwordPrimTrail trail;
 
         /// <summary>
@@ -123,18 +125,18 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D texture = ModContent.Request<Texture2D>((GetType().Namespace + "." + Name).Replace('.', '/')).Value;
+            Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
 
             Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
             Rectangle rectangle = new Rectangle(0, 0, texture.Width, texture.Height);
             Vector2 origin = rectangle.Size() / 2f;
 
-            SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            SpriteEffects spriteEffects2 = Backspin ? SpriteEffects.FlipVertically : SpriteEffects.None;
-
             Color color = Projectile.GetAlpha(lightColor);
             Color glowColor = Color.White * (1f - (Projectile.alpha / 255f));
             Color trailColor = TrailColor * (1f - (Projectile.alpha / 255f));
+
+            SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            SpriteEffects spriteEffects2 = Backspin ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
             float backglowAmount = 12f;
             for (int i = 0; i < backglowAmount; i++)
@@ -147,6 +149,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             Main.EntitySpriteDraw(texture, position, rectangle, color, Projectile.rotation, origin, Projectile.scale, spriteEffects | spriteEffects2, 0);
 
+            // 剣先にスパークルを描画する
             Vector2 offset = Utils.DirectionTo(Owner.MountedCenter, Projectile.Center) * 80f;
             MoreKatanaUtil.DrawPrettyStarSparkle(1f, SpriteEffects.None, position + offset, trailColor * (1 - progress), glowColor * (1 - progress),
                     0.5f, 0f, 0.1f, 0.9f, 1f, 0f, new Vector2(Projectile.scale, Projectile.scale * 1.5f), new Vector2(1f, 1f));

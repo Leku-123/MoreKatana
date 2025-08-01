@@ -35,6 +35,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         {
             Owner.SetDummyItemTime(2);
 
+            // 3振り目に葉を3wayで発射する
             if (type == 2 && Projectile.localAI[0] == 0)
             {
                 Projectile.localAI[0] = 1;
@@ -46,8 +47,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     float deg = 10;
                     for (int i = -1; i <= 1; i++)
                     {
-                        Vector2 normalizedVel = Vector2.Normalize(Projectile.velocity);
-                        Vector2 vector = normalizedVel.RotatedBy(MathHelper.ToRadians(deg) * i);
+                        Vector2 vector = Vector2.Normalize(Projectile.velocity).RotatedBy(MathHelper.ToRadians(deg) * i);
                         Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center, vector, ProjectileID.BladeOfGrass, Projectile.damage / 4, Projectile.knockBack, Projectile.owner);
                     }
                 }

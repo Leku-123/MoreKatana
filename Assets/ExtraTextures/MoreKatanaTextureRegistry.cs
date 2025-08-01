@@ -12,6 +12,8 @@ namespace MoreKatana.Assets.ExtraTextures
 
         #region Additive Textures
         public static Asset<Texture2D> BloomTexture => Request<Texture2D>(AdditivePath + "CircleGradient");
+        public static Asset<Texture2D> MagicCircleTexture => Request<Texture2D>(AdditivePath + "MagicCircle");
+        public static Asset<Texture2D> MagicRingTexture => Request<Texture2D>(AdditivePath + "MagicRing");
         #endregion
 
         #region Trail Textures

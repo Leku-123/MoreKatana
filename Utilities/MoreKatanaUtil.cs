@@ -5,6 +5,7 @@ using MoreKatana.Projectiles;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -212,24 +213,7 @@ namespace MoreKatana
         }
         #endregion
 
-        public static Vector2 TurnRight(this Vector2 vec) => new Vector2(-vec.Y, vec.X);
-
-        public static Vector2 TurnLeft(this Vector2 vec) => new Vector2(vec.Y, -vec.X);
-
-        /// <summary>
-        /// エンティティの中心を基準として任意の目的地に向かう単位ベクトルを取得する。<see cref="float.NaN"/>の安全性をfallbackの形で持っている
-        /// </summary>
-        /// <param name="entity"> チェックする対象のエンティティ </param>
-        /// <param name="destination"> 目的地に向かう方向 </param>
-        /// <param name="fallback"> 安全でない正規化が行われた場合に使用するfallback値 </param>
-        public static Vector2 SafeDirectionTo(this Entity entity, Vector2 destination, Vector2? fallback = null)
-        {
-            if (!fallback.HasValue)
-                fallback = Vector2.Zero;
-
-            return (destination - entity.Center).SafeNormalize(fallback.Value);
-        }
-
+        #region -------- Drawing Utils --------
         /// <summary>
         /// リング状にダストをスポーンする
         /// </summary>
@@ -253,6 +237,22 @@ namespace MoreKatana
             }
         }
 
+        /// <summary>
+        /// スパークルを描画する。発射体などの演出に
+        /// </summary>
+        /// <param name="opacity"></param>
+        /// <param name="dir"></param>
+        /// <param name="drawpos"></param>
+        /// <param name="drawColor"></param>
+        /// <param name="shineColor"></param>
+        /// <param name="flareCounter"></param>
+        /// <param name="fadeInStart"></param>
+        /// <param name="fadeInEnd"></param>
+        /// <param name="fadeOutStart"></param>
+        /// <param name="fadeOutEnd"></param>
+        /// <param name="rotation"></param>
+        /// <param name="scale"></param>
+        /// <param name="fatness"></param>
         public static void DrawPrettyStarSparkle(float opacity, SpriteEffects dir, Vector2 drawpos, Color drawColor, Color shineColor, float flareCounter, float fadeInStart, float fadeInEnd, float fadeOutStart, float fadeOutEnd, float rotation, Vector2 scale, Vector2 fatness)
         {
             Texture2D texture2D = TextureAssets.Extra[98].Value;
@@ -272,6 +272,36 @@ namespace MoreKatana
         }
 
         /// <summary>
+        /// テクスチャマッピングで圧縮、引き延ばしをする
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="color"></param>
+        /// <param name="rotation"></param>
+        /// <param name="opacity"></param>
+        /// <param name="Scale"></param>
+        /// <param name="Direction"></param>
+        /// <param name="CircularRotation"></param>
+        /// <param name="blendMode"></param>
+        public static void DrawCompression(Texture2D texture, Color color, float rotation, float opacity, Vector2 Scale, float Direction, float CircularRotation, BlendState blendMode)
+        {
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, blendMode, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+            Matrix viewMatrix;
+            Matrix projectionMatrix;
+            Helpers.CalculatePerspectiveMatricies(out viewMatrix, out projectionMatrix, 0);
+            GameShaders.Misc["Compression"].UseColor(color);
+            GameShaders.Misc["Compression"].UseSaturation(rotation);
+            GameShaders.Misc["Compression"].UseOpacity(opacity);
+            GameShaders.Misc["Compression"].Shader.Parameters["usc"].SetValue(Scale);
+            GameShaders.Misc["Compression"].Shader.Parameters["uDirection"].SetValue((float)Direction);
+            GameShaders.Misc["Compression"].Shader.Parameters["uCircularRotation"].SetValue(CircularRotation);
+            GameShaders.Misc["Compression"].Shader.Parameters["uImageSize0"].SetValue(Utils.Size(texture));
+            GameShaders.Misc["Compression"].Shader.Parameters["overallImageSize"].SetValue(Utils.Size(texture));
+            GameShaders.Misc["Compression"].Shader.Parameters["uWorldViewProjection"].SetValue(viewMatrix * projectionMatrix);
+            GameShaders.Misc["Compression"].Apply(default);
+        }
+
+        /// <summary>
         /// <see cref="Texture2D"/> から全ての色を取得し<see cref="Color"/>配列として返す
         /// </summary>
         /// <param name="texture"> 読み込むテクスチャ </param>
@@ -283,6 +313,25 @@ namespace MoreKatana
             Color[] xy = new Color[x * y];
             texture.GetData(xy); // テクスチャ内のすべての色で色の配列を埋める
             return xy;
+        }
+        #endregion
+
+        public static Vector2 TurnRight(this Vector2 vec) => new Vector2(-vec.Y, vec.X);
+
+        public static Vector2 TurnLeft(this Vector2 vec) => new Vector2(vec.Y, -vec.X);
+
+        /// <summary>
+        /// エンティティの中心を基準として任意の目的地に向かう単位ベクトルを取得する。<see cref="float.NaN"/>の安全性をfallbackの形で持っている
+        /// </summary>
+        /// <param name="entity"> チェックする対象のエンティティ </param>
+        /// <param name="destination"> 目的地に向かう方向 </param>
+        /// <param name="fallback"> 安全でない正規化が行われた場合に使用するfallback値 </param>
+        public static Vector2 SafeDirectionTo(this Entity entity, Vector2 destination, Vector2? fallback = null)
+        {
+            if (!fallback.HasValue)
+                fallback = Vector2.Zero;
+
+            return (destination - entity.Center).SafeNormalize(fallback.Value);
         }
     }
 }

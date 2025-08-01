@@ -35,7 +35,8 @@ namespace MoreKatana.Items.Katana.TerraKatanaTree
 
         public override void ActiveSkill(Player player)
         {
-
+            Item.UseSound = SoundID.MaxMana;
+            Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, player.SafeDirectionTo(Main.MouseWorld), ModContent.ProjectileType<SacredNaginataHoldout>(), Item.damage, Item.knockBack, player.whoAmI);
         }
 
         public override void MeleeEffects(Player player, Rectangle hitbox)

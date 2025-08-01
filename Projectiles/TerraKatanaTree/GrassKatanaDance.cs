@@ -11,7 +11,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
     {
         public override void Initialization(Item item, int type)
         {
+            // 振る向きをランダムにする
             Projectile.velocity = Vector2.UnitY.RotatedByRandom(MathHelper.TwoPi);
+
             Projectile.localNPCHitCooldown = 20 * Projectile.MaxUpdates;
             Projectile.MKProjectile().ActivateCD = true;
 
@@ -20,6 +22,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             NoSpeedBonus = true;
 
             GetTextureValues(this, item);
+
             SpawnLeaf(out _);
         }
 
@@ -34,13 +37,14 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         {
             Owner.SetDummyItemTime(2);
             Owner.AddBuff(BuffID.Featherfall, 10);
-            Owner.armorEffectDrawShadow = true;
-            Owner.FlipEffect(progress * 6f);
+            Owner.armorEffectDrawShadow = true; // プレイヤーの残像の効果
+            Owner.FlipEffect(progress * 6f); // フリップエフェクト
 
             if (progress == 0.5f)
             {
                 SpawnLeaf(out Vector2 vel);
 
+                // トレイルのみの斬撃を追加で発射
                 if (Projectile.owner == Main.myPlayer && type != 4)
                     Projectile.NewProjectile(Owner.GetSource_ItemUse(item), Owner.MountedCenter, vel, ModContent.ProjectileType<GrassKatanaDance2>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
             }
