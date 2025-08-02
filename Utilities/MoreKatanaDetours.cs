@@ -2,7 +2,7 @@
 using Terraria;
 using Terraria.DataStructures;
 
-namespace MoreKatana
+namespace MoreKatana.Utilities
 {
     public static class MoreKatanaDetours
     {

@@ -288,7 +288,7 @@ namespace MoreKatana
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, blendMode, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
             Matrix viewMatrix;
             Matrix projectionMatrix;
-            Helpers.CalculatePerspectiveMatricies(out viewMatrix, out projectionMatrix, 0);
+            ShaderHelpers.CalculatePerspectiveMatricies(out viewMatrix, out projectionMatrix, 0);
             GameShaders.Misc["Compression"].UseColor(color);
             GameShaders.Misc["Compression"].UseSaturation(rotation);
             GameShaders.Misc["Compression"].UseOpacity(opacity);

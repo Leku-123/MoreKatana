@@ -33,7 +33,8 @@ namespace MoreKatana
 
         public override void ResetEffects()
         {
-            ScreenLockPos = Player.position;
+            ScreenLockEntity = null;
+            ScreenLockPos = Vector2.Zero;
             if (ScreenShakeTimer > 0)
                 ScreenShakeTimer--;
             DashState = false;
