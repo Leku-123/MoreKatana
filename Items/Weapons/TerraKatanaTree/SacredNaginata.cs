@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace MoreKatana.Items.Katana.TerraKatanaTree
+namespace MoreKatana.Items.Weapons.TerraKatanaTree
 {
     public class SacredNaginata : KatanaItem
     {
@@ -21,11 +21,12 @@ namespace MoreKatana.Items.Katana.TerraKatanaTree
 
             Item.damage = 45;
             Item.knockBack = 4.5f;
+            Item.MKItem().AltDamage = 45;
 
             Item.value = Item.sellPrice(0, 4, 60);
             Item.rare = ItemRarityID.Pink;
 
-            Item.MKItem().SetKatanaDefaults(Item, 0, false, ModContent.ProjectileType<SacredNaginataSwing>(), 3);
+            Item.MKItem().SetKatanaDefaults(Item, 60, false, ModContent.ProjectileType<SacredNaginataSwing>(), 3);
         }
 
         public override void PassiveSkill(Player player, bool equipment)
@@ -36,7 +37,7 @@ namespace MoreKatana.Items.Katana.TerraKatanaTree
         public override void ActiveSkill(Player player)
         {
             Item.UseSound = SoundID.MaxMana;
-            Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, player.SafeDirectionTo(Main.MouseWorld), ModContent.ProjectileType<SacredNaginataHoldout>(), Item.damage, Item.knockBack, player.whoAmI);
+            Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, player.SafeDirectionTo(Main.MouseWorld), ModContent.ProjectileType<SacredNaginataHoldout>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI);
         }
 
         public override void MeleeEffects(Player player, Rectangle hitbox)

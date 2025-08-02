@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
-using MoreKatana.Items.Katana.Gem;
+using MoreKatana.Items.Weapons.Gem;
 using System;
 using System.Collections.Generic;
 using Terraria;

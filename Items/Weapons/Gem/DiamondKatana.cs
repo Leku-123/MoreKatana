@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using MoreKatana.Items.Katana.Metal;
+using MoreKatana.Items.Weapons.Metal;
 using MoreKatana.Projectiles.Gem;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace MoreKatana.Items.Katana.Gem
+namespace MoreKatana.Items.Weapons.Gem
 {
     public class DiamondKatana : KatanaItem
     {
@@ -25,11 +25,12 @@ namespace MoreKatana.Items.Katana.Gem
 
             Item.damage = 19;
             Item.knockBack = 5;
+            Item.MKItem().AltDamage = 19;
 
             Item.value = Item.sellPrice(0, 1, 80, 0);
             Item.rare = ItemRarityID.Green;
 
-            Item.MKItem().SetKatanaDefaults(Item, 0);
+            Item.MKItem().SetKatanaDefaults(Item, 60);
         }
 
         public override void PassiveSkill(Player player, bool equipment)

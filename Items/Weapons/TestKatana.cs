@@ -3,7 +3,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace MoreKatana.Items.Katana
+namespace MoreKatana.Items.Weapons
 {
     public class TestKatana : KatanaItem
     {

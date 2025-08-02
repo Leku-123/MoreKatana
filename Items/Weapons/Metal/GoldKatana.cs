@@ -1,7 +1,7 @@
 ﻿using Terraria;
 using Terraria.ID;
 
-namespace MoreKatana.Items.Katana.Metal
+namespace MoreKatana.Items.Weapons.Metal
 {
     public class GoldKatana : KatanaItem
     {
@@ -18,11 +18,12 @@ namespace MoreKatana.Items.Katana.Metal
 
             Item.damage = 20;
             Item.knockBack = 7;
+            Item.MKItem().AltDamage = 40;
 
             Item.value = Item.sellPrice(silver: 20);
             Item.rare = ItemRarityID.White;
 
-            Item.MKItem().SetKatanaDefaults(Item, 0, true);
+            Item.MKItem().SetKatanaDefaults(Item, 60, true);
         }
 
         public override void PassiveSkill(Player player, bool equipment)
@@ -34,7 +35,7 @@ namespace MoreKatana.Items.Katana.Metal
         {
             Item.UseSound = SoundID.Item71;
             Item.MKItem().ActivateCooldown(player);
-            player.CreateDashSlash(player.GetSource_ItemUse(Item), Item.damage, Item.knockBack, 500, 10f);
+            player.CreateDashSlash(player.GetSource_ItemUse(Item), Item.MKItem().AltDamage, Item.knockBack, 500, 10f);
         }
 
         public override void AddRecipes()

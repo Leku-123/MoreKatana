@@ -2,7 +2,7 @@
 using Terraria;
 using Terraria.ID;
 
-namespace MoreKatana.Items.Katana.TerraKatanaTree
+namespace MoreKatana.Items.Weapons.TerraKatanaTree
 {
     public class VolcanoKatana : KatanaItem
     {

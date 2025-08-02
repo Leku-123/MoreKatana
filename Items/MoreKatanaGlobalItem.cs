@@ -1,8 +1,10 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Buffs;
-using MoreKatana.Items.Katana;
+using MoreKatana.Items.Weapons;
 using MoreKatana.Projectiles;
 using MoreKatana.UI;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
@@ -18,9 +20,10 @@ namespace MoreKatana.Items
         public override bool InstancePerEntity => true;
 
         public bool Katana;              // 刀
-        private int ActiveSkillDelay;    // アクティブスキルのCDの時間
-        private int SwingComboCount = 1; // 振りのコンボ数
-        private int SwingType = 0;       // 振りの種類
+        public int AltDamage;            // アクティブスキルのダメージ
+        public int ActiveSkillDelay;     // アクティブスキルのCDの時間
+        public int SwingComboCount = 1;  // 振りのコンボ数
+        public int SwingType = 0;        // 振りの種類
         private int AIType;
 
         /// <summary>
@@ -75,12 +78,14 @@ namespace MoreKatana.Items
             if (item.type == ItemID.Katana)
             {
                 item.UseSound = SoundID.Item1;
-                SetKatanaDefaults(item, 300, true);
+                item.MKItem().AltDamage = 36;
+                SetKatanaDefaults(item, 60, true);
             }
             if (item.type == ItemID.Muramasa)
             {
                 item.UseSound = SoundID.Item1;
-                SetKatanaDefaults(item, 300, true, combo: 2);
+                item.MKItem().AltDamage = 48;
+                SetKatanaDefaults(item, 60, true, combo: 2);
             }
         }
 
@@ -172,6 +177,34 @@ namespace MoreKatana.Items
             }
         }
 
+        private void VanillaActiveSkill(Item item, Player player)
+        {
+            if (item.type == ItemID.Katana)
+            {
+                item.UseSound = SoundID.Item71;
+                ActivateCooldown(player);
+                player.CreateDashSlash(player.GetSource_ItemUse(item), AltDamage, item.knockBack, 400, 10f);
+            }
+            if (item.type == ItemID.Muramasa)
+            {
+                // 汎用ダッシュ + 
+                // ダッシュで通った場所から何かしらの発射体をスポーンさせます
+                // or ダッシュ開始時に何かしらの発射体をスポーンさせます
+            }
+        }
+
+        private void VanillaPassiveSkill(Item item, Player player, bool equipment)
+        {
+            if (item.type == ItemID.Katana)
+            {
+                player.statDefense += 2;
+            }
+            if (item.type == ItemID.Muramasa)
+            {
+                // 専用ゲージを用意してダメージを受けなければ攻撃力が上昇するシステムを作りたい
+            }
+        }
+
         public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player)
         {
             if ((equippedItem.type is ItemID.Katana or ItemID.Muramasa || equippedItem.ModItem is KatanaItem)
@@ -195,14 +228,50 @@ namespace MoreKatana.Items
             return base.CanEquipAccessory(item, player, slot, modded);
         }
 
+        public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
+        {
+            if (line.Name == "DefaultText")
+            {
+                Vector2 lineposition = new Vector2(line.OriginalX, line.OriginalY);
+                Utils.DrawBorderString(Main.spriteBatch, line.Text, lineposition, Color.LightGoldenrodYellow);
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null, null, Main.UIScaleMatrix);
+                for (int i = 0; i < 4; i++)
+                {
+                    Vector2 drawpos = lineposition + new Vector2(0, 2 * ((float)Math.Sin(Main.GlobalTimeWrappedHourly * 4) / 2)).RotatedBy(i * MathHelper.PiOver2);
+                    Utils.DrawBorderString(Main.spriteBatch, line.Text, drawpos, Color.Goldenrod);
+                }
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
+                return false;
+            }
+            return base.PreDrawTooltipLine(item, line, ref yOffset);
+        }
+
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
-            int index = tooltips.FindIndex(x => x.Name == "Material");
-            if (index < 0)
-                return;
+            if (Katana)
+            {
+                int index = tooltips.FindIndex(x => x.Name == "Damage");
+                if (index < 0)
+                    return;
+
+                TooltipLine tip = new TooltipLine(Mod, "Verbose:NewDamage", $"{item.damage} / [c/FFB6C1:{AltDamage}] {item.DamageType.DisplayName}");
+                tooltips.Insert(index + 1, tip);
+
+                foreach (var i in tooltips)
+                {
+                    if (i.Name.EndsWith("Damage") && !i.Name.EndsWith(":NewDamage"))
+                        i.Hide();
+                }
+            }
 
             if (item.type is ItemID.Katana or ItemID.Muramasa)
             {
+                int index = tooltips.FindIndex(x => x.Name == "Material");
+                if (index < 0)
+                    return;
+
                 TooltipLine tip;
                 if (!ItemSlot.ShiftInUse)
                     tip = new TooltipLine(Mod, "DefaultText", Language.GetTextValue($"Mods.MoreKatana.{nameof(KatanaItem)}.DefaultText"));
@@ -210,34 +279,6 @@ namespace MoreKatana.Items
                     tip = new TooltipLine(Mod, "FunctionText", Language.GetTextValue($"Mods.MoreKatana.Items.{item.Name}.FunctionText"));
 
                 tooltips.Insert(index + 1, tip);
-            }
-        }
-
-        private void VanillaActiveSkill(Item item, Player player)
-        {
-            if (item.type == ItemID.Katana)
-            {
-                item.UseSound = SoundID.Item71;
-                ActivateCooldown(player);
-                player.CreateDashSlash(player.GetSource_ItemUse(item), item.damage, item.knockBack, 400, 10f);
-            }
-            if (item.type == ItemID.Muramasa)
-            {
-                // 汎用ダッシュ + 
-                // ダッシュで通った場所から何かしらの発射体をスポーンさせます
-                // or ダッシュ開始時に何かしらの発射体をスポーンさせます
-            }
-        }
-
-        private void VanillaPassiveSkill(Item item, Player player, bool equipment)
-        {
-            if (item.type == ItemID.Katana)
-            {
-                player.statDefense += 2;
-            }
-            if (item.type == ItemID.Muramasa)
-            {
-                // 専用ゲージを用意してダメージを受けなければ攻撃力が上昇するシステムを作りたい
             }
         }
     }

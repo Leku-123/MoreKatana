@@ -1,46 +1,47 @@
 ﻿using Terraria;
 using Terraria.ID;
 
-namespace MoreKatana.Items.Katana.Metal
+namespace MoreKatana.Items.Weapons.Metal
 {
-    public class PlatinumKatana : KatanaItem
+    public class TungstenKatana : KatanaItem
     {
-        public override KatanaID ID => KatanaID.Platinum;
+        public override KatanaID ID => KatanaID.Tungsten;
 
         public override void SetDefaultsItem()
         {
-            Item.width = 50;
-            Item.height = 60;
+            Item.width = 48;
+            Item.height = 54;
 
             Item.useTime = 16;
             Item.useAnimation = 16;
             Item.UseSound = SoundID.Item1;
 
-            Item.damage = 18;
-            Item.knockBack = 7;
+            Item.damage = 20;
+            Item.knockBack = 6;
+            Item.MKItem().AltDamage = 40;
 
-            Item.value = Item.sellPrice(silver: 30);
+            Item.value = Item.sellPrice(silver: 15, copper: 50);
             Item.rare = ItemRarityID.White;
 
-            Item.MKItem().SetKatanaDefaults(Item, 300, true);
+            Item.MKItem().SetKatanaDefaults(Item, 60, true);
         }
 
         public override void PassiveSkill(Player player, bool equipment)
         {
-            player.statDefense += 4;
+            player.statDefense += 3;
         }
 
         public override void ActiveSkill(Player player)
         {
             Item.UseSound = SoundID.Item71;
             Item.MKItem().ActivateCooldown(player);
-            player.CreateDashSlash(player.GetSource_ItemUse(Item), Item.damage, Item.knockBack, 500, 10f);
+            player.CreateDashSlash(player.GetSource_ItemUse(Item), Item.MKItem().AltDamage, Item.knockBack, 450, 10f);
         }
 
         public override void AddRecipes()
         {
             CreateRecipe()
-                .AddIngredient(ItemID.PlatinumBar, 10)
+                .AddIngredient(ItemID.TungstenBar, 10)
                 .AddTile(TileID.Anvils)
                 .Register();
         }
