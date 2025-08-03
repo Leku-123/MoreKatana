@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
+using MoreKatana.Assets.ItemTextures;
 using MoreKatana.Prim;
 using MoreKatana.Utilities;
 using ReLogic.Content;
@@ -31,6 +32,7 @@ namespace MoreKatana
         {
             MoreKatanaDetours.Initialize();
             MoreKatanaTextures.LoadTextures();
+            MoreKatanaItemTextures.LoadItemTextures();
 
             if (Main.netMode != NetmodeID.Server)
             {
@@ -63,6 +65,7 @@ namespace MoreKatana
 
             MoreKatanaDetours.Unload();
             MoreKatanaTextures.UnloadTextures();
+            MoreKatanaItemTextures.UnloadItemTextures();
         }
     }
 }
