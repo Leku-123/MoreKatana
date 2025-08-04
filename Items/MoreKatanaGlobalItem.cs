@@ -153,7 +153,6 @@ namespace MoreKatana.Items
                 {
                     Projectile.NewProjectile(source, position, velocity, SwingType, damage, knockback, player.whoAmI, AIType);
                     AIType = (AIType + 1) % SwingComboCount;
-                    return false;
                 }
             }
 

@@ -48,6 +48,8 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             }
         }
 
+        public override bool CanUseItem(Player player) => Bomber = base.CanUseItem(player);
+
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
         {
             if (Main.rand.NextBool(2))
@@ -64,12 +66,5 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
                 Bomber = false;
             }
         }
-
-        public override bool CanUseItem(Player player)
-        {
-            Bomber = true;
-            return base.CanUseItem(player);
-        }
-
     }
 }
