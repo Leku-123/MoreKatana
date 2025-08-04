@@ -16,11 +16,16 @@ namespace MoreKatana.UI
     {
         public static LocalizedText KatanasText { get; private set; }
 
+        public bool MouseDrag = false;
+
+        public Vector2 Location = Vector2.Zero;
+
         public override void SetupContent()
         {
             // マウスをホバーしたときのテキスト
             KatanasText = Mod.GetLocalization($"{nameof(KatanaSlot)}.Katana");
         }
+
 
         public override void Load()
         {
@@ -34,12 +39,20 @@ namespace MoreKatana.UI
         {
             get
             {
-                int height = 175;
-                if (Main.mapStyle == 1)
+                if (Main.mouseMiddle || Location == Vector2.Zero)
                 {
-                    height += Main.miniMapHeight + 16;
+                    Location.Y = 175;
+                    Location.X = Main.screenWidth - 246;
+                    if (Main.mapStyle == 1)
+                    {
+                        Location.Y += Main.miniMapHeight + 16;
+                    }
                 }
-                return new Vector2?(new Vector2(Main.screenWidth - 246, height));
+                if (MouseDrag && !Main.mouseMiddle)
+                {
+                    Location = Main.MouseScreen;
+                }
+                return Location;
             }
         }
 
@@ -62,6 +75,11 @@ namespace MoreKatana.UI
 
         public override void OnMouseHover(AccessorySlotType context)
         {
+            if (Main.mouseRight)
+                MouseDrag = true;
+            else
+                MouseDrag = false;
+
             switch (context)
             {
                 case AccessorySlotType.FunctionalSlot:

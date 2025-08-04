@@ -281,8 +281,10 @@ namespace MoreKatana.Items
                         tip = new TooltipLine(Mod, "DefaultText", Language.GetTextValue("Mods.MoreKatana.Tooltips.DefaultText"));
                     else
                     {
-                        tip = new TooltipLine(Mod, "FunctionText", Language.GetTextValue($"Mods.MoreKatana.Items.{item.Name}.FunctionText"));
-
+                        if (item.type == ItemID.Katana)
+                            tip = new TooltipLine(Mod, "FunctionText", Language.GetTextValue($"Mods.MoreKatana.Items.Katana.FunctionText"));
+                        else
+                            tip = new TooltipLine(Mod, "FunctionText", Language.GetTextValue($"Mods.MoreKatana.Items.Muramasa.FunctionText"));
                         // クールダウンを挿入
                         tooltips.Insert(index2 + 1, cd);
                     }
