@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using MoreKatana.Projectiles.TerraKatanaTree;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace MoreKatana.Items.Weapons.TerraKatanaTree
 {
@@ -13,8 +15,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         public override void SetDefaultsItem()
         {
-            // TODO : Ball of Fireは魔法ダメージなので近接ダメ―ジに修正したプロジェクタイルを追加して差し替える。
-            Item.shoot = ProjectileID.BallofFire;
+            Item.shoot = ModContent.ProjectileType<BallofVolcano>();
             Item.MKItem().SetKatanaDefaults(Item, 1);
 
             Item.width = 54;
