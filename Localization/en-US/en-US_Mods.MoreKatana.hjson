@@ -1,2 +1,7 @@
-KatanaItem.DefaultText: - Press-Shift to learn more -
 KatanaSlot.Katana: Katana
+
+Tooltips: {
+	DefaultText: - Press-Shift to learn more -
+	ActiveSkillCD: Cooldown
+	Second: sec.
+}

@@ -255,29 +255,59 @@ namespace MoreKatana.Items
                 if (index < 0)
                     return;
 
-                TooltipLine tip = new TooltipLine(Mod, "Verbose:NewDamage", $"{item.damage} / [c/FFB6C1:{AltDamage}] {item.DamageType.DisplayName}");
-                tooltips.Insert(index + 1, tip);
+                // ダメージ表記を新たに挿入
+                TooltipLine dam = new TooltipLine(Mod, "Verbose:NewDamage", $"{item.damage} / [c/FFB6C1:{AltDamage}] {item.DamageType.DisplayName}");
+                tooltips.Insert(index + 1, dam);
 
+                // 元々のダメージ表記のラインを非表示にする
                 foreach (var i in tooltips)
                 {
                     if (i.Name.EndsWith("Damage") && !i.Name.EndsWith(":NewDamage"))
                         i.Hide();
                 }
-            }
 
-            if (item.type is ItemID.Katana or ItemID.Muramasa)
-            {
-                int index = tooltips.FindIndex(x => x.Name == "Material");
-                if (index < 0)
+                // クールダウン表記
+                TooltipLine cd = new TooltipLine(Mod, "CD", "- " + Language.GetTextValue("Mods.MoreKatana.Tooltips.ActiveSkillCD") + ": " + ((float)ActiveSkillDelay / 60).ToString("F1") + " " + Language.GetTextValue("Mods.MoreKatana.Tooltips.Second"));
+
+                if (item.type is ItemID.Katana or ItemID.Muramasa)
+                {
+                    // "Material" なのはカタナとムラマサにはツールチップ用のラインが存在しないため
+                    int index2 = tooltips.FindIndex(x => x.Name == "Material");
+                    if (index2 < 0)
+                        return;
+
+                    TooltipLine tip;
+                    if (!ItemSlot.ShiftInUse)
+                        tip = new TooltipLine(Mod, "DefaultText", Language.GetTextValue("Mods.MoreKatana.Tooltips.DefaultText"));
+                    else
+                    {
+                        tip = new TooltipLine(Mod, "FunctionText", Language.GetTextValue($"Mods.MoreKatana.Items.{item.Name}.FunctionText"));
+
+                        // クールダウンを挿入
+                        tooltips.Insert(index2 + 1, cd);
+                    }
+
+                    // スキル説明を挿入
+                    tooltips.Insert(index2 + 1, tip);
+                }
+
+                int index3 = tooltips.FindIndex(x => x.Name == "Tooltip0");
+                if (index3 < 0)
                     return;
 
-                TooltipLine tip;
+                TooltipLine tip2;
                 if (!ItemSlot.ShiftInUse)
-                    tip = new TooltipLine(Mod, "DefaultText", Language.GetTextValue($"Mods.MoreKatana.{nameof(KatanaItem)}.DefaultText"));
+                    tip2 = new TooltipLine(Mod, "DefaultText", Language.GetTextValue("Mods.MoreKatana.Tooltips.DefaultText"));
                 else
-                    tip = new TooltipLine(Mod, "FunctionText", Language.GetTextValue($"Mods.MoreKatana.Items.{item.Name}.FunctionText"));
+                {
+                    tip2 = new TooltipLine(Mod, "FunctionText", (string)(item.ModItem as KatanaItem).FunctionText);
 
-                tooltips.Insert(index + 1, tip);
+                    // クールダウンを挿入
+                    tooltips.Insert(index3, cd);
+                }
+
+                // スキル説明を挿入
+                tooltips.Insert(index3, tip2);
             }
         }
     }

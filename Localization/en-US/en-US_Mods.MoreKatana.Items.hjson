@@ -21,11 +21,7 @@ TestKatana: {
 
 WoodenKatana: {
 	DisplayName: Wooden Katana
-	Tooltip:
-		'''
-		[FUNC]
-		"Hard and sturdy."
-		'''
+	Tooltip: '''"Hard and sturdy."'''
 	FunctionText:
 		'''
 		Katana Spell [c/A3A3A3:<None>]
@@ -36,7 +32,7 @@ WoodenKatana: {
 
 TinKatana: {
 	DisplayName: Tin Katana
-	Tooltip: "[FUNC]"
+	Tooltip: ""
 	FunctionText:
 		'''
 		Katana Spell [c/ADAC58:<Tin Protection>]
@@ -48,7 +44,7 @@ TinKatana: {
 
 CopperKatana: {
 	DisplayName: Copper Katana
-	Tooltip: "[FUNC]"
+	Tooltip: ""
 	FunctionText:
 		'''
 		Katana Spell [c/C56A2B:<Copper Protection>]
@@ -60,7 +56,7 @@ CopperKatana: {
 
 LeadKatana: {
 	DisplayName: Lead Katana
-	Tooltip: "[FUNC]"
+	Tooltip: ""
 	FunctionText:
 		'''
 		Katana Spell [c/6B8C9E:<Lead Protection>]
@@ -72,7 +68,7 @@ LeadKatana: {
 
 SilverKatana: {
 	DisplayName: Silver Katana
-	Tooltip: "[FUNC]"
+	Tooltip: ""
 	FunctionText:
 		'''
 		Katana Spell [c/B5BCBF:<Silver Protection>]
@@ -84,7 +80,7 @@ SilverKatana: {
 
 TungstenKatana: {
 	DisplayName: Tungsten Katana
-	Tooltip: "[FUNC]"
+	Tooltip: ""
 	FunctionText:
 		'''
 		Katana Spell [c/C4E5C2:<Tungsten Protection>]
@@ -96,7 +92,7 @@ TungstenKatana: {
 
 GoldKatana: {
 	DisplayName: Gold Katana
-	Tooltip: "[FUNC]"
+	Tooltip: ""
 	FunctionText:
 		'''
 		Katana Spell [c/D5DA5D:<Gold Protection>]
@@ -108,7 +104,7 @@ GoldKatana: {
 
 PlatinumKatana: {
 	DisplayName: Platinum Katana
-	Tooltip: "[FUNC]"
+	Tooltip: ""
 	FunctionText:
 		'''
 		Katana Spell [c/E6E6E6:<Platinum Protection>]
@@ -120,7 +116,7 @@ PlatinumKatana: {
 
 AmethystKatana: {
 	DisplayName: Amethyst Katana
-	Tooltip: "[FUNC]"
+	Tooltip: ""
 	FunctionText:
 		'''
 		Katana Spell <Gem Shards>
@@ -132,7 +128,7 @@ AmethystKatana: {
 
 TopazKatana: {
 	DisplayName: Topaz Katana
-	Tooltip: "[FUNC]"
+	Tooltip: ""
 	FunctionText:
 		'''
 		Katana Spell <Gem Shards>
@@ -144,7 +140,7 @@ TopazKatana: {
 
 SapphireKatana: {
 	DisplayName: Sapphire Katana
-	Tooltip: "[FUNC]"
+	Tooltip: ""
 	FunctionText:
 		'''
 		Katana Spell <Gem Shards>
@@ -156,7 +152,7 @@ SapphireKatana: {
 
 EmeraldKatana: {
 	DisplayName: Emerald Katana
-	Tooltip: "[FUNC]"
+	Tooltip: ""
 	FunctionText:
 		'''
 		Katana Spell <Gem Shards>
@@ -168,7 +164,7 @@ EmeraldKatana: {
 
 RubyKatana: {
 	DisplayName: Ruby Katana
-	Tooltip: "[FUNC]"
+	Tooltip: ""
 	FunctionText:
 		'''
 		Katana Spell <Gem Shards>
@@ -180,7 +176,7 @@ RubyKatana: {
 
 DiamondKatana: {
 	DisplayName: Diamond Katana
-	Tooltip: "[FUNC]"
+	Tooltip: ""
 	FunctionText:
 		'''
 		Katana Spell <Gem Shards>
@@ -192,11 +188,7 @@ DiamondKatana: {
 
 GrassKatana: {
 	DisplayName: Kusanagi
-	Tooltip:
-		'''
-		[FUNC]
-		"This legendary Japanese sword is made of grass...?"
-		'''
+	Tooltip: '''"This legendary Japanese sword is made of grass...?"'''
 	FunctionText:
 		'''
 		Katana Spell [c/00FF00:<Photosynthesis>]
