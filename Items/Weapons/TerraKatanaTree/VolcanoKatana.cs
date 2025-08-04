@@ -1,21 +1,22 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace MoreKatana.Items.Weapons.TerraKatanaTree
 {
     public class VolcanoKatana : KatanaItem
     {
+
+        private bool Bomber = true;
+
         public override KatanaID ID => KatanaID.Volcano;
 
         public override void SetDefaultsItem()
         {
-            Item.DamageType = DamageClass.Melee;
-            Item.useStyle = ItemUseStyleID.Swing;
-            Item.autoReuse = true;
-            Item.useTurn = true;
+            // TODO : Ball of Fireは魔法ダメージなので近接ダメ―ジに修正したプロジェクタイルを追加して差し替える。
+            Item.shoot = ProjectileID.BallofFire;
+            Item.MKItem().SetKatanaDefaults(Item, 1);
+
             Item.width = 54;
             Item.height = 64;
             Item.useTime = 40;
@@ -25,9 +26,6 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             Item.knockBack = 6.5f;
             Item.value = Item.sellPrice(silver: 55);
             Item.rare = ItemRarityID.Orange;
-
-            //WIP 仮で発射
-            Item.shoot = ProjectileID.BallofFire;
             Item.shootSpeed = 10f;
         }
 
@@ -59,16 +57,19 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
                 if (player.ZoneSnow)
                     hit.Damage *= 2;
 
-            if (player.ItemAnimationJustStarted && Main.myPlayer == Item.whoAmI && (target == null || target.HittableForOnHitRewards()))
+            if (Bomber && Main.myPlayer == Item.whoAmI && (target == null || target.HittableForOnHitRewards()))
             {
                 Vector2 center = target.Center;
                 Projectile.NewProjectile(player.GetSource_ItemUse(Item), center.X, center.Y, 0f, -1f * player.gravDir, ProjectileID.Volcano, Item.damage, Item.knockBack, player.whoAmI, 0f, 2f, 0f);
+                Bomber = false;
             }
         }
 
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        public override bool CanUseItem(Player player)
         {
-            return base.Shoot(player, source, position, velocity, type, damage, knockback);
+            Bomber = true;
+            return base.CanUseItem(player);
         }
+
     }
 }
