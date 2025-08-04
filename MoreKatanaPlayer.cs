@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
@@ -25,6 +26,8 @@ namespace MoreKatana
         public Vector2 DashDirection, DashStartPos, DashEndPos;
 
         public float Flipping;
+        public bool SetBuffImmune;
+        public List<int[]> BuffImmuneList;
 
         public override void OnEnterWorld()
         {
@@ -41,13 +44,14 @@ namespace MoreKatana
             if (!GeneralDash)
                 DashTimer = 0f;
             Flipping = 0f;
+            SetBuffImmune = false;
+            BuffImmuneList = new List<int[]>();
         }
 
         public override void UpdateDead()
         {
             ResetEffects();
             GeneralDash = false;
-            Flipping = 0f;
         }
 
         public override void ModifyScreenPosition()
@@ -99,6 +103,27 @@ namespace MoreKatana
             }*/
         }
 
+        public override void PostUpdateMiscEffects()
+        {
+            SetBuffImmuneEffects(Player);
+        }
+
+        public static void SetBuffImmuneEffects(Player player)
+        {
+            if (player.MKPlayer().SetBuffImmune)
+            {
+                for (int i = 0; i < player.MKPlayer().BuffImmuneList.Count; i++)
+                {
+                    int[] j = player.MKPlayer().BuffImmuneList[i];
+                    foreach (int k in j)
+                    {
+                        player.buffImmune[k] = true;
+                        player.ClearBuff(k);
+                    }
+                }
+            }
+        }
+
         public override void PostUpdateRunSpeeds()
         {
             // 汎用の簡単なダッシュ
@@ -133,6 +158,11 @@ namespace MoreKatana
 
                 DashTimer++;
             }
+        }
+
+        public override void PostUpdate()
+        {
+            //Main.NewText($"{}"); // デバッグ用なので残しておいて
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)

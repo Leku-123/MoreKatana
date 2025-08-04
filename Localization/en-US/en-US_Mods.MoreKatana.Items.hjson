@@ -205,9 +205,9 @@ VolcanoKatana: {
 }
 
 SacredNaginata: {
-	FunctionText: Mods.MoreKatana.Items.SacredNaginata.FunctionText
-	DisplayName: Sacred Naginata
+	DisplayName: Gaeborg
 	Tooltip: ""
+	FunctionText: Mods.MoreKatana.Items.SacredNaginata.FunctionText
 }
 
 BrokenHeroKatana: {

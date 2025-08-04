@@ -19,12 +19,14 @@ namespace MoreKatana.Items
     {
         public override bool InstancePerEntity => true;
 
-        public bool Katana;              // 刀
-        public int AltDamage;            // アクティブスキルのダメージ
-        public int ActiveSkillDelay;     // アクティブスキルのCDの時間
-        public int SwingComboCount = 1;  // 振りのコンボ数
-        public int SwingType = 0;        // 振りの種類
-        private int AIType;
+        public bool Katana;             // 刀
+        public int AltDamage;           // アクティブスキルのダメージ
+        public int ActiveSkillDelay;    // アクティブスキルのCDの時間
+        public int SwingComboCount = 1; // 振りのコンボ数
+        public int SwingType = 0;       // 振りの種類
+
+        private int AttackType;
+        private int ComboExpireTimer = 0;
 
         /// <summary>
         /// 刀の基本的なステータス
@@ -49,7 +51,7 @@ namespace MoreKatana.Items
             // 発射体が指定されていない場合、ダミーの発射体を発射する
             // Shoot()を適用させたいため
             item.shoot = item.shoot == ProjectileID.None ? ModContent.ProjectileType<Empty>() : item.shoot;
-            item.shootSpeed = 1f;
+            item.shootSpeed = item.shootSpeed == 0f ? 1f : item.shootSpeed;
 
             Katana = true;
             ActiveSkillDelay = delay;
@@ -110,7 +112,6 @@ namespace MoreKatana.Items
                     {
                         // バニラアイテムのアクティブスキル
                         VanillaActiveSkill(item, player);
-                        ActivateCooldown(player);
                     }
                     else
                     {
@@ -126,6 +127,10 @@ namespace MoreKatana.Items
         {
             if (Katana)
             {
+                // 120fごとにコンボをリセットする
+                if (ComboExpireTimer++ >= 120)
+                    AttackType = 0;
+
                 if (item.type is ItemID.Katana or ItemID.Muramasa)
                 {
                     // バニラアイテムのパッシブスキル
@@ -151,8 +156,9 @@ namespace MoreKatana.Items
             {
                 if (!player.IsUsingAlt())
                 {
-                    Projectile.NewProjectile(source, position, velocity, SwingType, damage, knockback, player.whoAmI, AIType);
-                    AIType = (AIType + 1) % SwingComboCount;
+                    Projectile.NewProjectile(source, position, velocity, SwingType, damage, knockback, player.whoAmI, AttackType);
+                    AttackType = (AttackType + 1) % SwingComboCount;
+                    ComboExpireTimer = 0;
                 }
             }
 
@@ -186,9 +192,7 @@ namespace MoreKatana.Items
             }
             if (item.type == ItemID.Muramasa)
             {
-                // 汎用ダッシュ + 
-                // ダッシュで通った場所から何かしらの発射体をスポーンさせます
-                // or ダッシュ開始時に何かしらの発射体をスポーンさせます
+
             }
         }
 
@@ -200,7 +204,7 @@ namespace MoreKatana.Items
             }
             if (item.type == ItemID.Muramasa)
             {
-                // 専用ゲージを用意してダメージを受けなければ攻撃力が上昇するシステムを作りたい
+
             }
         }
 
@@ -285,6 +289,7 @@ namespace MoreKatana.Items
                             tip = new TooltipLine(Mod, "FunctionText", Language.GetTextValue($"Mods.MoreKatana.Items.Katana.FunctionText"));
                         else
                             tip = new TooltipLine(Mod, "FunctionText", Language.GetTextValue($"Mods.MoreKatana.Items.Muramasa.FunctionText"));
+                        
                         // クールダウンを挿入
                         tooltips.Insert(index2 + 1, cd);
                     }

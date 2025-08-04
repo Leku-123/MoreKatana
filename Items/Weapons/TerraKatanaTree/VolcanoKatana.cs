@@ -8,34 +8,37 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 {
     public class VolcanoKatana : KatanaItem
     {
-
         private bool Bomber = true;
+
+        private readonly int[] VolcanoBuffImmune = [BuffID.Frostburn, BuffID.Chilled, BuffID.Frozen, BuffID.Frostburn2];
 
         public override KatanaID ID => KatanaID.Volcano;
 
         public override void SetDefaultsItem()
         {
-            Item.shoot = ModContent.ProjectileType<BallofVolcano>();
-            Item.MKItem().SetKatanaDefaults(Item, 1);
+            Item.width = 56;
+            Item.height = 70;
 
-            Item.width = 54;
-            Item.height = 64;
             Item.useTime = 40;
             Item.useAnimation = 40;
             Item.UseSound = SoundID.Item1;
+
             Item.damage = 40;
             Item.knockBack = 6.5f;
+            Item.MKItem().AltDamage = 40;
+
             Item.value = Item.sellPrice(silver: 55);
             Item.rare = ItemRarityID.Orange;
+
+            Item.shoot = ModContent.ProjectileType<BallofVolcano>();
             Item.shootSpeed = 10f;
+
+            Item.MKItem().SetKatanaDefaults(Item, 60, true);
         }
 
         public override void PassiveSkill(Player player, bool equipment)
         {
-            player.buffImmune[BuffID.Chilled] = true;
-            player.buffImmune[BuffID.Frostburn] = true;
-            player.buffImmune[BuffID.Frostburn2] = true;
-            player.buffImmune[BuffID.Frozen] = true;
+            player.SetBuffImmuneEffect(VolcanoBuffImmune);
         }
 
         public override void MeleeEffects(Player player, Rectangle hitbox)
@@ -60,7 +63,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
                 if (player.ZoneSnow)
                     hit.Damage *= 2;
 
-            if (Bomber && Main.myPlayer == Item.whoAmI && (target == null || target.HittableForOnHitRewards()))
+            if (Bomber && Main.myPlayer == player.whoAmI && (target == null || target.HittableForOnHitRewards()))
             {
                 Vector2 center = target.Center;
                 Projectile.NewProjectile(player.GetSource_ItemUse(Item), center.X, center.Y, 0f, -1f * player.gravDir, ProjectileID.Volcano, Item.damage, Item.knockBack, player.whoAmI, 0f, 2f, 0f);
