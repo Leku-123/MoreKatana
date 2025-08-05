@@ -49,8 +49,8 @@ namespace MoreKatana.UI
             }
         }
 
-        public override string FunctionalTexture => "MoreKatana/UI/KatanaSlot";
-        public override string FunctionalBackgroundTexture => "Terraria/Images/Inventory_Back7";
+        public override string FunctionalTexture => "MoreKatana/UI/KatanaSlot_Icon";
+        public override string FunctionalBackgroundTexture => "MoreKatana/UI/KatanaSlot_Back";
 
         public override bool DrawFunctionalSlot => Main.EquipPage != 1 && (!UILinkPointNavigator.Shortcuts.NPCS_IconsDisplay || !PlayerInput.UsingGamepad);
 
