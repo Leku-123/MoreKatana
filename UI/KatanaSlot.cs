@@ -14,11 +14,16 @@ namespace MoreKatana.UI
 
     public class KatanaSlot : ModAccessorySlot
     {
-        public static LocalizedText KatanasText { get; private set; }
+        internal const float DefaultPosX = 50f;
+        internal const float DefaultPosY = 50f;
 
         public bool MouseDrag = false;
 
-        public Vector2 Location = Vector2.Zero;
+        public Vector2? Location = null;
+
+        public MoreKatanaConfig Config => MoreKatanaConfig.Instance;
+
+        public static LocalizedText KatanasText { get; private set; }
 
         public override void SetupContent()
         {
@@ -32,27 +37,15 @@ namespace MoreKatana.UI
             AccessorySystem.KatanaSlots = Type;
         }
 
-        // アクセサリースロットを頭の染料スロットの横に設置する
-        // 仮なのでもっと分かりやすい場所に変えても良い
-        // ModConfig作って位置を調節できるようにしても良いかもしれないですね
         public override Vector2? CustomLocation
         {
             get
             {
-                if (Main.mouseMiddle || Location == Vector2.Zero)
-                {
-                    Location.Y = 175;
-                    Location.X = Main.screenWidth - 246;
-                    if (Main.mapStyle == 1)
-                    {
-                        Location.Y += Main.miniMapHeight + 16;
-                    }
-                }
-                if (MouseDrag && !Main.mouseMiddle)
-                {
-                    Location = Main.MouseScreen;
-                }
-                return Location;
+                if (!Config.AccSlotPosLock)
+                    return Location;
+
+                // カスタム位置がロックされている場合nullを返す
+                return null;
             }
         }
 
@@ -71,6 +64,47 @@ namespace MoreKatana.UI
                 AccessorySystem.KatanaSlots = Type;
 
             return checkItem.MKItem().Katana; // Katanaならスロットに入れられる
+        }
+
+        public override bool PreDraw(AccessorySlotType context, Item item, Vector2 position, bool isHovered)
+        {
+            Vector2 screenRatioPosition = new Vector2(Config.CustomAccSlotPosX, Config.CustomAccSlotPosY);
+            if (screenRatioPosition.X < 0f || screenRatioPosition.X > 100f)
+                screenRatioPosition.X = DefaultPosX;
+            if (screenRatioPosition.Y < 0f || screenRatioPosition.Y > 100f)
+                screenRatioPosition.Y = DefaultPosY;
+
+            if (MouseDrag)
+            {
+                screenRatioPosition.X = (int)(Main.MouseScreen.X / 0.01f / Main.screenWidth);
+                screenRatioPosition.Y = (int)(Main.MouseScreen.Y / 0.01f / Main.screenHeight);
+            }
+
+            Vector2 screenPos = screenRatioPosition;
+            screenPos.X = (int)(screenPos.X * 0.01f * Main.screenWidth);
+            screenPos.Y = (int)(screenPos.Y * 0.01f * Main.screenHeight);
+
+            Location = screenPos;
+
+            if (!Config.AccSlotPosLock)
+            {
+                bool changed = false;
+                if (Config.CustomAccSlotPosX != screenRatioPosition.X)
+                {
+                    Config.CustomAccSlotPosX = screenRatioPosition.X;
+                    changed = true;
+                }
+                if (Config.CustomAccSlotPosY != screenRatioPosition.Y)
+                {
+                    Config.CustomAccSlotPosY = screenRatioPosition.Y;
+                    changed = true;
+                }
+
+                if (changed)
+                    MoreKatana.SaveConfig(Config);
+            }
+
+            return true;
         }
 
         public override void OnMouseHover(AccessorySlotType context)

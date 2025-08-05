@@ -5,10 +5,12 @@ using MoreKatana.Assets.ItemTextures;
 using MoreKatana.Prim;
 using MoreKatana.Utilities;
 using ReLogic.Content;
+using System.Reflection;
 using Terraria;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Config;
 
 namespace MoreKatana
 {
@@ -66,6 +68,24 @@ namespace MoreKatana
             MoreKatanaDetours.Unload();
             MoreKatanaTextures.UnloadTextures();
             MoreKatanaItemTextures.UnloadItemTextures();
+        }
+
+        internal static void SaveConfig(MoreKatanaConfig cfg)
+        {
+            // There is no current way to manually save a mod configuration file in tModLoader.
+            // The method which saves mod config files is private in ConfigManager, so reflection is used to invoke it.
+            try
+            {
+                MethodInfo saveMethodInfo = typeof(ConfigManager).GetMethod("Save", BindingFlags.Static | BindingFlags.NonPublic);
+                if (saveMethodInfo is not null)
+                    saveMethodInfo.Invoke(null, new object[] { cfg });
+                else
+                    Instance.Logger.Error("TML ConfigManager.Save reflection failed. Method signature has changed.");
+            }
+            catch
+            {
+                Instance.Logger.Error("An error occurred while manually saving WeaponsOverhaul configuration. It is safe to ignore this error.");
+            }
         }
     }
 }

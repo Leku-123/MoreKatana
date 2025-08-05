@@ -70,8 +70,8 @@ namespace MoreKatana
             // TO-DO 設定で強度を調整可にする
             if (ScreenShakeTimer > 0)
             {
-                Main.screenPosition.Y += Main.rand.Next(-ScreenShakeStrength, ScreenShakeStrength);
-                Main.screenPosition.X += Main.rand.Next(-ScreenShakeStrength, ScreenShakeStrength);
+                Main.screenPosition.Y += Main.rand.Next(-ScreenShakeStrength, ScreenShakeStrength) * MoreKatanaConfig.Instance.ScreenShakePower;
+                Main.screenPosition.X += Main.rand.Next(-ScreenShakeStrength, ScreenShakeStrength) * MoreKatanaConfig.Instance.ScreenShakePower;
             }
         }
 

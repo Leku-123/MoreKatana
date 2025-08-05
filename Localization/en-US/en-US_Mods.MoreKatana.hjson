@@ -1,7 +1,38 @@
-KatanaSlot.Katana: Katana(Moveable with right drag.)
+KatanaSlot.Katana: Katana
 
 Tooltips: {
 	DefaultText: - Press-Shift to learn more -
 	ActiveSkillCD: Cooldown
 	Second: sec.
+}
+
+Configs: {
+	MoreKatanaConfig: {
+		DisplayName: More Katana Config
+
+		Headers: {
+			UI: UI
+			Miscellaneous: Miscellaneous
+		}
+
+		AccSlotPosLock: {
+			Label: Lock Katana Slot Position
+			Tooltip: ""
+		}
+
+		CustomAccSlotPosX: {
+			Label: Katana Slot X Position
+			Tooltip: ""
+		}
+
+		CustomAccSlotPosY: {
+			Label: Katana Slot Y Position
+			Tooltip: ""
+		}
+
+		ScreenShakePower: {
+			Label: Screen Shake Power
+			Tooltip: ""
+		}
+	}
 }
