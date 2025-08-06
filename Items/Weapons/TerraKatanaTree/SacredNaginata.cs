@@ -86,10 +86,10 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             if (drawPlayer.dead || drawPlayer.ghost || !drawPlayer.active)
                 return;
 
-            if (!drawPlayer.MKPlayer().holyShield)
+            if (drawInfo.shadow != 0f)
                 return;
 
-            if (drawInfo.shadow != 0f)
+            if (!drawPlayer.MKPlayer().holyShield)
                 return;
 
             Texture2D texture = ModContent.Request<Texture2D>("MoreKatana/Items/Weapons/TerraKatanaTree/SacredNaginata_Shield").Value;
@@ -150,7 +150,8 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
                 // テキストを描画する
                 var font = FontAssets.MouseText.Value;
-                string text = Language.GetTextValue("Mods.MoreKatana.Tooltips.Life") + ":" + $"{drawPlayer.MKPlayer().HolyShieldDurability}" + "/" + $"{ShieldDurabilityMax}";
+                int numerator = cooldownRatio == 0 ? drawPlayer.MKPlayer().HolyShieldDurability : (int)(ShieldDurabilityMax * (1 - cooldownRatio));
+                string text = Language.GetTextValue("Mods.MoreKatana.Tooltips.Life") + ":" + $"{numerator}" + "/" + $"{ShieldDurabilityMax}";
                 Vector2 textPos = pos + new Vector2(0, spriteSize.Y * 0.2f);
                 ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, textPos, cooldownRatio != 0 ? c3 : Color.White, 0f, new Vector2(0.5f, 0.5f), Vector2.One);
             }
