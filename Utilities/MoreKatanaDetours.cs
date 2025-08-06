@@ -8,7 +8,7 @@ namespace MoreKatana.Utilities
     {
         public static void Initialize()
         {
-            On_Player.ItemCheck_Inner += On_Player_ItemCheck_Inner;
+            On_PlayerDrawLayers.DrawPlayer_RenderAllLayers += DrawPlayer_RenderAllLayers;
             On_PlayerDrawLayers.DrawPlayer_TransformDrawData += DrawPlayer_TransformDrawData;
             On_Main.DrawNPCs += Main_DrawNPCs;
             On_Main.DrawProjectiles += Main_DrawProjectiles;
@@ -17,17 +17,17 @@ namespace MoreKatana.Utilities
 
         public static void Unload()
         {
-            On_Player.ItemCheck_Inner -= On_Player_ItemCheck_Inner;
+            On_PlayerDrawLayers.DrawPlayer_RenderAllLayers -= DrawPlayer_RenderAllLayers;
             On_PlayerDrawLayers.DrawPlayer_TransformDrawData -= DrawPlayer_TransformDrawData;
             On_Main.DrawNPCs -= Main_DrawNPCs;
             On_Main.DrawProjectiles -= Main_DrawProjectiles;
             On_Main.Update -= Main_Update;
         }
 
-        private static void On_Player_ItemCheck_Inner(On_Player.orig_ItemCheck_Inner orig, Player self)
+        private static void DrawPlayer_RenderAllLayers(On_PlayerDrawLayers.orig_DrawPlayer_RenderAllLayers orig, ref PlayerDrawSet drawinfo)
         {
-            orig.Invoke(self);
-            MoreKatanaPlayer.SetBuffImmuneEffects(self);
+            orig.Invoke(ref drawinfo);
+            MoreKatanaPlayer.AddRenderDrawLayers(ref drawinfo);
         }
 
         private static void DrawPlayer_TransformDrawData(On_PlayerDrawLayers.orig_DrawPlayer_TransformDrawData orig, ref PlayerDrawSet drawinfo)

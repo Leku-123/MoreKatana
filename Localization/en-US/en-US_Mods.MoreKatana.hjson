@@ -4,6 +4,7 @@ Tooltips: {
 	DefaultText: - Press-Shift to learn more -
 	ActiveSkillCD: Cooldown
 	Second: sec.
+	Life: Life
 }
 
 Configs: {

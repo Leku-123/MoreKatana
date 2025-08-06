@@ -206,7 +206,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             {
                 Vector2 spriteSize = new Vector2(50, 50);
                 Vector2 ownerPos = Owner.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-                Vector2 pos = new Vector2(ownerPos.X - spriteSize.X * 0.5f, ownerPos.Y + spriteSize.Y * 0.9f);
+                Vector2 pos = new Vector2(ownerPos.X - spriteSize.X * 0.5f, ownerPos.Y - spriteSize.Y * 0.9f);
                 Color c1 = Color.Black;
                 Color c2 = Color.Gold;
                 float completionRatio = (FireTime - (Timer - PrepareTime)) / FireTime;

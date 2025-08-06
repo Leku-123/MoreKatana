@@ -1,13 +1,23 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Projectiles.TerraKatanaTree;
+using System;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.UI.Chat;
 
 namespace MoreKatana.Items.Weapons.TerraKatanaTree
 {
     public class SacredNaginata : KatanaItem
     {
+        public static int ShieldRechargeTime = 30 * 60;
+        public static int ShieldDurabilityMax = 50;
+        public const int ShieldDefenseBoost = 10;
+
         public override KatanaID ID => KatanaID.Hallowed;
 
         public override void SetDefaultsItem()
@@ -31,7 +41,20 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         public override void PassiveSkill(Player player, bool equipment)
         {
+            player.MKPlayer().holyShield = true;
 
+            if (player.MKPlayer().HolyShieldDurability > 0)
+                player.statDefense += ShieldDefenseBoost;
+
+            if (player.velocity.Y == 0 && !player.mount.Active)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    int newDust = Dust.NewDust(new Vector2(player.Center.X - player.width, player.Center.Y + player.height / 2), player.width * 2 - 3, 0, DustID.HallowedWeapons, 0, Main.rand.Next(-5, -2), 150, default, 0.5f);
+                    Main.dust[newDust].fadeIn = 0.3f;
+                    Main.dust[newDust].noGravity = true;
+                }
+            }
         }
 
         public override void ActiveSkill(Player player)
@@ -52,6 +75,85 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
                 .AddIngredient(ItemID.HallowedBar, 12)
                 .AddTile(TileID.MythrilAnvil)
                 .Register();
+        }
+
+        private static Vector2 ShieldCenter;
+
+        public static void DrawHolyShield(ref PlayerDrawSet drawInfo)
+        {
+            Player drawPlayer = drawInfo.drawPlayer;
+
+            if (drawPlayer.dead || drawPlayer.ghost || !drawPlayer.active)
+                return;
+
+            if (!drawPlayer.MKPlayer().holyShield)
+                return;
+
+            if (drawInfo.shadow != 0f)
+                return;
+
+            Texture2D texture = ModContent.Request<Texture2D>("MoreKatana/Items/Weapons/TerraKatanaTree/SacredNaginata_Shield").Value;
+            Rectangle rectangle = new Rectangle(0, 0, texture.Width, texture.Height);
+            Vector2 origin = rectangle.Size() / 2f;
+
+            const int amount = 3;
+            for (int i = 0; i < amount; i++)
+            {
+                float aroundTime = 60;
+                float globalTimer = Main.GlobalTimeWrappedHourly * 24 * 2;
+                float f = (i / (float)amount + (globalTimer / aroundTime)) * ((float)Math.PI * 2f);
+                float scaleFactor = amount * 5f;
+
+                Vector2 value = f.ToRotationVector2();
+                Vector2 value2 = drawPlayer.MountedCenter + (value * new Vector2(10f, 0.1f) * scaleFactor);
+                ShieldCenter = Vector2.Lerp(ShieldCenter, value2, 0.3f);
+
+                float completion = value.Y;
+                float distanceCompletion = drawPlayer.MountedCenter.Distance(ShieldCenter) / 40f;
+
+                // シールドのスケール
+                Vector2 shieldScale = new Vector2(0.5f + (completion / 10f));
+                shieldScale *= new Vector2(1f - distanceCompletion, 1f);
+
+                // シールドの色
+                Color shieldColor = Color.Gold;
+                if (completion < 0f)
+                    shieldColor *= distanceCompletion;
+
+                // クールダウンがない場合はシールドを描画する
+                if (drawPlayer.MKPlayer().ShieldCooldown <= 0)
+                    Main.spriteBatch.Draw(texture, ShieldCenter - Main.screenPosition, rectangle, shieldColor with { A = 0 }, 0f, origin, shieldScale, SpriteEffects.None, 0);
+
+                // ゲージの描画位置を計算する
+                Vector2 spriteSize = new Vector2(50, 50);
+                Vector2 ownerPos = drawInfo.Center - Main.screenPosition;
+                Vector2 pos = new Vector2(ownerPos.X - spriteSize.X * 0.5f, ownerPos.Y + spriteSize.Y * 0.7f);
+
+                // ゲージごとの色
+                Color c1 = Color.Black;
+                Color c2 = Color.Gold;
+                Color c3 = Color.Red;
+
+                // ゲージの充填率
+                float completionRatio = drawPlayer.MKPlayer().HolyShieldDurability / (float)ShieldDurabilityMax;
+                float cooldownRatio = drawPlayer.MKPlayer().ShieldCooldown / (float)ShieldRechargeTime;
+
+                // シールドの耐久率が下がった時ゲージを揺らす
+                if (completionRatio < 0.3f && cooldownRatio == 0)
+                    pos += Main.rand.NextVector2Unit();
+
+                // ゲージを描画する
+                Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c1, 0f, Vector2.Zero, new Vector2(spriteSize.X, 4f), SpriteEffects.None, 0f);
+                Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c2, 0f, Vector2.Zero, new Vector2(spriteSize.X * completionRatio, 4f), SpriteEffects.None, 0f);
+                if (cooldownRatio != 0)
+                    Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c3, 0f, Vector2.Zero, new Vector2(spriteSize.X * (1 - cooldownRatio), 4f), SpriteEffects.None, 0f);
+
+                // テキストを描画する
+                var font = FontAssets.MouseText.Value;
+                string text = Language.GetTextValue("Mods.MoreKatana.Tooltips.Life") + ":" + $"{drawPlayer.MKPlayer().HolyShieldDurability}" + "/" + $"{ShieldDurabilityMax}";
+                Vector2 textPos = pos + new Vector2(0, spriteSize.Y * 0.2f);
+                ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, textPos, cooldownRatio != 0 ? c3 : Color.White, 0f, new Vector2(0.5f, 0.5f), Vector2.One);
+            }
         }
     }
 }

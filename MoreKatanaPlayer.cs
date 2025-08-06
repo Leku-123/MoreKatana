@@ -1,9 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Items.Weapons.TerraKatanaTree;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace MoreKatana
@@ -28,6 +32,11 @@ namespace MoreKatana
         public float Flipping;
         public bool SetBuffImmune;
         public List<int[]> BuffImmuneList;
+        public int HurtSoundTimer = 0;
+        public int ShieldCooldown;
+
+        public bool holyShield;
+        public int HolyShieldDurability;
 
         public override void OnEnterWorld()
         {
@@ -46,6 +55,8 @@ namespace MoreKatana
             Flipping = 0f;
             SetBuffImmune = false;
             BuffImmuneList = new List<int[]>();
+            if (Player.HeldItem?.type != ModContent.ItemType<SacredNaginata>())
+                holyShield = false;
         }
 
         public override void UpdateDead()
@@ -57,6 +68,7 @@ namespace MoreKatana
         public override void ModifyScreenPosition()
         {
             // スクリーンの位置を変更する
+            // TO-DO ICameraModifierとか言うやつを使えるかもしれない...調べておこう
             if (ScreenLockEntity != null)
             {
                 if (ScreenLockEntity.active && Player.active)
@@ -67,7 +79,6 @@ namespace MoreKatana
             }
 
             // スクリーンを揺らす
-            // TO-DO 設定で強度を調整可にする
             if (ScreenShakeTimer > 0)
             {
                 Main.screenPosition.Y += Main.rand.Next(-ScreenShakeStrength, ScreenShakeStrength) * MoreKatanaConfig.Instance.ScreenShakePower;
@@ -86,6 +97,8 @@ namespace MoreKatana
                 Player.noFallDmg = true;
                 Player.controlJump = false;
                 Player.maxFallSpeed = 2000f;
+
+                // フックとマウントを解除
                 Player.RemoveAllGrapplingHooks();
                 if (Player.mount.Active)
                     Player.mount.Dismount(Player);
@@ -105,23 +118,24 @@ namespace MoreKatana
 
         public override void PostUpdateMiscEffects()
         {
-            SetBuffImmuneEffects(Player);
-        }
-
-        public static void SetBuffImmuneEffects(Player player)
-        {
-            if (player.MKPlayer().SetBuffImmune)
+            if (SetBuffImmune)
             {
-                for (int i = 0; i < player.MKPlayer().BuffImmuneList.Count; i++)
+                for (int i = 0; i < BuffImmuneList.Count; i++)
                 {
-                    int[] j = player.MKPlayer().BuffImmuneList[i];
+                    // リストから括弧付きIntを全て取得
+                    int[] j = BuffImmuneList[i];
                     foreach (int k in j)
                     {
-                        player.buffImmune[k] = true;
-                        player.ClearBuff(k);
+                        // 括弧付きInt内の全てのバフの免疫
+                        // 対象のバフを削除
+                        Player.buffImmune[k] = true;
+                        Player.ClearBuff(k);
                     }
                 }
             }
+
+            if (ShieldCooldown > 0)
+                ShieldCooldown--;
         }
 
         public override void PostUpdateRunSpeeds()
@@ -129,6 +143,7 @@ namespace MoreKatana
             // 汎用の簡単なダッシュ
             if (GeneralDash && DashTimerMax != 0)
             {
+                // 最初のフレームでダッシュの情報を取得
                 if (DashTimer == 0)
                 {
                     DashStartPos = Player.MountedCenter;
@@ -137,13 +152,17 @@ namespace MoreKatana
                     DashEndPos = DashStartPos + DashDirection;
                 }
 
+                // 現在の進行度と次のフレームの進行度
                 float currentProgress = DashTimer / DashTimerMax;
                 float nextProgress = (DashTimer + 1) / DashTimerMax;
 
                 if (currentProgress < 1f)
                 {
-                    var currentPoint = Vector2.Lerp(DashStartPos, DashEndPos, currentProgress);
-                    var nextPoint = Vector2.Lerp(DashStartPos, DashEndPos, nextProgress);
+                    // それぞれのフレームごとの始点から終点までのLerpを取得
+                    Vector2 currentPoint = Vector2.Lerp(DashStartPos, DashEndPos, currentProgress);
+                    Vector2 nextPoint = Vector2.Lerp(DashStartPos, DashEndPos, nextProgress);
+
+                    // フレームの差でベロシティを計算する
                     Player.velocity = nextPoint - currentPoint;
                 }
                 else
@@ -152,16 +171,26 @@ namespace MoreKatana
                     DashTimer = 0f;
                     DashTimerMax = 0f;
 
+                    // ダッシュ後に止めるならベロシティを修正する
                     if (SuddenStop)
                         Player.velocity = Vector2.Zero;
                 }
 
+                // タイマーを増加
                 DashTimer++;
             }
         }
 
         public override void PostUpdate()
         {
+            if (ShieldCooldown == 1)
+                SoundEngine.PlaySound(SoundID.MaxMana, Player.position);
+            if (ShieldCooldown <= 0)
+            {
+                if (holyShield && HolyShieldDurability == 0)
+                    HolyShieldDurability = SacredNaginata.ShieldDurabilityMax;
+            }
+
             //Main.NewText($"{}"); // デバッグ用なので残しておいて
         }
 
@@ -179,6 +208,57 @@ namespace MoreKatana
                 target.SimpleStrikeNPC(dam / 10, modifiers.HitDirection);
                 Player.GetArmorPenetration<GenericDamageClass>() = armorPen;
             }*/
+        }
+
+        public override void ModifyHurt(ref Player.HurtModifiers modifiers)
+        {
+            modifiers.ModifyHurtInfo += ModifyHurtInfo;
+
+            if (holyShield && HolyShieldDurability > 0)
+            {
+                // ヒットした際に音を鳴らす。デフォルトのヒット音は消す
+                modifiers.DisableSound();
+                SoundEngine.PlaySound(SoundID.NPCHit42 with { Pitch = +0.3f }, Player.position);
+                SoundEngine.PlaySound(SoundID.NPCHit4, Player.position);
+            }
+        }
+
+        private void ModifyHurtInfo(ref Player.HurtInfo info)
+        {
+            if (ShieldCooldown <= 0)
+            {
+                if (holyShield && HolyShieldDurability > 0)
+                {
+                    // シールドでどれだけダメージを防いだか計算する
+                    int holyShieldDamageBlocked = Math.Min(HolyShieldDurability, info.Damage);
+
+                    // シールドにダメージを与える。
+                    HolyShieldDurability -= info.Damage;
+
+                    // シールドが破壊された時、音と画面を揺らす
+                    if (HolyShieldDurability <= 0)
+                    {
+                        ShieldCooldown = SacredNaginata.ShieldRechargeTime;
+                        HolyShieldDurability = 0;
+                        SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath with { Volume = 2.0f }, Player.position);
+                        SoundEngine.PlaySound(SoundID.Item27 with { Volume = 2.0f }, Player.position);
+                        Player.ScreenShake(5, 10);
+                    }
+
+                    // 防いだダメージを表示する
+                    string holyShieldDamageText = (-holyShieldDamageBlocked).ToString();
+                    Rectangle location = new Rectangle((int)Player.position.X, (int)Player.position.Y - 16, Player.width, Player.height);
+                    CombatText.NewText(location, Color.LightYellow, Language.GetTextValue(holyShieldDamageText));
+
+                    // 実際に被弾のダメージを除去し、後のシールドの被弾を少なくする。
+                    info.Damage -= holyShieldDamageBlocked;
+                }
+            }
+        }
+
+        public static void AddRenderDrawLayers(ref PlayerDrawSet drawinfo)
+        {
+            SacredNaginata.DrawHolyShield(ref drawinfo);
         }
 
         public static DrawData ManipulateDrawInfo(DrawData input, Player player)

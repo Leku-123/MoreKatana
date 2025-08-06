@@ -123,29 +123,32 @@ namespace MoreKatana.Items
             return base.CanUseItem(item, player);
         }
 
-        public override void HoldItem(Item item, Player player)
+        public override void UpdateInventory(Item item, Player player)
         {
             if (Katana)
             {
-                // 120fごとにコンボをリセットする
-                if (ComboExpireTimer++ >= 120)
-                    AttackType = 0;
-
-                if (item.type is ItemID.Katana or ItemID.Muramasa)
+                if (item == player.ActiveItem())
                 {
-                    // バニラアイテムのパッシブスキル
-                    VanillaPassiveSkill(item, player, false);
+                    // 120fごとにコンボをリセットする
+                    if (ComboExpireTimer++ >= 120)
+                        AttackType = 0;
 
-                    // アイテムの設定を更新する
-                    SetDefaultsVanillaItem(item);
-                }
-                else
-                {
-                    // Modアイテムのパッシブスキル
-                    (item.ModItem as KatanaItem).PassiveSkill(player, false);
+                    if (item.type is ItemID.Katana or ItemID.Muramasa)
+                    {
+                        // バニラアイテムのパッシブスキル
+                        VanillaPassiveSkill(item, player, false);
 
-                    // アイテムの設定を更新する
-                    (item.ModItem as KatanaItem).SetDefaultsItem();
+                        // アイテムの設定を更新する
+                        SetDefaultsVanillaItem(item);
+                    }
+                    else
+                    {
+                        // Modアイテムのパッシブスキル
+                        (item.ModItem as KatanaItem).PassiveSkill(player, false);
+
+                        // アイテムの設定を更新する
+                        (item.ModItem as KatanaItem).SetDefaultsItem();
+                    }
                 }
             }
         }
