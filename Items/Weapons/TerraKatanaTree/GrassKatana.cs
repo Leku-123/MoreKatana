@@ -61,7 +61,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
                 .AddIngredient(ItemID.Stinger, 12)
                 .AddIngredient(ItemID.JungleSpores, 12)
                 .AddIngredient(ItemID.Vine, 3)
-                .AddTile(TileID.Anvils)
+                .AddTile(TileID.LivingLoom)
                 .Register();
         }
     }
