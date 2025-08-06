@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Items.Weapons.TerraKatanaTree;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -30,8 +29,6 @@ namespace MoreKatana
         public Vector2 DashDirection, DashStartPos, DashEndPos;
 
         public float Flipping;
-        public bool SetBuffImmune;
-        public List<int[]> BuffImmuneList;
         public int HurtSoundTimer = 0;
         public int ShieldCooldown;
 
@@ -53,10 +50,7 @@ namespace MoreKatana
             if (!GeneralDash)
                 DashTimer = 0f;
             Flipping = 0f;
-            SetBuffImmune = false;
-            BuffImmuneList = new List<int[]>();
-            if (Player.HeldItem?.type != ModContent.ItemType<SacredNaginata>())
-                holyShield = false;
+            holyShield = false;
         }
 
         public override void UpdateDead()
@@ -118,22 +112,6 @@ namespace MoreKatana
 
         public override void PostUpdateMiscEffects()
         {
-            if (SetBuffImmune)
-            {
-                for (int i = 0; i < BuffImmuneList.Count; i++)
-                {
-                    // リストから括弧付きIntを全て取得
-                    int[] j = BuffImmuneList[i];
-                    foreach (int k in j)
-                    {
-                        // 括弧付きInt内の全てのバフの免疫
-                        // 対象のバフを削除
-                        Player.buffImmune[k] = true;
-                        Player.ClearBuff(k);
-                    }
-                }
-            }
-
             if (ShieldCooldown > 0)
                 ShieldCooldown--;
         }

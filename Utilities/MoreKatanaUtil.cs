@@ -24,8 +24,6 @@ namespace MoreKatana
         #endregion
 
         #region -------- Player Utils --------
-        //old
-        //public static Item ActiveItem(this Player player) => player.inventory[player.selectedItem];
         /// <summary>
         /// プレイヤーが現在選択しているアイテム
         /// </summary>
@@ -70,18 +68,6 @@ namespace MoreKatana
         {
             MoreKatanaPlayer mk = player.MKPlayer();
             mk.Flipping = value;
-        }
-
-        /// <summary>
-        /// <see cref="int[] index"/> のバフを削除し、免疫を取得(処理はまだ不完全かも)
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="index"></param>
-        public static void SetBuffImmuneEffect(this Player player, int[] index)
-        {
-            MoreKatanaPlayer mk = player.MKPlayer();
-            mk.SetBuffImmune = true;
-            mk.BuffImmuneList.Add(index);
         }
 
         /// <summary>

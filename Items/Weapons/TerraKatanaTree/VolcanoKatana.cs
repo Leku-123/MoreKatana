@@ -38,7 +38,10 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         public override void PassiveSkill(Player player, bool equipment)
         {
-            player.SetBuffImmuneEffect(VolcanoBuffImmune);
+            foreach (int i in VolcanoBuffImmune)
+            {
+                player.buffImmune[i] = true;
+            }
         }
 
         public override void MeleeEffects(Player player, Rectangle hitbox)
