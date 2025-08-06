@@ -24,7 +24,12 @@ namespace MoreKatana
         #endregion
 
         #region -------- Player Utils --------
-        public static Item ActiveItem(this Player player) => player.inventory[player.selectedItem];
+        //old
+        //public static Item ActiveItem(this Player player) => player.inventory[player.selectedItem];
+        /// <summary>
+        /// プレイヤーが現在選択しているアイテム
+        /// </summary>
+        public static Item ActiveItem(this Player player) => player.HeldItem;
 
         public static bool IsUsingAlt(this Player player) => player.altFunctionUse == 2;
 
