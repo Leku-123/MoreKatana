@@ -12,7 +12,7 @@ using Terraria.UI.Chat;
 
 namespace MoreKatana.Items.Weapons.TerraKatanaTree
 {
-    public class SacredNaginata : KatanaItem
+    public class TrueSacredNaginata : KatanaItem
     {
         public static int ShieldRechargeTime = 30 * 60;
         public static int ShieldDurabilityMax = 50;
@@ -25,8 +25,8 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             Item.width = 70;
             Item.height = 80;
 
-            Item.useTime = 35;
-            Item.useAnimation = 35;
+            Item.useTime = 30;
+            Item.useAnimation = 30;
             Item.UseSound = SoundID.Item169;
 
             Item.damage = 45;
@@ -36,11 +36,12 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             Item.value = Item.sellPrice(0, 4, 60);
             Item.rare = ItemRarityID.Pink;
 
-            Item.MKItem().SetKatanaDefaults(Item, 60, false, ModContent.ProjectileType<SacredNaginataSwing>(), 3);
+            Item.MKItem().SetKatanaDefaults(Item, 60, false, ModContent.ProjectileType<TrueSacredNaginataSwing>(), 3);
         }
 
         public override void PassiveSkill(Player player, bool equipment)
         {
+            /*
             player.MKPlayer().holyShield = true;
 
             if (player.MKPlayer().HolyShieldDurability > 0)
@@ -54,7 +55,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
                     Main.dust[newDust].fadeIn = 0.3f;
                     Main.dust[newDust].noGravity = true;
                 }
-            }
+            }*/
         }
 
         public override void ActiveSkill(Player player)
@@ -72,7 +73,8 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
         public override void AddRecipes()
         {
             CreateRecipe()
-                .AddIngredient(ItemID.HallowedBar, 12)
+                .AddIngredient(ModContent.ItemType<SacredNaginata>())
+                .AddIngredient(ItemID.ChlorophyteBar, 24)
                 .AddTile(TileID.MythrilAnvil)
                 .Register();
         }

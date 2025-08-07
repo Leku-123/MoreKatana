@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Dusts;
 using MoreKatana.Items.Weapons.TerraKatanaTree;
 using System;
 using Terraria;
@@ -34,6 +35,8 @@ namespace MoreKatana
 
         public bool holyShield;
         public int HolyShieldDurability;
+        public bool trueHolyShield;
+        public int TrueHolyShieldDurability;
 
         public override void OnEnterWorld()
         {
@@ -51,6 +54,7 @@ namespace MoreKatana
                 DashTimer = 0f;
             Flipping = 0f;
             holyShield = false;
+            trueHolyShield = false;
         }
 
         public override void UpdateDead()
@@ -167,6 +171,9 @@ namespace MoreKatana
             {
                 if (holyShield && HolyShieldDurability == 0)
                     HolyShieldDurability = SacredNaginata.ShieldDurabilityMax;
+
+                //if (trueHolyShield && TrueHolyShieldDurability == 0)
+                //    TrueHolyShieldDurability = SacredNaginata.ShieldDurabilityMax;
             }
 
             //Main.NewText($"{}"); // デバッグ用なので残しておいて
@@ -213,14 +220,23 @@ namespace MoreKatana
                     // シールドにダメージを与える。
                     HolyShieldDurability -= info.Damage;
 
-                    // シールドが破壊された時、音と画面を揺らす
+                    // シールドが破壊された時クールダウンを設ける
+                    // その他演出の処理も行う
                     if (HolyShieldDurability <= 0)
                     {
                         ShieldCooldown = SacredNaginata.ShieldRechargeTime;
                         HolyShieldDurability = 0;
-                        SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath with { Volume = 2.0f }, Player.position);
-                        SoundEngine.PlaySound(SoundID.Item27 with { Volume = 2.0f }, Player.position);
+                        SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath, Player.position);
+                        SoundEngine.PlaySound(SoundID.Item27, Player.position);
                         Player.ScreenShake(5, 10);
+
+                        double spread = 2 * Math.PI / 12;
+                        for (int i = 0; i < 12; i++)
+                        {
+                            Vector2 velocity = new Vector2(2, 2).RotatedBy(spread * i);
+                            int newDust = Dust.NewDust(Player.Center, 0, 0, ModContent.DustType<PixelDust>(), velocity.X, velocity.Y, 0, Color.Gold, 1f);
+                            Main.dust[newDust].scale *= 6f * Main.rand.Next(1, 3);
+                        }
                     }
 
                     // 防いだダメージを表示する
