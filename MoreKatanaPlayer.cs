@@ -6,6 +6,7 @@ using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -30,13 +31,14 @@ namespace MoreKatana
         public Vector2 DashDirection, DashStartPos, DashEndPos;
 
         public float Flipping;
-        public int HurtSoundTimer = 0;
         public int ShieldCooldown;
 
         public bool holyShield;
         public int HolyShieldDurability;
         public bool trueHolyShield;
         public int TrueHolyShieldDurability;
+        public bool terraShield;
+        public int TerraShieldDurability;
 
         public override void OnEnterWorld()
         {
@@ -149,6 +151,7 @@ namespace MoreKatana
                 }
                 else
                 {
+                    // 変数の初期化
                     GeneralDash = false;
                     DashTimer = 0f;
                     DashTimerMax = 0f;
@@ -169,11 +172,13 @@ namespace MoreKatana
                 SoundEngine.PlaySound(SoundID.MaxMana, Player.position);
             if (ShieldCooldown <= 0)
             {
-                if (holyShield && HolyShieldDurability == 0)
+                // それぞれのシールドの耐久値を適用する
+
+                if (HolyShieldDurability == 0)
                     HolyShieldDurability = SacredNaginata.ShieldDurabilityMax;
 
-                //if (trueHolyShield && TrueHolyShieldDurability == 0)
-                //    TrueHolyShieldDurability = SacredNaginata.ShieldDurabilityMax;
+                if (TrueHolyShieldDurability == 0)
+                    TrueHolyShieldDurability = TrueSacredNaginata.ShieldDurabilityMax;
             }
 
             //Main.NewText($"{}"); // デバッグ用なので残しておいて
@@ -205,6 +210,23 @@ namespace MoreKatana
                 modifiers.DisableSound();
                 SoundEngine.PlaySound(SoundID.NPCHit42 with { Pitch = +0.3f }, Player.position);
                 SoundEngine.PlaySound(SoundID.NPCHit4, Player.position);
+
+                // パーティクル
+                ParticleOrchestraSettings particleOrchestraSettings = default;
+                particleOrchestraSettings.PositionInWorld = Main.rand.NextVector2FromRectangle(Player.Hitbox);
+                ParticleOrchestrator.RequestParticleSpawn(false, ParticleOrchestraType.Excalibur, particleOrchestraSettings, Player.whoAmI);
+            }
+            if (trueHolyShield && TrueHolyShieldDurability > 0)
+            {
+                // ヒットした際に音を鳴らす。デフォルトのヒット音は消す
+                modifiers.DisableSound();
+                SoundEngine.PlaySound(SoundID.NPCHit42 with { Pitch = +0.3f }, Player.position);
+                SoundEngine.PlaySound(SoundID.NPCHit4, Player.position);
+
+                // パーティクル
+                ParticleOrchestraSettings particleOrchestraSettings = default;
+                particleOrchestraSettings.PositionInWorld = Main.rand.NextVector2FromRectangle(Player.Hitbox);
+                ParticleOrchestrator.RequestParticleSpawn(false, ParticleOrchestraType.TrueExcalibur, particleOrchestraSettings, Player.whoAmI);
             }
         }
 
@@ -214,21 +236,15 @@ namespace MoreKatana
             {
                 if (holyShield && HolyShieldDurability > 0)
                 {
-                    // シールドでどれだけダメージを防いだか計算する
-                    int holyShieldDamageBlocked = Math.Min(HolyShieldDurability, info.Damage);
-
-                    // シールドにダメージを与える。
+                    // すべてのシールドにダメージを与える。
+                    int shieldDurability = SacredNaginata.ShieldDurabilityMax;
                     HolyShieldDurability -= info.Damage;
+                    TrueHolyShieldDurability -= (int)(info.Damage * ((float)TrueSacredNaginata.ShieldDurabilityMax / shieldDurability));
 
-                    // シールドが破壊された時クールダウンを設ける
-                    // その他演出の処理も行う
+                    // シールドが破壊された時の処理
                     if (HolyShieldDurability <= 0)
                     {
-                        ShieldCooldown = SacredNaginata.ShieldRechargeTime;
-                        HolyShieldDurability = 0;
-                        SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath, Player.position);
-                        SoundEngine.PlaySound(SoundID.Item27, Player.position);
-                        Player.ScreenShake(5, 10);
+                        CrashEffect(SacredNaginata.ShieldRechargeTime);
 
                         double spread = 2 * Math.PI / 12;
                         for (int i = 0; i < 12; i++)
@@ -239,13 +255,61 @@ namespace MoreKatana
                         }
                     }
 
-                    // 防いだダメージを表示する
-                    string holyShieldDamageText = (-holyShieldDamageBlocked).ToString();
-                    Rectangle location = new Rectangle((int)Player.position.X, (int)Player.position.Y - 16, Player.width, Player.height);
-                    CombatText.NewText(location, Color.LightYellow, Language.GetTextValue(holyShieldDamageText));
+                    // ダメージの処理
+                    OnDamage(ref info, HolyShieldDurability);
+                }
+                if (trueHolyShield && TrueHolyShieldDurability > 0)
+                {
+                    // すべてのシールドにダメージを与える。
+                    int shieldDurability = TrueSacredNaginata.ShieldDurabilityMax;
+                    TrueHolyShieldDurability -= info.Damage;
+                    HolyShieldDurability -= (int)(info.Damage * ((float)SacredNaginata.ShieldDurabilityMax / shieldDurability));
 
-                    // 実際に被弾のダメージを除去し、後のシールドの被弾を少なくする。
-                    info.Damage -= holyShieldDamageBlocked;
+                    // シールドが破壊された時の処理
+                    if (TrueHolyShieldDurability <= 0)
+                    {
+                        CrashEffect(TrueSacredNaginata.ShieldRechargeTime);
+
+                        double spread = 2 * Math.PI / 12;
+                        for (int i = 0; i < 24; i++)
+                        {
+                            Vector2 velocity = new Vector2(2, 2).RotatedBy(spread * i);
+                            int newDust = Dust.NewDust(Player.Center, 0, 0, ModContent.DustType<PixelDust>(), velocity.X, velocity.Y, 0, Main.rand.NextBool() ? Color.Gold : Color.Crimson, 1f);
+                            Main.dust[newDust].scale *= 6f * Main.rand.Next(1, 3);
+                        }
+                    }
+
+                    // ダメージの処理
+                    OnDamage(ref info, TrueHolyShieldDurability);
+                }
+
+                void CrashEffect(int cd)
+                {
+                    // クールダウンを設ける
+                    ShieldCooldown = cd;
+
+                    // シールドの耐久値を0にする
+                    HolyShieldDurability = 0;
+                    TrueHolyShieldDurability = 0;
+
+                    // 音とスクリーンシェイク
+                    SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath, Player.position);
+                    SoundEngine.PlaySound(SoundID.Item27, Player.position);
+                    Player.ScreenShake(5, 10);
+                }
+
+                void OnDamage(ref Player.HurtInfo info, int durability)
+                {
+                    // シールドでどれだけダメージを防いだか計算する
+                    int shieldDamageBlocked = Math.Min(durability, info.Damage);
+
+                    // 防いだダメージを表示する
+                    string trueHolyShieldDamageText = (-shieldDamageBlocked).ToString();
+                    Rectangle location = new Rectangle((int)Player.position.X, (int)Player.position.Y - 16, Player.width, Player.height);
+                    CombatText.NewText(location, Color.LightYellow, Language.GetTextValue(trueHolyShieldDamageText));
+
+                    // 実際に被弾のダメージを除去し、後のシールドの被弾を少なくする
+                    info.Damage -= shieldDamageBlocked;
                 }
             }
         }
@@ -253,6 +317,7 @@ namespace MoreKatana
         public static void AddRenderDrawLayers(ref PlayerDrawSet drawinfo)
         {
             SacredNaginata.DrawHolyShield(ref drawinfo);
+            TrueSacredNaginata.DrawTrueHolyShield(ref drawinfo);
         }
 
         public static DrawData ManipulateDrawInfo(DrawData input, Player player)

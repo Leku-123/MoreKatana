@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Projectiles.TerraKatanaTree;
 using System;
 using Terraria;
@@ -15,10 +16,10 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
     public class TrueSacredNaginata : KatanaItem
     {
         public static int ShieldRechargeTime = 30 * 60;
-        public static int ShieldDurabilityMax = 50;
+        public static int ShieldDurabilityMax = 75;
         public const int ShieldDefenseBoost = 10;
 
-        public override KatanaID ID => KatanaID.Hallowed;
+        public override KatanaID ID => KatanaID.TrueHallowed;
 
         public override void SetDefaultsItem()
         {
@@ -41,10 +42,9 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         public override void PassiveSkill(Player player, bool equipment)
         {
-            /*
-            player.MKPlayer().holyShield = true;
+            player.MKPlayer().trueHolyShield = true;
 
-            if (player.MKPlayer().HolyShieldDurability > 0)
+            if (player.MKPlayer().TrueHolyShieldDurability > 0)
                 player.statDefense += ShieldDefenseBoost;
 
             if (player.velocity.Y == 0 && !player.mount.Active)
@@ -55,7 +55,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
                     Main.dust[newDust].fadeIn = 0.3f;
                     Main.dust[newDust].noGravity = true;
                 }
-            }*/
+            }
         }
 
         public override void ActiveSkill(Player player)
@@ -81,7 +81,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         private static Vector2 ShieldCenter;
 
-        public static void DrawHolyShield(ref PlayerDrawSet drawInfo)
+        public static void DrawTrueHolyShield(ref PlayerDrawSet drawInfo)
         {
             Player drawPlayer = drawInfo.drawPlayer;
 
@@ -91,35 +91,37 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             if (drawInfo.shadow != 0f)
                 return;
 
-            if (!drawPlayer.MKPlayer().holyShield)
+            if (!drawPlayer.MKPlayer().trueHolyShield)
                 return;
 
-            Texture2D texture = ModContent.Request<Texture2D>("MoreKatana/Items/Weapons/TerraKatanaTree/SacredNaginata_Shield").Value;
+            // シールド
+            Texture2D texture = MoreKatanaTextures.ShieldTexture.Value;
             Rectangle rectangle = new Rectangle(0, 0, texture.Width, texture.Height);
             Vector2 origin = rectangle.Size() / 2f;
 
-            // シールド
-            const int amount = 3;
+            const int amount = 4;
             for (int i = 0; i < amount; i++)
             {
-                float aroundTime = 60;
+                float aroundTime = 20 * amount;
                 float globalTimer = Main.GlobalTimeWrappedHourly * 24 * 2;
                 float f = (i / (float)amount + (globalTimer / aroundTime)) * ((float)Math.PI * 2f);
-                float scaleFactor = amount * 5f;
+                float scaleFactor = 3f + amount * 3f;
 
                 Vector2 value = f.ToRotationVector2();
                 Vector2 value2 = drawPlayer.MountedCenter + (value * new Vector2(10f, 0.1f) * scaleFactor);
                 ShieldCenter = Vector2.Lerp(ShieldCenter, value2, 0.3f);
 
                 float completion = value.Y;
-                float distanceCompletion = drawPlayer.MountedCenter.Distance(ShieldCenter) / 40f;
+                float distanceCompletion = drawPlayer.MountedCenter.Distance(ShieldCenter) / ((scaleFactor * 3f) - 5f);
 
                 // シールドのスケール
                 Vector2 shieldScale = new Vector2(0.5f + (completion / 10f));
-                shieldScale *= new Vector2(1f - distanceCompletion, 1f);
+                shieldScale *= new Vector2(1.2f - distanceCompletion, 1.2f);
 
                 // シールドの色
                 Color shieldColor = Color.Gold;
+                if (i % 2 == 0)
+                    shieldColor = Color.Crimson;
                 if (completion < 0f)
                     shieldColor *= distanceCompletion;
 
@@ -139,22 +141,22 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             Color c3 = Color.Red;
 
             // ゲージの充填率
-            float completionRatio = drawPlayer.MKPlayer().HolyShieldDurability / (float)ShieldDurabilityMax;
+            float durabilityRatio = (float)drawPlayer.MKPlayer().TrueHolyShieldDurability / ShieldDurabilityMax;
             float cooldownRatio = drawPlayer.MKPlayer().ShieldCooldown / (float)ShieldRechargeTime;
 
             // シールドの耐久率が下がった時ゲージを揺らす
-            if (completionRatio < 0.3f && cooldownRatio == 0)
+            if (durabilityRatio < 0.3f && cooldownRatio == 0)
                 pos += Main.rand.NextVector2Unit();
 
             // ゲージを描画する
             Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c1, 0f, Vector2.Zero, new Vector2(spriteSize.X, 4f), SpriteEffects.None, 0f);
-            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c2, 0f, Vector2.Zero, new Vector2(spriteSize.X * completionRatio, 4f), SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c2, 0f, Vector2.Zero, new Vector2(spriteSize.X * durabilityRatio, 4f), SpriteEffects.None, 0f);
             if (cooldownRatio != 0)
                 Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c3, 0f, Vector2.Zero, new Vector2(spriteSize.X * (1 - cooldownRatio), 4f), SpriteEffects.None, 0f);
 
             // テキストを描画する
             var font = FontAssets.MouseText.Value;
-            int numerator = cooldownRatio == 0 ? drawPlayer.MKPlayer().HolyShieldDurability : (int)(ShieldDurabilityMax * (1 - cooldownRatio));
+            int numerator = cooldownRatio == 0 ? drawPlayer.MKPlayer().TrueHolyShieldDurability : (int)(ShieldDurabilityMax * (1 - cooldownRatio));
             string text = Language.GetTextValue("Mods.MoreKatana.Tooltips.Life") + ":" + $"{numerator}" + "/" + $"{ShieldDurabilityMax}";
             Vector2 textPos = pos + new Vector2(0, spriteSize.Y * 0.2f);
             ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, textPos, cooldownRatio != 0 ? c3 : Color.White, 0f, new Vector2(0.5f, 0.5f), Vector2.One);

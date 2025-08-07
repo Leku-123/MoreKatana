@@ -84,7 +84,7 @@ namespace MoreKatana
             }
             catch
             {
-                Instance.Logger.Error("An error occurred while manually saving WeaponsOverhaul configuration. It is safe to ignore this error.");
+                Instance.Logger.Error("An error occurred while manually saving MoreKatana configuration. It is safe to ignore this error.");
             }
         }
     }

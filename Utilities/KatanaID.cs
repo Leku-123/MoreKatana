@@ -21,4 +21,5 @@ public enum KatanaID
     Grass,
     Volcano,
     Hallowed,
+    TrueHallowed,
 }

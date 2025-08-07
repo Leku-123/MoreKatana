@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Projectiles.TerraKatanaTree;
 using System;
 using Terraria;
@@ -92,25 +93,25 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             if (!drawPlayer.MKPlayer().holyShield)
                 return;
 
-            Texture2D texture = ModContent.Request<Texture2D>("MoreKatana/Items/Weapons/TerraKatanaTree/SacredNaginata_Shield").Value;
+            // シールド
+            Texture2D texture = MoreKatanaTextures.ShieldTexture.Value;
             Rectangle rectangle = new Rectangle(0, 0, texture.Width, texture.Height);
             Vector2 origin = rectangle.Size() / 2f;
 
-            // シールド
             const int amount = 3;
             for (int i = 0; i < amount; i++)
             {
-                float aroundTime = 60;
+                float aroundTime = 20 * amount;
                 float globalTimer = Main.GlobalTimeWrappedHourly * 24 * 2;
                 float f = (i / (float)amount + (globalTimer / aroundTime)) * ((float)Math.PI * 2f);
-                float scaleFactor = amount * 5f;
+                float scaleFactor = 3f + amount * 3f;
 
                 Vector2 value = f.ToRotationVector2();
                 Vector2 value2 = drawPlayer.MountedCenter + (value * new Vector2(10f, 0.1f) * scaleFactor);
                 ShieldCenter = Vector2.Lerp(ShieldCenter, value2, 0.3f);
 
                 float completion = value.Y;
-                float distanceCompletion = drawPlayer.MountedCenter.Distance(ShieldCenter) / 40f;
+                float distanceCompletion = drawPlayer.MountedCenter.Distance(ShieldCenter) / ((scaleFactor * 3f) - 5f);
 
                 // シールドのスケール
                 Vector2 shieldScale = new Vector2(0.5f + (completion / 10f));
@@ -137,16 +138,16 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             Color c3 = Color.Red;
 
             // ゲージの充填率
-            float completionRatio = drawPlayer.MKPlayer().HolyShieldDurability / (float)ShieldDurabilityMax;
+            float durabilityRatio = (float)drawPlayer.MKPlayer().HolyShieldDurability / ShieldDurabilityMax;
             float cooldownRatio = drawPlayer.MKPlayer().ShieldCooldown / (float)ShieldRechargeTime;
 
             // シールドの耐久率が下がった時ゲージを揺らす
-            if (completionRatio < 0.3f && cooldownRatio == 0)
+            if (durabilityRatio < 0.3f && cooldownRatio == 0)
                 pos += Main.rand.NextVector2Unit();
 
             // ゲージを描画する
             Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c1, 0f, Vector2.Zero, new Vector2(spriteSize.X, 4f), SpriteEffects.None, 0f);
-            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c2, 0f, Vector2.Zero, new Vector2(spriteSize.X * completionRatio, 4f), SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c2, 0f, Vector2.Zero, new Vector2(spriteSize.X * durabilityRatio, 4f), SpriteEffects.None, 0f);
             if (cooldownRatio != 0)
                 Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c3, 0f, Vector2.Zero, new Vector2(spriteSize.X * (1 - cooldownRatio), 4f), SpriteEffects.None, 0f);
 

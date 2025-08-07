@@ -209,21 +209,21 @@ SacredNaginata: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		Katana Spell [c/FFD700:<Holy Shield>]
+		Katana Spell [c/FFD700:<Guardian Angel>]
 		- Projects an holy shield that absorbs up to 50 damage. The shield grants 10 defense while active.
 		- After the shield is broken, it takes 30 seconds to charge back up
-		Katana Arts [c/FFD700:<Judgement of the Someting>]
+		Katana Arts [c/FFD700:<The Judgment>]
 		- 
 		'''
 }
 
-BrokenHeroKatana: {
-	DisplayName: Broken Hero Katana
+TrueSacredNaginata: {
+	DisplayName: True Gaeborg
 	Tooltip: ""
+	FunctionText: Mods.MoreKatana.Items.TrueSacredNaginata.FunctionText
 }
 
-TrueSacredNaginata: {
-	FunctionText: Mods.MoreKatana.Items.TrueSacredNaginata.FunctionText
-	DisplayName: True Sacred Naginata
+BrokenHeroKatana: {
+	DisplayName: Broken Hero Katana
 	Tooltip: ""
 }
