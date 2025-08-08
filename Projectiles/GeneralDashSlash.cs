@@ -113,14 +113,7 @@ namespace MoreKatana.Projectiles
 
             SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            float backglowAmount = 12f;
-            for (int i = 0; i < backglowAmount; i++)
-            {
-                Vector2 backglowOffset = (MathHelper.TwoPi * i / backglowAmount).ToRotationVector2() * 2f;
-                Color backglowColor = Color.White;
-                backglowColor.A = 0;
-                Main.EntitySpriteDraw(texture, position + backglowOffset, rectangle, backglowColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
-            }
+            MoreKatanaUtil.DrawBackglow(texture, position, (Rectangle)rectangle, Color.White with { A = 0 }, Projectile.rotation, 2f, new Vector2(Projectile.scale), spriteEffects);
 
             Main.EntitySpriteDraw(texture, position, rectangle, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
 

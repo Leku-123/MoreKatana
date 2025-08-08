@@ -118,42 +118,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             }
         }
 
-        private Vector2[] chainPoints;
-        private Vector2[] chainVels;
-
-        public void ChainPhysics()
-        {
-            int length = 12;
-            if (chainVels != null)
-            {
-                for (int i = 0; i < chainVels.Length; i++)
-                {
-                    chainVels[i] = (Vector2.UnitY.ToRotation() - (i * 0.01f)).ToRotationVector2() * 2f;
-                }
-            }
-            else
-                chainVels = new Vector2[length];
-
-            if (chainPoints != null)
-            {
-                Vector2 offset = DirectionToProj * 18f;
-                chainPoints[0] = Projectile.Center + offset;
-
-                for (int i = 1; i < chainPoints.Length; i++)
-                {
-                    chainPoints[i] += chainVels[i];
-                    if (chainPoints[i].Distance(chainPoints[i - 1]) > 10)
-                        chainPoints[i] = Vector2.Lerp(chainPoints[i], chainPoints[i - 1] + new Vector2(5, 0).RotatedBy(chainPoints[i - 1].AngleTo(chainPoints[i])), 0.4f);
-                }
-            }
-            else
-            {
-                chainPoints = new Vector2[length];
-                for (int i = 0; i < chainPoints.Length; i++)
-                    chainPoints[i] = Projectile.Center;
-            }
-        }
-
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             base.OnHitNPC(target, hit, damageDone);
@@ -182,20 +146,13 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Vector2 origin = rectangle.Size() / 2f;
 
             Color color = Projectile.GetAlpha(lightColor);
-            Color glowColor = Color.White * (1f - (Projectile.alpha / 255f));
-            Color trailColor = TrailColor * (1f - (Projectile.alpha / 255f));
+            Color glowColor = Color.White * Projectile.Opacity;
+            Color trailColor = TrailColor * Projectile.Opacity;
 
             SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             SpriteEffects spriteEffects2 = Backspin ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
-            float backglowAmount = 12f;
-            for (int i = 0; i < backglowAmount; i++)
-            {
-                Vector2 backglowOffset = (MathHelper.TwoPi * i / backglowAmount).ToRotationVector2() * 4f;
-                backglowOffset *= 1 - progress;
-                glowColor.A = 0;
-                Main.EntitySpriteDraw(texture, position + backglowOffset, rectangle, glowColor, Projectile.rotation, origin, Projectile.scale, spriteEffects | spriteEffects2, 0);
-            }
+            MoreKatanaUtil.DrawBackglow(texture, position, rectangle, glowColor with { A = 0 }, Projectile.rotation, 4f * (1 - progress), new Vector2(Projectile.scale), spriteEffects | spriteEffects2);
 
             Main.EntitySpriteDraw(texture, position, rectangle, color, Projectile.rotation, origin, Projectile.scale, spriteEffects | spriteEffects2, 0);
 
@@ -206,6 +163,42 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             DrawChain(color);
             return false;
+        }
+
+        private Vector2[] chainVels;
+        private Vector2[] chainPoints;
+
+        public void ChainPhysics()
+        {
+            int length = 12;
+            if (chainVels != null)
+            {
+                for (int i = 0; i < chainVels.Length; i++)
+                {
+                    chainVels[i] = (MathHelper.PiOver2 - (i * 0.01f)).ToRotationVector2() * 2f;
+                }
+            }
+            else
+                chainVels = new Vector2[length];
+
+            if (chainPoints != null)
+            {
+                Vector2 offset = DirectionToProj * 18f;
+                chainPoints[0] = Projectile.Center + offset;
+
+                for (int i = 1; i < chainPoints.Length; i++)
+                {
+                    chainPoints[i] += chainVels[i];
+                    if (chainPoints[i].Distance(chainPoints[i - 1]) > 10)
+                        chainPoints[i] = Vector2.Lerp(chainPoints[i], chainPoints[i - 1] + new Vector2(5, 0).RotatedBy(chainPoints[i - 1].AngleTo(chainPoints[i])), 0.4f);
+                }
+            }
+            else
+            {
+                chainPoints = new Vector2[length];
+                for (int i = 0; i < chainPoints.Length; i++)
+                    chainPoints[i] = Projectile.Center;
+            }
         }
 
         private void DrawChain(Color lightColor)

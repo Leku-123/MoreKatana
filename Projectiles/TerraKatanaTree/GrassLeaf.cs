@@ -115,15 +115,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             }
 
             // アウトライン
-            float backglowAmount = 12f;
-            for (int i = 0; i < backglowAmount; i++)
-            {
-                Vector2 backglowOffset = (MathHelper.TwoPi * i / backglowAmount).ToRotationVector2();
-                backglowOffset *= PrepareCompletion;
-                Color backglowColor = Color.White * (1f - (Projectile.alpha / 255f));
-                backglowColor.A = 0;
-                Main.EntitySpriteDraw(texture, position + backglowOffset, rectangle, backglowColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
-            }
+            MoreKatanaUtil.DrawBackglow(texture, position, rectangle, Color.White with { A = 0 } * Projectile.Opacity, Projectile.rotation, PrepareCompletion, new Vector2(Projectile.scale), spriteEffects);
 
             // 本体の描画
             Main.EntitySpriteDraw(texture, position, rectangle, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);

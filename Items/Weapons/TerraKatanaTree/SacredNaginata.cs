@@ -154,7 +154,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             // テキストを描画する
             var font = FontAssets.MouseText.Value;
             int numerator = cooldownRatio == 0 ? drawPlayer.MKPlayer().HolyShieldDurability : (int)(ShieldDurabilityMax * (1 - cooldownRatio));
-            string text = Language.GetTextValue("Mods.MoreKatana.Tooltips.Life") + ":" + $"{numerator}" + "/" + $"{ShieldDurabilityMax}";
+            string text = MoreKatanaUtil.GetTextValue("Tooltips.Life") + ":" + $"{numerator}" + "/" + $"{ShieldDurabilityMax}";
             Vector2 textPos = pos + new Vector2(0, spriteSize.Y * 0.2f);
             ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, textPos, cooldownRatio != 0 ? c3 : Color.White, 0f, new Vector2(0.5f, 0.5f), Vector2.One);
         }

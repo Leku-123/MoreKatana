@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -274,7 +273,7 @@ namespace MoreKatana.Items
                 }
 
                 // クールダウン表記
-                TooltipLine cd = new TooltipLine(Mod, "CD", "- " + Language.GetTextValue("Mods.MoreKatana.Tooltips.ActiveSkillCD") + ": " + ((float)ActiveSkillDelay / 60).ToString("F1") + " " + Language.GetTextValue("Mods.MoreKatana.Tooltips.Second"));
+                TooltipLine cd = new TooltipLine(Mod, "CD", "- " + MoreKatanaUtil.GetTextValue("Tooltips.ActiveSkillCD") + ": " + ((float)ActiveSkillDelay / 60).ToString("F1") + " " + MoreKatanaUtil.GetTextValue("Tooltips.Second"));
 
                 if (item.type is ItemID.Katana or ItemID.Muramasa)
                 {
@@ -285,14 +284,11 @@ namespace MoreKatana.Items
 
                     TooltipLine tip;
                     if (!ItemSlot.ShiftInUse)
-                        tip = new TooltipLine(Mod, "DefaultText", Language.GetTextValue("Mods.MoreKatana.Tooltips.DefaultText"));
+                        tip = new TooltipLine(Mod, "DefaultText", MoreKatanaUtil.GetTextValue("Tooltips.DefaultText"));
                     else
-                    {
-                        if (item.type == ItemID.Katana)
-                            tip = new TooltipLine(Mod, "FunctionText", Language.GetTextValue($"Mods.MoreKatana.Items.Katana.FunctionText"));
-                        else
-                            tip = new TooltipLine(Mod, "FunctionText", Language.GetTextValue($"Mods.MoreKatana.Items.Muramasa.FunctionText"));
-                        
+                    {                     
+                        tip = new TooltipLine(Mod, "FunctionText", MoreKatanaUtil.GetTextValue("Items." + ItemID.Search.GetName(item.type) + ".FunctionText"));
+
                         // クールダウンを挿入
                         tooltips.Insert(index2 + 1, cd);
                     }
@@ -307,7 +303,7 @@ namespace MoreKatana.Items
 
                 TooltipLine tip2;
                 if (!ItemSlot.ShiftInUse)
-                    tip2 = new TooltipLine(Mod, "DefaultText", Language.GetTextValue("Mods.MoreKatana.Tooltips.DefaultText"));
+                    tip2 = new TooltipLine(Mod, "DefaultText", MoreKatanaUtil.GetTextValue("Tooltips.DefaultText"));
                 else
                 {
                     tip2 = new TooltipLine(Mod, "FunctionText", (string)(item.ModItem as KatanaItem).FunctionText);

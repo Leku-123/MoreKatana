@@ -7,6 +7,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace MoreKatana
@@ -118,12 +119,15 @@ namespace MoreKatana
         /// <param name="stop"> ダッシュ後に勢いが止まるかどうか </param>
         public static void CreateDashSlash(this Player player, IEntitySource source, int damage, float knockBack, int distance, float timer, Vector2? dir = null, bool stop = true)
         {
-            int p = Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<GeneralDashSlash>(), damage, knockBack, player.whoAmI);
-            GeneralDashSlash dash = (GeneralDashSlash)Main.projectile[p].ModProjectile;
-            dash.DashDirection = dir == null ? player.SafeDirectionTo(Main.MouseWorld) : (Vector2)dir;
-            dash.DashDistance = distance;
-            dash.DashTimerMax = timer;
-            dash.SuddenStop = stop;
+            if (Main.myPlayer == player.whoAmI)
+            {
+                int p = Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<GeneralDashSlash>(), damage, knockBack, player.whoAmI);
+                GeneralDashSlash dash = (GeneralDashSlash)Main.projectile[p].ModProjectile;
+                dash.DashDirection = dir == null ? player.SafeDirectionTo(Main.MouseWorld) : (Vector2)dir;
+                dash.DashDistance = distance;
+                dash.DashTimerMax = timer;
+                dash.SuddenStop = stop;
+            }
         }
 
         /// <summary>
@@ -241,6 +245,29 @@ namespace MoreKatana
         }
 
         /// <summary>
+        /// テクスチャの背面にアウトラインのようなテクスチャを描画する
+        /// 光っているような演出にしたり、拍動するような演出にしたりなど
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="drawPosition"></param>
+        /// <param name="frame"></param>
+        /// <param name="backglowColor"></param>
+        /// <param name="rotation"></param>
+        /// <param name="backglowArea"></param>
+        /// <param name="scale"></param>
+        /// <param name="spriteEffects"></param>
+        public static void DrawBackglow(Texture2D texture, Vector2 drawPosition, Rectangle frame, Color backglowColor, float rotation, float backglowArea, Vector2 scale, SpriteEffects spriteEffects)
+        {
+            Vector2 origin = frame.Size() * 0.5f;
+            float backglowAmount = 12f;
+            for (int i = 0; i < backglowAmount; i++)
+            {
+                Vector2 backglowOffset = (MathHelper.TwoPi * i / backglowAmount).ToRotationVector2() * backglowArea;
+                Main.EntitySpriteDraw(texture, drawPosition + backglowOffset, frame, backglowColor, rotation, origin, scale, spriteEffects, 0f);
+            }
+        }
+
+        /// <summary>
         /// スパークルを描画する。発射体などの演出に
         /// </summary>
         /// <param name="opacity"></param>
@@ -319,6 +346,20 @@ namespace MoreKatana
         }
         #endregion
 
+        #region -------- Localization Utils --------
+        /// <summary>
+        /// ローカライズの簡略化
+        /// 指定されたキーの前に"Mods.MoreKatana."を付けてローカライズを指定する
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static string GetTextValue(string key)
+        {
+            return Language.GetTextValue("Mods.MoreKatana." + key);
+        }
+        #endregion
+
+        #region -------- Misc Utils --------
         public static Vector2 TurnRight(this Vector2 vec) => new Vector2(-vec.Y, vec.X);
 
         public static Vector2 TurnLeft(this Vector2 vec) => new Vector2(vec.Y, -vec.X);
@@ -336,5 +377,14 @@ namespace MoreKatana
 
             return (destination - entity.Center).SafeNormalize(fallback.Value);
         }
+        #endregion
+
+        #region -------- Debug --------
+        public static void InChatText(this int value) => Main.NewText($"{value}");
+        public static void InChatText(this float value) => Main.NewText($"{value}");
+        public static void InChatText(this bool value) => Main.NewText($"{value}");
+        public static void InChatText(this Vector2 value) => Main.NewText($"{value}");
+        public static void InChatText(this string value) => Main.NewText($"{value}");
+        #endregion
     }
 }

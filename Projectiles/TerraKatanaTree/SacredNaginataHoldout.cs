@@ -8,6 +8,7 @@ using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static tModPorter.ProgressUpdate;
 
 namespace MoreKatana.Projectiles.TerraKatanaTree
 {
@@ -166,19 +167,12 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Rectangle rectangle = new Rectangle(0, 0, texture.Width, texture.Height);
             Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
             Color color = Projectile.GetAlpha(lightColor);
-            Color glowColor = Color.White * (1f - (Projectile.alpha / 255f));
-            Color circleColor = Color.Gold * (1f - (Projectile.alpha / 255f));
+            Color glowColor = Color.White * Projectile.Opacity;
+            Color circleColor = Color.Gold * Projectile.Opacity;
             SpriteEffects spriteEffects = (Projectile.spriteDirection == -1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
             // 拍動
-            float backglowAmount = 12f;
-            for (int i = 0; i < backglowAmount; i++)
-            {
-                Vector2 backglowOffset = (MathHelper.TwoPi * i / backglowAmount).ToRotationVector2() * 3f;
-                backglowOffset *= (float)Math.Sin(Main.GameUpdateCount / 30f) + 0.3f;
-                glowColor.A = 0;
-                Main.EntitySpriteDraw(texture, position + backglowOffset, rectangle, glowColor, Projectile.rotation, texture.Size() / 2, Projectile.scale, spriteEffects, 0);
-            }
+            MoreKatanaUtil.DrawBackglow(texture, position, rectangle, glowColor with { A = 0 }, Projectile.rotation, 3f * ((float)Math.Sin(Main.GameUpdateCount / 30f) + 0.3f), new Vector2(Projectile.scale), spriteEffects);
 
             // 本体の描画
             Main.EntitySpriteDraw(texture, position, rectangle, color, Projectile.rotation, texture.Size() / 2, Projectile.scale, spriteEffects, 0);
