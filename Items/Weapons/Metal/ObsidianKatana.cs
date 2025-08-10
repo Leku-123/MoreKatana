@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Buffs;
 using MoreKatana.Projectiles.Metal;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -16,20 +15,17 @@ namespace MoreKatana.Items.Weapons.Metal
         public override KatanaID ID => KatanaID.Obsidian;
 
         public static bool Fire(Player player) => player.HasBuff<ObsidianKatanaFire>(); // 着火状態であるか否か 
-        public bool FireTrigger = false;     // 着火がトリガーされたか   
-        public const int FireTime = 60 * 5;// 着火状態の基礎時間
+        public bool FireTrigger = false;    // 着火がトリガーされたか   
+        public const int FireTime = 60 * 5; // 着火状態の基礎時間
 
-        private Rectangle[] DrawFrame =
-        [
-            new(0, 0, 48, 54),
-            new(0, 56, 48, 110)
-        ];
+        public const int DrawFrameCount = 2;
+        public int DrawFrame;
 
-        private Vector2 katanaOrigin => DrawFrame[1].Size() / 2f;
+        public int Combo = 1;
 
         public override void SetStaticDefaults()
         {
-            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(int.MaxValue, 2));
+            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(int.MaxValue, DrawFrameCount));
         }
 
         public override void SetDefaultsItem()
@@ -43,75 +39,96 @@ namespace MoreKatana.Items.Weapons.Metal
 
             Item.damage = 20;
             Item.knockBack = 4.5f;
+            Item.MKItem().AltDamage = 0;
 
             Item.value = Item.sellPrice(silver: 55);
             Item.rare = ItemRarityID.Orange;
 
-            Item.MKItem().SetKatanaDefaults(Item, 120, true, ModContent.ProjectileType<ObsidianSwing>());
+            Item.MKItem().SetKatanaDefaults(Item, 120, true, ModContent.ProjectileType<ObsidianSwing>(), Combo);
         }
+
+        public override bool AltFunctionUseItem(Player player) => !Fire(player);
 
         public override void PassiveSkill(Player player, bool equipment)
         {
             player.statDefense += 5;
+
+            // ここじゃなくてもいいけどパッシブに処理に組み込んじゃえばそれはそれで楽
+            if (Fire(player))
+            {
+                Item.damage = 30;
+                Item.useTime = 25;
+                Item.useAnimation = 25;
+                Combo = 2;
+            }
+            else
+            {
+                Item.damage = 20;
+                Item.useTime = 20;
+                Item.useAnimation = 20;
+                Combo = 1;
+            }
+        }
+
+        public override void ActiveSkill(Player player)
+        {
+            Item.UseSound = SoundID.DD2_BetsysWrathShot;
+            Item.useStyle = ItemUseStyleID.HoldUp;
+            Item.noUseGraphic = false;
+
+            player.AddBuff(ModContent.BuffType<ObsidianKatanaFire>(), FireTime);
+
+            MoreKatanaUtil.DrawRing(player.Center, DustID.Torch, 30, 5f);
+            MoreKatanaUtil.DrawRing(player.Center, DustID.Torch, 24, 10f, dustSize: 3f);
+
+            FireTrigger = true;
+        }
+
+        public override void MeleeEffects(Player player, Rectangle hitbox)
+        {
+            if (!Fire(player))
+                return;
+
+            int newDust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustID.Torch);
+            Main.dust[newDust].noGravity = true;
+        }
+
+        public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            if (!Fire(player))
+                return;
+
+            target.AddBuff(BuffID.OnFire, 120);
         }
 
         public override void UpdateInventory(Player player)
         {
-            if (FireTrigger)
+            if (!Fire(player) && FireTrigger)
             {
-                if (!Fire(player))
-                {
-                    Item.MKItem().ActivateCooldown(player);
-                    FireTrigger = false;
-                }
+                Item.MKItem().ActivateCooldown(player);
+                FireTrigger = false;
             }
         }
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
-            if (FireTrigger)
-                frame = DrawFrame[0];
-            else
-                frame = DrawFrame[1];
+            Texture2D texture = TextureAssets.Item[Type].Value;
+            int drawFrame = Fire(Main.LocalPlayer) ? 0 : 1;
+            Rectangle rectangle = texture.Frame(1, DrawFrameCount, 0, drawFrame);
 
-            spriteBatch.Draw(TextureAssets.Item[Type].Value, position, frame, drawColor, 0f, origin, scale, SpriteEffects.None, default);
-
+            spriteBatch.Draw(texture, position, rectangle, drawColor, 0f, origin, scale, SpriteEffects.None, 0);
             return false;
         }
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
-            Vector2 position = Item.Bottom - Main.screenPosition - new Vector2(0, katanaOrigin.Y);
+            Texture2D texture = TextureAssets.Item[Type].Value;
+            Vector2 position = Item.Center - Main.screenPosition;
+            Rectangle rectangle = texture.Frame(1, DrawFrameCount, 0, 1);
+            Vector2 origin = rectangle.Size() / 2f;
 
-            spriteBatch.Draw(TextureAssets.Item[Type].Value, position, DrawFrame[1], Item.color, 0f, katanaOrigin, scale, SpriteEffects.None, default);
+            spriteBatch.Draw(texture, position, rectangle, lightColor, rotation, origin, scale, SpriteEffects.None, 0);
             return false;
-        }
-
-        public override bool AltFunctionUse(Player player)
-        {
-            return !Fire(player) && !FireTrigger;
-        }
-
-        public override void ActiveSkill(Player player)
-        {
-            if (!Fire(player) && !FireTrigger)
-            {
-                Item.noUseGraphic = false;
-                Item.useStyle = ItemUseStyleID.HoldUp;
-                MoreKatanaUtil.DrawRing(player.Center, DustID.Torch, 30, 1f, dustSize: 3f);
-                MoreKatanaUtil.DrawRing(player.Center, DustID.Torch, 24, 10f, dustSize: 3f);
-                SoundEngine.PlaySound(SoundID.DD2_BetsysWrathShot, player.Center);
-                player.AddBuff(ModContent.BuffType<ObsidianKatanaFire>(), FireTime);
-                FireTrigger = true;
-            }
-        }
-
-        public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
-        {
-            if (Fire(player))
-            {
-                target.AddBuff(BuffID.OnFire, 120);
-            }
         }
     }
 }

@@ -2,7 +2,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Buffs;
 using MoreKatana.Items.Weapons;
-using MoreKatana.Items.Weapons.Metal;
 using MoreKatana.Projectiles;
 using MoreKatana.UI;
 using System;
@@ -93,16 +92,17 @@ namespace MoreKatana.Items
 
         public override bool AltFunctionUse(Item item, Player player)
         {
-            if (item.type == ModContent.ItemType<ObsidianKatana>())
+            if (Katana)
             {
-                return base.AltFunctionUse(item, player);
+                if (item.type is ItemID.Katana or ItemID.Muramasa)
+                {
+                    return !player.HasBuff(ModContent.BuffType<KatanaArtsCD>());
+                }
+                else
+                {
+                    return !player.HasBuff(ModContent.BuffType<KatanaArtsCD>()) && (item.ModItem as KatanaItem).AltFunctionUseItem(player);
+                }
             }
-            else if (Katana)
-            {
-                // バフを使って右クリを制御する
-                return !player.HasBuff(ModContent.BuffType<KatanaArtsCD>());
-            }
-
             return base.AltFunctionUse(item, player);
         }
 
@@ -139,19 +139,20 @@ namespace MoreKatana.Items
 
                     if (item.type is ItemID.Katana or ItemID.Muramasa)
                     {
+                        // アイテムの設定を更新する
+                        SetDefaultsVanillaItem(item);
+                    
                         // バニラアイテムのパッシブスキル
                         VanillaPassiveSkill(item, player, false);
 
-                        // アイテムの設定を更新する
-                        SetDefaultsVanillaItem(item);
                     }
                     else
                     {
-                        // Modアイテムのパッシブスキル
-                        (item.ModItem as KatanaItem).PassiveSkill(player, false);
-
                         // アイテムの設定を更新する
                         (item.ModItem as KatanaItem).SetDefaultsItem();
+
+                        // Modアイテムのパッシブスキル
+                        (item.ModItem as KatanaItem).PassiveSkill(player, false);
                     }
                 }
             }

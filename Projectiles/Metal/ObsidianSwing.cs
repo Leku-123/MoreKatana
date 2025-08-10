@@ -11,12 +11,6 @@ namespace MoreKatana.Projectiles.Metal
     {
         public override string Texture => (GetType().Namespace + "." + Name).Replace('.', '/');
 
-        //private Rectangle[] DrawFrame =
-        //[
-        //    new(0, 0, 48, 54),
-        //    new(0, 54, 48, 112)
-        //];
-
         public override void SafeSetStaticDefaults()
         {
             Main.projFrames[Type] = 2;
@@ -27,25 +21,18 @@ namespace MoreKatana.Projectiles.Metal
             Projectile.localNPCHitCooldown = Owner.itemAnimationMax * Projectile.MaxUpdates;
             SwordSize(48, 54);
 
-            if (!ObsidianKatana.Fire(Owner))//非活性時
-                TrailColor = new(43, 40, 84);
-            else//活性時
+            // 通常状態と着火状態
+            // テクスチャフレームとトレイルの色を変更する
+            if (!ObsidianKatana.Fire(Owner))
             {
-                Projectile.frame = 1;        //活性時はテクスチャが変わり、
-                TrailColor = new(83, 5, 1);  //軌跡の色が変わり、
-                Projectile.damage *= 2;      //ダメージが２倍になる。
+                Projectile.frame = 0;
+                TrailColor = new Color(43, 40, 84);
             }
-        }
-
-        public override bool PreDraw(ref Color lightColor)
-        {
-            Texture2D proj = TextureAssets.Projectile[Type].Value;
-            Rectangle projRect = proj.Frame(1, 2, 0, Projectile.frame);
-            Vector2 position = Projectile.Center - Main.screenPosition;
-            SpriteEffects direction = Owner.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-
-            Main.EntitySpriteDraw(proj, position, projRect, Color.White, Projectile.rotation, projRect.Size() / 2f, Projectile.scale, direction);
-            return false;
+            else
+            {
+                Projectile.frame = 1;
+                TrailColor = new Color(83, 5, 1);
+            }
         }
 
         public override bool AttackPattern(Item item, int type)
@@ -65,6 +52,37 @@ namespace MoreKatana.Projectiles.Metal
 
         public override float GetProgress(int type) => EaseFunction.EaseCubicOut.Ease(progress);
 
-        public override void AdditionalAI(Item item, int type, bool delay) => Owner.SetDummyItemTime(2);
+        public override void AdditionalAI(Item item, int type, bool delay)
+        {
+            Owner.SetDummyItemTime(2);
+
+            // 例えばこんな感じで遊んでみたりとか
+            if (type == 1 && Projectile.localAI[0] == 0)
+            {
+                Projectile.localAI[0] = 1;
+
+                if (Projectile.owner == Main.myPlayer)
+                {
+                    Projectile.velocity.Normalize();
+                    Vector2 v = Projectile.velocity * 6f;
+                    int newProj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center + v, v, 684, Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
+                    Main.projectile[newProj].penetrate = 1;
+                    Main.projectile[newProj].timeLeft = 30;
+                }
+            }
+        }
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+            Rectangle rectangle = texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame);
+            Vector2 origin = rectangle.Size() / 2f;
+            Vector2 position = Projectile.Center - Main.screenPosition;
+            SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            SpriteEffects spriteEffects2 = Backspin ? SpriteEffects.FlipVertically : SpriteEffects.None;
+
+            Main.EntitySpriteDraw(texture, position, rectangle, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, spriteEffects | spriteEffects2, 0);
+            return false;
+        }
     }
 }

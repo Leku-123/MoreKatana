@@ -31,6 +31,19 @@ namespace MoreKatana.Items.Weapons
 
         }
 
+        public sealed override bool AltFunctionUse(Player player) => default;
+
+        /// <summary>
+        /// <see cref="AltFunctionUse(Player)"/>の代わりに使います
+        /// オーバーライドして条件を追加する場合などに使用してください
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public virtual bool AltFunctionUseItem(Player player)
+        {
+            return true;
+        }
+
         /// <summary>
         /// パッシブスキル
         /// </summary>

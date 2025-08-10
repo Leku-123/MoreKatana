@@ -1,21 +1,26 @@
 ﻿using Microsoft.Xna.Framework;
+using MoreKatana.Items.Weapons.Metal;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace MoreKatana.Buffs
 {
-    internal class ObsidianKatanaFire : ModBuff
+    public class ObsidianKatanaFire : ModBuff
     {
         public override void SetStaticDefaults()
         {
-            Main.debuff[Type] = true;
             Main.buffNoSave[Type] = true;
-            BuffID.Sets.NurseCannotRemoveDebuff[Type] = true;
         }
 
         public override void Update(Player player, ref int buffIndex)
         {
+            if (player.HeldItem.type != ModContent.ItemType<ObsidianKatana>())
+            {
+                player.DelBuff(buffIndex);
+                buffIndex--;
+            }
+
             if (!player.mount.Active)
             {
                 for (int i = 0; i < 3; i++)
@@ -29,5 +34,7 @@ namespace MoreKatana.Buffs
                 }
             }
         }
+
+        public override bool RightClick(int buffIndex) => false;
     }
 }
