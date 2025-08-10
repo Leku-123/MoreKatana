@@ -5,6 +5,8 @@ GemShards_Ruby.DisplayName: Ruby Shard
 GemShards_Emerald.DisplayName: Emerald Shard
 GemShards_Diamond.DisplayName: Diamond Shard
 GemShards_Amethyst.DisplayName: Amethyst Shard
+# -------- Metal --------
+ObsidianSwing.DisplayName: Obsidian Swing
 # -------- TerraKatanaTree --------
 GrassLeaf.DisplayName: Grass Leaf
 GrassKatanaSwing.DisplayName: Kusanagi

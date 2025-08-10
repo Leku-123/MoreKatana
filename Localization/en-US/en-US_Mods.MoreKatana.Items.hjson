@@ -227,3 +227,9 @@ BrokenHeroKatana: {
 	DisplayName: Broken Hero Katana
 	Tooltip: ""
 }
+
+ObsidianKatana: {
+	FunctionText: Mods.MoreKatana.Items.ObsidianKatana.FunctionText
+	DisplayName: Obsidian Katana
+	Tooltip: ""
+}

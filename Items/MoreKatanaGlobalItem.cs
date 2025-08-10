@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Buffs;
 using MoreKatana.Items.Weapons;
+using MoreKatana.Items.Weapons.Metal;
 using MoreKatana.Projectiles;
 using MoreKatana.UI;
 using System;
@@ -92,7 +93,11 @@ namespace MoreKatana.Items
 
         public override bool AltFunctionUse(Item item, Player player)
         {
-            if (Katana)
+            if (item.type == ModContent.ItemType<ObsidianKatana>())
+            {
+                return base.AltFunctionUse(item, player);
+            }
+            else if (Katana)
             {
                 // バフを使って右クリを制御する
                 return !player.HasBuff(ModContent.BuffType<KatanaArtsCD>());
@@ -286,7 +291,7 @@ namespace MoreKatana.Items
                     if (!ItemSlot.ShiftInUse)
                         tip = new TooltipLine(Mod, "DefaultText", MoreKatanaUtil.GetTextValue("Tooltips.DefaultText"));
                     else
-                    {                     
+                    {
                         tip = new TooltipLine(Mod, "FunctionText", MoreKatanaUtil.GetTextValue("Items." + ItemID.Search.GetName(item.type) + ".FunctionText"));
 
                         // クールダウンを挿入
