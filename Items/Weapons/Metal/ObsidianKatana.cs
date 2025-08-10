@@ -19,8 +19,6 @@ namespace MoreKatana.Items.Weapons.Metal
         public const int FireTime = 60 * 5; // 着火状態の基礎時間
 
         public const int DrawFrameCount = 2;
-        public int DrawFrame;
-
         public int Combo = 1;
 
         public override void SetStaticDefaults()
