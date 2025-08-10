@@ -5,6 +5,9 @@ namespace MoreKatana.Items.Weapons.Metal
 {
     public class TungstenKatana : KatanaItem
     {
+        public const int DashSlashDistance = 450;
+        public const float DashSlashTime = 10f;
+
         public override KatanaID ID => KatanaID.Tungsten;
 
         public override void SetDefaultsItem()
@@ -34,8 +37,12 @@ namespace MoreKatana.Items.Weapons.Metal
         public override void ActiveSkill(Player player)
         {
             Item.UseSound = SoundID.Item71;
+
+            // クールダウンを有効化
             Item.MKItem().ActivateCooldown(player);
-            player.CreateDashSlash(player.GetSource_ItemUse(Item), Item.MKItem().AltDamage, Item.knockBack, 450, 10f);
+
+            // ダッシュ切り
+            player.CreateDashSlash(player.GetSource_ItemUse(Item), Item.MKItem().AltDamage, Item.knockBack, DashSlashDistance, DashSlashTime);
         }
 
         public override void AddRecipes()

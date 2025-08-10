@@ -27,14 +27,10 @@ namespace MoreKatana.UI
 
         public override void SetupContent()
         {
+            AccessorySystem.KatanaSlots = Type;
+          
             // マウスをホバーしたときのテキスト
             KatanasText = Mod.GetLocalization($"{nameof(KatanaSlot)}.Katana");
-        }
-
-
-        public override void Load()
-        {
-            AccessorySystem.KatanaSlots = Type;
         }
 
         public override Vector2? CustomLocation

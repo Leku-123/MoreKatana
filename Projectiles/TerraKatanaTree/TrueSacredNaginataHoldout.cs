@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace MoreKatana.Projectiles.TerraKatanaTree
 {
-    public class SacredNaginataHoldout : ModProjectile
+    public class TrueSacredNaginataHoldout : ModProjectile
     {
         private ref float Timer => ref Projectile.ai[0];
 
@@ -25,7 +25,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public Player Owner => Main.player[Projectile.owner];
 
-        public override string Texture => ModContent.GetInstance<SacredNaginataSwing>().Texture;
+        public override string Texture => ModContent.GetInstance<TrueSacredNaginataSwing>().Texture;
 
         public override void SetStaticDefaults() => ProjectileID.Sets.HeldProjDoesNotUsePlayerGfxOffY[Type] = true;
 
@@ -86,6 +86,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Projectile.Kill();
                 return;
             }
+
+            ChainPhysics();
 
             // プレイヤーの保持する発射体のIDを更新して、プレイヤーの使用時間を延長する
             Owner.heldProj = Projectile.whoAmI;
@@ -176,6 +178,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             // 本体の描画
             Main.EntitySpriteDraw(texture, position, rectangle, color, Projectile.rotation, texture.Size() / 2, Projectile.scale, spriteEffects, 0);
 
+            DrawChain(glowColor);
+
             // 魔法陣の描画
             Texture2D bloom = MoreKatanaTextures.BloomTexture.Value;
             Texture2D circle = MoreKatanaTextures.MagicCircleTexture.Value;
@@ -209,6 +213,63 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             }
 
             return false;
+        }
+
+        private Vector2[] chainVels;
+        private Vector2[] chainPoints;
+
+        public void ChainPhysics()
+        {
+            int length = 16;
+            if (chainVels != null)
+            {
+                for (int i = 0; i < chainVels.Length; i++)
+                {
+                    chainVels[i] = (MathHelper.PiOver2 - (i * 0.01f)).ToRotationVector2() * 2f;
+                }
+            }
+            else
+                chainVels = new Vector2[length];
+
+            if (chainPoints != null)
+            {
+                Vector2 offset = Projectile.velocity * 18f;
+                chainPoints[0] = Projectile.Center + offset;
+
+                for (int i = 1; i < chainPoints.Length; i++)
+                {
+                    chainPoints[i] += chainVels[i];
+                    if (chainPoints[i].Distance(chainPoints[i - 1]) > 10)
+                        chainPoints[i] = Vector2.Lerp(chainPoints[i], chainPoints[i - 1] + new Vector2(5, 0).RotatedBy(chainPoints[i - 1].AngleTo(chainPoints[i])), 0.8f);
+                }
+            }
+            else
+            {
+                chainPoints = new Vector2[length];
+                for (int i = 0; i < chainPoints.Length; i++)
+                    chainPoints[i] = Projectile.Center;
+            }
+        }
+
+        private void DrawChain(Color lightColor)
+        {
+            if (chainPoints != null)
+            {
+                for (int i = 0; i < chainPoints.Length - 1; i++)
+                {
+                    Texture2D chainTex = ModContent.Request<Texture2D>(Texture + "_Chain").Value;
+
+                    int style = 0;
+                    if (i == chainPoints.Length - 3)
+                        style = 1;
+                    if (i > chainPoints.Length - 3)
+                        style = 2;
+                    Rectangle frame = chainTex.Frame(1, 3, 0, style);
+                    float rotation = chainPoints[i].AngleTo(chainPoints[i + 1]);
+                    Vector2 stretch = new Vector2(0.3f + Utils.GetLerpValue(0, chainPoints.Length - 2, i, true) * 0.2f, chainPoints[i].Distance(chainPoints[i + 1]) / (frame.Height - 5));
+                    Main.EntitySpriteDraw(chainTex, chainPoints[i] - Main.screenPosition, frame, lightColor.MultiplyRGBA(Color.Lerp(Color.DimGray, Color.White, (float)i / chainPoints.Length)), rotation - MathHelper.PiOver2, frame.Size() * new Vector2(0.5f, 0f), stretch, 0, 0);
+                }
+            }
         }
     }
 }
