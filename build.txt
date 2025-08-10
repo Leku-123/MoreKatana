@@ -1,5 +1,5 @@
 displayName = [c/cc0000:More Katana]
 author = Katudonsan,Moririn
-version = 0.3
+version = 1.0
 includeSource = true
 homepage = https://github.com/Katudonsan/MoreKatana

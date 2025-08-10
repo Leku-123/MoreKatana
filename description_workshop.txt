@@ -1,0 +1,18 @@
+-　English -
+Note: Translated by DeepL.
+Note: More Katana is currently under development, I will be more careful than before, but it may contain bugs and misadjustments.
+If you have any feedback, please submit an Issue or Pull Request on Github!
+
+This mod further expands the possibilities of the Katana weapon that exists in Terraria!
+Currently we are adding 8 type of sword.
+
+-　日本語　-
+注意：当Mod は 現在鋭意開発中です、念入りに検討の上追加していく予定ですが、どうしてもバグや調整ミスが含まれている場合があります。
+意見・アイデアがありましたら、GithubにIssueやPull Requestをお願いします。
+
+このModは、テラリアに存在する武器「Katana」の可能性をさらに拡張するModです。
+現在は 8 種類の刀を追加しています。
+
+-　Github -
+
+Github : https://github.com/Katudonsan/MoreKatana

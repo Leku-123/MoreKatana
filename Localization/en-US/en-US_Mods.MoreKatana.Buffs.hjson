@@ -11,3 +11,8 @@ PhotosynthesisBuff: {
 		Nighttime : Provide green light.
 		'''
 }
+
+ObsidianKatanaFire: {
+	DisplayName: Obsidian fire!
+	Description: Obsidian katana is on Fire!
+}

@@ -11,6 +11,7 @@ public enum KatanaID
     Tungsten,
     Gold,
     Platinum,
+    Obsidian,
     Amethyst,
     Topaz,
     Sapphire,

@@ -385,6 +385,7 @@ namespace MoreKatana
         public static void InChatText(this bool value) => Main.NewText($"{value}");
         public static void InChatText(this Vector2 value) => Main.NewText($"{value}");
         public static void InChatText(this string value) => Main.NewText($"{value}");
+        public static void InChatText(this Rectangle value) => Main.NewText($"X:{value.X},Y:{value.Y},W:{value.Width},H:{value.Height}");
         #endregion
     }
 }
