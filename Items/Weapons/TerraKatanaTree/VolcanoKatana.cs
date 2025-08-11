@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MoreKatana.Projectiles.TerraKatanaTree;
+using MoreKatana.Projectiles.Wood;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -53,7 +54,10 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
         public override void ActiveSkill(Player player)
         {
             Item.UseSound = SoundID.DD2_BetsysWrathShot;
-            Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, player.SafeDirectionTo(Main.MouseWorld), ModContent.ProjectileType<VolcanoKatanaHoldUp>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI);
+
+            // プレイヤーの向きをマウスの方向に向けて、その方向にホールド発射体をスポーンさせる
+            player.ChangeDir(Main.MouseWorld.X - player.Center.X > 0 ? 1 : -1);
+            Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.MountedCenter, new Vector2(player.direction, 0), ModContent.ProjectileType<VolcanoKatanaHoldUp>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI);
         }
 
         public override void MeleeEffects(Player player, Rectangle hitbox)

@@ -38,6 +38,7 @@ namespace MoreKatana.Projectiles.Gem
         {
             Projectile.width = 18;
             Projectile.height = 18;
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 36000;
             Projectile.friendly = true;

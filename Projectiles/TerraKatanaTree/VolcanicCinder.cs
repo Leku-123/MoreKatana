@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace MoreKatana.Projectiles.TerraKatanaTree
 {
-    public class MeteoBullet : ModProjectile
+    public class VolcanicCinder : ModProjectile
     {
         public override void SetStaticDefaults()
         {
@@ -19,15 +19,21 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         {
             Projectile.width = 52;
             Projectile.height = 52;
-            Projectile.aiStyle = 0;
-            Projectile.friendly = true;
-            Projectile.hostile = false;
+            Projectile.aiStyle = 2;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 60000;
-            Projectile.light = 0.5f;
-            Projectile.ignoreWater = true;
+            Projectile.timeLeft = 120;
+            Projectile.friendly = true;
+            Projectile.hostile = false;
             Projectile.tileCollide = true;
+            Projectile.ignoreWater = true;
+            Projectile.light = 0.5f;
+        }
+
+        public override bool PreAI()
+        {
+            Projectile.velocity.X *= 1.015f;
+            return base.PreAI();
         }
 
         public override void AI()
@@ -35,37 +41,22 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             if (++Projectile.frameCounter >= 5)
             {
                 Projectile.frameCounter = 0;
-                if (++Projectile.frame >= Main.projFrames[Type])
-                    Projectile.frame = 0;
+                Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];
             }
 
-            if (Projectile.rotation > 180)
-                Projectile.velocity.X -= 0.35f;
-            else if (Projectile.rotation > 0)
-                Projectile.velocity.X += 0.35f;
-
-            Projectile.velocity.Y += 0.35f;
-
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.ToRadians(90f);
+            Projectile.velocity.Y += 0.35f;
         }
 
         public override bool PreDraw(ref Color lightColor)
         {
-            SpriteEffects spriteEffects = SpriteEffects.None;
-            if (Projectile.spriteDirection == -1)
-                spriteEffects = SpriteEffects.FlipHorizontally;
-
-            Texture2D texture = TextureAssets.Projectile[Type].Value;
-
-            int frameHeight = texture.Height / Main.projFrames[Type];
-            int startY = frameHeight * Projectile.frame;
-            Rectangle sourceRectangle = new Rectangle(0, startY, texture.Width, frameHeight);
-
-            Vector2 origin = sourceRectangle.Size() / 2f;
-
-            Color drawColor = Projectile.GetAlpha(lightColor);
-            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY), sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
-
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+            Rectangle rectangle = texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame);
+            Vector2 origin = rectangle.Size() / 2f;
+            Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
+            SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+          
+            Main.EntitySpriteDraw(texture, position, rectangle, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
             return false;
         }
 
