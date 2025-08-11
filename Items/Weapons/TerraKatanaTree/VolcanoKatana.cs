@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using MoreKatana.Projectiles.TerraKatanaTree;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -42,6 +43,17 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             {
                 player.buffImmune[i] = true;
             }
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            return !AltFunctionUseItem(player);
+        }
+
+        public override void ActiveSkill(Player player)
+        {
+            Item.UseSound = SoundID.DD2_BetsysWrathShot;
+            Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, player.SafeDirectionTo(Main.MouseWorld), ModContent.ProjectileType<VolcanoKatanaHoldUp>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI);
         }
 
         public override void MeleeEffects(Player player, Rectangle hitbox)
