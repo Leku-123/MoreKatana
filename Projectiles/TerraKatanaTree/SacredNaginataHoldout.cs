@@ -44,7 +44,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.hide = true;
             Projectile.noEnchantmentVisuals = true;
             Projectile.MKProjectile().SourceIsItemUse = true;
-            Projectile.MKProjectile().ActivateCD = true;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -89,7 +88,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             // プレイヤーの保持する発射体のIDを更新して、プレイヤーの使用時間を延長する
             Owner.heldProj = Projectile.whoAmI;
-            Owner.SetDummyItemTime(2);
+            Owner.SetDummyItemTime(10);
 
             // プレイヤーのアイテムローテーションと向き
             float itemrotate = Projectile.direction < 0 ? MathHelper.Pi : 0;
@@ -122,8 +121,11 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Main.dust[newDust].scale *= 2;
                 Main.dust[newDust].velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2.5f, 4.5f);
             }
+
             if (PrepareCompletion == 1f && FireCompletion < 1f)
             {
+                Projectile.MKProjectile().ActivateCD = true;
+
                 if (Timer % 10 == 0)
                 {
                     SoundEngine.PlaySound(SoundID.Item4, Owner.Center);
@@ -202,7 +204,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Vector2 pos = new Vector2(ownerPos.X - spriteSize.X * 0.5f, ownerPos.Y - spriteSize.Y * 0.9f);
                 Color c1 = Color.Black;
                 Color c2 = Color.Gold;
-                float completionRatio = (FireTime - (Timer - PrepareTime)) / FireTime;
 
                 Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c1, 0f, Vector2.Zero, new Vector2(spriteSize.X, 4f), SpriteEffects.None, 0f);
                 Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c2, 0f, Vector2.Zero, new Vector2(spriteSize.X * (1 - FireCompletion), 4f), SpriteEffects.None, 0f);

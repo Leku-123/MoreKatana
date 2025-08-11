@@ -44,7 +44,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.hide = true;
             Projectile.noEnchantmentVisuals = true;
             Projectile.MKProjectile().SourceIsItemUse = true;
-            Projectile.MKProjectile().ActivateCD = true;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -91,7 +90,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             // プレイヤーの保持する発射体のIDを更新して、プレイヤーの使用時間を延長する
             Owner.heldProj = Projectile.whoAmI;
-            Owner.SetDummyItemTime(2);
+            Owner.SetDummyItemTime(10);
 
             // プレイヤーのアイテムローテーションと向き
             float itemrotate = Projectile.direction < 0 ? MathHelper.Pi : 0;
@@ -124,8 +123,11 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Main.dust[newDust].scale *= 2;
                 Main.dust[newDust].velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2.5f, 4.5f);
             }
+
             if (PrepareCompletion == 1f && FireCompletion < 1f)
             {
+                Projectile.MKProjectile().ActivateCD = true;
+
                 if (Timer % 10 == 0)
                 {
                     SoundEngine.PlaySound(SoundID.Item4, Owner.Center);
