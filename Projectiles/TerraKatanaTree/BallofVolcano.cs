@@ -16,6 +16,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.DamageType = DamageClass.Melee;
         }
 
-        public override void OnSpawn(IEntitySource source) => Projectile.ai[0] -= 1;
+        public override void OnSpawn(IEntitySource source) => Projectile.ai[0] += 1;
     }
 }

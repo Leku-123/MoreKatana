@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using MoreKatana.Projectiles.TerraKatanaTree;
-using MoreKatana.Projectiles.Wood;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -48,7 +47,10 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            return !AltFunctionUseItem(player);
+            //AltFunctionUse()やAltFunctionUseItem()は条件をいじっていないためここでは動作しない。
+            if (player.altFunctionUse != 0) return false;
+
+            return base.Shoot(player, source, position, velocity, type, damage, knockback);
         }
 
         public override void ActiveSkill(Player player)
