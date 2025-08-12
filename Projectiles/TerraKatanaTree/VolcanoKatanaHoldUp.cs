@@ -104,8 +104,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             float offset = 50f;
             Vector2 normalizeVel = Vector2.Normalize(Projectile.velocity); //発射体の速度の単位ベクトル
 
-            // 変更：縦方向のベクトルはVector2.UnitYで表せる。
-            //Projectile.velocity = Vector2.Lerp(normalizeVel, Vector2.Normalize(Owner.Top - Owner.MountedCenter), lerp);
             Projectile.velocity = Vector2.Lerp(normalizeVel, -Vector2.UnitY, lerp);
 
             Projectile.velocity.Normalize();
@@ -142,23 +140,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 }
             }
 
-            // 変更：処理の簡略化と定数の追加、ダストの追加
             // 4つめまでは普通にカウント増やして、それ以外はマックスになるようにする
-            /*if (Timer < 190f)
-            {
-                if (Timer % 38 == 0 && Timer != 0f)
-                {
-                    SoundEngine.PlaySound(SoundID.DD2_BetsysWrathShot, Owner.Center);
-                    Meteo++;
-                }
-                else if (Timer == 189f)
-                {
-                    SoundEngine.PlaySound(SoundID.DD2_BetsysWrathImpact, Owner.Center);
-                    Meteo = 5;
-                }
-                Timer++;
-            }*/
-
             const int chargeTime = 38;
             if (Timer % chargeTime == 0 && cinderCount < CinderCountMax)
             {
