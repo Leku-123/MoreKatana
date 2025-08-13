@@ -14,6 +14,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
     {
         public override string Texture => (GetType().Namespace + "." + Name).Replace('.', '/');
 
+        private int projCount;
+
         private Vector2 DirectionToProj => Utils.DirectionTo(Owner.MountedCenter, Projectile.Center);
 
         private CustomSwordPrimTrail trail, trail2;
@@ -103,6 +105,24 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
                         if (progress > 0.1f)
                             SoundEngine.PlaySound(SoundID.Item169, Owner.Center);
+                    }
+
+                    if (Timer % (4 * Projectile.MaxUpdates) == 0)
+                    {
+                        if (Projectile.owner == Main.myPlayer)
+                        {
+                            float rad = 30 * projCount * Owner.direction;
+                            float offset = 100f;
+                            Vector2 vector = Vector2.UnitY.RotatedBy(rad) * offset;
+
+                            ParticleOrchestraSettings particleOrchestraSettings = default;
+                            particleOrchestraSettings.PositionInWorld = Owner.MountedCenter + vector;
+                            ParticleOrchestrator.RequestParticleSpawn(false, ParticleOrchestraType.TrueExcalibur, particleOrchestraSettings, Projectile.owner);
+
+                            Vector2 vel = Vector2.Normalize(Main.MouseWorld - Owner.MountedCenter) * 25f;
+                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.MountedCenter + vector, vel, ModContent.ProjectileType<SacredEdge>(), Projectile.damage / 2, 0, Projectile.owner);
+                            projCount++;
+                        }
                     }
                 }
                 else

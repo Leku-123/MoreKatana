@@ -102,7 +102,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
                     // 刃の発射体を発射
                     if (Projectile.owner == Main.myPlayer)
-                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + vector, Projectile.velocity * 35, ModContent.ProjectileType<SacredEdge>(), Projectile.damage, 0, Projectile.owner);
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + vector, Projectile.velocity * 25, ModContent.ProjectileType<SacredEdge>(), Projectile.damage, 0, Projectile.owner);
                 }
             }
 
