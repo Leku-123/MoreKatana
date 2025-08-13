@@ -213,14 +213,21 @@ SacredNaginata: {
 		- Projects an holy shield that absorbs up to 50 damage. The shield grants 10 defense while active.
 		- After the shield is broken, it takes 30 seconds to charge back up
 		Katana Arts [c/FFD700:<The Judgment>]
-		- 
+		- Summon a sacred magic circle and shoot a bunch of blades.
 		'''
 }
 
 TrueSacredNaginata: {
 	DisplayName: True Gaeborg
 	Tooltip: ""
-	FunctionText: Mods.MoreKatana.Items.TrueSacredNaginata.FunctionText
+	FunctionText:
+		'''
+		Katana Spell [c/FFD700:<Guardian Angel++>]
+		- Projects an holy shield that absorbs up to 75 damage. The shield grants 10 defense while active.
+		- After the shield is broken, it takes 30 seconds to charge back up
+		Katana Arts [c/FFD700:<The Judgment of Trinity>]
+		- Summon three magic circles and shoot beams and blades.
+		'''
 }
 
 BrokenHeroKatana: {

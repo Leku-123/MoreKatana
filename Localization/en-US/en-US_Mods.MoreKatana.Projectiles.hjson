@@ -15,6 +15,10 @@ GrassKatanaDance.DisplayName: Kusanagi
 SacredNaginataSwing.DisplayName: Gaeborg
 SacredNaginataHoldout.DisplayName: Gaeborg
 SacredEdge.DisplayName: Sacred Edge
+TrueSacredNaginataSwing.DisplayName: True Gaeborg
+TrueSacredNaginataHoldout.DisplayName: True Gaeborg
+TrueSacredBeam.DisplayName: Sacred Beam
+TrueSacredSecondaryMagicCircle.DisplayName: Sacred Magic Circle
 # -------- Wood --------
 ChargingWoodenSwing.DisplayName: Wooden Katana
 # -------- Misc --------
@@ -24,10 +28,6 @@ GeneralDashSlash.DisplayName: Dash Slash
 # -------- Not yet --------
 CustomDashSlash.DisplayName: Dash Slash
 BallofVolcano.DisplayName: Ball of Volcano
-TrueSacredNaginataSwing.DisplayName: True Sacred Naginata Swing
-TrueSacredNaginataHoldout.DisplayName: True Sacred Naginata Holdout
 VolcanoKatanaHoldUp.DisplayName: Volcano Katana Hold Up
 MeteoBullet.DisplayName: Meteo Bullet
 VolcanicCinder.DisplayName: Volcanic Cinder
-TrueSacredBeam.DisplayName: True Sacred Beam
-TrueSacredSecondaryMagicCircle.DisplayName: True Sacred Secondary Magic Circle

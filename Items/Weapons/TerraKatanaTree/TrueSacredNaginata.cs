@@ -33,8 +33,8 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             Item.knockBack = 4.5f;
             Item.MKItem().AltDamage = 45;
 
-            Item.value = Item.sellPrice(0, 4, 60);
-            Item.rare = ItemRarityID.Pink;
+            Item.value = Item.sellPrice(0, 10);
+            Item.rare = ItemRarityID.Yellow;
 
             Item.MKItem().SetKatanaDefaults(Item, 60, false, ModContent.ProjectileType<TrueSacredNaginataSwing>(), 3);
         }
