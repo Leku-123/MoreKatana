@@ -46,12 +46,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-        {
-            //AltFunctionUse()やAltFunctionUseItem()は条件をいじっていないためここでは動作しない。
-            if (player.altFunctionUse != 0) return false;
-
-            return base.Shoot(player, source, position, velocity, type, damage, knockback);
-        }
+            => !player.IsUsingAlt();
 
         public override void ActiveSkill(Player player)
         {

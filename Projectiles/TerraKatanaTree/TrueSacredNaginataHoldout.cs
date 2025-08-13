@@ -16,7 +16,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         private ref float Timer => ref Projectile.ai[0];
 
         public const int PrepareTime = 60;
-        public const int FireTime = 100;
+        public const int FireTime = 150;
         public const int DisappearTime = 30;
 
         public float PrepareCompletion => MathHelper.Clamp(Timer / PrepareTime, 0f, 1f);
@@ -51,16 +51,12 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             if (projHitbox.Intersects(targetHitbox))
                 return true;
 
-            float dummy = 0f;
+            float _ = float.NaN;
             float length = 124;
             Vector2 offset = length / 2 * Projectile.scale * Vector2.Normalize(Projectile.velocity);
             Vector2 tip = Projectile.Center + offset;
             Vector2 end = Projectile.Center - offset;
-
-            if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), tip, end, Projectile.scale, ref dummy))
-                return true;
-
-            return false;
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), tip, end, Projectile.scale, ref _);
         }
 
         public override void CutTiles()
@@ -86,6 +82,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 return;
             }
 
+            // チェイン部分の挙動
             ChainPhysics();
 
             // プレイヤーの保持する発射体のIDを更新して、プレイヤーの使用時間を延長する
@@ -103,7 +100,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             // 発射体の速度をマウス方向への線形補完した速度の単位ベクトルに変換
             // 発射体の位置を単位ベクトル方向にオフセット分移動させる
-            const float lerp = 0.08f;
+            const float lerp = 0.05f;
             float offset = 60f;
             Vector2 normalizeVel = Vector2.Normalize(Projectile.velocity); //発射体の速度の単位ベクトル
             Projectile.velocity = Vector2.Lerp(normalizeVel, Vector2.Normalize(Main.MouseWorld - Owner.MountedCenter), lerp);
@@ -115,50 +112,86 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             float rot = (Projectile.spriteDirection == 1) ? MathHelper.ToRadians(45f) : MathHelper.ToRadians(135f);
             Projectile.rotation = Projectile.velocity.ToRotation() + rot;
 
-            Vector2 firePos = Projectile.position + (Vector2.Normalize(Projectile.velocity) * 100f);
-            if (PrepareCompletion < 0.8f)
+            // 発射位置を剣先に調節する
+            float fireOffset = 100f;
+            Vector2 firePos = Projectile.position + (Vector2.Normalize(Projectile.velocity) * fireOffset);
+
+            // 最初のフレームで魔法陣の発射体を2つスポーンさせる
+            if (Timer == 0 && Projectile.owner == Main.myPlayer)
+            {
+                // iで魔法陣の配置向きを決める
+                // 0ならばスポーンしない
+                for (int i = -1; i <= 1; i++)
+                {
+                    if (i != 0)
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), firePos, Vector2.Normalize(Projectile.velocity), ModContent.ProjectileType<TrueSacredSecondaryMagicCircle>(), Projectile.damage, Projectile.knockBack, Projectile.owner, Projectile.whoAmI, i);
+                }
+            }
+
+            if (PrepareCompletion < 0.8f) // 準備
             {
                 int newDust = Dust.NewDust(firePos - new Vector2(4), 32, 32, DustID.HallowedWeapons, Projectile.oldVelocity.X, Projectile.oldVelocity.Y, 100, default);
                 Main.dust[newDust].noGravity = true;
                 Main.dust[newDust].scale *= 2;
                 Main.dust[newDust].velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2.5f, 4.5f);
             }
-
-            if (PrepareCompletion == 1f && FireCompletion < 1f)
+            else if (PrepareCompletion == 1f && FireCompletion < 1f) // 発射
             {
-                Projectile.MKProjectile().ActivateCD = true;
+                Owner.ScreenShake(5, 2); // スクリーンシェイク
+                Projectile.MKProjectile().ActivateCD = true; // この発射体消滅後にクールダウンを有効化する
 
                 if (Timer % 10 == 0)
                 {
-                    SoundEngine.PlaySound(SoundID.Item4, Owner.Center);
+                    // 最初のフレームでサウンドとビーム発射
+                    if (Projectile.ai[1] == 0)
+                    {
+                        Projectile.ai[1] = 1;
+                        SoundEngine.PlaySound(SoundID.Zombie104, Owner.position);
 
-                    for (int i = 0; i < 3; i++)
+                        if (Projectile.owner == Main.myPlayer)
+                        {
+                            Vector2 beamVelocity = Vector2.Normalize(Projectile.velocity);
+                            if (beamVelocity.HasNaNs())
+                                beamVelocity = -Vector2.UnitY;
+
+                            // このUUIDはマルチプレイヤーモードで全てのプレイヤー間で共通となり、プリズムにビームが正しく固定されるようにします...らしいよ
+                            int uuid = Projectile.GetByUUID(Projectile.owner, Projectile.whoAmI);
+                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), firePos, beamVelocity, ModContent.ProjectileType<TrueSacredBeam>(), Projectile.damage, Projectile.knockBack, Projectile.owner, uuid);
+                            Projectile.netUpdate = true;
+                        }
+                    }
+
+                    for (int i = 0; i < 8; i++)
                     {
                         int newDust = Dust.NewDust(firePos, 32, 32, DustID.HallowedWeapons, 0f, 0f, 100, default, 1.5f);
                         Main.dust[newDust].scale *= Main.rand.NextFloat(1, 2.5f);
                         Main.dust[newDust].noGravity = true;
-                        Main.dust[newDust].velocity += Projectile.velocity * 2;
+                        Main.dust[newDust].velocity += Vector2.Normalize(Projectile.velocity) * 2;
                         Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(15)) * 6f;
                         Main.dust[newDust].velocity *= Main.rand.NextFloat(1f, 3f);
+                        Main.dust[newDust].velocity += Owner.velocity / 2;
+                        newDust = Dust.NewDust(firePos, 32, 32, DustID.HallowedWeapons, 0f, 0f, 100, default, 1.5f);
+                        Main.dust[newDust].velocity += Vector2.Normalize(Projectile.velocity) * 2;
+                        Main.dust[newDust].velocity *= 5f;
+                        Main.dust[newDust].velocity *= Main.rand.NextFloat(1f, 2f);
                         Main.dust[newDust].velocity += Owner.velocity / 2;
                     }
 
                     for (int i = 0; i < 2; i++)
                     {
-                        Vector2 vector = Main.rand.NextVector2Unit() * 50;
-
+                        Vector2 vector = Main.rand.NextVector2Unit() * 40;
                         ParticleOrchestraSettings particleOrchestraSettings = default;
                         particleOrchestraSettings.PositionInWorld = firePos + vector;
-                        ParticleOrchestrator.RequestParticleSpawn(false, ParticleOrchestraType.Excalibur, particleOrchestraSettings, Projectile.owner);
-
-                        if (Projectile.owner == Main.myPlayer)
-                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), firePos + vector, Projectile.velocity * 25, ModContent.ProjectileType<SacredEdge>(), Projectile.damage, 0, Projectile.owner);
+                        ParticleOrchestrator.RequestParticleSpawn(false, ParticleOrchestraType.TrueExcalibur, particleOrchestraSettings, Projectile.owner);
                     }
+
+                    Projectile.netUpdate = true;
                 }
             }
-            else
+            else // 消滅
             {
-                Projectile.alpha = (int)(255 * EaseFunction.EaseCubicOut.Ease(DisappearCompletion));
+                // DisappearCompletionをもとに抑揚をつけてフェードアウト
+                Projectile.Opacity = 1 - EaseFunction.EaseCubicOut.Ease(DisappearCompletion);
             }
 
             Timer++;
@@ -180,6 +213,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             // 本体の描画
             Main.EntitySpriteDraw(texture, position, rectangle, color, Projectile.rotation, texture.Size() / 2, Projectile.scale, spriteEffects, 0);
 
+            // チェインの描画
             DrawChain(glowColor);
 
             // 魔法陣の描画
@@ -208,7 +242,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Vector2 pos = new Vector2(ownerPos.X - spriteSize.X * 0.5f, ownerPos.Y - spriteSize.Y * 0.9f);
                 Color c1 = Color.Black;
                 Color c2 = Color.Gold;
-                float completionRatio = (FireTime - (Timer - PrepareTime)) / FireTime;
 
                 Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c1, 0f, Vector2.Zero, new Vector2(spriteSize.X, 4f), SpriteEffects.None, 0f);
                 Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c2, 0f, Vector2.Zero, new Vector2(spriteSize.X * (1 - FireCompletion), 4f), SpriteEffects.None, 0f);
@@ -226,9 +259,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             if (chainVels != null)
             {
                 for (int i = 0; i < chainVels.Length; i++)
-                {
                     chainVels[i] = (MathHelper.PiOver2 - (i * 0.01f)).ToRotationVector2() * 2f;
-                }
             }
             else
                 chainVels = new Vector2[length];
