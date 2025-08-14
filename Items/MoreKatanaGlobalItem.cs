@@ -75,7 +75,7 @@ namespace MoreKatana.Items
             SetDefaultsVanillaItem(item);
         }
 
-        public void SetDefaultsVanillaItem(Item item)
+        private void SetDefaultsVanillaItem(Item item)
         {
             if (item.type == ItemID.Katana)
             {
@@ -155,7 +155,6 @@ namespace MoreKatana.Items
 
                         // バニラアイテムのパッシブスキル
                         VanillaPassiveSkill(item, player, false);
-
                     }
                     else
                     {
@@ -192,6 +191,18 @@ namespace MoreKatana.Items
                 {
                     int newDust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustID.DungeonWater);
                     Main.dust[newDust].noGravity = true;
+                }
+            }
+        }
+
+        public override void OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            if (item.type == ItemID.Muramasa)
+            {
+                if (Main.myPlayer == player.whoAmI && (target == null || target.HittableForOnHitRewards()))
+                {
+                    Vector2 vector = Main.rand.NextVector2Unit() * 80;
+                    Projectile.NewProjectile(item.GetSource_FromThis(), target.Center + vector, -vector / 5, ModContent.ProjectileType<MuramasaSlash>(), item.damage / 2, item.knockBack, player.whoAmI);
                 }
             }
         }

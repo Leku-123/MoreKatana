@@ -24,7 +24,10 @@ namespace MoreKatana.Projectiles
             if (SourceIsItemUse)
             {
                 if (source is not EntitySource_ItemUse)
+                {
+                    ActivateCD = false;
                     projectile.Kill();
+                }
             }
         }
 

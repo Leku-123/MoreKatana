@@ -32,7 +32,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.alpha = 255;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10;
         }
@@ -40,10 +39,13 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         public override void AI()
         {
             if (PrepareCompletion < 1)
-                Projectile.velocity *= 0.92f; // 減速
-
-            if (PrepareCompletion == 1)
             {
+                // 減速する
+                Projectile.velocity *= 0.92f;
+            }
+            else if (PrepareCompletion == 1)
+            {
+                // 最初のフレームで加速する
                 if (Projectile.localAI[0] == 0)
                 {
                     Projectile.localAI[0] = 1;
@@ -57,8 +59,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                         Vector2 direct = Projectile.DirectionTo(Main.MouseWorld);
                         float speed = 25f;
                         Projectile.velocity += direct * speed;
-                        Projectile.netUpdate = true;
                     }
+
+                    Projectile.netUpdate = true;
                 }
             }
 
@@ -66,13 +69,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.direction = Projectile.spriteDirection = (Projectile.velocity.X > 0f) ? 1 : -1;
             Projectile.rotation = Projectile.velocity.ToRotation() + (Projectile.spriteDirection == -1 ? MathHelper.Pi : 0);
 
-            // フェードイン
-            if (Projectile.alpha > 0)
-            {
-                Projectile.alpha -= 25;
-                if (Projectile.alpha < 0)
-                    Projectile.alpha = 0;
-            }
+            // 不透明度
+            Projectile.Opacity = MathHelper.Clamp(PrepareCompletion * 2, 0f, 1f);
 
             // アニメーションフレーム
             if (++Projectile.frameCounter >= 4)
@@ -81,7 +79,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];
             }
 
-            // タイマーを増加
             Timer++;
         }
 
@@ -100,22 +97,22 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Vector2 origin = rectangle.Size() / 2f;
             Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
             Color color = Projectile.GetAlpha(lightColor);
+            Color glowColor = Color.White * Projectile.Opacity;
             SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
             // トレイル
             for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Projectile.type]; i++)
             {
                 float fade = (float)(ProjectileID.Sets.TrailCacheLength[Projectile.type] - i) / ProjectileID.Sets.TrailCacheLength[Projectile.type];
-                Color color2 = color;
-                color2 *= fade;
+                glowColor *= fade;
                 float scale = Projectile.scale;
                 scale *= fade;
                 Vector2 pos = Projectile.oldPos[i];
-                Main.EntitySpriteDraw(texture, pos + Projectile.Size / 2f - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), rectangle, color2, Projectile.rotation, origin, scale, spriteEffects, 0);
+                Main.EntitySpriteDraw(texture, pos + Projectile.Size / 2f - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), rectangle, glowColor, Projectile.rotation, origin, scale, spriteEffects, 0);
             }
 
             // アウトライン
-            MoreKatanaUtil.DrawBackglow(texture, position, rectangle, Color.White with { A = 0 } * Projectile.Opacity, Projectile.rotation, PrepareCompletion, new Vector2(Projectile.scale), spriteEffects);
+            MoreKatanaUtil.DrawBackglow(texture, position, rectangle, glowColor with { A = 0 }, Projectile.rotation, PrepareCompletion, new Vector2(Projectile.scale), spriteEffects);
 
             // 本体の描画
             Main.EntitySpriteDraw(texture, position, rectangle, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);

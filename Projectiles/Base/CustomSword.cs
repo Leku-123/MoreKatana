@@ -76,10 +76,10 @@ namespace MoreKatana.Projectiles.Base
         /// <summary>
         /// 雑多な変数
         /// </summary>
-        protected bool ContinuousSwing;        // 全ての振りを連続的に行うかどうか
-        protected bool FixedDirection;         // 全ての振りの方向を固定するかどうか
-        protected bool NoSpeedBonus;           // 速度ボーナスを無くすかどうか
-        protected Color TrailColor;            // トレイルの色
+        protected bool ContinuousSwing; // 全ての振りを連続的に行うかどうか
+        protected bool FixedDirection;  // 全ての振りの方向を固定するかどうか
+        protected bool NoSpeedBonus;    // 速度ボーナスを無くすかどうか
+        protected Color TrailColor;     // トレイルの色
 
         protected Player Owner => Main.player[Projectile.owner];
         protected Item SwordItem => Owner.ActiveItem();

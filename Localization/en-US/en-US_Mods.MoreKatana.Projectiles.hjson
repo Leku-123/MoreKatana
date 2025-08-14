@@ -19,6 +19,9 @@ TrueSacredNaginataSwing.DisplayName: True Gaeborg
 TrueSacredNaginataHoldout.DisplayName: True Gaeborg
 TrueSacredBeam.DisplayName: Sacred Beam
 TrueSacredSecondaryMagicCircle.DisplayName: Sacred Magic Circle
+MuramasaGhost.DisplayName: Muramasa Ghost
+MuramasaGhostSwing.DisplayName: Muramasa
+MuramasaSlash.DisplayName: Muramasa
 # -------- Wood --------
 ChargingWoodenSwing.DisplayName: Wooden Katana
 # -------- Misc --------
@@ -31,5 +34,3 @@ BallofVolcano.DisplayName: Ball of Volcano
 VolcanoKatanaHoldUp.DisplayName: Volcano Katana Hold Up
 MeteoBullet.DisplayName: Meteo Bullet
 VolcanicCinder.DisplayName: Volcanic Cinder
-MuramasaGhost.DisplayName: Muramasa Ghost
-MuramasaGhostSwing.DisplayName: Muramasa Ghost Swing

@@ -22,7 +22,7 @@ namespace MoreKatana
         public static PrimTrailManager primitives;
 
         private Vector2 _lastScreenSize;
-     
+
         public static MoreKatana Instance;
 
         public MoreKatana()
@@ -39,7 +39,7 @@ namespace MoreKatana
             if (Main.netMode != NetmodeID.Server)
             {
                 GameShaders.Misc["Compression"] = new MiscShaderData(ModContent.Request<Effect>("MoreKatana/Effects/Compression", AssetRequestMode.ImmediateLoad), "ShieldPass");
-                
+
                 PrimitiveTextureMap = ModContent.Request<Effect>("MoreKatana/Effects/PrimitiveTextureMap", AssetRequestMode.ImmediateLoad).Value;
                 primitives = new PrimTrailManager();
                 primitives.LoadContent(Main.graphics.GraphicsDevice);

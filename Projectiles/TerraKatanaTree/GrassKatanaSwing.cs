@@ -44,7 +44,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
                 if (Projectile.owner == Main.myPlayer)
                 {
-                    float deg = 10;
+                    float deg = 10; // 発射体1つごとの角度
                     for (int i = -1; i <= 1; i++)
                     {
                         Vector2 vector = Vector2.Normalize(Projectile.velocity).RotatedBy(MathHelper.ToRadians(deg) * i);

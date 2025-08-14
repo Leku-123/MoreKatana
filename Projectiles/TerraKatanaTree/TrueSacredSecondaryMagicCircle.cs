@@ -49,13 +49,14 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         {
             Player player = Main.player[Projectile.owner];
             Projectile hostProj = Main.projectile[(int)HostIndex];
-            TrueSacredNaginataHoldout trueSacredNaginataHoldout = (TrueSacredNaginataHoldout)hostProj.ModProjectile;
 
             if (!hostProj.active || hostProj.type != ModContent.ProjectileType<TrueSacredNaginataHoldout>())
             {
                 Projectile.Kill();
                 return;
             }
+
+            TrueSacredNaginataHoldout trueSacredNaginataHoldout = (TrueSacredNaginataHoldout)hostProj.ModProjectile;
 
             // 発射体の位置
             // ホールド発射体の剣先から、MagicCircleDirectionの向きに移動した位置をオフセットとし、

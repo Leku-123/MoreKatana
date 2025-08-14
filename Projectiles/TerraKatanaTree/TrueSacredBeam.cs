@@ -70,10 +70,14 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         public override void AI()
         {
             Projectile hostProj = Main.projectile[(int)HostIndex];
-            TrueSacredNaginataHoldout trueSacredNaginataHoldout = (TrueSacredNaginataHoldout)hostProj.ModProjectile;
+            if (!hostProj.active || hostProj.type != ModContent.ProjectileType<TrueSacredNaginataHoldout>())
+            {
+                Projectile.Kill();
+                return;
+            }
 
-            if (!hostProj.active || hostProj.type != ModContent.ProjectileType<TrueSacredNaginataHoldout>()
-                || trueSacredNaginataHoldout.FireCompletion >= 1f)
+            TrueSacredNaginataHoldout trueSacredNaginataHoldout = (TrueSacredNaginataHoldout)hostProj.ModProjectile;
+            if (trueSacredNaginataHoldout.FireCompletion >= 1f)
             {
                 Projectile.Kill();
                 return;

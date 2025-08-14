@@ -51,13 +51,13 @@ namespace MoreKatana.Items.Weapons.Metal
         {
             player.statDefense += 5;
 
-            // ここじゃなくてもいいけどパッシブに処理に組み込んじゃえばそれはそれで楽
             if (Fire(player))
             {
                 Item.damage = 30;
                 Item.useTime = 25;
                 Item.useAnimation = 25;
                 Combo = 2;
+                player.DrawColorEffect(Color.Red.ToVector3());
             }
             else
             {
