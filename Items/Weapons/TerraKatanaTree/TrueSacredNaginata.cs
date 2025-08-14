@@ -129,37 +129,34 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
                     Main.spriteBatch.Draw(texture, ShieldCenter - Main.screenPosition, rectangle, shieldColor with { A = 0 }, 0f, origin, shieldScale, SpriteEffects.None, 0);
             }
 
-            // ゲージの描画位置を計算する
-            Vector2 spriteSize = new Vector2(50, 50);
-            Vector2 ownerPos = drawInfo.Center - Main.screenPosition;
-            Vector2 pos = new Vector2(ownerPos.X - spriteSize.X * 0.5f, ownerPos.Y + spriteSize.Y * 0.7f);
-
-            // ゲージごとの色
-            Color c1 = Color.Black;
-            Color c2 = Color.Gold;
-            Color c3 = Color.Red;
-
             // ゲージの充填率
             float durabilityRatio = (float)drawPlayer.MKPlayer().TrueHolyShieldDurability / ShieldDurabilityMax;
-            float cooldownRatio = drawPlayer.MKPlayer().ShieldCooldown / (float)ShieldRechargeTime;
+            float cooldownRatio = (float)drawPlayer.MKPlayer().ShieldCooldown / ShieldRechargeTime;
+
+            // ゲージの位置
+            Vector2 gaugePos = new Vector2(drawInfo.Center.X, drawInfo.Center.Y) + new Vector2(0, 35);
+
+            // ゲージとテキストの色
+            Color c1 = Color.Gold;
+            Color c2 = Color.Red;
+            Color c3 = Color.White;
 
             // シールドの耐久率が下がった時ゲージを揺らす
             if (durabilityRatio < 0.3f && cooldownRatio == 0)
-                pos += Main.rand.NextVector2Unit();
+                gaugePos += Main.rand.NextVector2Unit();
 
             // ゲージを描画する
-            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c1, 0f, Vector2.Zero, new Vector2(spriteSize.X, 4f), SpriteEffects.None, 0f);
-            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c2, 0f, Vector2.Zero, new Vector2(spriteSize.X * durabilityRatio, 4f), SpriteEffects.None, 0f);
             if (cooldownRatio != 0)
-                Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c3, 0f, Vector2.Zero, new Vector2(spriteSize.X * (1 - cooldownRatio), 4f), SpriteEffects.None, 0f);
+                MoreKatanaUtil.DrawGauge(gaugePos, 1 - cooldownRatio, c2, c2);
+            else
+                MoreKatanaUtil.DrawGauge(gaugePos, durabilityRatio, c1);
 
             // テキストを描画する
             var font = FontAssets.MouseText.Value;
             int numerator = cooldownRatio == 0 ? drawPlayer.MKPlayer().TrueHolyShieldDurability : (int)(ShieldDurabilityMax * (1 - cooldownRatio));
             string text = MoreKatanaUtil.GetTextValue("Tooltips.Life") + ":" + $"{numerator}" + "/" + $"{ShieldDurabilityMax}";
-
-            Vector2 textPos = pos + new Vector2(0, spriteSize.Y * 0.2f);
-            ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, textPos, cooldownRatio != 0 ? c3 : Color.White, 0f, new Vector2(0.5f, 0.5f), Vector2.One);
+            Vector2 textPos = gaugePos + new Vector2(-25, 5) - Main.screenPosition;
+            ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, textPos, cooldownRatio != 0 ? c2 : c3, 0f, new Vector2(0.5f, 0.5f), Vector2.One);
         }
     }
 }

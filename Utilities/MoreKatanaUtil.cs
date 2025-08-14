@@ -88,6 +88,17 @@ namespace MoreKatana
             mk.DashTimerMax = timer;
             mk.SuddenStop = stop;
         }
+
+        public static void DrawColorEffect(this Player player, float r, float g, float b, float a)
+        {
+            MoreKatanaPlayer mk = player.MKPlayer();
+            mk.R = r;
+            mk.G = g;
+            mk.B = b;
+            mk.A = a;
+        }
+        public static void DrawColorEffect(this Player player, float value) => player.DrawColorEffect(value, value, value, value);
+        public static void DrawColorEffect(this Player player, Vector3 rgb, float a = 1) => player.DrawColorEffect(rgb.X, rgb.Y, rgb.Z, a);
         #endregion
 
         #region -------- Projectile Utils --------
@@ -264,6 +275,32 @@ namespace MoreKatana
             {
                 Vector2 backglowOffset = (MathHelper.TwoPi * i / backglowAmount).ToRotationVector2() * backglowArea;
                 Main.EntitySpriteDraw(texture, drawPosition + backglowOffset, frame, backglowColor, rotation, origin, scale, spriteEffects, 0f);
+            }
+        }
+
+        public static void DrawGauge(Vector2 drawPos, float ratio, Color frontColor, Color? lightColor = null, Color? backColor = null, int dustType = -1)
+        {
+            Vector2 backSize = new Vector2(54, 8);
+            Vector2 frontSize = new Vector2(50, 4);
+            Vector2 backPos = new Vector2(drawPos.X - backSize.X * 0.5f, drawPos.Y - backSize.Y * 0.5f);
+            Vector2 frontPos = new Vector2(drawPos.X - frontSize.X * 0.5f, drawPos.Y - frontSize.Y * 0.5f);
+            Color c1 = backColor == null ? Color.Black : (Color)backColor;
+            Color c2 = frontColor;
+            Color c3 = lightColor == null ? Color.White : (Color)lightColor;
+
+            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, backPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), c1, 0f, Vector2.Zero, new Vector2(backSize.X, backSize.Y), SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, frontPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), c2, 0f, Vector2.Zero, new Vector2(frontSize.X * ratio, frontSize.Y), SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, frontPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), c3 * 0.5f, 0f, Vector2.Zero, new Vector2(frontSize.X * ratio, frontSize.Y / 2), SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, frontPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), c3 * 0.5f, 0f, Vector2.Zero, new Vector2(frontSize.X * ratio, frontSize.Y / 4), SpriteEffects.None, 0f);
+
+            if (dustType != -1)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    int newDust = Dust.NewDust(new Vector2(frontPos.X + (frontSize.X * ratio) - 3f, frontPos.Y - 3f), 1, (int)frontSize.Y * 2, dustType, Main.rand.Next(2, 3), 0, 150, default, 0.5f);
+                    Main.dust[newDust].fadeIn = 0;
+                    Main.dust[newDust].noGravity = true;
+                }
             }
         }
 

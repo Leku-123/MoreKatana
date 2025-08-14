@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Buffs;
 using MoreKatana.Items.Weapons;
 using MoreKatana.Projectiles;
+using MoreKatana.Projectiles.TerraKatanaTree;
 using MoreKatana.UI;
 using System;
 using System.Collections.Generic;
@@ -96,7 +97,7 @@ namespace MoreKatana.Items
             {
                 if (item.type is ItemID.Katana or ItemID.Muramasa)
                 {
-                    return !player.HasBuff(ModContent.BuffType<KatanaArtsCD>());
+                    return !player.HasBuff(ModContent.BuffType<KatanaArtsCD>()) && VanillaAltFunctionUse(item, player);
                 }
                 else
                 {
@@ -104,6 +105,16 @@ namespace MoreKatana.Items
                 }
             }
             return base.AltFunctionUse(item, player);
+        }
+
+        private bool VanillaAltFunctionUse(Item item, Player player)
+        {
+            if (item.type == ItemID.Muramasa)
+            {
+                return player.ownedProjectileCounts[ModContent.ProjectileType<MuramasaGhost>()] == 0;
+            }
+
+            return true;
         }
 
         public override bool CanUseItem(Item item, Player player)
@@ -141,7 +152,7 @@ namespace MoreKatana.Items
                     {
                         // アイテムの設定を更新する
                         SetDefaultsVanillaItem(item);
-                    
+
                         // バニラアイテムのパッシブスキル
                         VanillaPassiveSkill(item, player, false);
 
@@ -173,6 +184,18 @@ namespace MoreKatana.Items
             return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
         }
 
+        public override void MeleeEffects(Item item, Player player, Rectangle hitbox)
+        {
+            if (item.type == ItemID.Muramasa)
+            {
+                if (Main.rand.NextBool(2))
+                {
+                    int newDust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustID.DungeonWater);
+                    Main.dust[newDust].noGravity = true;
+                }
+            }
+        }
+
         public override void UpdateAccessory(Item item, Player player, bool hideVisual)
         {
             if (Katana)
@@ -200,7 +223,8 @@ namespace MoreKatana.Items
             }
             if (item.type == ItemID.Muramasa)
             {
-
+                item.UseSound = SoundID.NPCDeath33;
+                Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<MuramasaGhost>(), item.damage, item.knockBack, player.whoAmI);
             }
         }
 

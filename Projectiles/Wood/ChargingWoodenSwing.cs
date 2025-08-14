@@ -72,38 +72,47 @@ namespace MoreKatana.Projectiles.Wood
 
         public override void AdditionalAI(Item item, int type, bool onDelay)
         {
+            // プレイヤーのアイテム使用時間と発射体が消滅するまでの時間を延長する
             Owner.SetDummyItemTime(2);
             Projectile.timeLeft = 2;
 
             if (!onDelay)
             {
+                // 振り下ろす時にダメージを与える
                 Projectile.friendly = type == 1;
             }
             else
             {
+                // ディレイではダメージを与えない
                 Projectile.friendly = false;
 
+                // 振り上げ時
                 if (type == 0)
                 {
-                    Projectile.Center += Main.rand.NextVector2Unit();
-
+                    // 攻撃可能なことを音とダストで知らせる
                     if (!attackable)
                     {
                         attackable = true;
                         SoundEngine.PlaySound(SoundID.MaxMana, Owner.Center);
+                        MoreKatanaUtil.DrawRing(Projectile.Center, DustID.PlatinumCoin, 24, 4f);
                     }
 
+                    // マウスを右クリックしている場合はディレイを延長する
                     if (Projectile.owner == Main.myPlayer && Main.mouseRight)
                         DelayTimer = 10;
+
+                    // 発射体の位置をランダムで揺らす
+                    Projectile.Center += Main.rand.NextVector2Unit();
                 }
             }
         }
 
         public override void SafeTileCollide(Item item, int type)
         {
+            // 振り下ろし時
             if (type == 1)
             {
-                timerStop = true;
+                timerStop = true; // タイマーをストップさせ振りの動きを止める
                 Owner.ScreenShake(4, 10);
                 SoundEngine.PlaySound(SoundID.Dig, Owner.Center);
             }
@@ -120,9 +129,9 @@ namespace MoreKatana.Projectiles.Wood
                 Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(10));
                 Main.dust[newDust].velocity *= Main.rand.NextFloat(1f, 3f);
             }
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 6; i++)
             {
-                int newDust = Dust.NewDust(target.position, target.width, target.height, DustID.Smoke, 0.0f, 0f, 150, new Color(), 0.5f);
+                int newDust = Dust.NewDust(target.position, target.width, target.height, DustID.Smoke, 0.0f, 0f, 150, default, 0.5f);
                 Main.dust[newDust].fadeIn = 1.25f;
                 Main.dust[newDust].noLight = true;
                 Main.dust[newDust].velocity = new Vector2(0f, Main.rand.Next(-2, -1));

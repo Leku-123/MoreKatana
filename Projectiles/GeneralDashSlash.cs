@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Projectiles.PrimTrails;
+using System.IO;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace MoreKatana.Projectiles
 {
@@ -42,9 +44,24 @@ namespace MoreKatana.Projectiles
             Projectile.MKProjectile().DashProjectile = true;
         }
 
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.WriteVector2(DashDirection);
+            writer.Write7BitEncodedInt(DashDistance);
+            writer.Write(DashTimerMax);
+            writer.WriteFlags(SuddenStop);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            DashDirection = reader.ReadVector2();
+            DashDistance = reader.Read7BitEncodedInt();
+            DashTimerMax = reader.ReadSingle();
+            SuddenStop = reader.ReadBoolean();
+        }
+
         public override void AI()
         {
-
             if (Projectile.ai[0] == 0)
             {
                 Projectile.ai[0] = 1;
@@ -76,26 +93,18 @@ namespace MoreKatana.Projectiles
                     Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(15));
                     Main.dust[newDust].velocity *= Main.rand.NextFloat(1f, 3f);
                 }
+
+                Projectile.netUpdate = true;
             }
 
             Projectile.Center = Owner.MountedCenter;
             Projectile.spriteDirection = Owner.direction;
-
-            if (Projectile.spriteDirection == 1)
-                Projectile.rotation = DashDirection.ToRotation() + MathHelper.ToRadians(45f);
-            else
-                Projectile.rotation = DashDirection.ToRotation() + MathHelper.ToRadians(135f);
-
+            Projectile.rotation = DashDirection.ToRotation() + (Projectile.spriteDirection == 1 ? MathHelper.ToRadians(45f) : MathHelper.ToRadians(135f));
+            
             Owner.heldProj = Projectile.whoAmI;
             Owner.SetDummyItemTime(2);
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, DashDirection.ToRotation() - MathHelper.ToRadians(90f));
             Owner.armorEffectDrawShadow = true;
-        }
-
-        public override void OnKill(int timeLeft)
-        {
-            if (Main.netMode != NetmodeID.Server)
-                trail?.OnDestroy();
         }
 
         public override bool PreDraw(ref Color lightColor)

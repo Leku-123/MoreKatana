@@ -24,6 +24,7 @@ namespace MoreKatana.Projectiles.PrimTrails
 
         public int TextureType;
         public int Direction = 1;
+        public int ModifiedWidth = 0;
         public Vector2 PrimCenter;
 
         public override void PrimStructure(SpriteBatch spriteBatch)
@@ -98,6 +99,9 @@ namespace MoreKatana.Projectiles.PrimTrails
         {
             Counter = 10;
             PointCount = Points.Count() * 6;
+
+            if (ModifiedWidth != 0)
+                Width = ModifiedWidth;
 
             while (Points.Count() > Cap)
                 Points.RemoveAt(0);

@@ -31,6 +31,7 @@ namespace MoreKatana
         public Vector2 DashDirection, DashStartPos, DashEndPos;
 
         public float Flipping;
+        public float R, G, B, A;
         public int ShieldCooldown;
 
         public bool holyShield;
@@ -55,6 +56,7 @@ namespace MoreKatana
             if (!GeneralDash)
                 DashTimer = 0f;
             Flipping = 0f;
+            R = G = B = A = 1f;
             holyShield = false;
             trueHolyShield = false;
         }
@@ -104,7 +106,7 @@ namespace MoreKatana
                     Player.mount.Dismount(Player);
             }
 
-            /*if (GoldKatana)
+            /*if (Gold)
             {
                 long coin = Utils.CoinsCount(out bool over, Player.inventory);
                 int bonus = 0;
@@ -182,22 +184,6 @@ namespace MoreKatana
             }
 
             //Main.NewText($"{}"); // デバッグ用なので残しておいて
-        }
-
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
-        {
-            /*if (Katana)
-            {
-                if (target.friendly)
-                    return;
-
-                Item heldItem = Player.HeldItem;
-                float armorPen = Player.GetArmorPenetration<GenericDamageClass>();
-                int dam = Player.GetWeaponDamage(heldItem);
-                Player.GetArmorPenetration<GenericDamageClass>() = int.MaxValue;
-                target.SimpleStrikeNPC(dam / 10, modifiers.HitDirection);
-                Player.GetArmorPenetration<GenericDamageClass>() = armorPen;
-            }*/
         }
 
         public override void ModifyHurt(ref Player.HurtModifiers modifiers)
@@ -312,6 +298,11 @@ namespace MoreKatana
                     info.Damage -= shieldDamageBlocked;
                 }
             }
+        }
+
+        public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
+        {
+            r = R; g = G; b = B; a = A;
         }
 
         public static void AddRenderDrawLayers(ref PlayerDrawSet drawinfo)

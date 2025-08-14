@@ -82,7 +82,7 @@ namespace MoreKatana.Projectiles.Base
         protected Color TrailColor;            // トレイルの色
 
         protected Player Owner => Main.player[Projectile.owner];
-        private Item SwordItem => Owner.ActiveItem();
+        protected Item SwordItem => Owner.ActiveItem();
         private CustomSwordPrimTrail trail;
         #endregion
 
@@ -261,25 +261,24 @@ namespace MoreKatana.Projectiles.Base
 
                 Initialization(SwordItem, SwingType);
 
-                if (Main.myPlayer == Owner.whoAmI)
-                    Projectile.netUpdate = true;
+                Projectile.netUpdate = true;
             }
 
             // タイマーを増加 (手動で止めない限り)
             if (!timerStop)
                 Timer++;
 
-            SetSwordPosition();
+            SetSwordPosition(swordPos);
             SwingAnimation();
         }
 
         /// <summary>
         /// 剣の位置
         /// </summary>
-        private void SetSwordPosition()
+        public virtual void SetSwordPosition(Vector2 v)
         {
             // 発射体の位置と向き
-            Projectile.Center = Owner.MountedCenter + (swordPos * Projectile.scale);
+            Projectile.Center = Owner.MountedCenter + (v * Projectile.scale);
             Projectile.spriteDirection = Owner.direction;
 
             // 発射体の回転を調節する。Backspinも考慮する
@@ -350,7 +349,6 @@ namespace MoreKatana.Projectiles.Base
                 {
                     Projectile.friendly = false;
                     Projectile.alpha = 255;
-                    Projectile.netUpdate = true;
 
                     // 連続する振りの場合そのまま次の振りのパターンにする
                     // それ以外は消滅
@@ -378,6 +376,8 @@ namespace MoreKatana.Projectiles.Base
                     }
 
                     primsCreated = false;
+                 
+                    Projectile.netUpdate = true;
                 }
             }
 

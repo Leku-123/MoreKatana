@@ -42,6 +42,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
+            Projectile.noEnchantmentVisuals = true;
         }
 
         public override void AI()

@@ -85,7 +85,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             // チェイン部分の挙動
             ChainPhysics();
 
-            // プレイヤーの保持する発射体のIDを更新して、プレイヤーの使用時間を延長する
+            // プレイヤーの保持する発射体のIDを更新して、プレイヤーのアイテム使用時間を延長する
             Owner.heldProj = Projectile.whoAmI;
             Owner.SetDummyItemTime(10);
 
@@ -237,14 +237,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             // ゲージの描画
             if (PrepareCompletion == 1f && FireCompletion != 1f)
             {
-                Vector2 spriteSize = new Vector2(50, 50);
-                Vector2 ownerPos = Owner.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-                Vector2 pos = new Vector2(ownerPos.X - spriteSize.X * 0.5f, ownerPos.Y - spriteSize.Y * 0.9f);
-                Color c1 = Color.Black;
-                Color c2 = Color.Gold;
-
-                Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c1, 0f, Vector2.Zero, new Vector2(spriteSize.X, 4f), SpriteEffects.None, 0f);
-                Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pos, new Rectangle(0, 0, 1, 1), c2, 0f, Vector2.Zero, new Vector2(spriteSize.X * (1 - FireCompletion), 4f), SpriteEffects.None, 0f);
+                Vector2 gaugePos = Owner.Center - new Vector2(0, 50);
+                MoreKatanaUtil.DrawGauge(gaugePos, 1 - FireCompletion, Color.Gold, dustType: DustID.HallowedWeapons);
             }
 
             return false;
