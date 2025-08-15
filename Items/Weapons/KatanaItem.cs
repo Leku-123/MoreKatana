@@ -24,6 +24,7 @@ namespace MoreKatana.Items.Weapons
         public sealed override void SetDefaults()
         {
             SetDefaultsItem();
+            Item.MKItem().ID = ID;
         }
 
         public virtual void SetDefaultsItem()

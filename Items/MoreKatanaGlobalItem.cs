@@ -19,9 +19,9 @@ namespace MoreKatana.Items
     {
         public override bool InstancePerEntity => true;
 
-        public bool Katana;             // 刀
-        public KatanaID ID;
+        public KatanaID ID; // 図鑑用ID
 
+        public bool Katana;             // 刀
         public int AltDamage;           // アクティブスキルのダメージ
         public int ActiveSkillDelay;    // アクティブスキルのCDの時間
         public int SwingComboCount = 1; // 振りのコンボ数
