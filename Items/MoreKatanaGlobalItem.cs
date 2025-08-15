@@ -70,20 +70,22 @@ namespace MoreKatana.Items
         public override void SetDefaults(Item item)
         {
             if (item.type is ItemID.Katana or ItemID.Muramasa)
+            {
                 item.StatsModifiedBy.Add(Mod);
+            }
 
             SetDefaultsVanillaItem(item);
         }
 
         private void SetDefaultsVanillaItem(Item item)
         {
-            if (item.type == ItemID.Katana)
+            if (item.type == ItemID.Katana && MoreKatanaConfig.Instance.KatanaRework)
             {
                 item.UseSound = SoundID.Item1;
                 item.MKItem().AltDamage = 36;
                 SetKatanaDefaults(item, 60, true);
             }
-            if (item.type == ItemID.Muramasa)
+            if (item.type == ItemID.Muramasa && MoreKatanaConfig.Instance.MuramasaRework)
             {
                 item.UseSound = SoundID.Item1;
                 item.MKItem().AltDamage = 48;
@@ -185,24 +187,30 @@ namespace MoreKatana.Items
 
         public override void MeleeEffects(Item item, Player player, Rectangle hitbox)
         {
-            if (item.type == ItemID.Muramasa)
+            if (Katana)
             {
-                if (Main.rand.NextBool(2))
+                if (item.type == ItemID.Muramasa)
                 {
-                    int newDust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustID.DungeonWater);
-                    Main.dust[newDust].noGravity = true;
+                    if (Main.rand.NextBool(2))
+                    {
+                        int newDust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustID.DungeonWater);
+                        Main.dust[newDust].noGravity = true;
+                    }
                 }
             }
         }
 
         public override void OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone)
         {
-            if (item.type == ItemID.Muramasa)
+            if (Katana)
             {
-                if (Main.myPlayer == player.whoAmI && (target == null || target.HittableForOnHitRewards()))
+                if (item.type == ItemID.Muramasa)
                 {
-                    Vector2 vector = Main.rand.NextVector2Unit() * 80;
-                    Projectile.NewProjectile(item.GetSource_FromThis(), target.Center + vector, -vector / 5, ModContent.ProjectileType<MuramasaSlash>(), item.damage / 2, item.knockBack, player.whoAmI);
+                    if (Main.myPlayer == player.whoAmI && (target == null || target.HittableForOnHitRewards()))
+                    {
+                        Vector2 vector = Main.rand.NextVector2Unit() * 80;
+                        Projectile.NewProjectile(item.GetSource_FromThis(), target.Center + vector, -vector / 5, ModContent.ProjectileType<MuramasaSlash>(), item.damage / 2, item.knockBack, player.whoAmI);
+                    }
                 }
             }
         }
@@ -224,6 +232,18 @@ namespace MoreKatana.Items
             }
         }
 
+        private void VanillaPassiveSkill(Item item, Player player, bool equipment)
+        {
+            if (item.type == ItemID.Katana)
+            {
+                player.statDefense += 2;
+            }
+            if (item.type == ItemID.Muramasa)
+            {
+
+            }
+        }
+
         private void VanillaActiveSkill(Item item, Player player)
         {
             if (item.type == ItemID.Katana)
@@ -239,27 +259,17 @@ namespace MoreKatana.Items
             }
         }
 
-        private void VanillaPassiveSkill(Item item, Player player, bool equipment)
-        {
-            if (item.type == ItemID.Katana)
-            {
-                player.statDefense += 2;
-            }
-            if (item.type == ItemID.Muramasa)
-            {
-
-            }
-        }
-
         public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player)
         {
-            if ((equippedItem.type is ItemID.Katana or ItemID.Muramasa || equippedItem.ModItem is KatanaItem)
-                && (incomingItem.type is ItemID.Katana or ItemID.Muramasa || incomingItem.ModItem is KatanaItem))
+            if (Katana)
             {
-                // 刀は同時に装備させないようにする
-                return false;
+                if ((equippedItem.type is ItemID.Katana or ItemID.Muramasa || equippedItem.ModItem is KatanaItem)
+                    && (incomingItem.type is ItemID.Katana or ItemID.Muramasa || incomingItem.ModItem is KatanaItem))
+                {
+                    // 刀は同時に装備させないようにする
+                    return false;
+                }
             }
-
             return base.CanAccessoryBeEquippedWith(equippedItem, incomingItem, player);
         }
 

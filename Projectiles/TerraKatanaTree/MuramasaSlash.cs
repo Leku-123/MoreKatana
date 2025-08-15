@@ -2,7 +2,6 @@ using Microsoft.Xna.Framework;
 using MoreKatana.Projectiles.PrimTrails;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.Audio;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -38,15 +37,11 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override void AI()
         {
-            foreach (Vector2 point in points)
-                Lighting.AddLight(point, Color.Blue.ToVector3());
-
             if (Projectile.ai[0] == 0)
             {
                 Projectile.ai[0] = 1;
                 trail = new SlashEffectPrimTrail(Projectile, Color.MidnightBlue);
                 MoreKatana.primitives.CreateTrail(trail);
-                SoundEngine.PlaySound(SoundID.Item60, Projectile.Center);
             }
 
             for (int i = 0; i < 3; ++i)
@@ -57,6 +52,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Main.dust[newDust].velocity = Vector2.Normalize(Projectile.velocity).RotatedByRandom(MathHelper.ToRadians(15));
                 Main.dust[newDust].velocity *= Main.rand.NextFloat(2f, 4f);
             }
+
+            foreach (Vector2 point in points)
+                Lighting.AddLight(point, Color.Blue.ToVector3());
 
             points.Add(Projectile.position);
         }

@@ -14,6 +14,17 @@ Configs: {
 		Headers: {
 			UI: UI
 			Miscellaneous: Miscellaneous
+			VanillaRework: Vanilla Rework (If you change this, please reload the world)
+		}
+
+		KatanaRework: {
+			Label: "[i:2273]Katana Reworkk"
+			Tooltip: If you change this, please reload the world
+		}
+
+		MuramasaRework: {
+			Label: "[i:155]Muramasa Rework"
+			Tooltip: If you change this, please reload the world
 		}
 
 		AccSlotPosLock: {

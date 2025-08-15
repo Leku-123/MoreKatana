@@ -10,19 +10,27 @@ namespace MoreKatana
 
         public override ConfigScope Mode => ConfigScope.ServerSide;
 
+        [Header("VanillaRework")]
+
+        [DefaultValue(true)]
+        public bool KatanaRework { get; set; }
+
+        [DefaultValue(true)]
+        public bool MuramasaRework { get; set; }
+
         [Header("UI")]
 
-        [BackgroundColor(192, 54, 64, 192)]
+        //[BackgroundColor(192, 54, 64, 192)]
         [DefaultValue(true)]
         public bool AccSlotPosLock { get; set; }
 
-        [BackgroundColor(192, 54, 64, 192)]
+        //[BackgroundColor(192, 54, 64, 192)]
         [SliderColor(224, 165, 56, 128)]
         [Range(0f, 100f)]
         [DefaultValue(KatanaSlot.DefaultPosX)]
         public float CustomAccSlotPosX { get; set; }
 
-        [BackgroundColor(192, 54, 64, 192)]
+        //[BackgroundColor(192, 54, 64, 192)]
         [SliderColor(224, 165, 56, 128)]
         [Range(0f, 100f)]
         [DefaultValue(KatanaSlot.DefaultPosY)]
