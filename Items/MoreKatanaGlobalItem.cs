@@ -20,6 +20,8 @@ namespace MoreKatana.Items
         public override bool InstancePerEntity => true;
 
         public bool Katana;             // 刀
+        public KatanaID ID;
+
         public int AltDamage;           // アクティブスキルのダメージ
         public int ActiveSkillDelay;    // アクティブスキルのCDの時間
         public int SwingComboCount = 1; // 振りのコンボ数
@@ -69,11 +71,16 @@ namespace MoreKatana.Items
 
         public override void SetDefaults(Item item)
         {
-            if (item.type is ItemID.Katana or ItemID.Muramasa)
+            if (item.type == ItemID.Katana)
             {
+                ID = KatanaID.Iron;
                 item.StatsModifiedBy.Add(Mod);
             }
-
+            if (item.type == ItemID.Muramasa)
+            {
+                ID = KatanaID.Muramasa;
+                item.StatsModifiedBy.Add(Mod);
+            }
             SetDefaultsVanillaItem(item);
         }
 

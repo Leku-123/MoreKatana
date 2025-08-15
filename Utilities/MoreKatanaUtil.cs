@@ -152,14 +152,14 @@ namespace MoreKatana
         /// <param name="damage"></param>
         /// <param name="knockback"></param>
         /// <param name="owner"></param>
-        public static void ProjectileSplitInAllDirections(IEntitySource source, Vector2 spawnPosition, float projVelocity, int amount, int projType, int damage, float knockback, int owner)
+        public static void ProjectileSplitInAllDirections(IEntitySource source, Vector2 spawnPosition, float projVelocity, int amount, int projType, int damage, float knockback, int owner, float ai0 = 0f, float ai1 = 0f, float ai2 = 0f)
         {
             for (int i = 0; i < amount; i++)
             {
                 float rad = MathHelper.TwoPi / amount * i;
                 Vector2 vector = Vector2.UnitY.RotatedBy(rad);
                 vector *= projVelocity;
-                Projectile.NewProjectile(source, spawnPosition, vector, projType, damage, knockback, owner);
+                Projectile.NewProjectile(source, spawnPosition, vector, projType, damage, knockback, owner, ai0, ai1, ai2);
             }
         }
         #endregion

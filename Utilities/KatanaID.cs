@@ -4,6 +4,7 @@ public enum KatanaID
 {
     TestKatana = 0,
     Wood = 1,
+    Iron,
     Tin,
     Copper,
     Lead,
@@ -20,7 +21,9 @@ public enum KatanaID
     Diamond,
     Ornaments,
     Grass,
+    Muramasa,
     Volcano,
     Hallowed,
     TrueHallowed,
+    Enchanted,
 }
