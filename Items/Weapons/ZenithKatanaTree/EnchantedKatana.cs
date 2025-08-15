@@ -36,9 +36,12 @@ namespace MoreKatana.Items.Weapons.ZenithKatanaTree
         {
             Item.UseSound = SoundID.MaxMana;
             player.ChangeDir(Main.MouseWorld.X - player.Center.X > 0 ? 1 : -1);
-            DrawRingMix(player.Center, 30, 6f, default, 2f, false, DustID.MagicMirror, DustID.Enchanted_Gold, DustID.Enchanted_Pink);
-            DrawRingMix(player.Center, 27, 8f, default, 2.5f, false, DustID.MagicMirror, DustID.Enchanted_Gold, DustID.Enchanted_Pink);
-            DrawRingMix(player.Center, 26, 10f, default, 3f, false, DustID.MagicMirror, DustID.Enchanted_Gold, DustID.Enchanted_Pink);
+
+            int[] dustType = [DustID.MagicMirror, DustID.Enchanted_Gold, DustID.Enchanted_Pink];
+            MoreKatanaUtil.DrawRing(player.Center, dustType, 30, 6f, dustSize: 2f);
+            MoreKatanaUtil.DrawRing(player.Center, dustType, 27, 8f, dustSize: 2);
+            MoreKatanaUtil.DrawRing(player.Center, dustType, 26, 10f, dustSize: 3f);
+
             Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, new(player.direction, 0f), ModContent.ProjectileType<EnchantedKatanaSwingActiveSkill>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI);
         }
 
@@ -46,31 +49,6 @@ namespace MoreKatana.Items.Weapons.ZenithKatanaTree
         {
             player.ChangeDir(Main.MouseWorld.X - player.Center.X > 0 ? 1 : -1);
             velocity = new(player.direction, 0);
-        }
-
-        /// <summary>
-        /// リング状にダストを混ぜてスポーンする
-        /// </summary>
-        /// <param name="position"></param>
-        /// <param name="dustType"></param>
-        /// <param name="density"></param>
-        /// <param name="speed"></param>
-        /// <param name="color"></param>
-        /// <param name="dustSize"></param>
-        /// <param name="noLight"></param>
-        public static void DrawRingMix(Vector2 position, int density, float speed, Color color = default, float dustSize = 1f, bool noLight = false, params int[] overrideTypes)
-        {
-            for (int i = 0; i < density; i++)
-            {
-                if (overrideTypes.Length <= 0) return;
-
-                Vector2 velocity = speed * Vector2.UnitY.RotatedBy(MathHelper.TwoPi / density * i);
-                int d = Dust.NewDust(position, 0, 0, overrideTypes.ElementAt(Main.rand.Next(0, overrideTypes.Length)), newColor: color);
-                Main.dust[d].noLight = noLight;
-                Main.dust[d].noGravity = true;
-                Main.dust[d].velocity = velocity;
-                Main.dust[d].scale = dustSize;
-            }
         }
     }
 }

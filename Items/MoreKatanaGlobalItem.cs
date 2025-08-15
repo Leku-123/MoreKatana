@@ -247,7 +247,7 @@ namespace MoreKatana.Items
             }
             if (item.type == ItemID.Muramasa)
             {
-
+                player.MKPlayer().muramasaCounterattack = true;
             }
         }
 

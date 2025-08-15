@@ -125,13 +125,13 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
                     shieldColor *= distanceCompletion;
 
                 // クールダウンがない場合はシールドを描画する
-                if (drawPlayer.MKPlayer().ShieldCooldown <= 0)
+                if (drawPlayer.MKPlayer().ShieldCD <= 0)
                     Main.spriteBatch.Draw(texture, ShieldCenter - Main.screenPosition, rectangle, shieldColor with { A = 0 }, 0f, origin, shieldScale, SpriteEffects.None, 0);
             }
 
             // ゲージの充填率
             float durabilityRatio = (float)drawPlayer.MKPlayer().TrueHolyShieldDurability / ShieldDurabilityMax;
-            float cooldownRatio = (float)drawPlayer.MKPlayer().ShieldCooldown / ShieldRechargeTime;
+            float cooldownRatio = (float)drawPlayer.MKPlayer().ShieldCD / ShieldRechargeTime;
 
             // ゲージの位置
             Vector2 gaugePos = new Vector2(drawInfo.Center.X, drawInfo.Center.Y) + new Vector2(0, 35);

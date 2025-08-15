@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Dusts;
 using MoreKatana.Items.Weapons.TerraKatanaTree;
+using MoreKatana.Projectiles.TerraKatanaTree;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -30,9 +31,14 @@ namespace MoreKatana
         public float DashTimerMax;
         public Vector2 DashDirection, DashStartPos, DashEndPos;
 
+        // -------- Cooldown --------
+        public int CounterattackCD;
+        public int ShieldCD;
+
         public float Flipping;
         public float R, G, B, A;
-        public int ShieldCooldown;
+
+        public bool muramasaCounterattack;
 
         public bool holyShield;
         public int HolyShieldDurability;
@@ -40,6 +46,7 @@ namespace MoreKatana
         public int TrueHolyShieldDurability;
         public bool terraShield;
         public int TerraShieldDurability;
+
 
         public override void OnEnterWorld()
         {
@@ -57,6 +64,7 @@ namespace MoreKatana
                 DashTimer = 0f;
             Flipping = 0f;
             R = G = B = A = 1f;
+            muramasaCounterattack = false;
             holyShield = false;
             trueHolyShield = false;
         }
@@ -120,8 +128,10 @@ namespace MoreKatana
 
         public override void PostUpdateMiscEffects()
         {
-            if (ShieldCooldown > 0)
-                ShieldCooldown--;
+            if (CounterattackCD > 0)
+                CounterattackCD--;
+            if (ShieldCD > 0)
+                ShieldCD--;
         }
 
         public override void PostUpdateRunSpeeds()
@@ -170,9 +180,9 @@ namespace MoreKatana
 
         public override void PostUpdate()
         {
-            if (ShieldCooldown == 1)
+            if (ShieldCD == 1)
                 SoundEngine.PlaySound(SoundID.MaxMana, Player.position);
-            if (ShieldCooldown <= 0)
+            if (ShieldCD <= 0)
             {
                 // それぞれのシールドの耐久値を適用する
 
@@ -218,7 +228,7 @@ namespace MoreKatana
 
         private void ModifyHurtInfo(ref Player.HurtInfo info)
         {
-            if (ShieldCooldown <= 0)
+            if (ShieldCD <= 0)
             {
                 if (holyShield && HolyShieldDurability > 0)
                 {
@@ -272,7 +282,7 @@ namespace MoreKatana
                 void CrashEffect(int cd)
                 {
                     // クールダウンを設ける
-                    ShieldCooldown = cd;
+                    ShieldCD = cd;
 
                     // シールドの耐久値を0にする
                     HolyShieldDurability = 0;
@@ -296,6 +306,32 @@ namespace MoreKatana
 
                     // 実際に被弾のダメージを除去し、後のシールドの被弾を少なくする
                     info.Damage -= shieldDamageBlocked;
+                }
+            }
+        }
+
+        public override void OnHitByNPC(NPC npc, Player.HurtInfo hurtInfo)
+        {
+            OnHitByEither(npc, hurtInfo);
+        }
+
+        public override void OnHitByProjectile(Projectile proj, Player.HurtInfo hurtInfo)
+        {
+            OnHitByEither(proj, hurtInfo);
+        }
+
+        public void OnHitByEither(Entity entity, Player.HurtInfo hurtInfo)
+        {
+            if (muramasaCounterattack)
+            {
+                if (CounterattackCD <= 0)
+                {
+                    CounterattackCD = 120;
+
+                    Vector2 vector = Vector2.Normalize(entity.Center - Player.Center) * 15f;
+                    int damage = Player.GetWeaponDamage(Player.HeldItem);
+                    float knockBack = Player.GetWeaponKnockback(Player.HeldItem, Player.HeldItem.knockBack);
+                    Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, vector, ModContent.ProjectileType<MuramasaSlash>(), damage, knockBack, Main.myPlayer);
                 }
             }
         }

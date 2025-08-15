@@ -94,7 +94,7 @@ namespace MoreKatana.Projectiles.Wood
                     {
                         attackable = true;
                         SoundEngine.PlaySound(SoundID.MaxMana, Owner.Center);
-                        MoreKatanaUtil.DrawRing(Projectile.Center, DustID.PlatinumCoin, 24, 4f);
+                        MoreKatanaUtil.DrawRing(Projectile.Center, [DustID.PlatinumCoin], 24, 4f);
                     }
 
                     // マウスを右クリックしている場合はディレイを延長する

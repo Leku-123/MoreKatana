@@ -43,7 +43,7 @@ namespace MoreKatana.Items.Weapons.Gem
         {
             Item.UseSound = SoundID.MaxMana;
             Item.MKItem().ActivateCooldown(player);
-            MoreKatanaUtil.DrawRing(player.Center, DustID.GemRuby, 24, 10f);
+            MoreKatanaUtil.DrawRing(player.Center, [DustID.GemRuby], 24, 10f);
         }
 
         public override void AddRecipes()

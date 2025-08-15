@@ -209,9 +209,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     {
                         // トレイルの設定
                         trail.TextureType = 2;
-                        trail.Direction = Owner.direction * -dir;
-                        trail.PrimCenter = Owner.MountedCenter;
-                        trail.Points.Add(Projectile.Center - Owner.MountedCenter);
+                        trail.Direction = clone.direction * -dir;
+                        trail.PrimCenter = clone.MountedCenter;
+                        trail.Points.Add(Projectile.Center - clone.MountedCenter);
 
                         // 剣を描画しない場合トレイルを消す
                         if (invisible || progress >= 0.98f)
