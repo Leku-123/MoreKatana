@@ -2,8 +2,8 @@
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
-
-namespace MoreKatana.Projectiles.ZenithKatanaTree
+/*
+namespace MoreKatana.Projectiles.Misc
 {
     public class EnchantedKatanaSwingActiveSkill : CustomSword
     {
@@ -39,3 +39,4 @@ namespace MoreKatana.Projectiles.ZenithKatanaTree
         public override void OnKill(int timeLeft) => Owner.FlipEffect(0);
     }
 }
+*/

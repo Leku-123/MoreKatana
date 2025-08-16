@@ -153,7 +153,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 else
                 {
                     SoundEngine.PlaySound(SoundID.DD2_BetsysWrathImpact, Owner.Center);
-                    MoreKatanaUtil.DrawRing(cinderPosition, [DustID.Torch], 24, 25f, dustSize: 3f);
+                    MoreKatanaUtil.DrawRing(cinderPosition, [DustID.Torch], 24, 25f, dustScale: 3f);
                     cinderCount = CinderCountMax;
                 }
             }

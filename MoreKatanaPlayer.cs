@@ -312,15 +312,15 @@ namespace MoreKatana
 
         public override void OnHitByNPC(NPC npc, Player.HurtInfo hurtInfo)
         {
-            OnHitByEither(npc, hurtInfo);
+            OnHitByEither(npc, null, hurtInfo);
         }
 
         public override void OnHitByProjectile(Projectile proj, Player.HurtInfo hurtInfo)
         {
-            OnHitByEither(proj, hurtInfo);
+            OnHitByEither(null, proj, hurtInfo);
         }
 
-        public void OnHitByEither(Entity entity, Player.HurtInfo hurtInfo)
+        public void OnHitByEither(NPC npc, Projectile proj, Player.HurtInfo hurtInfo)
         {
             if (muramasaCounterattack)
             {
@@ -328,10 +328,18 @@ namespace MoreKatana
                 {
                     CounterattackCD = 120;
 
-                    Vector2 vector = Vector2.Normalize(entity.Center - Player.Center) * 15f;
-                    int damage = Player.GetWeaponDamage(Player.HeldItem);
-                    float knockBack = Player.GetWeaponKnockback(Player.HeldItem, Player.HeldItem.knockBack);
-                    Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, vector, ModContent.ProjectileType<MuramasaSlash>(), damage, knockBack, Main.myPlayer);
+                    if (npc != null)
+                    {
+                        Vector2 vector = Vector2.Normalize(npc.Center - Player.Bottom) * 10f;
+                        int damage = Player.GetWeaponDamage(Player.HeldItem);
+                        float knockBack = Player.GetWeaponKnockback(Player.HeldItem, Player.HeldItem.knockBack);
+                        Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, vector, ModContent.ProjectileType<MuramasaCounterattack>(), damage, knockBack, Main.myPlayer);
+
+                        int dir = -1;
+                        if (npc.position.X + (npc.width / 2) < Player.position.X + (Player.width / 2))
+                            dir = 1;
+                        Player.ApplyDamageToNPC(npc, damage, knockBack, -dir, false);
+                    }
                 }
             }
         }
@@ -352,7 +360,7 @@ namespace MoreKatana
             float rotation = player.MKPlayer().Flipping;
             if (rotation != 0)
             {
-                float sin = (float)Math.Sin(rotation + 1.57f * player.direction);
+                float sin = (float)Math.Sin(rotation - MathHelper.PiOver2);
                 int off = Math.Abs((int)((input.useDestinationRectangle ? input.destinationRectangle.Width : input.sourceRect?.Width ?? input.texture.Width) * sin));
 
                 SpriteEffects effect = sin > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;

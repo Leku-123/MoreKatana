@@ -168,12 +168,12 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Vector2 backglowOffset = (MathHelper.TwoPi * i / backglowAmount).ToRotationVector2() * 6f;
                 backglowOffset *= (float)Math.Sin(Main.GameUpdateCount / 30f);
 
-                clone.DrawColorEffect(0.1f);
+                clone.DrawColorEffect(Color.SkyBlue.ToVector3(), 0.1f);
                 Main.PlayerRenderer.DrawPlayer(Main.Camera, clone, Projectile.position + backglowOffset, Owner.velocity.X * 0.03f, clone.fullRotationOrigin, 0f, 1f);
             }
 
             // 本体のプレイヤーのテクスチャを描画
-            clone.DrawColorEffect(0.5f);
+            clone.DrawColorEffect(Color.SkyBlue.ToVector3(), 0.5f);
             Main.PlayerRenderer.DrawPlayer(Main.Camera, clone, Projectile.position, Owner.velocity.X * 0.03f, clone.fullRotationOrigin, 0f, 1f);
 
             // ゲージの描画
@@ -228,17 +228,17 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Projectile.spriteDirection = Projectile.direction;
 
                 // 発射体の回転を調節する。Backspinも考慮する
-                if (Projectile.spriteDirection == 1)
-                    Projectile.rotation = (Projectile.Center - HostProj.Center).ToRotation() + MathHelper.ToRadians(45f) - (!Backspin ? 0f : (float)Math.PI / 2);
-                else
-                    Projectile.rotation = (Projectile.Center - HostProj.Center).ToRotation() + MathHelper.ToRadians(135f) + (!Backspin ? 0f : (float)Math.PI / 2);
+                Projectile.rotation = (Projectile.Center - HostProj.Center).ToRotation()
+                    + (MathHelper.PiOver2 - MathHelper.PiOver4 * Projectile.spriteDirection)
+                    * BackspinDirection;
 
                 // クローンの保持する発射体のIDを更新する
                 clone.heldProj = Projectile.whoAmI;
 
                 // クローンの腕の回転の設定をする
-                clone.SetCompositeArmBack(true, 0, (HostProj.Center - Projectile.Center).ToRotation() + (float)Math.PI / 2f);
-                clone.SetCompositeArmFront(true, 0, (HostProj.Center - Projectile.Center).ToRotation() + (float)Math.PI / 2f);
+                float armRot = (HostProj.Center - Projectile.Center).ToRotation() + (float)Math.PI / 2f;
+                clone.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRot);
+                clone.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRot);
             }
 
             public override void Initialization(Item item, int type)

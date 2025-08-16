@@ -24,7 +24,7 @@ MuramasaGhostSwing.DisplayName: Muramasa
 MuramasaSlash.DisplayName: Muramasa
 # -------- Wood --------
 ChargingWoodenSwing.DisplayName: Wooden Katana
-# -------- Misc --------
+# -------- General --------
 Empty.DisplayName: Empty
 GeneralKatanaSwing.DisplayName: Katana
 GeneralDashSlash.DisplayName: Dash Slash
@@ -37,3 +37,5 @@ VolcanicCinder.DisplayName: Volcanic Cinder
 EnchantedKatanaBeam.DisplayName: Enchanted Katana Beam
 EnchantedKatanaSwing.DisplayName: Enchanted Katana Swing
 EnchantedKatanaSwingActiveSkill.DisplayName: Enchanted Katana Swing Active Skill
+MuramasaCounterattack.DisplayName: Muramasa Counterattack
+MuramasaCounterattackSwing.DisplayName: Muramasa Counterattack Swing

@@ -77,7 +77,7 @@ namespace MoreKatana.Items.Weapons.Metal
             player.AddBuff(ModContent.BuffType<ObsidianKatanaFire>(), FireTime);
 
             MoreKatanaUtil.DrawRing(player.Center, [DustID.Torch], 30, 5f);
-            MoreKatanaUtil.DrawRing(player.Center, [DustID.Torch], 24, 10f, dustSize: 3f);
+            MoreKatanaUtil.DrawRing(player.Center, [DustID.Torch], 24, 10f, dustScale: 3f);
 
             FireTrigger = true;
         }

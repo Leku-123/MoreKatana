@@ -21,7 +21,7 @@ namespace MoreKatana.Projectiles.PrimTrails
             Cap = cap;
         }
 
-        public override void SetDefaults() => AlphaValue = 1f;
+        public override void SetDefaults() => AlphaValue = 0.5f;
 
         public override void PrimStructure(SpriteBatch spriteBatch)
         {

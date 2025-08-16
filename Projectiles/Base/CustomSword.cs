@@ -46,8 +46,9 @@ namespace MoreKatana.Projectiles.Base
         /// </summary>
         protected float SwingTime;     // 剣の振る速度
         protected float SwingRange;    // 剣の振る範囲
-        protected float ModifiedAngle; // 剣の初期位置の調整
+        protected float ModifiedAngle; // 剣の振りの開始角度の調整
         protected bool Backspin;       // 剣の振りと向きを逆方向にするかどうか
+        protected int BackspinDirection => (!Backspin).ToDirectionInt();
 
         /// <summary>
         /// 剣のサイズ
@@ -66,7 +67,7 @@ namespace MoreKatana.Projectiles.Base
         /// 剣の振りのAIに関する変数
         /// </summary>
         private Vector2 swordPos;    // 剣の位置
-        private float startRotation; // 剣の初期位置
+        private float startRotation; // 剣の振りの開始角度
         protected float progress;    // 剣の振りの進行状況
 
         protected bool timerStop;    // 剣の振りのタイマーを止めるかどうか
@@ -282,16 +283,22 @@ namespace MoreKatana.Projectiles.Base
             Projectile.spriteDirection = Owner.direction;
 
             // 発射体の回転を調節する。Backspinも考慮する
+            Projectile.rotation = (Projectile.Center - Owner.MountedCenter).ToRotation()
+                + (MathHelper.PiOver2 - MathHelper.PiOver4 * Projectile.spriteDirection)
+                * BackspinDirection;
+
+            /*
             if (Projectile.spriteDirection == 1)
                 Projectile.rotation = (Projectile.Center - Owner.MountedCenter).ToRotation() + MathHelper.ToRadians(45f) - (!Backspin ? 0f : (float)Math.PI / 2);
             else
                 Projectile.rotation = (Projectile.Center - Owner.MountedCenter).ToRotation() + MathHelper.ToRadians(135f) + (!Backspin ? 0f : (float)Math.PI / 2);
+            */
 
             // プレイヤーの保持する発射体のIDを更新する
             Owner.heldProj = Projectile.whoAmI;
 
             // 腕の回転の設定をする
-            Owner.SetCompositeArmFront(true, 0, (Owner.MountedCenter - Projectile.Center).ToRotation() + (float)Math.PI / 2f);
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, (Owner.MountedCenter - Projectile.Center).ToRotation() + (float)Math.PI / 2f);
         }
 
         /// <summary>
@@ -306,7 +313,7 @@ namespace MoreKatana.Projectiles.Base
 
             float swingRange = (float)Math.PI * 2f * Projectile.spriteDirection * SwingRange; // 振る回転角
             float modifiedAngle = (float)Math.PI * 2f * Projectile.spriteDirection * ModifiedAngle; // 振る初期位置
-            int swingDirection = Backspin ? -1 : 1; // 振る向き
+            //int swingDirection = Backspin ? -1 : 1; // 振る向き
             bool execute = progress != 1f && !timerStop;
 
             if (execute)
@@ -315,8 +322,8 @@ namespace MoreKatana.Projectiles.Base
 
                 // 剣の動き
                 // SwingStatus()から取得した変数、GetEllipse()で取得したXとYをもとにswordPosを求める
-                float x = SwordWidth / 2 * X * MathF.Cos((progress * swingRange + modifiedAngle) * swingDirection);
-                float y = SwordHeight / 2 * Y * MathF.Sin((progress * swingRange + modifiedAngle) * swingDirection);
+                float x = SwordWidth / 2 * X * MathF.Cos((progress * swingRange + modifiedAngle) * BackspinDirection);
+                float y = SwordHeight / 2 * Y * MathF.Sin((progress * swingRange + modifiedAngle) * BackspinDirection);
                 Vector2 ellipse = new Vector2(x, y);
                 swordPos = ellipse.RotatedBy(startRotation, default) * 1.75f;
 
@@ -376,12 +383,12 @@ namespace MoreKatana.Projectiles.Base
                     }
 
                     primsCreated = false;
-                 
+
                     Projectile.netUpdate = true;
                 }
             }
 
-            DrawTrail(swingDirection);
+            DrawTrail(BackspinDirection);
             AdditionalAI(SwordItem, SwingType, !execute);
         }
 
