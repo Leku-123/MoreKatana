@@ -238,6 +238,7 @@ BrokenHeroKatana: {
 ObsidianKatana: {
 	FunctionText: Mods.MoreKatana.Items.ObsidianKatana.FunctionText
 	DisplayName: Obsidian Katana
+	AltName: Magma Katana
 	Tooltip: ""
 }
 
