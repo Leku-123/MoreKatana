@@ -12,6 +12,7 @@ namespace MoreKatana.Items.Weapons.Misc
         public override KatanaID ID => KatanaID.Enchanted;
 
         public static int[] EnchantedDustType = [DustID.MagicMirror, DustID.Enchanted_Gold, DustID.Enchanted_Pink];
+        public static Color EnchantedDamageColor = new(150, 60, 255, 255);
 
         public override void SetDefaultsItem()
         {
@@ -33,6 +34,11 @@ namespace MoreKatana.Items.Weapons.Misc
             Item.shootSpeed = 9.5f;
 
             Item.MKItem().SetKatanaDefaults(Item, 60, type: ModContent.ProjectileType<EnchantedKatanaSwing>());
+        }
+
+        public override void PassiveSkill(Player player, bool equipment)
+        {
+            player.MKPlayer().enchantedHurtEffect = true;
         }
 
         public override void ActiveSkill(Player player)

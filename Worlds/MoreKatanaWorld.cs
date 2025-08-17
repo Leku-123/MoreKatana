@@ -55,7 +55,7 @@ namespace MoreKatana.Worlds
             int height = (int)Main.worldSurface;
             for (int x = width; x < width + 16; x++)
             {
-                for (int y = height - 300; y < height; y++)
+                for (int y = height - 250; y < height; y++)
                 {
                     if (Main.tile[x, y].HasTile)
                     {
