@@ -15,6 +15,7 @@ Configs: {
 			UI: UI
 			Miscellaneous: Miscellaneous
 			VanillaRework: Vanilla Rework (If you change this, please reload the world)
+			WorldGen: World Generation
 		}
 
 		KatanaRework: {
@@ -46,10 +47,15 @@ Configs: {
 			Label: Screen Shake Power
 			Tooltip: ""
 		}
+
+		EnchantedKatanaShrine: {
+			Label: Enchanted Katana Shrine
+			Tooltip: ""
+		}
 	}
 }
 
-WorldGen.EnchantedKatanaShrineMessage: Mods.MoreKatana.WorldGen.EnchantedKatanaShrineMessage
+WorldGen.EnchantedKatanaShrineMessage: Building the Enchanted Katana Shrine
 
 Tiles: {
 	SamuraiStatue.MapEntry: Samurai Statue

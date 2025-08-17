@@ -18,6 +18,11 @@ namespace MoreKatana
         [DefaultValue(true)]
         public bool MuramasaRework { get; set; }
 
+        [Header("WorldGen")]
+
+        [DefaultValue(true)]
+        public bool EnchantedKatanaShrine { get; set; }
+
         [Header("UI")]
 
         //[BackgroundColor(192, 54, 64, 192)]

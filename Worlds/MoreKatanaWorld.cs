@@ -27,7 +27,8 @@ namespace MoreKatana.Worlds
             int SurfaceOreandStoneIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Surface Ore and Stone"));
             if (SurfaceOreandStoneIndex != -1)
             {
-                tasks.Insert(SurfaceOreandStoneIndex + 1, new EnchantedKatanaShrine("Enchanted Katana Shrine", 237.4298f));
+                if (MoreKatanaConfig.Instance.EnchantedKatanaShrine)
+                    tasks.Insert(SurfaceOreandStoneIndex + 1, new EnchantedKatanaShrine("Enchanted Katana Shrine", 237.4298f));
             }
             //tasks.Add(new EnchantedKatanaShrine("Enchanted Katana Shrine", 237.4298f));
         }
