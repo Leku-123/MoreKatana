@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace MoreKatana.Items.Weapons.Metal
@@ -18,12 +19,15 @@ namespace MoreKatana.Items.Weapons.Metal
         public bool FireTrigger = false;    // 着火がトリガーされたか   
         public const int FireTime = 60 * 5; // 着火状態の基礎時間
 
-        public const int DrawFrameCount = 2;
+        public const int DrawFrameLength = 11;
+        public int Frame = 1;
+        public const int FrameMax = 9;
+        public int FrameCount = 0;
         public int Combo = 1;
 
         public override void SetStaticDefaults()
         {
-            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(int.MaxValue, DrawFrameCount));
+            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(int.MaxValue, DrawFrameLength));
         }
 
         public override void SetDefaultsItem()
@@ -53,6 +57,7 @@ namespace MoreKatana.Items.Weapons.Metal
 
             if (Fire(player))
             {
+                Item.SetNameOverride(Language.GetTextValue("Mods.MoreKatana.Items.ObsidianKatana.AltName"));
                 Item.damage = 30;
                 Item.useTime = 25;
                 Item.useAnimation = 25;
@@ -61,6 +66,7 @@ namespace MoreKatana.Items.Weapons.Metal
             }
             else
             {
+                Item.SetNameOverride(Language.GetTextValue("Mods.MoreKatana.Items.ObsidianKatana.DisplayName"));
                 Item.damage = 20;
                 Item.useTime = 20;
                 Item.useAnimation = 20;
@@ -111,9 +117,17 @@ namespace MoreKatana.Items.Weapons.Metal
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
             Texture2D texture = TextureAssets.Item[Type].Value;
-            int drawFrame = Fire(Main.LocalPlayer) ? 0 : 1;
-            Rectangle rectangle = texture.Frame(1, DrawFrameCount, 0, drawFrame);
-
+            Frame = Fire(Main.LocalPlayer) ? Frame : 10;
+            Rectangle rectangle = texture.Frame(1, DrawFrameLength, 0, Frame);
+            if (FrameCount >= FrameMax)
+            {
+                if (Frame < 9)
+                    Frame++;
+                else
+                    Frame = 1;
+                FrameCount = 0;
+            }
+            FrameCount = Fire(Main.LocalPlayer) ? FrameCount + 1 : 0;
             spriteBatch.Draw(texture, position, rectangle, drawColor, 0f, origin, scale, SpriteEffects.None, 0);
             return false;
         }
@@ -122,7 +136,7 @@ namespace MoreKatana.Items.Weapons.Metal
         {
             Texture2D texture = TextureAssets.Item[Type].Value;
             Vector2 position = Item.Center - Main.screenPosition;
-            Rectangle rectangle = texture.Frame(1, DrawFrameCount, 0, 1);
+            Rectangle rectangle = texture.Frame(1, DrawFrameLength, 0, 10);
             Vector2 origin = rectangle.Size() / 2f;
 
             spriteBatch.Draw(texture, position, rectangle, lightColor, rotation, origin, scale, SpriteEffects.None, 0);
