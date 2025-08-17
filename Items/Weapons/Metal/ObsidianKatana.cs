@@ -6,7 +6,6 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace MoreKatana.Items.Weapons.Metal
@@ -54,10 +53,9 @@ namespace MoreKatana.Items.Weapons.Metal
         public override void PassiveSkill(Player player, bool equipment)
         {
             player.statDefense += 5;
-
             if (Fire(player))
             {
-                Item.SetNameOverride(Language.GetTextValue("Mods.MoreKatana.Items.ObsidianKatana.AltName"));
+                Item.SetNameOverride(MoreKatanaUtil.GetTextValue("Items.ObsidianKatana.AltName"));
                 Item.damage = 30;
                 Item.useTime = 25;
                 Item.useAnimation = 25;
@@ -66,7 +64,7 @@ namespace MoreKatana.Items.Weapons.Metal
             }
             else
             {
-                Item.SetNameOverride(Language.GetTextValue("Mods.MoreKatana.Items.ObsidianKatana.DisplayName"));
+                Item.SetNameOverride(MoreKatanaUtil.GetTextValue("Items.ObsidianKatana.DisplayName"));
                 Item.damage = 20;
                 Item.useTime = 20;
                 Item.useAnimation = 20;
