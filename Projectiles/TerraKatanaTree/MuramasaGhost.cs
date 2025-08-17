@@ -161,6 +161,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Color bloomColor = Color.Blue;
             Main.EntitySpriteDraw(bloom, position, null, bloomColor with { A = 0 } * 0.5f, Projectile.rotation, bloom.Size() / 2f, new Vector2(1f, 1f), 0, 0);
 
+            float rot = Owner.velocity.X * 0.03f;
+            rot = Math.Clamp(rot, -0.3f, 0.3f);
+
             // 拍動するプレイヤーのテクスチャを描画
             float backglowAmount = 12f;
             for (int i = 0; i < backglowAmount; i++)
@@ -169,12 +172,12 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 backglowOffset *= (float)Math.Sin(Main.GameUpdateCount / 30f);
 
                 clone.DrawColorEffect(Color.SkyBlue.ToVector3(), 0.1f);
-                Main.PlayerRenderer.DrawPlayer(Main.Camera, clone, Projectile.position + backglowOffset, Owner.velocity.X * 0.03f, clone.fullRotationOrigin, 0f, 1f);
+                Main.PlayerRenderer.DrawPlayer(Main.Camera, clone, Projectile.position + backglowOffset, rot, clone.fullRotationOrigin, 0f, 1f);
             }
 
             // 本体のプレイヤーのテクスチャを描画
             clone.DrawColorEffect(Color.SkyBlue.ToVector3(), 0.5f);
-            Main.PlayerRenderer.DrawPlayer(Main.Camera, clone, Projectile.position, Owner.velocity.X * 0.03f, clone.fullRotationOrigin, 0f, 1f);
+            Main.PlayerRenderer.DrawPlayer(Main.Camera, clone, Projectile.position, rot, clone.fullRotationOrigin, 0f, 1f);
 
             // ゲージの描画
             Vector2 gaugePos = Owner.Center + new Vector2(0, 50);
