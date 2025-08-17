@@ -4,6 +4,7 @@ using MoreKatana.Items.Weapons.Metal;
 using MoreKatana.Projectiles.Base;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.ModLoader;
 
 namespace MoreKatana.Projectiles.Metal
 {
@@ -65,7 +66,7 @@ namespace MoreKatana.Projectiles.Metal
                 {
                     Projectile.velocity.Normalize();
                     Vector2 v = Projectile.velocity * 6f;
-                    int newProj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center + v, v, 684, Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
+                    int newProj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center + v, v, ModContent.ProjectileType<ObsidianSlash>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
                     Main.projectile[newProj].penetrate = 1;
                     Main.projectile[newProj].timeLeft = 30;
                 }
