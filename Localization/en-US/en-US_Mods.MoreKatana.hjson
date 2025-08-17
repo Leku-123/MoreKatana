@@ -48,3 +48,10 @@ Configs: {
 		}
 	}
 }
+
+WorldGen.EnchantedKatanaShrineMessage: Mods.MoreKatana.WorldGen.EnchantedKatanaShrineMessage
+
+Tiles: {
+	SamuraiStatue.MapEntry: Samurai Statue
+	SamuraiStatueGift.MapEntry: Samurai Statue Gift
+}

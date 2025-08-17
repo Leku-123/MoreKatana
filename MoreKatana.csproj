@@ -18,5 +18,10 @@
 	</ItemGroup>
 
 	<!-- References -->
+	<ItemGroup>
+	<Reference Include="StructureHelper">
+	    <HintPath>..\ModAssemblies\StructureHelper.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
 
 </Project>

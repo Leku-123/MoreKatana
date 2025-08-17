@@ -246,3 +246,13 @@ EnchantedKatana: {
 	DisplayName: Enchanted Katana
 	Tooltip: ""
 }
+
+SamuraiStatue: {
+	DisplayName: Samurai Statue
+	Tooltip: ""
+}
+
+SamuraiStatueGift: {
+	DisplayName: Samurai Statue Gift
+	Tooltip: ""
+}

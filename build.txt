@@ -1,5 +1,7 @@
 displayName = [c/cc0000:More Katana]
-author = Katudonsan,Moririn
+author = Katudonsan, Moririn
 version = 1.0
 includeSource = true
+modReferences = StructureHelper
+sortAfter = StructureHelper
 homepage = https://github.com/Katudonsan/MoreKatana
