@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Dusts;
+using MoreKatana.Items.Weapons.Misc;
 using MoreKatana.Items.Weapons.TerraKatanaTree;
 using MoreKatana.Projectiles.TerraKatanaTree;
 using System;
@@ -38,6 +39,7 @@ namespace MoreKatana
         public float Flipping;
         public float R, G, B, A;
 
+        public static Color ManaDamageColor = new(150, 60, 255, 255);
         public bool muramasaCounterattack;
 
         public bool holyShield;
@@ -308,6 +310,40 @@ namespace MoreKatana
                     info.Damage -= shieldDamageBlocked;
                 }
             }
+
+            if (Player.HeldItem.type == ModContent.ItemType<EnchantedKatana>())
+                OnHitEnchantedKatana(ref info);
+        }
+
+        /// <summary>
+        /// エンチャント刀がマナを消費してダメージの10%を軽減する処理
+        /// </summary>
+        /// <param name="hurtInfo">被弾時の状況（ダメージやノックバック）が入った構造体</param>
+        public void OnHitEnchantedKatana(ref Player.HurtInfo hurtInfo)
+        {
+            // マナが0だったりダメージがキャンセルされたなら発動前に中止する
+            if (Player.statMana == 0 || hurtInfo.Cancelled)
+                return;
+
+            // マナでどれだけダメージを肩代わりしたか計算する
+            int manaDamageBlocked = int.Max(1, hurtInfo.Damage / 10);
+
+            // マナが不足している場合はマナの値まで軽減値を減らす
+            manaDamageBlocked = int.Min(manaDamageBlocked, Player.statMana);
+
+            /// 消費したマナを画面に表示する
+            // 表示位置の計算
+            Rectangle location = Player.getRect();
+            location.Y -= 16;
+
+            // 表示
+            CombatText.NewText(location, ManaDamageColor, -manaDamageBlocked);
+
+            // 肩代わりした分、マナを除去する（ダメージの量にかかわらず、最低1マナを消費する）
+            Player.statMana -= manaDamageBlocked;
+
+            // 肩代わりした分をダメージから減算（１ダメージの場合は軽減できない）
+            hurtInfo.Damage -= manaDamageBlocked;
         }
 
         public override void OnHitByNPC(NPC npc, Player.HurtInfo hurtInfo)
