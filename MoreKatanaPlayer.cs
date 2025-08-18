@@ -4,6 +4,7 @@ using MoreKatana.Dusts;
 using MoreKatana.Items.Weapons.Misc;
 using MoreKatana.Items.Weapons.TerraKatanaTree;
 using MoreKatana.Projectiles.TerraKatanaTree;
+using MoreKatana.UI;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -39,6 +40,8 @@ namespace MoreKatana
         public float Flipping;
         public float R, G, B, A;
         public int TimePotionSick;
+        public int EnchantedKatanaShrineEffect;
+        public int EnchantedKatanaShrineMusicOverride;
 
         public bool muramasaCounterattack;
         public bool enchantedHurtEffect;
@@ -137,6 +140,23 @@ namespace MoreKatana
                 CounterattackCD--;
             if (ShieldCD > 0)
                 ShieldCD--;
+
+            if (EnchantedKatanaShrineEffect > 0)
+            {
+                Player.dontStarveShader = true;
+                Vector2 screenCenter = Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
+                Vector2 startingPosition = new Vector2(Main.rand.NextFloat(screenCenter.X - Main.screenWidth / 2, screenCenter.X + Main.screenWidth / 2), screenCenter.Y - Main.screenHeight / 2);
+
+                if (Main.rand.NextBool(20))
+                {
+                    if (Main.netMode != NetmodeID.Server)
+                        Gore.NewGore(Player.GetSource_FromThis(), startingPosition, Vector2.Zero, GoreID.TreeLeaf_VanityTreeSakura, 1f);
+                }
+
+                EnchantedKatanaShrineEffect--;
+            }
+            if (EnchantedKatanaShrineMusicOverride > 0)
+                EnchantedKatanaShrineMusicOverride--;
         }
 
         public override void PostUpdateRunSpeeds()
@@ -217,10 +237,13 @@ namespace MoreKatana
             }
         }
 
+        public override void OnExtraJumpStarted(ExtraJump jump, ref bool playSound)
+        {
+
+        }
+
         public override void ModifyHurt(ref Player.HurtModifiers modifiers)
         {
-            //modifiers.ModifyHurtInfo += ModifyHurtInfo;
-
             if (holyShield && HolyShieldDurability > 0)
             {
                 // ヒットした際に音を鳴らす。デフォルトのヒット音は消す
@@ -246,125 +269,6 @@ namespace MoreKatana
                 ParticleOrchestrator.RequestParticleSpawn(false, ParticleOrchestraType.TrueExcalibur, particleOrchestraSettings, Player.whoAmI);
             }
         }
-
-        #region private void ModifyHurtInfo(ref Player.HurtInfo info)
-        /*private void ModifyHurtInfo(ref Player.HurtInfo info)
-        {
-            if (ShieldCD <= 0)
-            {
-                if (holyShield && HolyShieldDurability > 0)
-                {
-                    // すべてのシールドにダメージを与える。
-                    int shieldDurability = SacredNaginata.ShieldDurabilityMax;
-                    HolyShieldDurability -= info.Damage;
-                    TrueHolyShieldDurability -= (int)(info.Damage * ((float)TrueSacredNaginata.ShieldDurabilityMax / shieldDurability));
-
-                    // シールドが破壊された時の処理
-                    if (HolyShieldDurability <= 0)
-                    {
-                        CrashEffect(SacredNaginata.ShieldRechargeTime);
-
-                        double spread = 2 * Math.PI / 12;
-                        for (int i = 0; i < 12; i++)
-                        {
-                            Vector2 velocity = new Vector2(2, 2).RotatedBy(spread * i);
-                            int newDust = Dust.NewDust(Player.Center, 0, 0, ModContent.DustType<PixelDust>(), velocity.X, velocity.Y, 0, Color.Gold, 1f);
-                            Main.dust[newDust].scale *= 6f * Main.rand.Next(1, 3);
-                        }
-                    }
-
-                    // ダメージの処理
-                    OnDamage(ref info, HolyShieldDurability);
-                }
-                if (trueHolyShield && TrueHolyShieldDurability > 0)
-                {
-                    // すべてのシールドにダメージを与える。
-                    int shieldDurability = TrueSacredNaginata.ShieldDurabilityMax;
-                    TrueHolyShieldDurability -= info.Damage;
-                    HolyShieldDurability -= (int)(info.Damage * ((float)SacredNaginata.ShieldDurabilityMax / shieldDurability));
-
-                    // シールドが破壊された時の処理
-                    if (TrueHolyShieldDurability <= 0)
-                    {
-                        CrashEffect(TrueSacredNaginata.ShieldRechargeTime);
-
-                        double spread = 2 * Math.PI / 12;
-                        for (int i = 0; i < 24; i++)
-                        {
-                            Vector2 velocity = new Vector2(2, 2).RotatedBy(spread * i);
-                            int newDust = Dust.NewDust(Player.Center, 0, 0, ModContent.DustType<PixelDust>(), velocity.X, velocity.Y, 0, Main.rand.NextBool() ? Color.Gold : Color.Crimson, 1f);
-                            Main.dust[newDust].scale *= 6f * Main.rand.Next(1, 3);
-                        }
-                    }
-
-                    // ダメージの処理
-                    OnDamage(ref info, TrueHolyShieldDurability);
-                }
-
-                void CrashEffect(int cd)
-                {
-                    // クールダウンを設ける
-                    ShieldCD = cd;
-
-                    // シールドの耐久値を0にする
-                    HolyShieldDurability = 0;
-                    TrueHolyShieldDurability = 0;
-
-                    // 音とスクリーンシェイク
-                    SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath, Player.position);
-                    SoundEngine.PlaySound(SoundID.Item27, Player.position);
-                    Player.ScreenShake(5, 10);
-                }
-
-                void OnDamage(ref Player.HurtInfo info, int durability)
-                {
-                    // シールドでどれだけダメージを防いだか計算する
-                    int shieldDamageBlocked = Math.Min(durability, info.Damage);
-
-                    // 防いだダメージを表示する
-                    string trueHolyShieldDamageText = (-shieldDamageBlocked).ToString();
-                    Rectangle location = new Rectangle((int)Player.position.X, (int)Player.position.Y - 16, Player.width, Player.height);
-                    CombatText.NewText(location, Color.LightYellow, Language.GetTextValue(trueHolyShieldDamageText));
-
-                    // 実際に被弾のダメージを除去し、後のシールドの被弾を少なくする
-                    info.Damage -= shieldDamageBlocked;
-                }
-            }
-
-            if (Player.HeldItem.type == ModContent.ItemType<EnchantedKatana>())
-                OnHitEnchantedKatana(ref info);
-        }
-        /// <summary>
-        /// エンチャント刀がマナを消費してダメージの10%を軽減する処理
-        /// </summary>
-        /// <param name="hurtInfo">被弾時の状況（ダメージやノックバック）が入った構造体</param>
-        public void OnHitEnchantedKatana(ref Player.HurtInfo hurtInfo)
-        {
-            // マナが0だったりダメージがキャンセルされたなら発動前に中止する
-            if (Player.statMana == 0 || hurtInfo.Cancelled)
-                return;
-
-            // マナでどれだけダメージを肩代わりしたか計算する
-            int manaDamageBlocked = int.Max(1, hurtInfo.Damage / 10);
-
-            // マナが不足している場合はマナの値まで軽減値を減らす
-            manaDamageBlocked = int.Min(manaDamageBlocked, Player.statMana);
-
-            /// 消費したマナを画面に表示する
-            // 表示位置の計算
-            Rectangle location = Player.getRect();
-            location.Y -= 16;
-
-            // 表示
-            CombatText.NewText(location, EnchantedKatana.EnchantedDamageColor, -manaDamageBlocked);
-
-            // 肩代わりした分、マナを除去する（ダメージの量にかかわらず、最低1マナを消費する）
-            Player.statMana -= manaDamageBlocked;
-
-            // 肩代わりした分をダメージから減算（１ダメージの場合は軽減できない）
-            hurtInfo.Damage -= manaDamageBlocked;
-        }*/
-        #endregion
 
         public override void OnHurt(Player.HurtInfo info)
         {
@@ -461,7 +365,7 @@ namespace MoreKatana
                 // マナが不足している場合はマナの値まで軽減値を減らす
                 manaDamageBlocked = int.Min(manaDamageBlocked, Player.statMana);
 
-                /// 消費したマナを画面に表示する
+                // 消費したマナを画面に表示する
                 Rectangle location = new Rectangle((int)Player.position.X, (int)Player.position.Y - 16, Player.width, Player.height);
                 CombatText.NewText(location, EnchantedKatana.EnchantedDamageColor, -manaDamageBlocked);
 
@@ -516,6 +420,7 @@ namespace MoreKatana
         {
             SacredNaginata.DrawHolyShield(ref drawinfo);
             TrueSacredNaginata.DrawTrueHolyShield(ref drawinfo);
+            EnchantedShrineCursor.DrawEnchantedShrineCursor(ref drawinfo);
         }
 
         public static DrawData ManipulateDrawInfo(DrawData input, Player player)

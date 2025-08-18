@@ -22,6 +22,8 @@ TrueSacredSecondaryMagicCircle.DisplayName: Sacred Magic Circle
 MuramasaGhost.DisplayName: Muramasa Ghost
 MuramasaGhostSwing.DisplayName: Muramasa
 MuramasaSlash.DisplayName: Muramasa
+MuramasaCounterattack.DisplayName: Muramasa Counterattack
+MuramasaCounterattackSwing.DisplayName: Muramasa Counterattack
 # -------- Wood --------
 ChargingWoodenSwing.DisplayName: Wooden Katana
 # -------- General --------
@@ -37,6 +39,4 @@ VolcanicCinder.DisplayName: Volcanic Cinder
 EnchantedKatanaBeam.DisplayName: Enchanted Katana Beam
 EnchantedKatanaSwing.DisplayName: Enchanted Katana Swing
 EnchantedKatanaSwingActiveSkill.DisplayName: Enchanted Katana Swing Active Skill
-MuramasaCounterattack.DisplayName: Muramasa Counterattack
-MuramasaCounterattackSwing.DisplayName: Muramasa Counterattack Swing
 ObsidianSlash.DisplayName: Obsidian Slash

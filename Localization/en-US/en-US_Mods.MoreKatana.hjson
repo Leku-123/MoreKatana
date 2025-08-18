@@ -5,6 +5,7 @@ Tooltips: {
 	ActiveSkillCD: Cooldown
 	Second: sec.
 	Life: Life
+	GetIt: Get it!
 }
 
 Configs: {
@@ -60,4 +61,12 @@ WorldGen.EnchantedKatanaShrineMessage: Building the Enchanted Katana Shrine
 Tiles: {
 	SamuraiStatue.MapEntry: Samurai Statue
 	SamuraiStatueGift.MapEntry: Samurai Statue Gift
+	SamuraiStatueGiftDecorative.MapEntry: Samurai Statue Gift
+}
+
+Biomes: {
+	EnchantedKatanaShrineBiome: {
+		DisplayName: Enchanted Katana Shrine
+		TownNPCDialogueName: the Enchanted Katana Shrine
+	}
 }

@@ -1,4 +1,5 @@
 using MoreKatana.Items.Weapons.Misc;
+using Terraria;
 using Terraria.ModLoader;
 
 namespace MoreKatana.Items.Placeables
@@ -9,7 +10,22 @@ namespace MoreKatana.Items.Placeables
         {
             base.SetDefaults();
 
-            Item.createTile = ModContent.TileType<Tiles.SamuraiStatueGift>();
+            Item.createTile = ModContent.TileType<Tiles.SamuraiStatueGiftDecorative>();
+            Item.accessory = true;
+            Item.hasVanityEffects = true;
+        }
+
+        public override void UpdateEquip(Player player) => ShrineEffect(player);
+
+        public override void UpdateVanity(Player player) => ShrineEffect(player);
+
+        private void ShrineEffect(Player player)
+        {
+            if (player.whoAmI == Main.myPlayer)
+            {
+                player.MKPlayer().EnchantedKatanaShrineEffect = 30;
+                player.MKPlayer().EnchantedKatanaShrineMusicOverride = 30;
+            }
         }
 
         public override void AddRecipes()

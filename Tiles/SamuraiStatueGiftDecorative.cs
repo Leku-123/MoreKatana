@@ -1,8 +1,8 @@
 using Microsoft.Xna.Framework;
 using MoreKatana.Items.Weapons.Misc;
-using MoreKatana.Worlds;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.Localization;
@@ -11,8 +11,10 @@ using Terraria.ObjectData;
 
 namespace MoreKatana.Tiles
 {
-    public class SamuraiStatueGift : ModTile
+    public class SamuraiStatueGiftDecorative : ModTile
     {
+        public bool SceneEffect;
+
         public override void SetStaticDefaults()
         {
             Main.tileFrameImportant[Type] = true;
@@ -34,7 +36,7 @@ namespace MoreKatana.Tiles
             Player player = Main.LocalPlayer;
             player.noThrow = 2;
             player.cursorItemIconEnabled = true;
-            player.cursorItemIconID = ModContent.ItemType<EnchantedKatana>();
+            player.cursorItemIconID = ModContent.ItemType<Items.Placeables.SamuraiStatueGift>();
         }
 
         public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)
@@ -44,12 +46,10 @@ namespace MoreKatana.Tiles
 
         public override bool RightClick(int i, int j)
         {
-            Tile tile = Framing.GetTileSafely(i, j);
-            i -= tile.TileFrameX / 18;
-            j -= tile.TileFrameY / 18;
-            i += 1;
-            j += 2;
-            WorldGen.KillTile(i, j, noItem: true);
+            Player player = Main.LocalPlayer;
+
+            SceneEffect = !SceneEffect;
+            SoundEngine.PlaySound(SoundID.MenuTick, player.Center);
             return true;
         }
 
@@ -70,16 +70,22 @@ namespace MoreKatana.Tiles
 
         public override void EmitParticles(int i, int j, Tile tileCache, short tileFrameX, short tileFrameY, Color tileLight, bool visible)
         {
-            EnchantedKatanaShrineBiome.StatuePos = new Vector2(i, j).ToWorldCoordinates();
-            Tile tile = Main.tile[i, j];
-            if (Main.rand.NextBool(20))
+            if (SceneEffect)
             {
-                Dust dust = Dust.NewDustDirect(new Vector2(i * 16 + 2, j * 16 - 4), 4, 8, Utils.SelectRandom(Main.rand, EnchantedKatana.EnchantedDustType), 0f, 0f, 100);
-                dust.position.X += Main.rand.Next(8);
-                dust.alpha += Main.rand.Next(100);
-                dust.velocity *= 0.2f;
-                dust.velocity.Y -= 0.5f + Main.rand.Next(10) * 0.1f;
-                dust.fadeIn = 0.5f + Main.rand.Next(10) * 0.1f;
+                Player player = Main.LocalPlayer;
+                player.MKPlayer().EnchantedKatanaShrineEffect = 30;
+                player.MKPlayer().EnchantedKatanaShrineMusicOverride = 30;
+
+                Tile tile = Main.tile[i, j];
+                if (Main.rand.NextBool(20))
+                {
+                    Dust dust = Dust.NewDustDirect(new Vector2(i * 16 + 2, j * 16 - 4), 4, 8, Utils.SelectRandom(Main.rand, EnchantedKatana.EnchantedDustType), 0f, 0f, 100);
+                    dust.position.X += Main.rand.Next(8);
+                    dust.alpha += Main.rand.Next(100);
+                    dust.velocity *= 0.2f;
+                    dust.velocity.Y -= 0.5f + Main.rand.Next(10) * 0.1f;
+                    dust.fadeIn = 0.5f + Main.rand.Next(10) * 0.1f;
+                }
             }
         }
     }

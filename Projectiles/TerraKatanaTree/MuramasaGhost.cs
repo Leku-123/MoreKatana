@@ -121,8 +121,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Main.dust[newDust].noGravity = true;
             }
 
-            // 青色の光
-            Lighting.AddLight(Projectile.position, Color.Blue.ToVector3());
+            // 光
+            Lighting.AddLight(Projectile.position, Color.White.ToVector3());
         }
 
         public override bool? CanDamage() => false;
