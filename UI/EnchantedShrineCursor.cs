@@ -35,7 +35,7 @@ namespace MoreKatana.UI
             float backglowAmount = 12f;
             for (int i = 0; i < backglowAmount; i++)
             {
-                Vector2 backglowOffset = (MathHelper.TwoPi * i / backglowAmount).ToRotationVector2() * 4f * ((float)Math.Sin(Main.GameUpdateCount / 30f) + 0.3f);
+                Vector2 backglowOffset = (MathHelper.TwoPi * i / backglowAmount).ToRotationVector2() * 4f * ((float)Math.Sin(Main.GameUpdateCount / 15f) + 0.3f);
                 Main.spriteBatch.Draw(texture, mousePos + backglowOffset, null, Color.White with { A = 0 }, 0f, texture.Size() / 2f, Main.cursorScale, SpriteEffects.None, 0f);
             }
 

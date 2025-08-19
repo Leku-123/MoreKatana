@@ -70,7 +70,7 @@ namespace MoreKatana.Tiles
 
         public override void EmitParticles(int i, int j, Tile tileCache, short tileFrameX, short tileFrameY, Color tileLight, bool visible)
         {
-            EnchantedKatanaShrineBiome.StatuePos = new Vector2(i, j).ToWorldCoordinates();
+            EnchantedKatanaShrineBiome.StatuePosition = new Vector2(i, j).ToWorldCoordinates();
             Tile tile = Main.tile[i, j];
             if (Main.rand.NextBool(20))
             {

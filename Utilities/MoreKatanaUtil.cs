@@ -5,6 +5,7 @@ using MoreKatana.Projectiles;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
@@ -415,6 +416,12 @@ namespace MoreKatana
 
             return (destination - entity.Center).SafeNormalize(fallback.Value);
         }
+
+        /// <summary>
+        /// CameraModifierを追加します
+        /// </summary>
+        /// <param name="modifier"></param>
+        public static void AddCameraModifier(this ICameraModifier modifier) => Main.instance.CameraModifiers.Add(modifier);
         #endregion
 
         #region -------- Debug --------
@@ -423,7 +430,7 @@ namespace MoreKatana
         public static void InChatText(this bool value) => Main.NewText($"{value}");
         public static void InChatText(this Vector2 value) => Main.NewText($"{value}");
         public static void InChatText(this string value) => Main.NewText($"{value}");
-        public static void InChatText(this Rectangle value) => Main.NewText($"X:{value.X},Y:{value.Y},W:{value.Width},H:{value.Height}");
+        public static void InChatText(this Rectangle value) => Main.NewText($"{value}");
         #endregion
     }
 }
