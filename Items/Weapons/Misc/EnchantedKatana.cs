@@ -16,8 +16,8 @@ namespace MoreKatana.Items.Weapons.Misc
 
         public override void SetDefaultsItem()
         {
-            Item.width = 48;
-            Item.height = 54;
+            Item.width = 54;
+            Item.height = 56;
 
             Item.useTime = 21;
             Item.useAnimation = 21;
