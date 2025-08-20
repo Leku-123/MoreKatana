@@ -1,3 +1,24 @@
+DebugItem: Debug Item
+SetupFirstStatue.DisplayName: Setup First Statue
+
+# -------- Materials --------
+BrokenHeroKatana: {
+	DisplayName: Broken Hero Katana
+	Tooltip: ""
+}
+
+# -------- Placeables --------
+SamuraiStatue: {
+	DisplayName: Samurai Statue
+	Tooltip: ""
+}
+
+SamuraiStatueGift: {
+	DisplayName: Samurai Statue Gift
+	Tooltip: ""
+}
+
+# -------- Weapons --------
 Katana.FunctionText:
 	'''
 	Katana Spell [c/CDDEEF:<Iron Protection>]
@@ -232,11 +253,6 @@ TrueSacredNaginata: {
 		'''
 }
 
-BrokenHeroKatana: {
-	DisplayName: Broken Hero Katana
-	Tooltip: ""
-}
-
 ObsidianKatana: {
 	FunctionText: Mods.MoreKatana.Items.ObsidianKatana.FunctionText
 	DisplayName: Obsidian Katana
@@ -247,15 +263,5 @@ ObsidianKatana: {
 EnchantedKatana: {
 	FunctionText: Mods.MoreKatana.Items.EnchantedKatana.FunctionText
 	DisplayName: Enchanted Katana
-	Tooltip: ""
-}
-
-SamuraiStatue: {
-	DisplayName: Samurai Statue
-	Tooltip: ""
-}
-
-SamuraiStatueGift: {
-	DisplayName: Samurai Statue Gift
 	Tooltip: ""
 }

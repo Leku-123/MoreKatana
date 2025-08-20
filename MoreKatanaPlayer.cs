@@ -18,12 +18,6 @@ namespace MoreKatana
 {
     public class MoreKatanaPlayer : ModPlayer
     {
-        // -------- Screen --------
-        public Entity ScreenLockEntity = null;
-        public Vector2 ScreenLockPos;
-        public int ScreenShakeTimer;
-        public int ScreenShakeStrength;
-
         // -------- Dash --------
         public bool DashState;
         public bool GeneralDash;
@@ -37,6 +31,8 @@ namespace MoreKatana
         public int CounterattackCD;
         public int ShieldCD;
 
+        public int ScreenShakeTimer;
+        public int ScreenShakeStrength;
         public float Flipping;
         public float R, G, B, A;
         public int TimePotionSick;
@@ -59,13 +55,11 @@ namespace MoreKatana
 
         public override void ResetEffects()
         {
-            ScreenLockEntity = null;
-            ScreenLockPos = Vector2.Zero;
-            if (ScreenShakeTimer > 0)
-                ScreenShakeTimer--;
             DashState = false;
             if (!GeneralDash)
                 DashTimer = 0f;
+            if (ScreenShakeTimer > 0)
+                ScreenShakeTimer--;
             Flipping = 0f;
             R = G = B = A = 1f;
             muramasaCounterattack = false;
@@ -85,17 +79,6 @@ namespace MoreKatana
 
         public override void ModifyScreenPosition()
         {
-            // スクリーンの位置を変更する
-            // TO-DO ICameraModifierとか言うやつを使えるかもしれない...調べておこう
-            if (ScreenLockEntity != null)
-            {
-                if (ScreenLockEntity.active && Player.active)
-                {
-                    Main.screenPosition.X = ScreenLockPos.X - (Main.screenWidth / 2);
-                    Main.screenPosition.Y = ScreenLockPos.Y - (Main.screenHeight / 2);
-                }
-            }
-
             // スクリーンを揺らす
             if (ScreenShakeTimer > 0)
             {

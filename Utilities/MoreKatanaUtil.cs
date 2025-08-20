@@ -49,19 +49,6 @@ namespace MoreKatana
         }
 
         /// <summary>
-        /// スクリーンロック
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="entity"> 固定するフラグを立てるエンティティ </param>
-        /// <param name="screenLockPos"> 固定する位置 </param>
-        public static void ScreenLock(this Player player, Entity entity, Vector2? screenLockPos = null)
-        {
-            MoreKatanaPlayer mk = player.MKPlayer();
-            mk.ScreenLockEntity = entity;
-            mk.ScreenLockPos = screenLockPos == null ? entity.Center : (Vector2)screenLockPos;
-        }
-
-        /// <summary>
         /// フリップエフェクト
         /// </summary>
         /// <param name="player"></param>

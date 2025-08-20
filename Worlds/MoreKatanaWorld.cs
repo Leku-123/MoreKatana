@@ -26,11 +26,11 @@ namespace MoreKatana.Worlds
         {
             // メモ https://github.com/tModLoader/tModLoader/wiki/Vanilla-World-Generation-Steps
 
-            int SurfaceOreandStoneIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Surface Ore and Stone"));
-            if (SurfaceOreandStoneIndex != -1)
+            int DirtRockWallRunnerIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Dirt Rock Wall Runner"));
+            if (DirtRockWallRunnerIndex != -1)
             {
                 if (MoreKatanaConfig.Instance.EnchantedKatanaShrine)
-                    tasks.Insert(SurfaceOreandStoneIndex + 1, new EnchantedKatanaShrine("Enchanted Katana Shrine", 237.4298f));
+                    tasks.Insert(DirtRockWallRunnerIndex + 1, new EnchantedKatanaShrine("Enchanted Katana Shrine", 237.4298f));
             }
             //tasks.Add(new EnchantedKatanaShrine("Enchanted Katana Shrine", 237.4298f));
         }

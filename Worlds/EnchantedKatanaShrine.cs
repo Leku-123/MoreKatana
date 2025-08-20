@@ -53,21 +53,22 @@ namespace MoreKatana.Worlds
             int placementPositionX = WorldGen.genRand.Next(placementX, placementX + 8);
 
             // ストラクチャを設置するY位置
-            // 本当は Main.spawnTileY を使いたくないので、今後 Main.worldSurface や GenVars の何かに変更したい
-            // とにかく空島を回避する何かが必要だ
-            int placementPositionY = (int)(Main.spawnTileY - (Main.maxTilesY / 10f));
+            // 空島を回避するために地上レイヤーの少し上からチェックを始める
+            int placementPositionY = (int)Main.worldSurface - (Main.maxTilesY / 6);
 
             // 有効なタイルが見つかるまで位置を調節する
-            // 少なくとも地上レイヤー以上になるようにする
+            // 少なくとも地上レイヤーより上になるようにする
             bool foundValidGround = false;
             int attempts = 0;
             while (!foundValidGround && attempts++ < 100000)
             {
-                while (!WorldGen.SolidTile(placementPositionX, placementPositionY) && placementPositionY <= Main.worldSurface)
+                // 地上レイヤーの位置までY位置を調節する
+                if (placementPositionY <= Main.worldSurface)
                 {
                     placementPositionY++;
                 }
 
+                // 有効なタイルを見つけた場合ループを終了する
                 if (Main.tile[placementPositionX, placementPositionY].HasTile)
                 {
                     foreach (int i in placableTiles)
@@ -80,11 +81,14 @@ namespace MoreKatana.Worlds
                 }
             }
 
-            // ポイントの位置にストラクチャを設置
+            // 有効なタイルの位置にストラクチャーを設置
+            // ポイントをストラクチャーのサイズに合わせる
             vs.Add(new Point16(placementPositionX - (StructureWidth / 2), placementPositionY - (int)(StructureHeight / 1.5f)));
             point = Main.rand.Next(vs);
             Generator.GenerateStructure(StructurePath, point, MoreKatana.Instance);
 
+            /* 生成タスクをDirt Rock Wall Runnerにしたのでいらないかも
+             * その関係上石ブロックを露出させにくくなったから、ストラクチャーをちょっと手直しする必要がある(かも)
             int pointX = (int)point.ToVector2().X;
             int pointY = (int)point.ToVector2().Y;
 
@@ -104,9 +108,9 @@ namespace MoreKatana.Worlds
             // 余分なタイルを消す
             // ストラクチャで上書きしているが改めてチェックする
             // リビングウッドを考慮してY方向にはタイルチェックを多く行う
-            for (int x = pointX - StructureWidth / 2; x < pointX + StructureWidth / 2; x++)
+            for (int x = pointX; x < pointX + StructureWidth; x++)
             {
-                for (int y = pointY - StructureHeight / 2; y < pointY + StructureHeight; y++)
+                for (int y = pointY - StructureHeight * 2; y < pointY + StructureHeight / 2; y++)
                 {
                     if (Main.tile[x, y].HasTile)
                     {
@@ -126,7 +130,7 @@ namespace MoreKatana.Worlds
                         }
                     }
                 }
-            }
+            }*/
         }
     }
 }
