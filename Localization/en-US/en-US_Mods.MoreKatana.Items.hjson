@@ -28,10 +28,11 @@ Katana.FunctionText:
 	'''
 Muramasa.FunctionText:
 	'''
-	Katana Spell
-	-
-	Katana Arts
-	-
+	Katana Spell [c/0000FA:<Revengeance>]
+	- When damaged, the ghost will counterattack.
+	Katana Arts [c/0000CD:<Bloodthirsty Ghost>]
+	- Summon a ghost for {N} seconds.
+	- When the player attacks, the ghost will perform an additional attack.
 	'''
 
 TestKatana: {

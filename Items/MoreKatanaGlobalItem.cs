@@ -15,7 +15,7 @@ using Terraria.UI;
 
 namespace MoreKatana.Items
 {
-    public class MoreKatanaGlobalItem : GlobalItem
+    public partial class MoreKatanaGlobalItem : GlobalItem
     {
         public override bool InstancePerEntity => true;
 

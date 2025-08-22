@@ -7,6 +7,7 @@ using MoreKatana.Utilities;
 using ReLogic.Content;
 using System.Reflection;
 using Terraria;
+using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -16,14 +17,14 @@ namespace MoreKatana
 {
     public class MoreKatana : Mod
     {
+        public static MoreKatana Instance { get; private set; }
+
         public const string EmptyTexture = "MoreKatana/Empty";
 
         public static Effect PrimitiveTextureMap;
         public static PrimTrailManager primitives;
 
         private Vector2 _lastScreenSize;
-
-        public static MoreKatana Instance;
 
         public MoreKatana()
         {
@@ -38,6 +39,9 @@ namespace MoreKatana
 
             if (Main.netMode != NetmodeID.Server)
             {
+                Filters.Scene["Shockwave"] = new Filter(new ScreenShaderData(ModContent.Request<Effect>("MoreKatana/Effects/ShockwaveEffect", AssetRequestMode.ImmediateLoad), "Shockwave"));
+                Filters.Scene["Shockwave"].Load();
+
                 GameShaders.Misc["Compression"] = new MiscShaderData(ModContent.Request<Effect>("MoreKatana/Effects/Compression", AssetRequestMode.ImmediateLoad), "ShieldPass");
 
                 PrimitiveTextureMap = ModContent.Request<Effect>("MoreKatana/Effects/PrimitiveTextureMap", AssetRequestMode.ImmediateLoad).Value;

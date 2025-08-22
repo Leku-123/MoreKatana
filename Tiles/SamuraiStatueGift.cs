@@ -61,6 +61,7 @@ namespace MoreKatana.Tiles
             i += 1;
             j += 2;
             WorldGen.PlaceTile(i, j, ModContent.TileType<SamuraiStatue>());
+            MoreKatanaUtil.CreateShockwave(Main.LocalPlayer.GetSource_FromThis(), new Vector2(i, j).ToWorldCoordinates(), Main.myPlayer);
         }
 
         public override IEnumerable<Item> GetItemDrops(int i, int j)

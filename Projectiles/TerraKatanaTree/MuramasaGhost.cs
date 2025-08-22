@@ -22,7 +22,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         private const int ComboCount = 2;
         private int swingType;
 
-        public bool Attackable => Owner.ItemAnimationActive && Owner.ItemAnimationJustStarted && !Owner.IsUsingAlt();
+        public bool Attackable => Owner.ItemAnimationJustStarted && !Owner.IsUsingAlt();
 
         public Player clone;
 

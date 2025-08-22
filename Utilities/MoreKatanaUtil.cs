@@ -104,6 +104,21 @@ namespace MoreKatana
         public static void ExpandHitboxBy(this Projectile projectile, Vector2 newSize) => projectile.ExpandHitboxBy((int)newSize.X, (int)newSize.Y);
         public static void ExpandHitboxBy(this Projectile projectile, float expandRatio) => projectile.ExpandHitboxBy((int)(projectile.width * expandRatio), (int)(projectile.height * expandRatio));
 
+        public static Projectile CreateShockwave(IEntitySource source, Vector2 position, int owner = 255, int rippleCount = 10, int rippleSize = 5, float rippleSpeed = 15f)
+        {
+            if (Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                int p = Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<ShockWaveEffect>(), 0, 0f, owner);
+                ShockWaveEffect shockwave = (ShockWaveEffect)Main.projectile[p].ModProjectile;
+                shockwave.RippleCount = rippleCount;
+                shockwave.RippleSize = rippleSize;
+                shockwave.RippleSpeed = rippleSpeed;
+
+                return p < Main.maxProjectiles ? Main.LocalPlayer.ownedProjectileCounts[ModContent.ProjectileType<ShockWaveEffect>()] == 0 ? Main.projectile[p] : null : null;
+            }
+            return null;
+        }
+
         /// <summary>
         /// ダッシュ切り発射体を簡単に処理する
         /// <param name="source">はItemUse系にしてください
