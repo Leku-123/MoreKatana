@@ -1,74 +1,50 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MoreKatana.Items.Weapons.Metal;
 using MoreKatana.Projectiles.Base;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace MoreKatana.Projectiles.Metal
 {
     public class ObsidianSwing : CustomSword
     {
-        public override string Texture => (GetType().Namespace + "." + Name).Replace('.', '/');
-
-        public override void SafeSetStaticDefaults()
-        {
-            Main.projFrames[Type] = 2;
-        }
+        public override string Texture => this.GetTexture(Name);
 
         public override void Initialization(Item item, int type)
         {
             Projectile.localNPCHitCooldown = Owner.itemAnimationMax * Projectile.MaxUpdates;
-            SwordSize(48, 54);
-
-            // 通常状態と着火状態
-            // テクスチャフレームとトレイルの色を変更する
-            if (!ObsidianKatana.Fire(Owner))
-            {
-                Projectile.frame = 0;
-                TrailColor = new Color(43, 40, 84);
-            }
-            else
-            {
-                Projectile.frame = 1;
-                TrailColor = new Color(83, 5, 1);
-            }
+            GetTextureValues(this, item);
         }
 
         public override bool AttackPattern(Item item, int type)
         {
-            float x = Utils.SelectRandom(Main.rand, 1f, 1.3f);
-            float y = Utils.SelectRandom(Main.rand, 0.7f, 0.9f);
-            GetEllipse(x, y);
-
-            float swingRange = Main.rand.NextFloat(0.7f, 0.8f);
-            float num = Owner.itemAnimationMax / 4f;
-            SwingStats(num * 3, swingRange, (0.9f - swingRange) / 2f, type % 2 != 0);
-
-            DelayTimer = num;
-
+            GetEllipse(0.8f, 0.8f);
+            SwingStats(Owner.itemAnimationMax, 0.8f);
+            DelayTimer = 1;
             return base.AttackPattern(item, type);
         }
 
         public override float GetProgress(int type) => EaseFunction.EaseCubicOut.Ease(progress);
 
-        public override void AdditionalAI(Item item, int type, bool delay)
+        public override void AdditionalAI(Item item, int type, bool onDelay) => Owner.SetDummyItemTime(2);
+
+        public override void SafeTileCollide(Item item, int type, Vector2 collisionPoint)
         {
-            Owner.SetDummyItemTime(2);
-
-            // 例えばこんな感じで遊んでみたりとか
-            if (type == 1 && Projectile.localAI[0] == 0)
+            if (progress >= 0.5f && progress <= 0.8f)
             {
-                Projectile.localAI[0] = 1;
+                DelayTimer = 10 * Projectile.MaxUpdates;
 
-                if (Projectile.owner == Main.myPlayer)
+                if (!timerStop)
                 {
-                    Projectile.velocity.Normalize();
-                    Vector2 v = Projectile.velocity * 6f;
-                    int newProj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center + v, v, ModContent.ProjectileType<ObsidianSlash>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
-                    Main.projectile[newProj].penetrate = 1;
-                    Main.projectile[newProj].timeLeft = 30;
+                    timerStop = true;
+                    Owner.ScreenShake(2, 2);
+                    SoundEngine.PlaySound(SoundID.Tink, Owner.Center);
+
+                    for (int i = 0; i <= 12; i++)
+                        Dust.NewDustPerfect(collisionPoint, DustID.Obsidian, Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(-1, 1) * 5);
                 }
             }
         }
@@ -76,13 +52,10 @@ namespace MoreKatana.Projectiles.Metal
         public override bool PreDraw(ref Color lightColor)
         {
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
-            Rectangle rectangle = texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame);
-            Vector2 origin = rectangle.Size() / 2f;
-            Vector2 position = Projectile.Center - Main.screenPosition;
-            SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            SpriteEffects spriteEffects2 = Backspin ? SpriteEffects.FlipVertically : SpriteEffects.None;
-
-            Main.EntitySpriteDraw(texture, position, rectangle, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, spriteEffects | spriteEffects2, 0);
+            Texture2D glowTex = ModContent.Request<Texture2D>(GlowTexture).Value;
+            Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
+            DrawBasicSword(texture, position, Projectile.GetAlpha(lightColor));
+            DrawBasicSword(glowTex, position, Color.White * Projectile.Opacity);
             return false;
         }
     }

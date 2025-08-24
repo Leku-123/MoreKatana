@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace MoreKatana.Buffs
 {
-    public class ObsidianKatanaFire : ModBuff
+    public class ObsidianBurnBuff : ModBuff
     {
         public override void SetStaticDefaults()
         {
@@ -15,6 +15,8 @@ namespace MoreKatana.Buffs
 
         public override void Update(Player player, ref int buffIndex)
         {
+            player.DrawColorEffect(Color.Red.ToVector3());
+
             if (player.HeldItem.type != ModContent.ItemType<ObsidianKatana>())
             {
                 player.DelBuff(buffIndex);
@@ -25,7 +27,7 @@ namespace MoreKatana.Buffs
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    int newDust = Dust.NewDust(new Vector2(player.Center.X - player.width, player.Center.Y + player.height / 2), player.width * 2 - 3, 0, DustID.HallowedWeapons, 0, Main.rand.Next(-5, -2), 150, Color.Red, 1f);
+                    int newDust = Dust.NewDust(new Vector2(player.Center.X - player.width, player.Center.Y + player.height / 2), player.width * 2 - 3, 0, DustID.Flare, 0, Main.rand.Next(-10, -4), 150, default, 1f);
                     Main.dust[newDust].fadeIn = 0.3f;
                     Main.dust[newDust].noGravity = true;
                     newDust = Dust.NewDust(new Vector2(player.Center.X - player.width, player.Center.Y + player.height / 2), player.width * 2 - 3, 0, DustID.Torch, 0, Main.rand.Next(-5, -2), 150, default, 1f);

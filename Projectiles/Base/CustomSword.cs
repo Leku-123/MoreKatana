@@ -335,7 +335,7 @@ namespace MoreKatana.Projectiles.Base
                     collisionBase += (Projectile.Center - Owner.MountedCenter).ToRotation().ToRotationVector2() * SwordLength / checkpoint;
                     bool validTile = Collision.SolidTiles(collisionBase, 2, 2, true);
                     if (validTile)
-                        SafeTileCollide(SwordItem, SwingType);
+                        SafeTileCollide(SwordItem, SwingType, collisionBase);
                 }
 
                 // ビジュアル効果
@@ -426,7 +426,6 @@ namespace MoreKatana.Projectiles.Base
         /// 初期設定
         /// </summary>
         /// <param name="item"></param>
-        /// <param name="player"></param>
         /// <param name="type"></param>
         public virtual void Initialization(Item item, int type)
         {
@@ -437,7 +436,6 @@ namespace MoreKatana.Projectiles.Base
         /// 剣の振りのパターン
         /// </summary>
         /// <param name="item"></param>
-        /// <param name="player"></param>
         /// <param name="type"></param>
         /// <returns></returns>
         public virtual bool AttackPattern(Item item, int type) => false;
@@ -452,7 +450,6 @@ namespace MoreKatana.Projectiles.Base
         /// <summary>
         /// 追加で行うAI
         /// </summary>
-        /// <param name="player"></param>
         /// <param name="type"></param>
         public virtual void AdditionalAI(Item item, int type, bool delay)
         {
@@ -465,7 +462,7 @@ namespace MoreKatana.Projectiles.Base
         /// </summary>
         /// <param name="item"></param>
         /// <param name="type"></param>
-        public virtual void SafeTileCollide(Item item, int type)
+        public virtual void SafeTileCollide(Item item, int type, Vector2 collisionPoint)
         {
 
         }
@@ -512,6 +509,15 @@ namespace MoreKatana.Projectiles.Base
             Main.EntitySpriteDraw(texture, position, rectangle, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, spriteEffects | spriteEffects2, 0);
 
             return false;
+        }
+
+        public void DrawBasicSword(Texture2D texture, Vector2 position, Color color)
+        {
+            Rectangle rectangle = new Rectangle(0, 0, texture.Width, texture.Height);
+            Vector2 origin = rectangle.Size() / 2f;
+            SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            SpriteEffects spriteEffects2 = Backspin ? SpriteEffects.FlipVertically : SpriteEffects.None;
+            Main.EntitySpriteDraw(texture, position, rectangle, color, Projectile.rotation, origin, Projectile.scale, spriteEffects | spriteEffects2, 0);
         }
     }
 }

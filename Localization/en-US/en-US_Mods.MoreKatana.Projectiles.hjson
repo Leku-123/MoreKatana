@@ -30,6 +30,7 @@ ChargingWoodenSwing.DisplayName: Wooden Katana
 Empty.DisplayName: Empty
 GeneralKatanaSwing.DisplayName: Katana
 GeneralDashSlash.DisplayName: Dash Slash
+ShockWaveEffect.DisplayName: Shock Wave Effect
 # -------- Not yet --------
 CustomDashSlash.DisplayName: Dash Slash
 BallofVolcano.DisplayName: Ball of Volcano
@@ -40,4 +41,5 @@ EnchantedKatanaBeam.DisplayName: Enchanted Katana Beam
 EnchantedKatanaSwing.DisplayName: Enchanted Katana Swing
 EnchantedKatanaSwingActiveSkill.DisplayName: Enchanted Katana Swing Active Skill
 ObsidianSlash.DisplayName: Obsidian Slash
-ShockWaveEffect.DisplayName: Shock Wave Effect
+ObsidianSwing2.DisplayName: Obsidian Swing2
+ObsidianKatanaHoldUp.DisplayName: Obsidian Katana Hold Up

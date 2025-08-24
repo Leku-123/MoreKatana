@@ -12,7 +12,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 {
     public class TrueSacredNaginataSwing : CustomSword
     {
-        public override string Texture => (GetType().Namespace + "." + Name).Replace('.', '/');
+        public override string Texture => this.GetTexture(Name);
 
         private int projCount;
 

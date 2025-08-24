@@ -107,7 +107,7 @@ namespace MoreKatana.Projectiles.Wood
             }
         }
 
-        public override void SafeTileCollide(Item item, int type)
+        public override void SafeTileCollide(Item item, int type, Vector2 collisionPoint)
         {
             // 振り下ろし時
             if (type == 1)

@@ -12,7 +12,7 @@ PhotosynthesisBuff: {
 		'''
 }
 
-ObsidianKatanaFire: {
-	DisplayName: Obsidian fire!
-	Description: Obsidian katana is on Fire!
+ObsidianBurnBuff: {
+	DisplayName: Obsidian Burn!
+	Description: Obsidian katana is burning!
 }

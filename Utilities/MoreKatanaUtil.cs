@@ -420,6 +420,14 @@ namespace MoreKatana
         }
 
         /// <summary>
+        /// オブジェクトの名前空間と名前からTextureを手動で取得します
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static string GetTexture(this object type, string name) => (type.GetType().Namespace + "." + name).Replace('.', '/');
+
+        /// <summary>
         /// CameraModifierを追加します
         /// </summary>
         /// <param name="modifier"></param>
@@ -427,11 +435,11 @@ namespace MoreKatana
         #endregion
 
         #region -------- Debug --------
+        public static void InChatText(this string value) => Main.NewText($"{value}");
         public static void InChatText(this int value) => Main.NewText($"{value}");
         public static void InChatText(this float value) => Main.NewText($"{value}");
         public static void InChatText(this bool value) => Main.NewText($"{value}");
         public static void InChatText(this Vector2 value) => Main.NewText($"{value}");
-        public static void InChatText(this string value) => Main.NewText($"{value}");
         public static void InChatText(this Rectangle value) => Main.NewText($"{value}");
         #endregion
     }

@@ -35,8 +35,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.height = 16;
             Projectile.aiStyle = -1;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.timeLeft = PrepareTime + FireTime + DisappearTime;
             Projectile.penetrate = -1;
+            Projectile.timeLeft = PrepareTime + FireTime + DisappearTime;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.tileCollide = false;

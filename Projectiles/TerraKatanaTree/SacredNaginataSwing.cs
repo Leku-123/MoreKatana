@@ -12,7 +12,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 {
     public class SacredNaginataSwing : CustomSword
     {
-        public override string Texture => (GetType().Namespace + "." + Name).Replace('.', '/');
+        public override string Texture => this.GetTexture(Name);
 
         private Vector2 DirectionToProj => Utils.DirectionTo(Owner.MountedCenter, Projectile.Center);
 
