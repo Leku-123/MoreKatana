@@ -29,7 +29,7 @@ namespace MoreKatana.Prim
                 }
                 catch
                 {
-                    // ここは無視
+                    // 無視
                 }
             }
         }

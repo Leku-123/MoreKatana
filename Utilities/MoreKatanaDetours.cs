@@ -13,6 +13,7 @@ namespace MoreKatana.Utilities
             On_Main.DrawNPCs += Main_DrawNPCs;
             On_Main.DrawProjectiles += Main_DrawProjectiles;
             On_Main.Update += Main_Update;
+            On_Main.DrawInfernoRings += On_Main_DrawInfernoRings;
         }
 
         public static void Unload()
@@ -22,6 +23,7 @@ namespace MoreKatana.Utilities
             On_Main.DrawNPCs -= Main_DrawNPCs;
             On_Main.DrawProjectiles -= Main_DrawProjectiles;
             On_Main.Update -= Main_Update;
+            On_Main.DrawInfernoRings -= On_Main_DrawInfernoRings;
         }
 
         private static void DrawPlayer_RenderAllLayers(On_PlayerDrawLayers.orig_DrawPlayer_RenderAllLayers orig, ref PlayerDrawSet drawinfo)
@@ -56,8 +58,13 @@ namespace MoreKatana.Utilities
         private static void Main_Update(On_Main.orig_Update orig, Main self, GameTime gameTime)
         {
             MoreKatana.Instance?.CheckScreenSize();
-
             orig(self, gameTime);
+        }
+
+        private static void On_Main_DrawInfernoRings(On_Main.orig_DrawInfernoRings orig, Main self)
+        {
+            orig.Invoke(self);
+            MoreKatanaPlayer.AddRenderUI(Main.spriteBatch, Main.LocalPlayer);
         }
     }
 }

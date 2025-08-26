@@ -73,8 +73,8 @@ namespace MoreKatana.Tiles
             if (SceneEffect)
             {
                 Player player = Main.LocalPlayer;
-                player.MKPlayer().EnchantedKatanaShrineEffect = 30;
-                player.MKPlayer().EnchantedKatanaShrineMusicOverride = 30;
+                player.MKPlayer().ForgottenAltarEffect = 30;
+                player.MKPlayer().ForgottenAltarMusicOverride = 30;
 
                 Tile tile = Main.tile[i, j];
                 if (Main.rand.NextBool(20))

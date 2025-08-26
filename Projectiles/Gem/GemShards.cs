@@ -118,6 +118,12 @@ namespace MoreKatana.Projectiles.Gem
                     float speed = 25f;
                     Projectile.velocity += direct * speed;
                     Projectile.netUpdate = true;
+
+                    if (index == 0)
+                    {
+                        SoundEngine.PlaySound(MoreKatanaSounds.SwordSlash, player.Center);
+                        Projectile.NewProjectile(player.GetSource_ItemUse(player.ActiveItem()), Projectile.Center, Vector2.Normalize(Projectile.velocity), ModContent.ProjectileType<GeneralKatanaSwing>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                    }
                 }
 
                 Projectile.penetrate = 1;
@@ -201,7 +207,7 @@ namespace MoreKatana.Projectiles.Gem
             Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
             SpriteEffects spriteEffects = (Projectile.spriteDirection == -1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            Main.EntitySpriteDraw(bloomTex, position, null, GlowColor with { A = 0 }, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.15f, 0, 0);
+            Main.EntitySpriteDraw(bloomTex, position, null, GlowColor with { A = 0 }, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.15f, SpriteEffects.None, 0);
             MoreKatanaUtil.DrawBackglow(texture, position, rectangle, Color.White with { A = 0 }, Projectile.rotation, 4f * AssembleCompletion, new Vector2(Projectile.scale), spriteEffects);
             Main.EntitySpriteDraw(texture, position, rectangle, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
             return false;

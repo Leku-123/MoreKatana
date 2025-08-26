@@ -20,7 +20,7 @@ namespace MoreKatana.Projectiles.PrimTrails
             Cap = cap;
         }
 
-        public override void SetDefaults() => AlphaValue = 0.7f;
+        public override void SetDefaults() => AlphaValue = 0.9f;
 
         public int TextureType;
         public int Direction = 1;

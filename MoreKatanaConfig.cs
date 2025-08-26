@@ -21,7 +21,7 @@ namespace MoreKatana
         [Header("WorldGen")]
 
         [DefaultValue(true)]
-        public bool EnchantedKatanaShrine { get; set; }
+        public bool ForgottenAltar { get; set; }
 
         [Header("UI")]
 

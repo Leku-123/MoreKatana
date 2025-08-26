@@ -250,7 +250,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 GetTextureValues(this, item);
             }
 
-            public override bool AttackPattern(Item item, int type)
+            public override bool SwingPattern(Item item, int type)
             {
                 GetEllipse(1f, 1f);
 
@@ -259,7 +259,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
                 DelayTimer = num;
 
-                return base.AttackPattern(item, type);
+                return base.SwingPattern(item, type);
             }
 
             public override void AdditionalAI(Item item, int type, bool onDelay)

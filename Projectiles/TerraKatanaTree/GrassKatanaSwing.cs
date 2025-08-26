@@ -14,7 +14,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             GetTextureValues(this, item);
         }
 
-        public override bool AttackPattern(Item item, int type)
+        public override bool SwingPattern(Item item, int type)
         {
             float x = Utils.SelectRandom(Main.rand, 1f, 1.3f);
             float y = Utils.SelectRandom(Main.rand, 0.7f, 0.9f);
@@ -26,7 +26,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             DelayTimer = (type != 2) ? num : Owner.itemAnimationMax;
 
-            return base.AttackPattern(item, type);
+            return base.SwingPattern(item, type);
         }
 
         public override float GetProgress(int type) => EaseFunction.EaseCubicOut.Ease(progress);

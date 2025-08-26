@@ -50,7 +50,7 @@ namespace MoreKatana.Projectiles.Wood
                 SoundEngine.PlaySound(SoundID.Item1, Owner.Center);
         }
 
-        public override bool AttackPattern(Item item, int type)
+        public override bool SwingPattern(Item item, int type)
         {
             GetEllipse(0.9f, 0.9f);
 

@@ -250,7 +250,7 @@ namespace MoreKatana.Projectiles.Base
             // 初期設定
             if (Timer == 0f)
             {
-                AttackPattern(SwordItem, SwingType);
+                SwingPattern(SwordItem, SwingType);
 
                 Projectile.alpha = 0;
 
@@ -361,7 +361,7 @@ namespace MoreKatana.Projectiles.Base
                     // それ以外は消滅
                     if (ContinuousSwing)
                     {
-                        if (!AttackPattern(SwordItem, SwingType))
+                        if (!SwingPattern(SwordItem, SwingType))
                         {
                             Projectile.Kill();
                             return;
@@ -438,7 +438,7 @@ namespace MoreKatana.Projectiles.Base
         /// <param name="item"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public virtual bool AttackPattern(Item item, int type) => false;
+        public virtual bool SwingPattern(Item item, int type) => false;
 
         /// <summary>
         /// <see cref="progress"/>の修正

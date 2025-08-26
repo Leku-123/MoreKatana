@@ -36,8 +36,8 @@ namespace MoreKatana
         public float Flipping;
         public float R, G, B, A;
         public int TimePotionSick;
-        public int EnchantedKatanaShrineEffect;
-        public int EnchantedKatanaShrineMusicOverride;
+        public int ForgottenAltarEffect;
+        public int ForgottenAltarMusicOverride;
 
         public bool muramasaCounterattack;
         public bool enchantedHurtEffect;
@@ -124,7 +124,7 @@ namespace MoreKatana
             if (ShieldCD > 0)
                 ShieldCD--;
 
-            if (EnchantedKatanaShrineEffect > 0)
+            if (ForgottenAltarEffect > 0)
             {
                 Player.dontStarveShader = true;
                 Vector2 screenCenter = Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
@@ -136,10 +136,10 @@ namespace MoreKatana
                         Gore.NewGore(Player.GetSource_FromThis(), startingPosition, Vector2.Zero, GoreID.TreeLeaf_VanityTreeSakura, 1f);
                 }
 
-                EnchantedKatanaShrineEffect--;
+                ForgottenAltarEffect--;
             }
-            if (EnchantedKatanaShrineMusicOverride > 0)
-                EnchantedKatanaShrineMusicOverride--;
+            if (ForgottenAltarMusicOverride > 0)
+                ForgottenAltarMusicOverride--;
         }
 
         public override void PostUpdateRunSpeeds()
@@ -403,7 +403,12 @@ namespace MoreKatana
         {
             SacredNaginata.DrawHolyShield(ref drawinfo);
             TrueSacredNaginata.DrawTrueHolyShield(ref drawinfo);
-            EnchantedShrineCursor.DrawEnchantedShrineCursor(ref drawinfo);
+        }
+
+        public static void AddRenderUI(SpriteBatch spriteBatch, Player player)
+        {
+            ForgottenAltarDisplay.Draw(spriteBatch, player);
+            ForgottenAltarCursor.Draw(spriteBatch, player);
         }
 
         public static DrawData ManipulateDrawInfo(DrawData input, Player player)

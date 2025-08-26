@@ -19,12 +19,12 @@ namespace MoreKatana.Projectiles.Metal
             GetTextureValues(this, item);
         }
 
-        public override bool AttackPattern(Item item, int type)
+        public override bool SwingPattern(Item item, int type)
         {
             GetEllipse(0.8f, 0.8f);
             SwingStats(Owner.itemAnimationMax, 0.8f);
             DelayTimer = 1;
-            return base.AttackPattern(item, type);
+            return base.SwingPattern(item, type);
         }
 
         public override float GetProgress(int type) => EaseFunction.EaseCubicOut.Ease(progress);

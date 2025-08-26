@@ -14,7 +14,7 @@ namespace MoreKatana.Projectiles.Misc
             GetTextureValues(this, item);
         }
 
-        public override bool AttackPattern(Item item, int type)
+        public override bool SwingPattern(Item item, int type)
         {
             if (type == 0)
             {
@@ -29,7 +29,7 @@ namespace MoreKatana.Projectiles.Misc
                 flipCount = 2;
             }
 
-            return base.AttackPattern(item, type);
+            return base.SwingPattern(item, type);
         }
 
         public override void AdditionalAI(Item item, int type, bool onDelay)

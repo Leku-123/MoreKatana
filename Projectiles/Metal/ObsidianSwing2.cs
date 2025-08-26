@@ -20,7 +20,7 @@ namespace MoreKatana.Projectiles.Metal
             TrailColor = new Color(83, 5, 1);
         }
 
-        public override bool AttackPattern(Item item, int type)
+        public override bool SwingPattern(Item item, int type)
         {
             float x = Main.rand.NextFloat(1f, 1.3f);
             float y = Main.rand.NextFloat(0.7f, 0.9f);
@@ -31,7 +31,7 @@ namespace MoreKatana.Projectiles.Metal
             SwingStats(num, swingRange, (0.9f - swingRange) / 2f, type % 2 != 0);
 
             DelayTimer = num;
-            return base.AttackPattern(item, type);
+            return base.SwingPattern(item, type);
         }
 
         public override float GetProgress(int type) => EaseFunction.EaseCubicOut.Ease(progress);

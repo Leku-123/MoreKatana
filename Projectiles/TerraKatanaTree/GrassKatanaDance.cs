@@ -29,7 +29,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             SpawnLeaf(out _);
         }
 
-        public override bool AttackPattern(Item item, int type)
+        public override bool SwingPattern(Item item, int type)
         {
             GetEllipse(1.8f, 0.5f);
             SwingStats(SwingUseTime, 1.25f, 0f, Main.rand.NextBool());
@@ -76,11 +76,11 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             GetTextureValues(this, item);
         }
 
-        public override bool AttackPattern(Item item, int type)
+        public override bool SwingPattern(Item item, int type)
         {
             GetEllipse(1.8f, 0.5f);
             SwingStats(GrassKatanaDance.SwingUseTime, 1.25f, 0f, Main.rand.NextBool());
-            return base.AttackPattern(item, type);
+            return base.SwingPattern(item, type);
         }
 
         public override bool PreDraw(ref Color lightColor) => false;

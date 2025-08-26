@@ -354,24 +354,26 @@ namespace MoreKatana.Items
                     // スキル説明を挿入
                     tooltips.Insert(index2 + 1, tip);
                 }
-
-                int index3 = tooltips.FindIndex(x => x.Name == "Tooltip0");
-                if (index3 < 0)
-                    return;
-
-                TooltipLine tip2;
-                if (!ItemSlot.ShiftInUse)
-                    tip2 = new TooltipLine(Mod, "DefaultText", MoreKatanaUtil.GetTextValue("Tooltips.DefaultText"));
                 else
                 {
-                    tip2 = new TooltipLine(Mod, "FunctionText", (string)(item.ModItem as KatanaItem).FunctionText);
+                    int index2 = tooltips.FindIndex(x => x.Name == "Tooltip0");
+                    if (index2 < 0)
+                        return;
 
-                    // クールダウンを挿入
-                    tooltips.Insert(index3, cd);
+                    TooltipLine tip;
+                    if (!ItemSlot.ShiftInUse)
+                        tip = new TooltipLine(Mod, "DefaultText", MoreKatanaUtil.GetTextValue("Tooltips.DefaultText"));
+                    else
+                    {
+                        tip = new TooltipLine(Mod, "FunctionText", (string)(item.ModItem as KatanaItem).FunctionText);
+
+                        // クールダウンを挿入
+                        tooltips.Insert(index2, cd);
+                    }
+
+                    // スキル説明を挿入
+                    tooltips.Insert(index2, tip);
                 }
-
-                // スキル説明を挿入
-                tooltips.Insert(index3, tip2);
             }
         }
     }

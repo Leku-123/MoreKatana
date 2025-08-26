@@ -1,5 +1,6 @@
 DebugItem: Debug Item
-SetupFirstStatue.DisplayName: Setup First Statue
+SetupFirstStatue.DisplayName: Setup first statue
+ResetSeenBiomeFlag.DisplayName: Reset first seen biome flag
 
 # -------- Materials --------
 BrokenHeroKatana: {

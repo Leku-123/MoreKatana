@@ -167,12 +167,12 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 GetTextureValues(this, item);
             }
 
-            public override bool AttackPattern(Item item, int type)
+            public override bool SwingPattern(Item item, int type)
             {
                 GetEllipse(1f, 1f);
                 SwingStats(SwingUseTime, 0.5f);
                 DelayTimer = SwingDelayTime;
-                return base.AttackPattern(item, type);
+                return base.SwingPattern(item, type);
             }
 
             public override float GetProgress(int type) => EaseFunction.EaseCubicOut.Ease(progress);

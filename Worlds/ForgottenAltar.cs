@@ -11,14 +11,14 @@ namespace MoreKatana.Worlds
     /// <summary>
     /// ストラクチャーの生成パス
     /// </summary>
-    public class EnchantedKatanaShrine : GenPass
+    public class ForgottenAltar : GenPass
     {
-        public EnchantedKatanaShrine(string name, float loadWeight) : base(name, loadWeight)
+        public ForgottenAltar(string name, float loadWeight) : base(name, loadWeight)
         {
 
         }
 
-        public const string StructurePath = "Worlds/EnchantedKatanaShrine";
+        public const string StructurePath = "Worlds/ForgottenAltar";
 
         // これはGenerator.GetStructureDimensions()使ってもいいかもしれない
         public const int StructureWidth = 114;
@@ -26,10 +26,11 @@ namespace MoreKatana.Worlds
 
         protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
         {
-            progress.Message = MoreKatanaWorld.EnchantedKatanaShrineMessage.Value;
+            // 生成時のメッセージ
+            progress.Message = MoreKatanaWorld.ForgottenAltarMessage.Value;
 
             Point16 point = new Point16(0, 0);
-            List<Point16> vs = new List<Point16>();
+            List<Point16> list = new List<Point16>();
 
             var placableTiles = new List<ushort>()
             {
@@ -38,7 +39,9 @@ namespace MoreKatana.Worlds
                 TileID.Sand,
                 TileID.SnowBlock,
                 TileID.Ebonsand,
-                TileID.Crimsand
+                TileID.CorruptGrass,
+                TileID.Crimsand,
+                TileID.CrimsonGrass
             };
 
             // ダンジョンの方向
@@ -57,7 +60,7 @@ namespace MoreKatana.Worlds
             int placementPositionY = (int)Main.worldSurface - (Main.maxTilesY / 6);
 
             // 有効なタイルが見つかるまで位置を調節する
-            // 少なくとも地上レイヤーより上になるようにする
+            // 地上レイヤーより上になるようにする
             bool foundValidGround = false;
             int attempts = 0;
             while (!foundValidGround && attempts++ < 100000)
@@ -83,8 +86,8 @@ namespace MoreKatana.Worlds
 
             // 有効なタイルの位置にストラクチャーを設置
             // ポイントをストラクチャーのサイズに合わせる
-            vs.Add(new Point16(placementPositionX - (StructureWidth / 2), placementPositionY - (int)(StructureHeight / 1.5f)));
-            point = Main.rand.Next(vs);
+            list.Add(new Point16(placementPositionX - (StructureWidth / 2), placementPositionY - (int)(StructureHeight / 1.5f)));
+            point = Main.rand.Next(list);
             Generator.GenerateStructure(StructurePath, point, MoreKatana.Instance);
 
             /* 生成タスクをDirt Rock Wall Runnerにしたのでいらないかも

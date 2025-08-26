@@ -7,7 +7,7 @@ namespace MoreKatana.Worlds
     /// <summary>
     /// ストラクチャーのバイオーム
     /// </summary>
-    public class EnchantedKatanaShrineBiome : ModBiome
+    public class ForgottenAltarBiome : ModBiome
     {
         public static Vector2 StatuePosition;
 
@@ -15,24 +15,21 @@ namespace MoreKatana.Worlds
 
         private CameraModifier cameraModifier;
 
-        public override int Music
-        {
-            get
-            {
-                if (Main.dayTime)
-                    return MusicLoader.GetMusicSlot(Mod, "Assets/Music/EnchantedShrineDay");
-                else
-                    return MusicLoader.GetMusicSlot(Mod, "Assets/Music/EnchantedShrineNight");
-            }
-        }
-
         public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
 
         public override bool IsBiomeActive(Player player) => ModContent.GetInstance<MoreKatanaWorld>().samuraiStatueGiftCount >= 1;
 
+        public override void OnEnter(Player player)
+        {
+            if (!MoreKatanaWorld.seenForgottenAltarBiome)
+                MoreKatanaWorld.seenForgottenAltarBiome = true;
+        }
+
         public override void OnInBiome(Player player)
         {
-            player.MKPlayer().EnchantedKatanaShrineEffect = 30;
+            player.MKPlayer().ForgottenAltarEffect = 30;
+            player.MKPlayer().ForgottenAltarMusicOverride = 30;
+
             Main.hideUI = ScreenChange;
 
             if (player.Distance(StatuePosition) < 500)
@@ -40,7 +37,7 @@ namespace MoreKatana.Worlds
                 if (!ScreenChange)
                 {
                     ScreenChange = true;
-                    cameraModifier = new CameraModifier(StatuePosition, 60, 0.5f, 0.5f, false, "EnchantedKatanaShrine");
+                    cameraModifier = new CameraModifier(StatuePosition, 60, 0.5f, 0.5f, false, "ForgottenAltar");
                     cameraModifier.AddCameraModifier();
                 }
             }

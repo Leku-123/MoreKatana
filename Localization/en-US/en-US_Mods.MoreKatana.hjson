@@ -49,14 +49,14 @@ Configs: {
 			Tooltip: ""
 		}
 
-		EnchantedKatanaShrine: {
-			Label: Enchanted Katana Shrine
+		ForgottenAltar: {
+			Label: Forgotten Altar
 			Tooltip: ""
 		}
 	}
 }
 
-WorldGen.EnchantedKatanaShrineMessage: Building the Enchanted Katana Shrine
+WorldGen.ForgottenAltarMessage: Building the Forgotten Altar
 
 Tiles: {
 	SamuraiStatue.MapEntry: Samurai Statue
@@ -65,8 +65,8 @@ Tiles: {
 }
 
 Biomes: {
-	EnchantedKatanaShrineBiome: {
-		DisplayName: Enchanted Katana Shrine
-		TownNPCDialogueName: the Enchanted Katana Shrine
+	ForgottenAltarBiome: {
+		DisplayName: Forgotten Altar
+		TownNPCDialogueName: the Forgotten Altar
 	}
 }

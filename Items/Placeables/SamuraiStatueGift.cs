@@ -23,8 +23,8 @@ namespace MoreKatana.Items.Placeables
         {
             if (player.whoAmI == Main.myPlayer)
             {
-                player.MKPlayer().EnchantedKatanaShrineEffect = 30;
-                player.MKPlayer().EnchantedKatanaShrineMusicOverride = 30;
+                player.MKPlayer().ForgottenAltarEffect = 30;
+                player.MKPlayer().ForgottenAltarMusicOverride = 30;
             }
         }
 

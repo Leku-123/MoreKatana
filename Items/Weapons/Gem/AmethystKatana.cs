@@ -20,8 +20,7 @@ namespace MoreKatana.Items.Weapons.Gem
 
             Item.useTime = 24;
             Item.useAnimation = 24;
-
-            Item.UseSound = SoundID.Item1;
+            Item.UseSound = MoreKatanaSounds.SwordSlash;
 
             Item.damage = 14;
             Item.knockBack = 5;
@@ -36,7 +35,7 @@ namespace MoreKatana.Items.Weapons.Gem
         public override void PassiveSkill(Player player, bool equipment)
         {
             int gem = ModContent.ProjectileType<GemShards_Amethyst>();
-            if (player.ownedProjectileCounts[gem] < TotalNumberOfGems)
+            if (player.ownedProjectileCounts[gem] < TotalNumberOfGems && player.itemAnimation == 0)
                 Projectile.NewProjectile(player.GetSource_FromThis(), player.MountedCenter, Vector2.Zero, gem, Item.damage / 2, 0f, player.whoAmI);
         }
 

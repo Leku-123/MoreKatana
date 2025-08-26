@@ -22,6 +22,7 @@ namespace MoreKatana.Items
             Item.useTime = 60;
             Item.useAnimation = 60;
             Item.useStyle = ItemUseStyleID.Swing;
+            Item.UseSound = SoundID.MenuTick;
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)

@@ -11,7 +11,7 @@ namespace MoreKatana.Projectiles
             GetTextureValues(this, item);
         }
 
-        public override bool AttackPattern(Item item, int type)
+        public override bool SwingPattern(Item item, int type)
         {
             float x = Utils.SelectRandom(Main.rand, 1f, 1.3f);
             float y = Utils.SelectRandom(Main.rand, 0.7f, 0.9f);
@@ -23,11 +23,20 @@ namespace MoreKatana.Projectiles
 
             DelayTimer = num;
 
-            return base.AttackPattern(item, type);
+            return base.SwingPattern(item, type);
         }
 
         public override float GetProgress(int type) => EaseFunction.EaseCubicOut.Ease(progress);
 
-        public override void AdditionalAI(Item item, int type, bool delay) => Owner.SetDummyItemTime(2);
+        public override void AdditionalAI(Item item, int type, bool delay)
+        {
+            Owner.SetDummyItemTime(2);
+
+            if (Projectile.localAI[0] == 0)
+            {
+                Projectile.localAI[0] = 1;
+                Owner.ScreenShake(2, 3);
+            }
+        }
     }
 }

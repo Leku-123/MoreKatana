@@ -56,7 +56,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             TrailColor = Color.Gold * 0.3f;
         }
 
-        public override bool AttackPattern(Item item, int type)
+        public override bool SwingPattern(Item item, int type)
         {
             GetEllipse(1f, 0.45f);
             float num = Owner.itemAnimationMax / 3f;
@@ -70,7 +70,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 DelayTimer = 15;
             }
 
-            return base.AttackPattern(item, type);
+            return base.SwingPattern(item, type);
         }
 
         public override float GetProgress(int type) => type != 2 ? EaseFunction.EaseCubicOut.Ease(progress) : EaseFunction.Linear.Ease(progress);
