@@ -10,13 +10,15 @@ namespace MoreKatana.Projectiles.Wood
 {
     public class ChargingWoodenSwing : CustomSword
     {
+        private float animationStoppedPoint;
+
         private bool attackable;
 
         private CustomSwordPrimTrail trail;
 
         public override void DrawTrail(int dir, int type)
         {
-            if (Timer != 0f && type != 0 && GetProgress(type) >= 0f)
+            if (Timer != 0f && type == 1 && GetProgress(type) >= 0f)
             {
                 if (!PrimsCreated)
                 {
@@ -32,7 +34,7 @@ namespace MoreKatana.Projectiles.Wood
                     trail.PrimCenter = Owner.MountedCenter;
                     trail.Points.Add(Projectile.Center - Owner.MountedCenter);
 
-                    if (GetProgress(type) >= 0.95f)
+                    if (GetProgress(type) >= 0.95f || SwingStop)
                         trail?.OnDestroy();
                 }
             }
@@ -56,11 +58,9 @@ namespace MoreKatana.Projectiles.Wood
             {
                 case 0:
                     SwingStats(60, -0.4f, 0.5f);
-                    DelayTimer = 2;
                     break;
                 case 1:
-                    SwingStats(40, 0.8f, 0.1f);
-                    DelayTimer = 30;
+                    SwingStats(40, 0.8f, 0.1f, delay: 30f);
                     return false;
             }
             return true;
@@ -70,10 +70,16 @@ namespace MoreKatana.Projectiles.Wood
         public CurveSegment execute = new CurveSegment(CircOutEasing, 0.2f, -0.1f, 1f);
         public override float GetProgress(int type)
         {
-            if (type == 0)
+            if (type == 0) // 振り上げ
                 return CircOutEasing(Progress, 1);
             else
-                return PiecewiseAnimation(Progress, prepare, execute);
+            {
+                if (!SwingStop) // 振り下げ
+                    return PiecewiseAnimation(Progress, prepare, execute);
+
+                else // タイルに衝突した場合の反動
+                    return MathHelper.SmoothStep(animationStoppedPoint, animationStoppedPoint - 0.05f, DelayProgress);
+            }
         }
 
         public override void AdditionalAI(Item item, int type, bool onDelay)
@@ -84,19 +90,12 @@ namespace MoreKatana.Projectiles.Wood
 
             if (!onDelay)
             {
-                if (type == 1)
-                {
-                    Projectile.friendly = true;
+                Projectile.friendly = type == 1;
 
-                    if (GetProgress(type) > 0f && Projectile.localAI[0] == 0)
-                    {
-                        Projectile.localAI[0] = 1;
-                        SoundEngine.PlaySound(SoundID.Item1, Owner.Center);
-                    }
-                }
-                else
+                if (type == 1 && GetProgress(type) > 0f && Projectile.localAI[0] == 0)
                 {
-                    Projectile.friendly = false;
+                    Projectile.localAI[0] = 1;
+                    SoundEngine.PlaySound(SoundID.Item1, Owner.Center);
                 }
             }
             else
@@ -117,7 +116,7 @@ namespace MoreKatana.Projectiles.Wood
 
                     // マウスを右クリックしている場合はディレイを延長する
                     if (Projectile.owner == Main.myPlayer && Main.mouseRight)
-                        DelayTimer = 2;
+                        DelayTimer = 0;
 
                     // 発射体の位置をランダムで揺らす
                     Projectile.Center += Main.rand.NextVector2Unit();
@@ -125,14 +124,19 @@ namespace MoreKatana.Projectiles.Wood
             }
         }
 
-        public override void SafeTileCollide(Item item, int type, Vector2 collisionPoint)
+        public override void SafeTileCollide(Item item, int type, Vector2 collisionPoint, float oldProgress)
         {
             // 振り下ろし時
             if (type == 1)
             {
-                SwingStop = true;
-                Owner.ScreenShake(4, 10);
-                SoundEngine.PlaySound(SoundID.Dig, Owner.Center);
+                if (GetProgress(type) > 0f)
+                {
+                    animationStoppedPoint = oldProgress;
+
+                    SwingStop = true;
+                    Owner.ScreenShake(4, 10);
+                    SoundEngine.PlaySound(SoundID.Dig, Owner.Center);
+                }
             }
         }
 

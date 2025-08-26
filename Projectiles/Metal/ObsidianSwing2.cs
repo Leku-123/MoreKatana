@@ -28,10 +28,8 @@ namespace MoreKatana.Projectiles.Metal
             SwingEllipse = new(x, y);
 
             float swingRange = Main.rand.NextFloat(0.7f, 0.8f);
-            float num = Owner.itemAnimationMax / 2f;
-            SwingStats(num, swingRange, (0.9f - swingRange) / 2f, type % 2 != 0);
+            SwingStats(Owner.itemAnimationMax, swingRange, (0.9f - swingRange) / 2f, type % 2 != 0);
 
-            DelayTimer = num;
             return base.SwingPattern(item, type);
         }
 
@@ -46,6 +44,7 @@ namespace MoreKatana.Projectiles.Metal
             if (type == 1 && Projectile.localAI[0] == 0)
             {
                 Projectile.localAI[0] = 1;
+                Owner.ScreenShake(2, 4);
                 SoundEngine.PlaySound(SoundID.DD2_BetsysWrathShot, Owner.Center);
 
                 if (Projectile.owner == Main.myPlayer)

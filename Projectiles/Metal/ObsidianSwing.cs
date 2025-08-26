@@ -6,11 +6,14 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static MoreKatana.MoreKatanaUtil;
 
 namespace MoreKatana.Projectiles.Metal
 {
     public class ObsidianSwing : CustomSword
     {
+        private float animationStoppedPoint;
+
         public override string Texture => this.GetTexture(Name);
 
         public override void Initialization(Item item, int type)
@@ -23,23 +26,33 @@ namespace MoreKatana.Projectiles.Metal
         {
             SwingEllipse = new(0.8f);
             SwingStats(Owner.itemAnimationMax, 0.8f);
-            DelayTimer = 1;
             return base.SwingPattern(item, type);
         }
 
-        public override float GetProgress(int type) => MoreKatanaUtil.CircOutEasing(Progress, 1);
+        public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f);
+        public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f);
+        public override float GetProgress(int type)
+        {
+            if (!SwingStop) // 振り下げ
+                return PiecewiseAnimation(Progress, execute, unwind);
+
+            else // タイルに衝突した場合の反動
+                return MathHelper.SmoothStep(animationStoppedPoint, animationStoppedPoint - 0.05f, DelayProgress);
+        }
 
         public override void AdditionalAI(Item item, int type, bool onDelay) => Owner.SetDummyItemTime(2);
 
-        public override void SafeTileCollide(Item item, int type, Vector2 collisionPoint)
+        public override void SafeTileCollide(Item item, int type, Vector2 collisionPoint, float oldProgress)
         {
-            if (Progress >= 0.5f && Progress <= 0.8f)
+            if (GetProgress(type) >= 0.5f && GetProgress(type) <= 0.8f)
             {
-                DelayTimer = 10 * Projectile.MaxUpdates;
+                SwingDelay = Owner.itemAnimationMax / 2f;
+                animationStoppedPoint = oldProgress;
 
                 if (!SwingStop)
                 {
                     SwingStop = true;
+                    KillPrims = true;
                     Owner.ScreenShake(2, 2);
                     SoundEngine.PlaySound(SoundID.Tink, Owner.Center);
 

@@ -32,9 +32,6 @@ namespace MoreKatana.Projectiles
         {
             Owner.SetDummyItemTime(2);
 
-            if (GetProgress(type) >= 0.95f)
-                KillPrims = true;
-
             if (Projectile.localAI[0] == 0)
             {
                 Projectile.localAI[0] = 1;
