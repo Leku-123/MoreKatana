@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static MoreKatana.MoreKatanaUtil;
 
 namespace MoreKatana.Projectiles.TerraKatanaTree
 {
@@ -169,13 +170,14 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             public override bool SwingPattern(Item item, int type)
             {
-                GetEllipse(1f, 1f);
                 SwingStats(SwingUseTime, 0.5f);
                 DelayTimer = SwingDelayTime;
                 return base.SwingPattern(item, type);
             }
 
-            public override float GetProgress(int type) => EaseFunction.EaseCubicOut.Ease(progress);
+            public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f);
+            public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f);
+            public override float GetProgress(int type) => PiecewiseAnimation(Progress, execute, unwind);
         }
     }
 }

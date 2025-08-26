@@ -4,6 +4,7 @@ using MoreKatana.Projectiles.PrimTrails;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using static MoreKatana.MoreKatanaUtil;
 
 namespace MoreKatana.Projectiles.Wood
 {
@@ -13,13 +14,13 @@ namespace MoreKatana.Projectiles.Wood
 
         private CustomSwordPrimTrail trail;
 
-        public override void DrawTrail(int dir)
+        public override void DrawTrail(int dir, int type)
         {
-            if (Timer != 0f && attackable)
+            if (Timer != 0f && type != 0 && GetProgress(type) >= 0f)
             {
-                if (!primsCreated)
+                if (!PrimsCreated)
                 {
-                    primsCreated = true;
+                    PrimsCreated = true;
                     trail = new CustomSwordPrimTrail(Projectile, TrailColor, SwordLength, (int)(SwingTime * 1.5f));
                     MoreKatana.primitives.CreateTrail(trail);
                 }
@@ -31,7 +32,7 @@ namespace MoreKatana.Projectiles.Wood
                     trail.PrimCenter = Owner.MountedCenter;
                     trail.Points.Add(Projectile.Center - Owner.MountedCenter);
 
-                    if (progress >= 0.98f)
+                    if (GetProgress(type) >= 0.95f)
                         trail?.OnDestroy();
                 }
             }
@@ -45,30 +46,35 @@ namespace MoreKatana.Projectiles.Wood
             ContinuousSwing = true;
             FixedDirection = true;
             GetTextureValues(this, item);
-
-            if (type == 1)
-                SoundEngine.PlaySound(SoundID.Item1, Owner.Center);
         }
 
         public override bool SwingPattern(Item item, int type)
         {
-            GetEllipse(0.9f, 0.9f);
+            SwingEllipse = new(0.9f);
 
             switch (type)
             {
                 case 0:
                     SwingStats(60, -0.4f, 0.5f);
-                    DelayTimer = 10;
+                    DelayTimer = 2;
                     break;
                 case 1:
-                    SwingStats(30, 0.7f, 0.2f);
+                    SwingStats(40, 0.8f, 0.1f);
                     DelayTimer = 30;
                     return false;
             }
             return true;
         }
 
-        public override float GetProgress(int type) => EaseFunction.EaseCubicOut.Ease(progress);
+        public CurveSegment prepare = new CurveSegment(SineOutEasing, 0f, 0f, -0.1f);
+        public CurveSegment execute = new CurveSegment(CircOutEasing, 0.2f, -0.1f, 1f);
+        public override float GetProgress(int type)
+        {
+            if (type == 0)
+                return CircOutEasing(Progress, 1);
+            else
+                return PiecewiseAnimation(Progress, prepare, execute);
+        }
 
         public override void AdditionalAI(Item item, int type, bool onDelay)
         {
@@ -78,8 +84,20 @@ namespace MoreKatana.Projectiles.Wood
 
             if (!onDelay)
             {
-                // 振り下ろす時にダメージを与える
-                Projectile.friendly = type == 1;
+                if (type == 1)
+                {
+                    Projectile.friendly = true;
+
+                    if (GetProgress(type) > 0f && Projectile.localAI[0] == 0)
+                    {
+                        Projectile.localAI[0] = 1;
+                        SoundEngine.PlaySound(SoundID.Item1, Owner.Center);
+                    }
+                }
+                else
+                {
+                    Projectile.friendly = false;
+                }
             }
             else
             {
@@ -94,12 +112,12 @@ namespace MoreKatana.Projectiles.Wood
                     {
                         attackable = true;
                         SoundEngine.PlaySound(SoundID.MaxMana, Owner.Center);
-                        MoreKatanaUtil.DrawRing(Projectile.Center, [DustID.PlatinumCoin], 24, 4f);
+                        DrawRing(Projectile.Center, [DustID.PlatinumCoin], 24, 4f);
                     }
 
                     // マウスを右クリックしている場合はディレイを延長する
                     if (Projectile.owner == Main.myPlayer && Main.mouseRight)
-                        DelayTimer = 10;
+                        DelayTimer = 2;
 
                     // 発射体の位置をランダムで揺らす
                     Projectile.Center += Main.rand.NextVector2Unit();
@@ -112,7 +130,7 @@ namespace MoreKatana.Projectiles.Wood
             // 振り下ろし時
             if (type == 1)
             {
-                timerStop = true; // タイマーをストップさせ振りの動きを止める
+                SwingStop = true;
                 Owner.ScreenShake(4, 10);
                 SoundEngine.PlaySound(SoundID.Dig, Owner.Center);
             }

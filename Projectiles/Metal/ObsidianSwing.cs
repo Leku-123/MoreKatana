@@ -21,25 +21,25 @@ namespace MoreKatana.Projectiles.Metal
 
         public override bool SwingPattern(Item item, int type)
         {
-            GetEllipse(0.8f, 0.8f);
+            SwingEllipse = new(0.8f);
             SwingStats(Owner.itemAnimationMax, 0.8f);
             DelayTimer = 1;
             return base.SwingPattern(item, type);
         }
 
-        public override float GetProgress(int type) => EaseFunction.EaseCubicOut.Ease(progress);
+        public override float GetProgress(int type) => MoreKatanaUtil.CircOutEasing(Progress, 1);
 
         public override void AdditionalAI(Item item, int type, bool onDelay) => Owner.SetDummyItemTime(2);
 
         public override void SafeTileCollide(Item item, int type, Vector2 collisionPoint)
         {
-            if (progress >= 0.5f && progress <= 0.8f)
+            if (Progress >= 0.5f && Progress <= 0.8f)
             {
                 DelayTimer = 10 * Projectile.MaxUpdates;
 
-                if (!timerStop)
+                if (!SwingStop)
                 {
-                    timerStop = true;
+                    SwingStop = true;
                     Owner.ScreenShake(2, 2);
                     SoundEngine.PlaySound(SoundID.Tink, Owner.Center);
 

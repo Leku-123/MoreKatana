@@ -196,14 +196,14 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             private CustomSwordPrimTrail trail;
 
-            public override void DrawTrail(int dir)
+            public override void DrawTrail(int dir, int type)
             {
                 if (Timer != 0f)
                 {
                     // トレイルを描画する
-                    if (!primsCreated)
+                    if (!PrimsCreated)
                     {
-                        primsCreated = true;
+                        PrimsCreated = true;
                         trail = new CustomSwordPrimTrail(Projectile, TrailColor, SwordLength, (int)(SwingTime * 1.5f));
                         MoreKatana.primitives.CreateTrail(trail);
                     }
@@ -217,7 +217,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                         trail.Points.Add(Projectile.Center - clone.MountedCenter);
 
                         // 剣を描画しない場合トレイルを消す
-                        if (invisible || progress >= 0.98f)
+                        if (Progress >= 0.98f)
                             trail?.OnDestroy();
                     }
                 }
@@ -233,7 +233,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 // 発射体の回転を調節する。Backspinも考慮する
                 Projectile.rotation = (Projectile.Center - HostProj.Center).ToRotation()
                     + (MathHelper.PiOver2 - MathHelper.PiOver4 * Projectile.spriteDirection)
-                    * BackspinDirection;
+                    * SwingDirection;
 
                 // クローンの保持する発射体のIDを更新する
                 clone.heldProj = Projectile.whoAmI;
@@ -252,8 +252,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             public override bool SwingPattern(Item item, int type)
             {
-                GetEllipse(1f, 1f);
-
                 float num = Owner.itemAnimationMax;
                 SwingStats(num, 0.5f, backspin: type % 2 != 0);
 
@@ -274,10 +272,10 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Projectile.Opacity = 0.8f;
 
                 // スケールをスイング進行度によって調節する
-                if (progress < 0.5f)
-                    Projectile.scale = MathHelper.SmoothStep(0.5f, 3f, progress * 2f);
+                if (Progress < 0.5f)
+                    Projectile.scale = MathHelper.SmoothStep(0.5f, 3f, Progress * 2f);
                 else
-                    Projectile.scale = MathHelper.SmoothStep(3f, 1f, (progress * 2f) - 1f);
+                    Projectile.scale = MathHelper.SmoothStep(3f, 1f, (Progress * 2f) - 1f);
 
                 trail.ModifiedWidth = SwordLength;
             }
@@ -297,7 +295,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Color trailColor = TrailColor * Projectile.Opacity;
 
                 SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-                SpriteEffects spriteEffects2 = Backspin ? SpriteEffects.FlipVertically : SpriteEffects.None;
+                SpriteEffects spriteEffects2 = SwingDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
                 // 背面にアウトラインを描画
                 MoreKatanaUtil.DrawBackglow(texture, position, rectangle, trailColor with { A = 0 }, Projectile.rotation, 2f, new Vector2(Projectile.scale), spriteEffects | spriteEffects2);
@@ -307,7 +305,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
                 // 剣先にスパークルを描画
                 Vector2 offset = Utils.DirectionTo(HostProj.Center, Projectile.Center) * 40 * Projectile.scale;
-                MoreKatanaUtil.DrawPrettyStarSparkle(1f, SpriteEffects.None, position + offset, glowColor * (1 - progress), trailColor * (1 - progress),
+                MoreKatanaUtil.DrawPrettyStarSparkle(1f, SpriteEffects.None, position + offset, glowColor * (1 - Progress), trailColor * (1 - Progress),
                         0.5f, 0f, 0.1f, 0.9f, 1f, 0f, new Vector2(Projectile.scale, Projectile.scale * 2.5f), new Vector2(1f, 1f));
 
                 return false;

@@ -161,7 +161,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             else // 消滅
             {
                 // DisappearCompletionをもとに抑揚をつけてフェードアウト
-                Projectile.Opacity = 1 - EaseFunction.EaseCubicOut.Ease(DisappearCompletion);
+                Projectile.Opacity = 1 - MoreKatanaUtil.CircOutEasing(DisappearCompletion, 1);
             }
 
             Timer++;

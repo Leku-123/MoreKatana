@@ -7,6 +7,7 @@ using Terraria.Audio;
 using Terraria.GameContent.Drawing;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static MoreKatana.MoreKatanaUtil;
 
 namespace MoreKatana.Projectiles.TerraKatanaTree
 {
@@ -22,13 +23,13 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         /// 刀身が長いためトレイルの横幅を小さくして、オフセットを先端に調節する
         /// </summary>
         /// <param name="dir"></param>
-        public override void DrawTrail(int dir)
+        public override void DrawTrail(int dir, int type)
         {
             if (Timer != 0f)
             {
-                if (!primsCreated)
+                if (!PrimsCreated)
                 {
-                    primsCreated = true;
+                    PrimsCreated = true;
                     trail = new CustomSwordPrimTrail(Projectile, TrailColor, 20, (int)(SwingTime * 1.5f));
                     MoreKatana.primitives.CreateTrail(trail);
                 }
@@ -43,7 +44,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
                     trail.Points.Add(Projectile.Center + offset - Owner.MountedCenter);
 
-                    if (progress >= 0.98f)
+                    if (Progress >= 0.98f)
                         trail?.OnDestroy();
                 }
             }
@@ -58,14 +59,14 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override bool SwingPattern(Item item, int type)
         {
-            GetEllipse(1f, 0.45f);
+            SwingEllipse = new(1f, 0.45f);
             float num = Owner.itemAnimationMax / 3f;
             SwingStats(num * 2f, 0.6f, 0.2f, type % 2 != 0);
             DelayTimer = num;
 
             if (type == 2)
             {
-                GetEllipse(0.5f, 0.5f);
+                SwingEllipse = new(0.5f);
                 SwingStats(40, 3.25f, 0.25f);
                 DelayTimer = 15;
             }
@@ -73,7 +74,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             return base.SwingPattern(item, type);
         }
 
-        public override float GetProgress(int type) => type != 2 ? EaseFunction.EaseCubicOut.Ease(progress) : EaseFunction.Linear.Ease(progress);
+        public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f);
+        public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f);
+        public override float GetProgress(int type) => type != 2 ? PiecewiseAnimation(Progress, execute, unwind) : LinearEasing(Progress, 1);
 
         public override void AdditionalAI(Item item, int type, bool delay)
         {
@@ -83,20 +86,20 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             {
                 if (!delay)
                 {
-                    Owner.FlipEffect(progress * 9f);
+                    Owner.FlipEffect(Progress * 9f);
 
                     if (Projectile.soundDelay <= 0)
                     {
                         Projectile.soundDelay = 15 * Projectile.MaxUpdates;
 
-                        if (progress > 0.1f)
+                        if (Progress > 0.1f)
                             SoundEngine.PlaySound(SoundID.Item169, Owner.Center);
                     }
                 }
                 else
                 {
                     float disappearProgress = 1 - (DelayTimer / (15 * Projectile.MaxUpdates));
-                    Projectile.alpha = (int)(255 * EaseFunction.EaseCubicOut.Ease(disappearProgress));
+                    Projectile.alpha = (int)(255 * CircOutEasing(disappearProgress, 1));
                     Owner.reuseDelay = 5;
                 }
             }
@@ -138,15 +141,15 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Color trailColor = TrailColor * Projectile.Opacity;
 
             SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            SpriteEffects spriteEffects2 = Backspin ? SpriteEffects.FlipVertically : SpriteEffects.None;
+            SpriteEffects spriteEffects2 = SwingDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
-            MoreKatanaUtil.DrawBackglow(texture, position, rectangle, glowColor with { A = 0 }, Projectile.rotation, 4f * (1 - progress), new Vector2(Projectile.scale), spriteEffects | spriteEffects2);
+            MoreKatanaUtil.DrawBackglow(texture, position, rectangle, glowColor with { A = 0 }, Projectile.rotation, 4f * (1 - Progress), new Vector2(Projectile.scale), spriteEffects | spriteEffects2);
 
             Main.EntitySpriteDraw(texture, position, rectangle, color, Projectile.rotation, origin, Projectile.scale, spriteEffects | spriteEffects2, 0);
 
             // 剣先にスパークルを描画する
             Vector2 offset = DirectionToProj * 80f;
-            MoreKatanaUtil.DrawPrettyStarSparkle(1f, SpriteEffects.None, position + offset, glowColor * (1 - progress), trailColor * (1 - progress),
+            MoreKatanaUtil.DrawPrettyStarSparkle(1f, SpriteEffects.None, position + offset, glowColor * (1 - Progress), trailColor * (1 - Progress),
                     0.5f, 0f, 0.1f, 0.9f, 1f, 0f, new Vector2(Projectile.scale, Projectile.scale * 2.5f), new Vector2(1f, 1f));
 
             return false;

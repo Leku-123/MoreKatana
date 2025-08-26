@@ -18,13 +18,13 @@ namespace MoreKatana.Projectiles.Misc
         {
             if (type == 0)
             {
-                GetEllipse(1.8f, 0.5f);
+                SwingEllipse = new(1.8f, 0.5f);
                 SwingStats(Owner.itemAnimationMax, 1, 0f);
                 flipCount = 1;
             }
             else if (type == 1)
             {
-                GetEllipse(1f, 1f);
+                SwingEllipse = new(1f);
                 SwingStats(Owner.itemAnimationMax * 2, 3.25f, 0.25f);
                 flipCount = 2;
             }
@@ -35,7 +35,7 @@ namespace MoreKatana.Projectiles.Misc
         public override void AdditionalAI(Item item, int type, bool onDelay)
         {
             Owner.SetDummyItemTime(2);
-            Owner.FlipEffect(progress * 6 * flipCount); // フリップエフェクト
+            Owner.FlipEffect(Progress * 6 * flipCount); // フリップエフェクト
 
             if (type == 1)
             {

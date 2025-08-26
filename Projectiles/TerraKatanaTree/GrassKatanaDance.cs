@@ -31,7 +31,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override bool SwingPattern(Item item, int type)
         {
-            GetEllipse(1.8f, 0.5f);
+            SwingEllipse = new Vector2(1.8f, 0.5f);
             SwingStats(SwingUseTime, 1.25f, 0f, Main.rand.NextBool());
             return type != 4;
         }
@@ -41,9 +41,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Owner.SetDummyItemTime(2);
             Owner.AddBuff(BuffID.Featherfall, 10);
             Owner.armorEffectDrawShadow = true; // プレイヤーの残像の効果
-            Owner.FlipEffect(progress * 6f); // フリップエフェクト
+            Owner.FlipEffect(Progress * 6f); // フリップエフェクト
 
-            if (progress == 0.5f)
+            if (Progress == 0.5f)
             {
                 // 葉の発射体をスポーン
                 SpawnLeaf(out Vector2 vel);
@@ -78,7 +78,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override bool SwingPattern(Item item, int type)
         {
-            GetEllipse(1.8f, 0.5f);
+            SwingEllipse = new Vector2(1.8f, 0.5f);
             SwingStats(GrassKatanaDance.SwingUseTime, 1.25f, 0f, Main.rand.NextBool());
             return base.SwingPattern(item, type);
         }
