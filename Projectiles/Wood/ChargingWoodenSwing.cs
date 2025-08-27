@@ -11,38 +11,27 @@ namespace MoreKatana.Projectiles.Wood
     public class ChargingWoodenSwing : CustomSword
     {
         private float animationStoppedPoint;
-
         private bool attackable;
-
-        private CustomSwordPrimTrail trail;
 
         public override void DrawTrail(int dir, int type)
         {
-            if (Timer != 0f && type == 1 && GetProgress(type) >= 0f)
+            if (type == 1 && GetProgress(type) >= 0f)
             {
                 if (!PrimsCreated)
                 {
                     PrimsCreated = true;
-                    trail = new CustomSwordPrimTrail(Projectile, TrailColor, SwordLength, (int)(SwingTime * 1.5f));
-                    MoreKatana.primitives.CreateTrail(trail);
+                    SwordTrail = new CustomSwordPrimTrail(Projectile, TrailColor, SwordLength, (int)(SwingTime * 1.5f));
+                    MoreKatana.primitives.CreateTrail(SwordTrail);
                 }
 
-                if (Main.netMode != NetmodeID.Server)
-                {
-                    trail.TextureType = 2;
-                    trail.Direction = Owner.direction * -dir;
-                    trail.PrimCenter = Owner.MountedCenter;
-                    trail.Points.Add(Projectile.Center - Owner.MountedCenter);
-
-                    if (GetProgress(type) >= 0.95f || SwingStop)
-                        trail?.OnDestroy();
-                }
+                bool kill = GetProgress(type) >= 0.95f || SwingStop;
+                UpdateTrail(SwordTrail, kill, type: 2);
             }
         }
 
         public override void Initialization(Item item, int type)
         {
-            Projectile.localNPCHitCooldown = 30 * Projectile.MaxUpdates;
+            Projectile.localNPCHitCooldown = -1;
             Projectile.MKProjectile().ActivateCD = true;
 
             ContinuousSwing = true;
@@ -66,18 +55,18 @@ namespace MoreKatana.Projectiles.Wood
             return true;
         }
 
-        public CurveSegment prepare = new CurveSegment(SineOutEasing, 0f, 0f, -0.1f);
-        public CurveSegment execute = new CurveSegment(CircOutEasing, 0.2f, -0.1f, 1f);
+        public CurveSegment prepare = new CurveSegment(SineOutEasing, 0f, 0f, -0.1f); // 予備動作
+        public CurveSegment execute = new CurveSegment(CircOutEasing, 0.2f, -0.1f, 1f); // 振り下ろし
         public override float GetProgress(int type)
         {
-            if (type == 0) // 振り上げ
+            if (type == 0) // 振り上げのアニメーション
                 return CircOutEasing(Progress, 1);
             else
             {
-                if (!SwingStop) // 振り下げ
+                if (!SwingStop) // 振り下ろしのアニメーション
                     return PiecewiseAnimation(Progress, prepare, execute);
 
-                else // タイルに衝突した場合の反動
+                else // タイルに衝突したときの反動のアニメーション
                     return MathHelper.SmoothStep(animationStoppedPoint, animationStoppedPoint - 0.05f, DelayProgress);
             }
         }
@@ -88,21 +77,26 @@ namespace MoreKatana.Projectiles.Wood
             Owner.SetDummyItemTime(2);
             Projectile.timeLeft = 2;
 
+            // 振り下ろし時以外はダメージを与えないようにする
+            Projectile.friendly = false;
+
             if (!onDelay)
             {
-                Projectile.friendly = type == 1;
-
-                if (type == 1 && GetProgress(type) > 0f && Projectile.localAI[0] == 0)
+                // 振り下ろし時
+                if (type == 1)
                 {
-                    Projectile.localAI[0] = 1;
-                    SoundEngine.PlaySound(SoundID.Item1, Owner.Center);
+                    Projectile.friendly = true;
+
+                    // サウンド
+                    if (GetProgress(type) > 0f && Projectile.localAI[0] == 0)
+                    {
+                        Projectile.localAI[0] = 1;
+                        SoundEngine.PlaySound(SoundID.Item1, Owner.Center);
+                    }
                 }
             }
             else
             {
-                // ディレイではダメージを与えない
-                Projectile.friendly = false;
-
                 // 振り上げ時
                 if (type == 0)
                 {
@@ -115,6 +109,7 @@ namespace MoreKatana.Projectiles.Wood
                     }
 
                     // マウスを右クリックしている場合はディレイを延長する
+                    // DelayTimerを0で更新し続けることでディレイを進ませない
                     if (Projectile.owner == Main.myPlayer && Main.mouseRight)
                         DelayTimer = 0;
 
@@ -129,13 +124,19 @@ namespace MoreKatana.Projectiles.Wood
             // 振り下ろし時
             if (type == 1)
             {
+                // 予備動作が終わっているかどうか確認する
                 if (GetProgress(type) > 0f)
                 {
+                    // 現在の振りのポイントを取得
                     animationStoppedPoint = oldProgress;
 
-                    SwingStop = true;
-                    Owner.ScreenShake(4, 10);
-                    SoundEngine.PlaySound(SoundID.Dig, Owner.Center);
+                    // 振りを終了し、ディレイ(反動)へ
+                    if (!SwingStop)
+                    {
+                        SwingStop = true;
+                        Owner.ScreenShake(4, 10);
+                        SoundEngine.PlaySound(SoundID.Dig, Owner.Center);
+                    }
                 }
             }
         }
@@ -153,7 +154,7 @@ namespace MoreKatana.Projectiles.Wood
             }
             for (int i = 0; i < 6; i++)
             {
-                int newDust = Dust.NewDust(target.position, target.width, target.height, DustID.Smoke, 0.0f, 0f, 150, default, 0.5f);
+                int newDust = Dust.NewDust(target.position, target.width, target.height, DustID.Smoke, 0f, 0f, 150, default, 0.5f);
                 Main.dust[newDust].fadeIn = 1.25f;
                 Main.dust[newDust].noLight = true;
                 Main.dust[newDust].velocity = new Vector2(0f, Main.rand.Next(-2, -1));

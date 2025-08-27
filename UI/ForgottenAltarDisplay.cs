@@ -85,7 +85,7 @@ namespace MoreKatana.UI
             spriteBatch.Draw(right, rightside, null, Color.White * opacity, 0f, new Vector2(right.Width / 2, right.Height / 2), 1f, SpriteEffects.None, 0f);
 
             Texture2D bloom = MoreKatanaTextures.BloomTexture.Value;
-            spriteBatch.Draw(bloom, textPosition, null, Color.Gray with { A = 0 } * opacity * 0.5f, 0f, bloom.Size() / 2f, scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(bloom, textPosition, null, Color.Gray with { A = 0 } * opacity * 0.7f, 0f, bloom.Size() / 2f, scale, SpriteEffects.None, 0);
 
             ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, DisplayText, textPosition - Vector2.UnitX * textArea, Color.White, 0f, textArea * new Vector2(0f, 0.5f), new Vector2(2f));
 

@@ -2,6 +2,21 @@ DebugItem: Debug Item
 SetupFirstStatue.DisplayName: Setup first statue
 ResetSeenBiomeFlag.DisplayName: Reset first seen biome flag
 
+THXForPlaying: {
+	DisplayName: Thanks for playing More Katana!
+	Tooltip:
+		'''
+		The weapons in this mod have special abilities.
+		[c/CC0000:Katana Spell] is a passive skill. Activates when holding an item.
+		Some of them also function as accessories. (Equip in the katana accessory slot)
+		[c/CC0000:Katana Arts] is a active skill. Activates when right-clicking.
+		The cooldown is shared across all weapons.
+		Detailed skill information for each weapon is provided in the tooltip.
+		There's also some other content! (Still in development, maybe?) Check out the wiki too!
+		You can use this item to open the wiki ;)
+		'''
+}
+
 # -------- Materials --------
 BrokenHeroKatana: {
 	DisplayName: Broken Hero Katana

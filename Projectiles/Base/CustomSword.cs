@@ -75,6 +75,9 @@ namespace MoreKatana.Projectiles.Base
 
         /// <summary> 剣の振りの開始角度 </summary>
         private float startRotation;
+
+        /// <summary> ターゲットにヒットした際のタイマー </summary>
+        private int hitTimer = -1;
         #endregion
 
         /// <summary> 剣の振りのAIの進行状況 </summary>
@@ -82,6 +85,12 @@ namespace MoreKatana.Projectiles.Base
 
         /// <summary> ディレイの進行状況 </summary>
         protected float DelayProgress;
+
+        /// <summary> 
+        /// ヒットした際のちょっとした"溜め"の量 
+        /// 10まで位が演出としての限度
+        /// </summary>
+        protected int ImpactCharge;
 
         /// <summary>
         /// 剣の振りの描く弧の比率の設定
@@ -106,7 +115,7 @@ namespace MoreKatana.Projectiles.Base
 
         protected Player Owner => Main.player[Projectile.owner];
         protected Item SwordItem => Owner.ActiveItem();
-        private CustomSwordPrimTrail trail;
+        protected CustomSwordPrimTrail SwordTrail;
         #endregion
 
         #region -------- Helper Methods --------
@@ -271,11 +280,15 @@ namespace MoreKatana.Projectiles.Base
                 // 初期設定
                 Initialization(SwordItem, SwingType);
 
+                Projectile.localNPCHitCooldown = (int)(Projectile.localNPCHitCooldown / ModifiedAttackSpeed * Projectile.MaxUpdates);
+
                 Projectile.netUpdate = true;
             }
 
+            hitTimer--;
+
             // タイマーを増加
-            if (!SwingStop)
+            if (!SwingStop && hitTimer <= 0)
                 Timer++;
 
             SetSwordPosition(swordPos);
@@ -310,8 +323,7 @@ namespace MoreKatana.Projectiles.Base
         private void SwingAnimation()
         {
             // 剣の振りのAIの進行度
-            // 速度ボーナスも適用する
-            Progress = Timer / (SwingTime * Projectile.MaxUpdates / ModifiedAttackSpeed);
+            Progress = Timer / (SwingTime / ModifiedAttackSpeed * Projectile.MaxUpdates);
             Progress = MathHelper.Clamp(Progress, 0f, 1f);
 
             float modifiedProgress = GetProgress(SwingType); // 剣の振りの動きの進行度
@@ -355,7 +367,7 @@ namespace MoreKatana.Projectiles.Base
             {
                 // ディレイの進行度
                 // 速度ボーナスも適用する
-                DelayProgress = DelayTimer / (SwingDelay * Projectile.MaxUpdates / ModifiedAttackSpeed);
+                DelayProgress = DelayTimer / (SwingDelay / ModifiedAttackSpeed * Projectile.MaxUpdates);
                 DelayProgress = MathHelper.Clamp(DelayProgress, 0f, 1f);
 
                 if (DelayProgress == 1f)
@@ -404,32 +416,54 @@ namespace MoreKatana.Projectiles.Base
         }
 
         /// <summary>
-        /// トレイル
+        /// トレイルの処理
         /// </summary>
         /// <param name="dir"></param>
         /// <param name="type"></param>
         public virtual void DrawTrail(int dir, int type)
         {
-            if (Timer != 0f)
+            // トレイルをスポーン
+            if (!PrimsCreated)
             {
-                // トレイルを描画する
-                if (!PrimsCreated)
-                {
-                    PrimsCreated = true;
-                    trail = new CustomSwordPrimTrail(Projectile, TrailColor, SwordLength, (int)(SwingTime * 1.5f));
-                    MoreKatana.primitives.CreateTrail(trail);
-                }
+                PrimsCreated = true;
+                SwordTrail = new CustomSwordPrimTrail(Projectile, TrailColor, SwordLength, (int)(SwingTime * 1.5f));
+                MoreKatana.primitives.CreateTrail(SwordTrail);
+            }
 
+            // トレイルの情報の更新
+            UpdateTrail(SwordTrail);
+        }
+
+        public void UpdateTrail(CustomSwordPrimTrail t, bool? kill = null, int? dir = null, Vector2? center = null, Vector2? point = null, int type = 0, int width = 0)
+        {
+            if (PrimsCreated && Timer != 0f)
+            {
                 if (Main.netMode != NetmodeID.Server)
                 {
-                    // トレイルの設定を更新
-                    trail.Direction = Owner.direction * -dir;
-                    trail.PrimCenter = Owner.MountedCenter;
-                    trail.Points.Add(Projectile.Center - Owner.MountedCenter);
+                    // トレイルの向き
+                    int primDir = (dir == null) ? Owner.direction * -SwingDirection : (int)dir;
+                    t.Direction = primDir;
+
+                    // トレイルの位置
+                    Vector2 primCenter = (center == null) ? Owner.MountedCenter : (Vector2)center;
+                    t.PrimCenter = primCenter;
+
+                    // トレイルの横幅の調節
+                    if (width != 0)
+                        t.ModifiedWidth = width;
+
+                    // トレイルのテクスチャータイプ
+                    t.TextureType = type;
+
+                    // トレイルの描画ポイント
+                    Vector2 primPoint = (point == null) ? Projectile.Center - Owner.MountedCenter : (Vector2)point;
+                    if (hitTimer <= 0)
+                        t.Points.Add(primPoint);
 
                     // トレイルを消す
-                    if (GetProgress(type) >= 0.95f || KillPrims)
-                        trail?.OnDestroy();
+                    bool killPrims = (kill == null) ? GetProgress(SwingType) >= 0.95f || KillPrims : (bool)kill;
+                    if (killPrims)
+                        t?.OnDestroy();
                 }
             }
         }
@@ -487,6 +521,8 @@ namespace MoreKatana.Projectiles.Base
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
+            hitTimer = ImpactCharge * Projectile.MaxUpdates;
+
             // ノックバックをプレイヤーから遠ざける
             modifiers.HitDirectionOverride = target.position.X > Owner.Center.X ? 1 : -1;
 

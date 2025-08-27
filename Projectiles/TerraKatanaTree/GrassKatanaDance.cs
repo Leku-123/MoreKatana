@@ -13,7 +13,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override void Initialization(Item item, int type)
         {
-            Projectile.localNPCHitCooldown = (int)SwingUseTime * Projectile.MaxUpdates;
+            Projectile.localNPCHitCooldown = (int)SwingUseTime;
             Projectile.MKProjectile().ActivateCD = true;
 
             ContinuousSwing = true;
@@ -31,9 +31,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override bool SwingPattern(Item item, int type)
         {
-            SwingEllipse = new Vector2(1.8f, 0.5f);
+            SwingEllipse = new(1.8f, 0.5f);
             SwingStats(SwingUseTime, 1.25f, 0f, Main.rand.NextBool());
-            return type != 4;
+            return type != 4; // 5回振る
         }
 
         public override void AdditionalAI(Item item, int type, bool onDelay)
@@ -51,18 +51,25 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 // トレイルのみの斬撃を発射
                 // トレイルのみにする理由は演出面の問題
                 if (Projectile.owner == Main.myPlayer && type != 4)
-                    Projectile.NewProjectile(Owner.GetSource_ItemUse(item), Owner.MountedCenter, vel, ModContent.ProjectileType<GrassKatanaDance2>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+                {
+                    int subSwing = ModContent.ProjectileType<GrassKatanaDance2>();
+                    Projectile.NewProjectile(Owner.GetSource_ItemUse(item), Owner.MountedCenter, vel, subSwing, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+                }
             }
         }
 
         private void SpawnLeaf(out Vector2 vel)
         {
             SoundEngine.PlaySound(SoundID.Item1 with { Pitch = +0.5f }, Owner.Center);
+            Owner.ScreenShake(2, 3);
 
             // 発射の向きをランダムにする
             vel = Vector2.UnitY.RotatedByRandom(MathHelper.TwoPi);
             if (Projectile.owner == Main.myPlayer)
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.MountedCenter, vel * 16f, ModContent.ProjectileType<GrassLeaf>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+            {
+                int leaf = ModContent.ProjectileType<GrassLeaf>();
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.MountedCenter, vel * 16f, leaf, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+            }
         }
 
         public override void OnKill(int timeLeft) => Owner.FlipEffect(0);
@@ -72,13 +79,13 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
     {
         public override void Initialization(Item item, int type)
         {
-            Projectile.localNPCHitCooldown = (int)GrassKatanaDance.SwingUseTime * Projectile.MaxUpdates;
+            Projectile.localNPCHitCooldown = (int)GrassKatanaDance.SwingUseTime;
             GetTextureValues(this, item);
         }
 
         public override bool SwingPattern(Item item, int type)
         {
-            SwingEllipse = new Vector2(1.8f, 0.5f);
+            SwingEllipse = new(1.8f, 0.5f);
             SwingStats(GrassKatanaDance.SwingUseTime, 1.25f, 0f, Main.rand.NextBool());
             return base.SwingPattern(item, type);
         }

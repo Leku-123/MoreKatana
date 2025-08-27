@@ -11,7 +11,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
     {
         public override void Initialization(Item item, int type)
         {
-            Projectile.localNPCHitCooldown = Owner.itemAnimationMax * Projectile.MaxUpdates;
+            Projectile.localNPCHitCooldown = -1; // 1振りで同じターゲットに2回ヒットしないようにする
             GetTextureValues(this, item);
         }
 
@@ -21,20 +21,21 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             float y = Main.rand.NextFloat(0.7f, 0.9f);
             SwingEllipse = new(x, y);
 
+            // 3振り目は振る時間が2倍になる
+            float swingTime = (type != 2) ? item.useAnimation : item.useAnimation * 2;
             float swingRange = Main.rand.NextFloat(0.7f, 0.8f);
-            float swingTime = (type != 2) ? Owner.itemAnimationMax : Owner.itemAnimationMax * 2;
             SwingStats(swingTime, swingRange, (0.9f - swingRange) / 2f, type % 2 != 0);
 
             return base.SwingPattern(item, type);
         }
 
-        public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f);
-        public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f);
-        public CurveSegment unwindMore = new CurveSegment(LinearEasing, 0.25f, 0.95f, 0.05f);
+        public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f); // 振りのアニメーション
+        public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f); // 振りの減衰のアニメーション
+        public CurveSegment unwind2 = new CurveSegment(LinearEasing, 0.25f, 0.95f, 0.05f); // 3振り目の減衰のアニメーション
         public override float GetProgress(int type)
         {
             if (type == 2)
-                return PiecewiseAnimation(Progress, execute, unwindMore);
+                return PiecewiseAnimation(Progress, execute, unwind2);
             else
                 return PiecewiseAnimation(Progress, execute, unwind);
         }
@@ -42,9 +43,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         public override void AdditionalAI(Item item, int type, bool delay)
         {
             Owner.SetDummyItemTime(2);
-
-            if (GetProgress(type) >= 0.95f)
-                KillPrims = true;
 
             // 3振り目に葉を3wayで発射する
             if (type == 2 && Projectile.localAI[0] == 0)
