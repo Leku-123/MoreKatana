@@ -14,7 +14,7 @@ namespace MoreKatana.Projectiles.Base
     {
         #region -------- Variables --------
         /// <summary> 現在の剣の振りのタイプ </summary>
-        private int SwingType
+        public int SwingType
         {
             get => (int)Projectile.ai[0];
             set

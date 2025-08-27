@@ -15,7 +15,7 @@ namespace MoreKatana.Assets.ExtraTextures
         public static Asset<Texture2D> MagicCircleTexture;
         public static Asset<Texture2D> MagicRingTexture;
         public static Asset<Texture2D> ShieldTexture;
-        public static Asset<Texture2D>[] SwordTrailTexture = new Asset<Texture2D>[4];
+        public static Asset<Texture2D>[] SwordTrailTexture = new Asset<Texture2D>[5];
         public static Asset<Texture2D> EnergyTrailTexture;
         public static Asset<Texture2D> FlameTrailTexture;
         public static Asset<Texture2D> StraightlineTrailTexture;

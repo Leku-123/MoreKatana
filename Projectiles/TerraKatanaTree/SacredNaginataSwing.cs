@@ -25,16 +25,19 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         /// <param name="dir"></param>
         public override void DrawTrail(int dir, int type)
         {
-            if (!PrimsCreated)
+            if (GetProgress(type) >= 0f)
             {
-                PrimsCreated = true;
-                SwordTrail = new CustomSwordPrimTrail(Projectile, TrailColor, 20, (int)(SwingTime * 1.5f));
-                MoreKatana.primitives.CreateTrail(SwordTrail);
-            }
+                if (!PrimsCreated)
+                {
+                    PrimsCreated = true;
+                    SwordTrail = new CustomSwordPrimTrail(Projectile, TrailColor, 20, (int)(SwingTime * 1.5f));
+                    MoreKatana.primitives.CreateTrail(SwordTrail);
+                }
 
-            Vector2 offset = DirectionToProj * 60f;
-            Vector2 p = Projectile.Center - Owner.MountedCenter;
-            UpdateTrail(SwordTrail, GetProgress(type) >= 0.98f, point: p + offset);
+                Vector2 offset = DirectionToProj * 60f;
+                Vector2 p = Projectile.Center - Owner.MountedCenter;
+                UpdateTrail(SwordTrail, GetProgress(type) >= 0.98f, point: p + offset);
+            }
         }
 
         public override void Initialization(Item item, int type)
@@ -59,13 +62,14 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             if (type == 2)
             {
                 SwingEllipse = new(0.5f);
-                SwingStats(item.useAnimation, 2.6f, 0.25f, delay: item.useAnimation / 2f);
+                SwingStats(item.useAnimation * 1.5f, 2.6f, 0.25f, delay: item.useAnimation / 2f);
                 ImpactCharge = 4;
             }
             else
             {
                 SwingEllipse = new(1f, 0.45f);
-                SwingStats(item.useAnimation, 0.6f, 0.2f, type % 2 != 0);
+                float usetime = type == 0 ? item.useAnimation / 2f : item.useAnimation;
+                SwingStats(usetime, 0.6f, 0.2f, type % 2 != 0);
             }
 
             return base.SwingPattern(item, type);
@@ -73,17 +77,24 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f);
         public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f);
+        public float NormalAnimation => PiecewiseAnimation(Progress, execute, unwind); // 1,2振りのアニメーション
+
+        public CurveSegment prepare = new CurveSegment(SineOutEasing, 0f, 0f, -0.05f);
+        public CurveSegment spinning = new CurveSegment(LinearEasing, 0.2f, -0.05f, 1.05f);
+        public float SpinAnimation => PiecewiseAnimation(Progress, prepare, spinning); // 3振り目のアニメーション
+        public float SpinAnimationDelay => MathHelper.SmoothStep(1f, 1.01f, DelayProgress); // 3振り目のディレイ
+
         public override float GetProgress(int type)
         {
             if (type == 2)
             {
                 if (Progress != 1f)
-                    return LinearEasing(Progress, 1);
+                    return SpinAnimation;
                 else
-                    return MathHelper.SmoothStep(1, 1.01f, DelayProgress);
+                    return SpinAnimationDelay;
             }
             else
-                return PiecewiseAnimation(Progress, execute, unwind);
+                return NormalAnimation;
         }
 
         public override void AdditionalAI(Item item, int type, bool delay)
@@ -92,23 +103,17 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             if (type == 2)
             {
-                if (Projectile.localAI[0] != 1)
-                    Projectile.localAI[0] = 1;
-
                 if (!delay)
                 {
-                    Owner.FlipEffect(Progress * 9f);
+                    Projectile.friendly = GetProgress(type) >= 0f;
+                    Owner.FlipEffect(GetProgress(type) * 9f);
 
-                    if (Projectile.soundDelay <= 0)
-                    {
-                        Projectile.soundDelay = 15 * Projectile.MaxUpdates;
-
-                        if (GetProgress(type) > 0.1f)
-                            SoundEngine.PlaySound(SoundID.Item169, Owner.Center);
-                    }
+                    if (GetProgress(type) % 0.3f == 0)
+                        SoundEngine.PlaySound(SoundID.Item169, Owner.Center);
                 }
                 else
                 {
+                    Projectile.friendly = false;
                     Projectile.Opacity = 1 - CircOutEasing(DelayProgress, 1);
                     Owner.reuseDelay = 5;
                 }
@@ -123,9 +128,11 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         {
             base.OnHitNPC(target, hit, damageDone);
 
-            if (Projectile.localAI[0] == 1)
-                Owner.ScreenShake(2, 6)
-;
+            Owner.ScreenShake(2, 6);
+           
+            SoundEngine.PlaySound(MoreKatanaSounds.SlashHit, Owner.Center);
+
+            // エクスカリバーのパーティクル
             ParticleOrchestraSettings particleOrchestraSettings = default;
             particleOrchestraSettings.PositionInWorld = Main.rand.NextVector2FromRectangle(target.Hitbox);
             ParticleOrchestrator.RequestParticleSpawn(false, ParticleOrchestraType.Excalibur, particleOrchestraSettings, Projectile.owner);
