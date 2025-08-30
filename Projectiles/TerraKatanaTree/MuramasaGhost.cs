@@ -247,7 +247,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             public override void Initialization(Item item, int type)
             {
                 Projectile.localNPCHitCooldown = Owner.itemAnimationMax / 2 * Projectile.MaxUpdates;
-                GetTextureValues(this, item);
+                GetTextureValues();
             }
 
             public override bool SwingPattern(Item item, int type)

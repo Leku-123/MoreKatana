@@ -62,7 +62,7 @@ namespace MoreKatana.Prim
 
         public void CreateTrail(PrimTrail trail)
         {
-            if (!Main.dedServ) // サーバーにトレイルを残さない
+            if (!Main.dedServ) // サーバーにトレイルを作成しない
                 _trails.Add(trail);
         }
     }

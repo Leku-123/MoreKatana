@@ -19,7 +19,7 @@ namespace MoreKatana.Projectiles.Metal
         public override void Initialization(Item item, int type)
         {
             Projectile.localNPCHitCooldown = Owner.itemAnimationMax * Projectile.MaxUpdates;
-            GetTextureValues(this, item);
+            GetTextureValues();
         }
 
         public override bool SwingPattern(Item item, int type)

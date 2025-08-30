@@ -36,7 +36,7 @@ namespace MoreKatana.Projectiles.Wood
 
             ContinuousSwing = true;
             FixedDirection = true;
-            GetTextureValues(this, item);
+            GetTextureValues();
         }
 
         public override bool SwingPattern(Item item, int type)

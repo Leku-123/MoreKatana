@@ -20,7 +20,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             FixedDirection = true;
             NoSpeedBonus = true;
 
-            GetTextureValues(this, item);
+            GetTextureValues();
 
             // スイングの向きをランダムにする
             Projectile.velocity = Vector2.UnitY.RotatedByRandom(MathHelper.TwoPi);
@@ -80,7 +80,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         public override void Initialization(Item item, int type)
         {
             Projectile.localNPCHitCooldown = (int)GrassKatanaDance.SwingUseTime;
-            GetTextureValues(this, item);
+            GetTextureValues();
         }
 
         public override bool SwingPattern(Item item, int type)

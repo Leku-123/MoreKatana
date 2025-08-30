@@ -183,6 +183,9 @@ namespace MoreKatana
 
                 // タイマーを増加
                 DashTimer++;
+
+                // マルチプレイヤーでの動きを同期する
+                NetMessage.SendData(MessageID.PlayerControls, number: Player.whoAmI);
             }
         }
 

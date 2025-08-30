@@ -43,13 +43,13 @@ namespace MoreKatana.Projectiles.Base
 
         #region -------- Trail --------
         /// <summary> トレイルを描画したかどうか </summary>
-        protected bool PrimsCreated;
+        public bool PrimsCreated;
 
         /// <summary> trueなら、トレイルを消滅させる </summary>
-        protected bool KillPrims;
+        public bool KillPrims;
 
         /// <summary> トレイルの色 </summary>
-        protected Color TrailColor;
+        public Color TrailColor;
         #endregion
 
         #region -------- SwingStats --------
@@ -92,9 +92,12 @@ namespace MoreKatana.Projectiles.Base
         /// </summary>
         protected int ImpactCharge;
 
+        /// <summary> ImpactChargeを使用した場合の、"溜め"が無くなるタイミング </summary>
+        protected bool OnImpact => ImpactCharge != 0 && hitTimer == 1;
+
         /// <summary>
         /// 剣の振りの描く弧の比率の設定
-        /// (X: 1f,Y: 1f)で円形、(X: 1f,Y: 0.5f)で楕円形になる
+        /// (x: 1f, y: 1f)で円形、(x: 1f, y: 0.5f)で楕円形になる
         /// </summary>
         protected Vector2 SwingEllipse = Vector2.One;
 
@@ -152,13 +155,13 @@ namespace MoreKatana.Projectiles.Base
         /// </summary>
         /// <param name="customSword"></param>
         /// <param name="item"></param>
-        public static void GetTextureValues(CustomSword customSword, Item item)
+        protected void GetTextureValues()
         {
-            Texture2D texture = TextureAssets.Item[item.type].Value;
+            Texture2D texture = TextureAssets.Item[SwordItem.type].Value;
 
             // サイズ
-            int frame = Main.itemAnimations[item.type] == null ? 1 : Main.itemAnimations[item.type].FrameCount;
-            customSword.SwordSize(texture.Width, texture.Height / frame);
+            int frame = Main.itemAnimations[SwordItem.type] == null ? 1 : Main.itemAnimations[SwordItem.type].FrameCount;
+            SwordSize(texture.Width, texture.Height / frame);
 
             // 色
             Color[] colors = MoreKatanaUtil.GetColors(texture);
@@ -173,7 +176,7 @@ namespace MoreKatana.Projectiles.Base
                 }
             }
             vector4 /= a * 2;
-            customSword.TrailColor = new Color(vector4.X, vector4.Y, vector4.Z, 0);
+            TrailColor = new Color(vector4.X, vector4.Y, vector4.Z, 0);
         }
         #endregion
 
@@ -197,6 +200,7 @@ namespace MoreKatana.Projectiles.Base
             Projectile.aiStyle = -1;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
+            Projectile.timeLeft = 9999;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.tileCollide = false;
@@ -212,24 +216,34 @@ namespace MoreKatana.Projectiles.Base
         {
             writer.Write7BitEncodedInt(SwordWidth);
             writer.Write7BitEncodedInt(SwordHeight);
-            writer.Write((sbyte)Projectile.spriteDirection);
             writer.WriteVector2(swordPos);
+            writer.Write(startRotation);
+            writer.WriteVector2(SwingEllipse);
             writer.Write(SwingTime);
             writer.Write(SwingRange);
             writer.Write(ModifiedAngle);
             writer.Write((sbyte)SwingDirection);
+            writer.Write(TrailColor.R);
+            writer.Write(TrailColor.G);
+            writer.Write(TrailColor.B);
+            writer.Write(TrailColor.A);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
             SwordWidth = reader.Read7BitEncodedInt();
             SwordHeight = reader.Read7BitEncodedInt();
-            Projectile.spriteDirection = reader.ReadSByte();
             swordPos = reader.ReadVector2();
+            startRotation = reader.ReadSingle();
+            SwingEllipse = reader.ReadVector2();
             SwingTime = reader.ReadSingle();
             SwingRange = reader.ReadSingle();
             ModifiedAngle = reader.ReadSingle();
             SwingDirection = reader.ReadSByte();
+            TrailColor.R = (byte)reader.Read7BitEncodedInt();
+            TrailColor.G = (byte)reader.Read7BitEncodedInt();
+            TrailColor.B = (byte)reader.Read7BitEncodedInt();
+            TrailColor.A = (byte)reader.Read7BitEncodedInt();
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -264,14 +278,12 @@ namespace MoreKatana.Projectiles.Base
             // 初期設定
             if (Timer == 0f)
             {
+                Projectile.velocity.Normalize();
+
                 Projectile.alpha = 0;
 
                 // 振りのパターンを取得
                 SwingPattern(SwordItem, SwingType);
-
-                // 振りのパターンの方向が固定されていなければ、プレイヤーの向きをマウス方向に向ける
-                if (!FixedDirection)
-                    Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
 
                 // 剣の振りの開始角度はProjectile.velocityの反対方向
                 // 基本的にはプレイヤーの背中側になる
@@ -301,6 +313,10 @@ namespace MoreKatana.Projectiles.Base
         /// </summary>
         public virtual void SetSwordPosition(Vector2 v)
         {
+            // 振りのパターンの方向を固定しない場合、プレイヤーが発射体の方向を向く
+            if (!FixedDirection)
+                Owner.ChangeDir(Math.Sign(Projectile.velocity.X));
+
             // 発射体の位置と向き
             Projectile.Center = Owner.MountedCenter + (v * Projectile.scale);
             Projectile.spriteDirection = Owner.direction;
@@ -430,10 +446,19 @@ namespace MoreKatana.Projectiles.Base
                 MoreKatana.primitives.CreateTrail(SwordTrail);
             }
 
-            // トレイルの情報の更新
             UpdateTrail(SwordTrail);
         }
 
+        /// <summary>
+        /// トレイルの情報を更新する
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="kill"></param>
+        /// <param name="dir"></param>
+        /// <param name="center"></param>
+        /// <param name="point"></param>
+        /// <param name="type"></param>
+        /// <param name="width"></param>
         public void UpdateTrail(CustomSwordPrimTrail t, bool? kill = null, int? dir = null, Vector2? center = null, Vector2? point = null, int type = 0, int width = 0)
         {
             if (PrimsCreated && Timer != 0f)

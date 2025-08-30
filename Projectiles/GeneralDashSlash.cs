@@ -17,6 +17,9 @@ namespace MoreKatana.Projectiles
         public int DashDistance;
         public float DashTimerMax;
         public bool SuddenStop;
+        public Color TrailColor;
+
+        private bool primsCreated;
 
         private KatanaSlashPrimTrail trail;
 
@@ -50,6 +53,10 @@ namespace MoreKatana.Projectiles
             writer.Write7BitEncodedInt(DashDistance);
             writer.Write(DashTimerMax);
             writer.WriteFlags(SuddenStop);
+            writer.Write(TrailColor.R);
+            writer.Write(TrailColor.G);
+            writer.Write(TrailColor.B);
+            writer.Write(TrailColor.A);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
@@ -58,6 +65,10 @@ namespace MoreKatana.Projectiles
             DashDistance = reader.Read7BitEncodedInt();
             DashTimerMax = reader.ReadSingle();
             SuddenStop = reader.ReadBoolean();
+            TrailColor.R = (byte)reader.Read7BitEncodedInt();
+            TrailColor.G = (byte)reader.Read7BitEncodedInt();
+            TrailColor.B = (byte)reader.Read7BitEncodedInt();
+            TrailColor.A = (byte)reader.Read7BitEncodedInt();
         }
 
         public override void AI()
@@ -67,24 +78,19 @@ namespace MoreKatana.Projectiles
                 Projectile.ai[0] = 1;
                 Owner.GeneralDashEffect(DashDirection, DashDistance, DashTimerMax, SuddenStop);
 
-                if (Main.netMode != NetmodeID.Server)
+                Color[] colors = MoreKatanaUtil.GetColors(TextureAssets.Item[ActiveItem.type].Value);
+                int a = 0;
+                Vector4 vector4 = new Vector4(0, 0, 0, 0);
+                for (int i = 0; i < colors.Length; i++)
                 {
-                    Color[] colors = MoreKatanaUtil.GetColors(TextureAssets.Item[ActiveItem.type].Value);
-                    int a = 0;
-                    Vector4 vector4 = new Vector4(0, 0, 0, 0);
-                    for (int i = 0; i < colors.Length; i++)
+                    if (colors[i] != new Color(0, 0, 0, 0))
                     {
-                        if (colors[i] != new Color(0, 0, 0, 0))
-                        {
-                            a++;
-                            vector4 += colors[i].ToVector4();
-                        }
+                        a++;
+                        vector4 += colors[i].ToVector4();
                     }
-                    vector4 /= a * 2;
-
-                    trail = new KatanaSlashPrimTrail(Projectile, new Color(vector4.X, vector4.Y, vector4.Z, 0));
-                    MoreKatana.primitives.CreateTrail(trail);
                 }
+                vector4 /= a * 2;
+                TrailColor = new Color(vector4.X, vector4.Y, vector4.Z, 0);
 
                 for (int i = 0; i < 12; i++)
                 {
@@ -95,6 +101,16 @@ namespace MoreKatana.Projectiles
                 }
 
                 Projectile.netUpdate = true;
+            }
+
+            if (!primsCreated)
+            {
+                primsCreated = true;
+                if (Main.netMode != NetmodeID.Server)
+                {
+                    trail = new KatanaSlashPrimTrail(Projectile, TrailColor);
+                    MoreKatana.primitives.CreateTrail(trail);
+                }
             }
 
             Projectile.Center = Owner.MountedCenter;

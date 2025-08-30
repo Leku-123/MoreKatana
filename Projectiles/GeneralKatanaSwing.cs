@@ -12,7 +12,7 @@ namespace MoreKatana.Projectiles
         public override void Initialization(Item item, int type)
         {
             Projectile.localNPCHitCooldown = -1; // 1振りで同じターゲットに2回ヒットしないようにする
-            GetTextureValues(this, item);
+            GetTextureValues();
         }
 
         public override bool SwingPattern(Item item, int type)

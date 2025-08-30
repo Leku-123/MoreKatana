@@ -165,7 +165,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             {
                 Projectile.localNPCHitCooldown = (int)SwingUseTime * Projectile.MaxUpdates;
                 Projectile.Opacity = 0.5f;
-                GetTextureValues(this, item);
+                GetTextureValues();
             }
 
             public override bool SwingPattern(Item item, int type)

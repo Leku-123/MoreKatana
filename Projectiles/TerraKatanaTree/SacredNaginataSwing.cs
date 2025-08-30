@@ -17,8 +17,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         private Vector2 DirectionToProj => Utils.DirectionTo(Owner.MountedCenter, Projectile.Center);
 
-        private CustomSwordPrimTrail trail;
-
         /// <summary>
         /// 刀身が長いためトレイルの横幅を小さくして、オフセットを先端に調節する
         /// </summary>
@@ -77,7 +75,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f);
         public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f);
-        public float NormalAnimation => PiecewiseAnimation(Progress, execute, unwind); // 1,2振りのアニメーション
+        public float NormalAnimation => PiecewiseAnimation(Progress, execute, unwind); // 1,2振り目のアニメーション
 
         public CurveSegment prepare = new CurveSegment(SineOutEasing, 0f, 0f, -0.05f);
         public CurveSegment spinning = new CurveSegment(LinearEasing, 0.2f, -0.05f, 1.05f);
@@ -129,7 +127,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             base.OnHitNPC(target, hit, damageDone);
 
             Owner.ScreenShake(2, 6);
-           
+
             SoundEngine.PlaySound(MoreKatanaSounds.SlashHit, Owner.Center);
 
             // エクスカリバーのパーティクル
@@ -142,7 +140,12 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Vector2 vector = Main.rand.NextVector2Unit() * 200;
                 int edgeProj = ModContent.ProjectileType<SacredEdge>();
                 if (Owner.ownedProjectileCounts[edgeProj] < 6)
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center + vector, -vector / 10, edgeProj, Projectile.damage / 3, 0, Projectile.owner);
+                {
+                    if (Projectile.owner == Main.myPlayer)
+                    {
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center + vector, -vector / 10, edgeProj, Projectile.damage / 3, 0, Projectile.owner);
+                    }
+                }
             }
         }
 

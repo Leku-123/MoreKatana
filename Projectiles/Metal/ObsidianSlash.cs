@@ -55,6 +55,7 @@ namespace MoreKatana.Projectiles.Metal
         {
             Projectile.velocity *= 0.5f;
             target.AddBuff(BuffID.OnFire, 120);
+            Projectile.netUpdate = true;
         }
 
         public override bool PreDraw(ref Color lightColor)
