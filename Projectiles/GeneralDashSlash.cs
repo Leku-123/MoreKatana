@@ -76,6 +76,7 @@ namespace MoreKatana.Projectiles
             if (Projectile.ai[0] == 0)
             {
                 Projectile.ai[0] = 1;
+
                 Owner.GeneralDashEffect(DashDirection, DashDistance, DashTimerMax, SuddenStop);
 
                 Color[] colors = MoreKatanaUtil.GetColors(TextureAssets.Item[ActiveItem.type].Value);
@@ -92,14 +93,6 @@ namespace MoreKatana.Projectiles
                 vector4 /= a * 2;
                 TrailColor = new Color(vector4.X, vector4.Y, vector4.Z, 0);
 
-                for (int i = 0; i < 12; i++)
-                {
-                    int newDust = Dust.NewDust(Owner.MountedCenter, 32, 32, DustID.Smoke, 0f, 0f, 100, default, 2f);
-                    Main.dust[newDust].velocity -= DashDirection * 2f;
-                    Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(15));
-                    Main.dust[newDust].velocity *= Main.rand.NextFloat(1f, 3f);
-                }
-
                 Projectile.netUpdate = true;
             }
 
@@ -111,12 +104,20 @@ namespace MoreKatana.Projectiles
                     trail = new KatanaSlashPrimTrail(Projectile, TrailColor);
                     MoreKatana.primitives.CreateTrail(trail);
                 }
+
+                for (int i = 0; i < 12; i++)
+                {
+                    int newDust = Dust.NewDust(Owner.MountedCenter, 32, 32, DustID.Smoke, 0f, 0f, 100, default, 2f);
+                    Main.dust[newDust].velocity -= DashDirection * 2f;
+                    Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(15));
+                    Main.dust[newDust].velocity *= Main.rand.NextFloat(1f, 3f);
+                }
             }
 
             Projectile.Center = Owner.MountedCenter;
             Projectile.spriteDirection = Owner.direction;
             Projectile.rotation = DashDirection.ToRotation() + (Projectile.spriteDirection == 1 ? MathHelper.ToRadians(45f) : MathHelper.ToRadians(135f));
-            
+
             Owner.heldProj = Projectile.whoAmI;
             Owner.SetDummyItemTime(2);
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, DashDirection.ToRotation() - MathHelper.ToRadians(90f));
