@@ -24,7 +24,7 @@ namespace MoreKatana.Projectiles.Wood
                     MoreKatana.primitives.CreateTrail(SwordTrail);
                 }
 
-                bool kill = GetProgress(type) >= 0.95f || SwingStop;
+                bool kill = GetProgress(type) >= 0.90f || SwingStop;
                 UpdateTrail(SwordTrail, kill, type: 2);
             }
         }
@@ -55,19 +55,24 @@ namespace MoreKatana.Projectiles.Wood
             return true;
         }
 
+        public float UpwardAnimation => CircOutEasing(Progress, 1); // 振り上げのアニメーション
+
         public CurveSegment prepare = new CurveSegment(SineOutEasing, 0f, 0f, -0.1f); // 予備動作
         public CurveSegment execute = new CurveSegment(CircOutEasing, 0.2f, -0.1f, 1f); // 振り下ろし
+        public float SwingAnimation => CircOutEasing(Progress, 1); // 振り下ろしのアニメーション
+
+        public float RecoilAnimationDelay => MathHelper.SmoothStep(animationStoppedPoint, animationStoppedPoint - 0.05f, DelayProgress); // タイル接触時の反動のアニメーション
+
         public override float GetProgress(int type)
         {
-            if (type == 0) // 振り上げのアニメーション
-                return CircOutEasing(Progress, 1);
+            if (type == 0)
+                return UpwardAnimation;
             else
             {
-                if (!SwingStop) // 振り下ろしのアニメーション
-                    return PiecewiseAnimation(Progress, prepare, execute);
-
-                else // タイルに衝突したときの反動のアニメーション
-                    return MathHelper.SmoothStep(animationStoppedPoint, animationStoppedPoint - 0.05f, DelayProgress);
+                if (!SwingStop)
+                    return SwingAnimation;
+                else
+                    return RecoilAnimationDelay;
             }
         }
 
@@ -109,9 +114,16 @@ namespace MoreKatana.Projectiles.Wood
                     }
 
                     // マウスを右クリックしている場合はディレイを延長する
-                    // DelayTimerを0で更新し続けることでディレイを進ませない
+                    // DelayTimerを更新し続けることでディレイを進ませない
                     if (Projectile.owner == Main.myPlayer && Main.mouseRight)
-                        DelayTimer = 0;
+                    {
+                        DelayTimer = 0f;
+
+                        // ディレイを同期させる
+                        Projectile.localAI[1]++;
+                        if (Projectile.localAI[1] % 10 * Projectile.MaxUpdates == 0)
+                            Projectile.netUpdate = true;
+                    }
 
                     // 発射体の位置をランダムで揺らす
                     Projectile.Center += Main.rand.NextVector2Unit();
@@ -143,6 +155,8 @@ namespace MoreKatana.Projectiles.Wood
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
+            base.OnHitNPC(target, hit, damageDone);
+
             for (int i = 0; i < 5; i++)
             {
                 int newDust = Dust.NewDust(target.position, target.width, target.height, DustID.Torch);

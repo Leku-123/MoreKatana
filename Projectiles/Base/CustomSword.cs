@@ -381,6 +381,9 @@ namespace MoreKatana.Projectiles.Base
             }
             else
             {
+                if (DelayTimer == 0f)
+                    Projectile.netUpdate = true;
+
                 // ディレイの進行度
                 // 速度ボーナスも適用する
                 DelayProgress = DelayTimer / (SwingDelay / ModifiedAttackSpeed * Projectile.MaxUpdates);
@@ -400,6 +403,7 @@ namespace MoreKatana.Projectiles.Base
                         if (!SwingPattern(SwordItem, SwingType))
                         {
                             Projectile.Kill();
+                            Projectile.netUpdate = true;
                             return;
                         }
 
@@ -415,6 +419,7 @@ namespace MoreKatana.Projectiles.Base
                     else
                     {
                         Projectile.Kill();
+                        Projectile.netUpdate = true;
                         return;
                     }
 

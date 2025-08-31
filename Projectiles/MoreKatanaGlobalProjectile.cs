@@ -44,7 +44,7 @@ namespace MoreKatana.Projectiles
             Player player = Main.player[projectile.owner];
 
             if (ActivateCD)
-                OwnerItem.MKItem().ActivateCooldown(player);
+                OwnerItem?.MKItem().ActivateCooldown(player);
         }
     }
 }
