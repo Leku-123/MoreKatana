@@ -103,7 +103,7 @@ namespace MoreKatana
                         break;
                     default:
                         mod.Logger.Error(string.Format("MoreKatana: Unknown Packet type: {0}", msgType));
-                        throw new Exception("MoreKatana：Invalid Synchronization Data Packet type");
+                        throw new Exception("MoreKatana: FInvalid Synchronization Data Packet type");
                 }
             }
             catch (Exception e)
@@ -112,11 +112,11 @@ namespace MoreKatana
                 ObjectDisposedException ode;
                 if ((eose = (e as EndOfStreamException)) != null)
                 {
-                    mod.Logger.Error("MoreKatana：Invalid Synchronization Data Packet type", eose);
+                    mod.Logger.Error("MoreKatana: FInvalid Synchronization Data Packet type", eose);
                 }
                 else if ((ode = (e as ObjectDisposedException)) != null)
                 {
-                    mod.Logger.Error("MoreKatana：Invalid Synchronization Data Packet type", ode);
+                    mod.Logger.Error("MoreKatana: FInvalid Synchronization Data Packet type", ode);
                 }
                 else
                 {
@@ -125,7 +125,7 @@ namespace MoreKatana
                     {
                         throw;
                     }
-                    mod.Logger.Error("MoreKatana：Invalid Synchronization Data Packet type", ioe);
+                    mod.Logger.Error("MoreKatana: FInvalid Synchronization Data Packet type", ioe);
                 }
             }
         }
