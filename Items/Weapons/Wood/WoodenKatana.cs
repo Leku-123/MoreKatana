@@ -17,7 +17,7 @@ namespace MoreKatana.Items.Weapons.Wood
 
             Item.useTime = 20;
             Item.useAnimation = 20;
-            Item.UseSound = SoundID.Item1;
+            Item.MKItem().UseSound = SoundID.Item1;
 
             Item.damage = 7;
             Item.knockBack = 5;
@@ -29,16 +29,8 @@ namespace MoreKatana.Items.Weapons.Wood
             Item.MKItem().SetKatanaDefaults(Item, 60);
         }
 
-        public override void PassiveSkill(Player player, bool equipment)
-        {
-            // 無し
-        }
-
         public override void ActiveSkill(Player player)
         {
-            // 使用音を消す
-            Item.UseSound = null;
-
             // プレイヤーの向きをマウスの方向に向けて、その方向に木刀の発射体をスポーンさせる
             player.ChangeDir(Main.MouseWorld.X - player.Center.X > 0 ? 1 : -1);
             Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.MountedCenter, new Vector2(player.direction, 0), ModContent.ProjectileType<ChargingWoodenSwing>(), Item.MKItem().AltDamage, Item.knockBack * 2f, player.whoAmI);

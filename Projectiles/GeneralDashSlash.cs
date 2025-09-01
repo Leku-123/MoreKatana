@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Projectiles.PrimTrails;
 using System.IO;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -104,6 +105,8 @@ namespace MoreKatana.Projectiles
                     trail = new KatanaSlashPrimTrail(Projectile, TrailColor);
                     MoreKatana.primitives.CreateTrail(trail);
                 }
+
+                SoundEngine.PlaySound(SoundID.Item71, Owner.position);
 
                 for (int i = 0; i < 12; i++)
                 {

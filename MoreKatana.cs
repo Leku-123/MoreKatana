@@ -5,6 +5,8 @@ using MoreKatana.Assets.ItemTextures;
 using MoreKatana.Prim;
 using MoreKatana.Utilities;
 using ReLogic.Content;
+using System;
+using System.IO;
 using System.Reflection;
 using Terraria;
 using Terraria.Graphics.Effects;
@@ -72,6 +74,75 @@ namespace MoreKatana
             MoreKatanaDetours.Unload();
             MoreKatanaTextures.UnloadTextures();
             MoreKatanaItemTextures.UnloadItemTextures();
+        }
+
+        public enum MessageType : byte
+        {
+            MouseWorld
+        }
+
+        public static void SyncData(MessageType msgType, int whoAmI, int toClient = -1, int ignoreClient = -1, object value = null, object value2 = null, object value3 = null)
+        {
+            if (Main.netMode == NetmodeID.SinglePlayer)
+            {
+                return;
+            }
+            Mod mod = MoreKatana.Instance;
+            ModPacket packet;
+            try
+            {
+                switch (msgType)
+                {
+                    case MessageType.MouseWorld:
+                        packet = mod.GetPacket(256);
+                        packet.Write((byte)MessageType.MouseWorld);
+                        packet.Write((byte)whoAmI);
+                        packet.WriteVector2(Main.player[whoAmI].MKPlayer().MouseWorld);
+                        packet.Write(Main.player[whoAmI].controlUseTile);
+                        packet.Send(toClient, ignoreClient);
+                        break;
+                    default:
+                        mod.Logger.Error(string.Format("MoreKatana: Unknown Packet type: {0}", msgType));
+                        throw new Exception("MoreKatana：Invalid Synchronization Data Packet type");
+                }
+            }
+            catch (Exception e)
+            {
+                EndOfStreamException eose;
+                ObjectDisposedException ode;
+                if ((eose = (e as EndOfStreamException)) != null)
+                {
+                    mod.Logger.Error("MoreKatana：Invalid Synchronization Data Packet type", eose);
+                }
+                else if ((ode = (e as ObjectDisposedException)) != null)
+                {
+                    mod.Logger.Error("MoreKatana：Invalid Synchronization Data Packet type", ode);
+                }
+                else
+                {
+                    IOException ioe;
+                    if ((ioe = (e as IOException)) == null)
+                    {
+                        throw;
+                    }
+                    mod.Logger.Error("MoreKatana：Invalid Synchronization Data Packet type", ioe);
+                }
+            }
+        }
+
+        public override void HandlePacket(BinaryReader reader, int whoAmI)
+        {
+            MessageType msgType = (MessageType)reader.ReadByte();
+
+            switch (msgType)
+            {
+                case MessageType.MouseWorld:
+                    MoreKatanaPlayer.SyncMouseWorld(this, reader, whoAmI);
+                    break;
+                default:
+                    Logger.WarnFormat("MoreKatana: Unknown Message type: {0}", msgType);
+                    break;
+            }
         }
 
         internal static void SaveConfig(MoreKatanaConfig cfg)

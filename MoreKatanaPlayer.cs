@@ -6,6 +6,7 @@ using MoreKatana.Items.Weapons.TerraKatanaTree;
 using MoreKatana.Projectiles.TerraKatanaTree;
 using MoreKatana.UI;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -13,6 +14,7 @@ using Terraria.GameContent.Drawing;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using static MoreKatana.MoreKatana;
 
 namespace MoreKatana
 {
@@ -47,6 +49,8 @@ namespace MoreKatana
         public int TrueHolyShieldDurability;
         public bool terraShield;
         public int TerraShieldDurability;
+
+        public Vector2 MouseWorld;
 
         public override void OnEnterWorld()
         {
@@ -103,6 +107,14 @@ namespace MoreKatana
                 Player.RemoveAllGrapplingHooks();
                 if (Player.mount.Active)
                     Player.mount.Dismount(Player);
+            }
+
+            if (Main.myPlayer == Player.whoAmI)
+            {
+                MouseWorld = Main.MouseWorld;
+
+                if (Main.netMode == NetmodeID.MultiplayerClient)
+                    SyncData(MessageType.MouseWorld, Player.whoAmI, -1, Player.whoAmI);
             }
 
             /*if (Gold)
@@ -400,6 +412,18 @@ namespace MoreKatana
         public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
         {
             r = R; g = G; b = B; a = A;
+        }
+
+        public static void SyncMouseWorld(Mod mod, BinaryReader reader, int whoAmI)
+        {
+            byte player = reader.ReadByte();
+            MoreKatanaPlayer mk = Main.player[player].MKPlayer();
+            Vector2 vector = reader.ReadVector2();
+            bool rightClick = reader.ReadBoolean();
+            mk.MouseWorld = vector;
+            Main.player[player].controlUseTile = rightClick;
+            if (Main.netMode == NetmodeID.Server)
+                SyncData(MessageType.MouseWorld, player, -1, player);
         }
 
         public static void AddRenderDrawLayers(ref PlayerDrawSet drawinfo)

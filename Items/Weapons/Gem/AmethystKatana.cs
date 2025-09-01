@@ -2,6 +2,7 @@
 using MoreKatana.Items.Weapons.Metal;
 using MoreKatana.Projectiles.Gem;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -29,22 +30,20 @@ namespace MoreKatana.Items.Weapons.Gem
             Item.value = Item.sellPrice(0, 0, 22, 50);
             Item.rare = ItemRarityID.White;
 
-            Item.MKItem().SetKatanaDefaults(Item, 60);
+            Item.shoot = ModContent.ProjectileType<GemShards_Amethyst>();
+
+            Item.MKItem().SetKatanaDefaults(Item, 60 * 5);
         }
+
+        public override bool AltFunctionUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] >= TotalNumberOfGems;
 
         public override void PassiveSkill(Player player, bool equipment)
         {
-            int gem = ModContent.ProjectileType<GemShards_Amethyst>();
-            if (player.ownedProjectileCounts[gem] < TotalNumberOfGems && player.itemAnimation == 0)
-                Projectile.NewProjectile(player.GetSource_FromThis(), player.MountedCenter, Vector2.Zero, gem, Item.damage / 2, 0f, player.whoAmI);
+            if (player.ownedProjectileCounts[Item.shoot] < TotalNumberOfGems && player.itemAnimation == 0)
+                Projectile.NewProjectile(player.GetSource_FromThis(), player.MountedCenter, Vector2.Zero, Item.shoot, Item.damage / 2, 0f, player.whoAmI);
         }
 
-        public override void ActiveSkill(Player player)
-        {
-            Item.UseSound = SoundID.MaxMana;
-            Item.MKItem().ActivateCooldown(player);
-            MoreKatanaUtil.DrawRing(player.Center, [DustID.GemAmethyst], 24, 10f);
-        }
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
 
         public override void AddRecipes()
         {

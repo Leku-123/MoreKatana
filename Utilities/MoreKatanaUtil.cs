@@ -137,7 +137,7 @@ namespace MoreKatana
             {
                 int p = Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<GeneralDashSlash>(), damage, knockBack, player.whoAmI);
                 GeneralDashSlash dash = (GeneralDashSlash)Main.projectile[p].ModProjectile;
-                dash.DashDirection = dir == null ? player.SafeDirectionTo(Main.MouseWorld) : (Vector2)dir;
+                dash.DashDirection = dir == null ? player.SafeDirectionTo(player.MKPlayer().MouseWorld) : (Vector2)dir;
                 dash.DashDistance = distance;
                 dash.DashTimerMax = timer;
                 dash.SuddenStop = stop;

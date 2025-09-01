@@ -8,6 +8,7 @@ using MoreKatana.UI;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -30,6 +31,8 @@ namespace MoreKatana.Items
         private int AttackType;
         private int ComboExpireTimer = 0;
 
+        public SoundStyle? UseSound;
+
         /// <summary>
         /// 刀の基本的なステータス
         /// </summary>
@@ -42,6 +45,8 @@ namespace MoreKatana.Items
         {
             item.DamageType = DamageClass.Melee;
             item.useStyle = ItemUseStyleID.Shoot;
+
+            item.UseSound = null;
 
             item.autoReuse = true;
             item.useTurn = false;
@@ -73,7 +78,7 @@ namespace MoreKatana.Items
         {
             if (item.type == ItemID.Katana)
             {
-                ID = KatanaID.Iron;
+                ID = KatanaID.Kanata;
                 item.StatsModifiedBy.Add(Mod);
             }
             if (item.type == ItemID.Muramasa)
@@ -88,13 +93,13 @@ namespace MoreKatana.Items
         {
             if (item.type == ItemID.Katana && MoreKatanaConfig.Instance.KatanaRework)
             {
-                item.UseSound = SoundID.Item1;
+                UseSound = SoundID.Item1;
                 item.MKItem().AltDamage = 36;
                 SetKatanaDefaults(item, 60, true);
             }
             if (item.type == ItemID.Muramasa && MoreKatanaConfig.Instance.MuramasaRework)
             {
-                item.UseSound = SoundID.Item1;
+                UseSound = SoundID.Item1;
                 item.MKItem().AltDamage = 48;
                 SetKatanaDefaults(item, 60, true, combo: 2);
             }

@@ -7,7 +7,7 @@ namespace MoreKatana.Items.Weapons
 {
     public class TestKatana : KatanaItem
     {
-        public override KatanaID ID => KatanaID.TestKatana;
+        public override KatanaID ID => KatanaID.None;
 
         public override void SetDefaultsItem()
         {

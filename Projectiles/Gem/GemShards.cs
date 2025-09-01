@@ -4,6 +4,7 @@ using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Items.Weapons.Gem;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -25,12 +26,14 @@ namespace MoreKatana.Projectiles.Gem
             ItemType = itemType;
         }
 
-        private ref float Timer => ref Projectile.ai[0];
+        private ref float RotTimer => ref Projectile.ai[1];
+        private ref float SkillTimer => ref Projectile.ai[0];
 
-        public const int AssembleTime = 120;
-        public float AssembleCompletion => MathHelper.Clamp(Timer / AssembleTime, 0f, 1f);
+        public const float AssembleTime = 120f;
+        public float AssembleCompletion => MathHelper.Clamp(SkillTimer / AssembleTime, 0f, 1f);
 
         private bool activateSkill;
+        private bool flyaway;
 
         public override void SetStaticDefaults() => Main.projFrames[Projectile.type] = 3;
 
@@ -49,6 +52,10 @@ namespace MoreKatana.Projectiles.Gem
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 30;
         }
+
+        public override void SendExtraAI(BinaryWriter writer) => writer.Write(activateSkill);
+
+        public override void ReceiveExtraAI(BinaryReader reader) => activateSkill = reader.ReadBoolean();
 
         public override void AI()
         {
@@ -72,19 +79,33 @@ namespace MoreKatana.Projectiles.Gem
                 Projectile.rotation = Main.rand.NextFloat() * ((float)Math.PI * 2f);
             }
 
-            if (player.IsUsingAlt())
-                activateSkill = true;
-
-            if (activateSkill)
-                Timer++;
-
             AI_GetMyGroupIndexAndFillBlackList(null, out var index, out var totalIndexesInGroup);
 
-            if (Timer < AssembleTime)
+            if (player.IsUsingAlt())
+            {
+                if (!activateSkill)
+                {
+                    activateSkill = true;
+
+                    if (index == 0)
+                    {
+                        SoundEngine.PlaySound(SoundID.MaxMana, player.Center);
+                        MoreKatanaUtil.DrawRing(player.Center, [DustID.GemAmethyst], 24, 10f);
+                    }
+                }
+
+                Projectile.netUpdate = true;
+            }
+
+            RotTimer++;
+
+            if (activateSkill)
+                SkillTimer++;
+
+            if (AssembleCompletion != 1f)
             {
                 float aroundTime = !activateSkill ? 90 : 45;
-                float globalTimer = Main.GlobalTimeWrappedHourly * 24 * 2;
-                float f = (index / (float)totalIndexesInGroup + (globalTimer / aroundTime)) * ((float)Math.PI * 2f);
+                float f = (index / (float)totalIndexesInGroup + (RotTimer / aroundTime)) * ((float)Math.PI * 2f);
                 float scaleFactor = 18f + totalIndexesInGroup * 7f;
                 Vector2 vector = player.position - player.oldPosition;
                 Projectile.Center += vector;
@@ -108,58 +129,65 @@ namespace MoreKatana.Projectiles.Gem
                     else if (index == 1)
                         player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRot);
                 }
-
-            }
-            else if (Timer == AssembleTime)
-            {
-                if (Projectile.owner == Main.myPlayer)
-                {
-                    Vector2 direct = Projectile.DirectionTo(Main.MouseWorld);
-                    float speed = 25f;
-                    Projectile.velocity += direct * speed;
-                    Projectile.netUpdate = true;
-
-                    if (index == 0)
-                    {
-                        SoundEngine.PlaySound(MoreKatanaSounds.SwordSlash, player.Center);
-                        Projectile.NewProjectile(player.GetSource_ItemUse(player.ActiveItem()), Projectile.Center, Vector2.Normalize(Projectile.velocity), ModContent.ProjectileType<GeneralKatanaSwing>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
-                    }
-                }
-
-                Projectile.penetrate = 1;
-                Projectile.damage *= 2;
-                player.ScreenShake(5, 6);
-                SoundEngine.PlaySound(SoundID.Item29, player.Center);
-
-                for (int i = 0; i < 3; i++)
-                {
-                    int newDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustType, 0f, 0f, 100, default, 1.5f);
-                    Main.dust[newDust].scale *= Main.rand.NextFloat(1, 2.5f);
-                    Main.dust[newDust].noGravity = true;
-                    Main.dust[newDust].velocity = Vector2.Normalize(Projectile.velocity) * 10f;
-                    Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(30));
-                    Main.dust[newDust].velocity *= Main.rand.NextFloat(1f, 3f);
-                }
             }
             else
             {
-                int fourConst = 4;
-                for (int i = 0; i < 2; i++)
+                if (AssembleCompletion == 1f && SkillTimer == AssembleTime)
                 {
-                    float shortXVel = Projectile.velocity.X / 3f * i;
-                    float shortYVel = Projectile.velocity.Y / 3f * i;
-                    int newDust = Dust.NewDust(new Vector2(Projectile.position.X + fourConst, Projectile.position.Y + fourConst), Projectile.width - (fourConst * 2), Projectile.height - (fourConst * 2), DustType, 0f, 0f, 100, default, 1.2f);
-                    Main.dust[newDust].noGravity = true;
-                    Main.dust[newDust].velocity *= 0.1f;
-                    Main.dust[newDust].velocity += Projectile.velocity * 0.1f;
-                    Main.dust[newDust].position.X -= shortXVel;
-                    Main.dust[newDust].position.Y -= shortYVel;
+                    Projectile.penetrate = 1;
+                    Projectile.damage *= 2;
+
+                    Vector2 direct = Projectile.DirectionTo(player.MKPlayer().MouseWorld);
+                    float speed = 25f;
+                    Projectile.velocity += direct * speed;
+
+                    if (index == 0)
+                    {
+                        player.ScreenShake(5, 6);
+                        player.HeldItem?.MKItem().ActivateCooldown(player);
+                        SoundEngine.PlaySound(SoundID.Item29, player.Center);
+                        SoundEngine.PlaySound(MoreKatanaSounds.SwordSlash, player.Center);
+
+                        if (Projectile.owner == Main.myPlayer)
+                            Projectile.NewProjectile(player.GetSource_ItemUse(player.ActiveItem()), player.Center, Vector2.Normalize(Projectile.velocity), ModContent.ProjectileType<GeneralKatanaSwing>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                    }
+
+                    Projectile.netUpdate = true;
                 }
-                if (Main.rand.NextBool(5))
+
+                if (!flyaway)
                 {
-                    int newDust2 = Dust.NewDust(new Vector2(Projectile.position.X + fourConst, Projectile.position.Y + fourConst), Projectile.width - (fourConst * 2), Projectile.height - (fourConst * 2), DustType, 0f, 0f, 100, default, 0.6f);
-                    Main.dust[newDust2].velocity *= 0.25f;
-                    Main.dust[newDust2].velocity += Projectile.velocity * 0.5f;
+                    flyaway = true;
+                    for (int i = 0; i < 3; i++)
+                    {
+                        int newDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustType, 0f, 0f, 100, default, 1.5f);
+                        Main.dust[newDust].scale *= Main.rand.NextFloat(1, 2.5f);
+                        Main.dust[newDust].noGravity = true;
+                        Main.dust[newDust].velocity = Vector2.Normalize(Projectile.velocity) * 10f;
+                        Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(30));
+                        Main.dust[newDust].velocity *= Main.rand.NextFloat(1f, 3f);
+                    }
+                }
+                else
+                {
+                    int fourConst = 4;
+                    for (int i = 0; i < 2; i++)
+                    {
+                        float shortXVel = Projectile.velocity.X / 3f * i;
+                        float shortYVel = Projectile.velocity.Y / 3f * i;
+                        int newDust = Dust.NewDust(new Vector2(Projectile.position.X + fourConst, Projectile.position.Y + fourConst), Projectile.width - (fourConst * 2), Projectile.height - (fourConst * 2), DustType, 0f, 0f, 100, default, 1.2f);
+                        Main.dust[newDust].noGravity = true;
+                        Main.dust[newDust].velocity *= 0.1f;
+                        Main.dust[newDust].velocity += Projectile.velocity * 0.1f;
+                        Main.dust[newDust].position.X -= shortXVel;
+                        Main.dust[newDust].position.Y -= shortYVel;
+                    }
+                    if (Main.rand.NextBool(5))
+                    {
+                        int newDust2 = Dust.NewDust(new Vector2(Projectile.position.X + fourConst, Projectile.position.Y + fourConst), Projectile.width - (fourConst * 2), Projectile.height - (fourConst * 2), DustType, 0f, 0f, 100, default, 0.6f);
+                        Main.dust[newDust2].velocity *= 0.25f;
+                        Main.dust[newDust2].velocity += Projectile.velocity * 0.5f;
+                    }
                 }
             }
         }
@@ -183,7 +211,7 @@ namespace MoreKatana.Projectiles.Gem
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            if (!activateSkill || AssembleCompletion != 1)
+            if (!activateSkill || AssembleCompletion != 1f)
                 return;
 
             SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, target.Center);

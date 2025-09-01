@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using MoreKatana.Projectiles.Base;
 using MoreKatana.Projectiles.PrimTrails;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -11,7 +12,9 @@ namespace MoreKatana.Projectiles.Wood
     public class ChargingWoodenSwing : CustomSword
     {
         private float animationStoppedPoint;
-        private bool attackable;
+
+        public override void SafeSendExtraAI(BinaryWriter writer) => writer.Write(animationStoppedPoint);
+        public override void SafeReceiveExtraAI(BinaryReader reader) => animationStoppedPoint = reader.ReadSingle();
 
         public override void DrawTrail(int dir, int type)
         {
@@ -36,6 +39,7 @@ namespace MoreKatana.Projectiles.Wood
 
             ContinuousSwing = true;
             FixedDirection = true;
+            CreateSound = false;
             GetTextureValues();
         }
 
@@ -46,7 +50,7 @@ namespace MoreKatana.Projectiles.Wood
             switch (type)
             {
                 case 0:
-                    SwingStats(60, -0.4f, 0.5f);
+                    SwingStats(60, -0.4f, 0.5f, delay: 5f);
                     break;
                 case 1:
                     SwingStats(40, 0.8f, 0.1f, delay: 30f);
@@ -59,22 +63,11 @@ namespace MoreKatana.Projectiles.Wood
 
         public CurveSegment prepare = new CurveSegment(SineOutEasing, 0f, 0f, -0.1f); // 予備動作
         public CurveSegment execute = new CurveSegment(CircOutEasing, 0.2f, -0.1f, 1f); // 振り下ろし
-        public float SwingAnimation => CircOutEasing(Progress, 1); // 振り下ろしのアニメーション
+        public float SwingAnimation => PiecewiseAnimation(Progress, prepare, execute); // 振り下ろしのアニメーション
 
         public float RecoilAnimationDelay => MathHelper.SmoothStep(animationStoppedPoint, animationStoppedPoint - 0.05f, DelayProgress); // タイル接触時の反動のアニメーション
 
-        public override float GetProgress(int type)
-        {
-            if (type == 0)
-                return UpwardAnimation;
-            else
-            {
-                if (!SwingStop)
-                    return SwingAnimation;
-                else
-                    return RecoilAnimationDelay;
-            }
-        }
+        public override float GetProgress(int type) => type == 0 ? UpwardAnimation : !SwingStop ? SwingAnimation : RecoilAnimationDelay;
 
         public override void AdditionalAI(Item item, int type, bool onDelay)
         {
@@ -96,7 +89,7 @@ namespace MoreKatana.Projectiles.Wood
                     if (GetProgress(type) > 0f && Projectile.localAI[0] == 0)
                     {
                         Projectile.localAI[0] = 1;
-                        SoundEngine.PlaySound(SoundID.Item1, Owner.Center);
+                        SoundEngine.PlaySound(SwordItem.MKItem().UseSound, Owner.Center);
                     }
                 }
             }
@@ -105,24 +98,22 @@ namespace MoreKatana.Projectiles.Wood
                 // 振り上げ時
                 if (type == 0)
                 {
-                    // 攻撃可能なことを音とダストで知らせる
-                    if (!attackable)
+                    if (Projectile.localAI[1] == 0)
                     {
-                        attackable = true;
+                        Projectile.localAI[1] = 1;
                         SoundEngine.PlaySound(SoundID.MaxMana, Owner.Center);
                         DrawRing(Projectile.Center, [DustID.PlatinumCoin], 24, 4f);
                     }
 
-                    // マウスを右クリックしている場合はディレイを延長する
-                    // DelayTimerを更新し続けることでディレイを進ませない
-                    if (Projectile.owner == Main.myPlayer && Main.mouseRight)
+                    if (DelayTimer > 1f)
                     {
-                        DelayTimer = 0f;
-
-                        // ディレイを同期させる
-                        Projectile.localAI[1]++;
-                        if (Projectile.localAI[1] % 10 * Projectile.MaxUpdates == 0)
+                        // マウスを右クリックしている場合はディレイを延長する
+                        // DelayTimerを更新し続けることでディレイを進ませない
+                        if (Projectile.owner == Main.myPlayer && Main.mouseRight)
+                        {
+                            DelayTimer = 2f;
                             Projectile.netUpdate = true;
+                        }
                     }
 
                     // 発射体の位置をランダムで揺らす
@@ -149,6 +140,8 @@ namespace MoreKatana.Projectiles.Wood
                         Owner.ScreenShake(4, 10);
                         SoundEngine.PlaySound(SoundID.Dig, Owner.Center);
                     }
+
+                    Projectile.netUpdate = true;
                 }
             }
         }

@@ -4,6 +4,7 @@ using MoreKatana.Projectiles.PrimTrails;
 using System;
 using System.IO;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -116,6 +117,8 @@ namespace MoreKatana.Projectiles.Base
         /// <summary> 速度ボーナス </summary>
         protected float ModifiedAttackSpeed => !NoSpeedBonus ? Owner.GetTotalAttackSpeed(Projectile.DamageType) : 1f;
 
+        protected bool CreateSound = true;
+
         protected Player Owner => Main.player[Projectile.owner];
         protected Item SwordItem => Owner.ActiveItem();
         protected CustomSwordPrimTrail SwordTrail;
@@ -218,15 +221,23 @@ namespace MoreKatana.Projectiles.Base
             writer.Write7BitEncodedInt(SwordHeight);
             writer.WriteVector2(swordPos);
             writer.Write(startRotation);
+            writer.Write(hitTimer);
             writer.WriteVector2(SwingEllipse);
             writer.Write(SwingTime);
             writer.Write(SwingRange);
             writer.Write(ModifiedAngle);
             writer.Write((sbyte)SwingDirection);
+            writer.Write(SwingDelay);
             writer.Write(TrailColor.R);
             writer.Write(TrailColor.G);
             writer.Write(TrailColor.B);
             writer.Write(TrailColor.A);
+            SafeSendExtraAI(writer);
+        }
+
+        public virtual void SafeSendExtraAI(BinaryWriter writer)
+        {
+
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
@@ -235,15 +246,23 @@ namespace MoreKatana.Projectiles.Base
             SwordHeight = reader.Read7BitEncodedInt();
             swordPos = reader.ReadVector2();
             startRotation = reader.ReadSingle();
+            hitTimer = reader.Read7BitEncodedInt();
             SwingEllipse = reader.ReadVector2();
             SwingTime = reader.ReadSingle();
             SwingRange = reader.ReadSingle();
             ModifiedAngle = reader.ReadSingle();
             SwingDirection = reader.ReadSByte();
+            SwingDelay = reader.ReadSingle();
             TrailColor.R = (byte)reader.Read7BitEncodedInt();
             TrailColor.G = (byte)reader.Read7BitEncodedInt();
             TrailColor.B = (byte)reader.Read7BitEncodedInt();
             TrailColor.A = (byte)reader.Read7BitEncodedInt();
+            SafeReceiveExtraAI(reader);
+        }
+
+        public virtual void SafeReceiveExtraAI(BinaryReader reader)
+        {
+
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -295,6 +314,12 @@ namespace MoreKatana.Projectiles.Base
                 Projectile.localNPCHitCooldown = (int)(Projectile.localNPCHitCooldown / ModifiedAttackSpeed * Projectile.MaxUpdates);
 
                 Projectile.netUpdate = true;
+            }
+
+            if (CreateSound)
+            {
+                CreateSound = false;
+                SoundEngine.PlaySound(SwordItem.MKItem().UseSound, Owner.position);
             }
 
             hitTimer--;
@@ -410,8 +435,7 @@ namespace MoreKatana.Projectiles.Base
                         if (!FixedDirection) // 全ての振りの方向を固定しない場合
                         {
                             // Projectile.velocityをマウスの方向にする
-                            if (Main.myPlayer == Projectile.owner)
-                                Projectile.velocity = Owner.MountedCenter.DirectionTo(Main.MouseWorld);
+                            Projectile.velocity = Owner.MountedCenter.DirectionTo(Owner.MKPlayer().MouseWorld);
                         }
 
                         SwingType++;

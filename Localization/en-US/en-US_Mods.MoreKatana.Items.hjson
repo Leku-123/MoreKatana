@@ -282,3 +282,9 @@ EnchantedKatana: {
 	DisplayName: Enchanted Katana
 	Tooltip: ""
 }
+
+IronKatana: {
+	FunctionText: Mods.MoreKatana.Items.IronKatana.FunctionText
+	DisplayName: Iron Katana
+	Tooltip: ""
+}
