@@ -7,12 +7,12 @@
 | Muramasa | **WIP** | もりりん | マルチ未対応 |
 
 # -------- Gem --------
-| Amethyst Katana | **WIP** | もりりん | マルチ未対応 |
-| Ruby Katana     | **WIP** | もりりん | マルチ未対応 |
-| Emerald Katana  | **WIP** | もりりん | マルチ未対応 |
-| Sapphire Katana | **WIP** | もりりん | マルチ未対応 |
-| Topaz Katana    | **WIP** | もりりん | マルチ未対応 |
-| Diamond Katana  | **WIP** | もりりん | マルチ未対応 |
+| Amethyst Katana | **Done** | もりりん ||
+| Ruby Katana     | **Done** | もりりん ||
+| Emerald Katana  | **Done** | もりりん ||
+| Sapphire Katana | **Done** | もりりん ||
+| Topaz Katana    | **Done** | もりりん ||
+| Diamond Katana  | **Done** | もりりん ||
 | Katana of Ornaments | 未実装 | もりりん ||
 
 # -------- Metal --------

@@ -1,0 +1,36 @@
+﻿using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.DataStructures;
+
+namespace MoreKatana.Items.Weapons.Metal
+{
+    public abstract class BaseGemKatana : KatanaItem
+    {
+        public readonly int TotalNumberOfGems;
+
+        public BaseGemKatana(int totalNumberOfGems)
+        {
+            TotalNumberOfGems = totalNumberOfGems;
+        }
+
+        public override void SetDefaultsItem()
+        {
+            Item.width = 52;
+            Item.height = 60;
+
+            Item.MKItem().AltDamage = Item.damage * 2;
+            Item.MKItem().UseSound = MoreKatanaSounds.SwordSlash;
+            Item.MKItem().SetKatanaDefaults(Item, 60);
+        }
+
+        public override bool AltFunctionUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] >= TotalNumberOfGems;
+
+        public override void PassiveSkill(Player player, bool equipment)
+        {
+            if (player.ownedProjectileCounts[Item.shoot] < TotalNumberOfGems && player.itemAnimation == 0)
+                Projectile.NewProjectile(player.GetSource_FromThis(), player.MountedCenter, Vector2.Zero, Item.shoot, Item.damage / 2, 0f, player.whoAmI);
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
+    }
+}

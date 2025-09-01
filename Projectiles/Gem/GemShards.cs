@@ -83,18 +83,17 @@ namespace MoreKatana.Projectiles.Gem
 
             if (player.IsUsingAlt())
             {
-                if (!activateSkill)
-                {
-                    activateSkill = true;
-
-                    if (index == 0)
-                    {
-                        SoundEngine.PlaySound(SoundID.MaxMana, player.Center);
-                        MoreKatanaUtil.DrawRing(player.Center, [DustID.GemAmethyst], 24, 10f);
-                    }
-                }
-
+                activateSkill = true;
                 Projectile.netUpdate = true;
+            }
+
+            if (SkillTimer == 1)
+            {
+                if (index == 0)
+                {
+                    SoundEngine.PlaySound(SoundID.MaxMana, player.Center);
+                    MoreKatanaUtil.DrawRing(player.Center, [DustType], 24, 10f);
+                }
             }
 
             RotTimer++;
@@ -135,7 +134,7 @@ namespace MoreKatana.Projectiles.Gem
                 if (AssembleCompletion == 1f && SkillTimer == AssembleTime)
                 {
                     Projectile.penetrate = 1;
-                    Projectile.damage *= 2;
+                    Projectile.damage = player.HeldItem.MKItem().AltDamage;
 
                     Vector2 direct = Projectile.DirectionTo(player.MKPlayer().MouseWorld);
                     float speed = 25f;

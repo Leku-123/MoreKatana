@@ -246,7 +246,7 @@ namespace MoreKatana.Projectiles.Base
             SwordHeight = reader.Read7BitEncodedInt();
             swordPos = reader.ReadVector2();
             startRotation = reader.ReadSingle();
-            hitTimer = reader.Read7BitEncodedInt();
+            hitTimer = reader.ReadInt32();
             SwingEllipse = reader.ReadVector2();
             SwingTime = reader.ReadSingle();
             SwingRange = reader.ReadSingle();
