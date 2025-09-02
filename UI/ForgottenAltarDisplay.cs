@@ -12,16 +12,26 @@ using Terraria.UI.Chat;
 
 namespace MoreKatana.UI
 {
+    /// <summary>
+    /// 石像に近づいてUIが非表示(Main.hideUI)になる可能性があるので
+    /// UIの表示のタスクとは別のタスクでレンダリングします
+    /// </summary>
     public class ForgottenAltarDisplay
     {
+        /// <summary> UI描画のタイマー </summary>
         private static int DisplayTimer;
+        /// <summary> UIのフェードアウトが始まるまでの時間 </summary>
         private const int DisplayTimeCount = 3 * 60;
-        private static int DisplayScrollNumber;
+        /// <summary> UIのテキスト </summary>
         private static string DisplayText = "";
+        /// <summary> テキストの表示される長さ </summary>
+        private static int TextScrollNumber;
+        /// <summary> テキストの長さ </summary>
         private static float MaxTextLength;
 
         public static void Draw(SpriteBatch spriteBatch, Player player)
         {
+            // テキスト
             DisplayText = MoreKatanaUtil.GetTextValue($"Biomes.{nameof(ForgottenAltarBiome)}.DisplayName");
 
             if (DisplayTimer == 0)
@@ -35,34 +45,41 @@ namespace MoreKatana.UI
             if (!player.InModBiome<ForgottenAltarBiome>())
                 return;
 
-            void TickSound() => SoundEngine.PlaySound(MoreKatanaSounds.DialogueTick, player.Center);
-
             if (DisplayTimer <= DisplayTimeCount)
             {
-                player.velocity *= 0.85f;
-
-                if (DisplayScrollNumber < DisplayText.Length)
+                if (TextScrollNumber < DisplayText.Length)
                 {
                     if (DisplayTimer % 3 == 0)
                     {
-                        TickSound();
-                        DisplayScrollNumber++;
+                        SoundEngine.PlaySound(MoreKatanaSounds.DialogueTick, player.Center);
+                        TextScrollNumber++;
                     }
                 }
             }
             else
             {
-                if (DisplayScrollNumber > 0)
+                if (TextScrollNumber > 0)
                 {
                     if (DisplayTimer % 3 == 0)
                     {
-                        TickSound();
-                        DisplayScrollNumber--;
+                        SoundEngine.PlaySound(MoreKatanaSounds.DialogueTick, player.Center);
+                        TextScrollNumber--;
                     }
                 }
             }
 
-            DisplayText = DisplayText.Substring(0, DisplayScrollNumber);
+            if (TextScrollNumber > 0)
+            {
+                player.velocity.X = 0f;
+                player.position = player.oldPosition;
+
+                player.immune = true;
+                player.immuneTime = 60;
+                player.immuneNoBlink = true;
+                player.noFallDmg = true;
+            }
+
+            DisplayText = DisplayText.Substring(0, TextScrollNumber);
 
             var font = FontAssets.MouseText.Value;
             Vector2 textArea = font.MeasureString(DisplayText);
@@ -89,15 +106,13 @@ namespace MoreKatana.UI
 
             ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, DisplayText, textPosition - Vector2.UnitX * textArea, Color.White, 0f, textArea * new Vector2(0f, 0.5f), new Vector2(2f));
 
-            spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null, null, Main.GameViewMatrix.TransformationMatrix);
+            spriteBatch.SetBlendState(SpriteSortMode.Deferred, BlendState.Additive, null, null, null);
             for (int i = 0; i < 4; i++)
             {
-                Vector2 drawpos = textPosition + new Vector2(0, 2 * ((float)Math.Sin(Main.GlobalTimeWrappedHourly * 4) / 2)).RotatedBy(i * MathHelper.PiOver2);
+                Vector2 drawpos = textPosition + new Vector2(0, 3 * ((float)Math.Sin(Main.GlobalTimeWrappedHourly * 4) / 2)).RotatedBy(i * MathHelper.PiOver2);
                 ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, DisplayText, drawpos - Vector2.UnitX * textArea, Color.White, 0f, textArea * new Vector2(0f, 0.5f), new Vector2(2f));
             }
-            spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.GameViewMatrix.TransformationMatrix);
+            spriteBatch.SetBlendState(SpriteSortMode.Deferred, null, null, null, null);
         }
     }
 }

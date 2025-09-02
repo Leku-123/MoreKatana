@@ -83,8 +83,11 @@ namespace MoreKatana.Projectiles.Gem
 
             if (player.IsUsingAlt())
             {
-                activateSkill = true;
-                Projectile.netUpdate = true;
+                if (!activateSkill)
+                {
+                    activateSkill = true;
+                    Projectile.netUpdate = true;
+                }
             }
 
             if (SkillTimer == 1)

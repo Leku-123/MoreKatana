@@ -26,9 +26,8 @@ namespace MoreKatana
         #endregion
 
         #region -------- Player Utils --------
-        /// <summary>
-        /// プレイヤーが現在選択しているアイテム
-        /// </summary>
+        /// <summary> プレイヤーが現在選択しているアイテム </summary>
+        //public static Item ActiveItem(this Player player) => Main.mouseItem.IsAir ? player.HeldItem : Main.mouseItem;
         public static Item ActiveItem(this Player player) => player.HeldItem;
 
         public static bool IsUsingAlt(this Player player) => player.altFunctionUse == 2;
@@ -235,6 +234,16 @@ namespace MoreKatana
         #endregion
 
         #region -------- Drawing Utils --------
+        public static void SetBlendState(this SpriteBatch spriteBatch, SpriteSortMode sortMode, BlendState blendState, SamplerState samplerState, DepthStencilState depthStencilState, RasterizerState rasterizerState, Effect effect, Matrix transformMatrix)
+        {
+            spriteBatch.End();
+            spriteBatch.Begin(sortMode, blendState, samplerState, depthStencilState, rasterizerState, effect, transformMatrix);
+        }
+        public static void SetBlendState(this SpriteBatch spriteBatch, SpriteSortMode sortMode, BlendState blendState, SamplerState samplerState, DepthStencilState depthStencilState, RasterizerState rasterizerState) 
+            => spriteBatch.SetBlendState(sortMode, blendState, samplerState, depthStencilState, rasterizerState, null, Main.UIScaleMatrix);
+        public static void SetBlendState(this SpriteBatch spriteBatch, SpriteSortMode sortMode, BlendState blendState) 
+            => spriteBatch.SetBlendState(sortMode, blendState, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
+
         /// <summary>
         /// リング状にダストをスポーンする
         /// </summary>
@@ -355,8 +364,7 @@ namespace MoreKatana
         /// <param name="blendMode"></param>
         public static void DrawCompression(Texture2D texture, Color color, float rotation, float opacity, Vector2 Scale, float Direction, float CircularRotation, BlendState blendMode)
         {
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, blendMode, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+            Main.spriteBatch.SetBlendState(SpriteSortMode.Immediate, blendMode);
             Matrix viewMatrix;
             Matrix projectionMatrix;
             ShaderHelpers.CalculatePerspectiveMatricies(out viewMatrix, out projectionMatrix, 0);

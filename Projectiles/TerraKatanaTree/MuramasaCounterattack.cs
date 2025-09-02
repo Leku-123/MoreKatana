@@ -163,15 +163,14 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             public override void Initialization(Item item, int type)
             {
-                Projectile.localNPCHitCooldown = (int)SwingUseTime * Projectile.MaxUpdates;
+                Projectile.localNPCHitCooldown = -1; // 1振りで同じターゲットに2回ヒットしないようにする
                 Projectile.Opacity = 0.5f;
                 GetTextureValues();
             }
 
             public override bool SwingPattern(Item item, int type)
             {
-                SwingStats(SwingUseTime, 0.5f);
-                DelayTimer = SwingDelayTime;
+                SwingStats(25f, 0.5f);
                 return base.SwingPattern(item, type);
             }
 

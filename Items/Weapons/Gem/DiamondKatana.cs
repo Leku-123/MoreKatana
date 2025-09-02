@@ -18,7 +18,7 @@ namespace MoreKatana.Items.Weapons.Gem
             Item.useAnimation = 24;
             Item.damage = 19;
             Item.knockBack = 5;
-            Item.value = Item.sellPrice(0, 1, 80, 0);
+            Item.value = Item.sellPrice(0, 1, 80);
             Item.rare = ItemRarityID.Green;
             Item.shoot = ModContent.ProjectileType<GemShards_Diamond>();
             base.SetDefaultsItem();

@@ -27,12 +27,12 @@
 | Obsidian Katana | **Done** | かつ丼 ||
 
 # -------- Misc --------
-| Enchanted Katana | **Done** | かつ丼||
-| SkyKatana        | 未実装 | かつ丼||
+| Enchanted Katana | **WIP** | かつ丼 | 要マルチ確認 |
+| SkyKatana        | 未実装 | かつ丼 ||
 
 # -------- TerraKatanaTree --------
 | Grass Katana (Kusanagi) | **Done** | もりりん ||
-| Volcano Katana (Kagutsuchi) | **WIP** | かつ丼 ||
+| Volcano Katana (Kagutsuchi) | **WIP** | かつ丼 | 発射体制作、要マルチ確認 |
 | Sacred Naginata (Gaeborg) | **WIP** | もりりん | マルチ未対応 |
 | TrueSacred Naginata (True Gaeborg) | **WIP** | もりりん | マルチ未対応 |
 

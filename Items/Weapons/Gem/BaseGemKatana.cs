@@ -2,15 +2,15 @@
 using Terraria;
 using Terraria.DataStructures;
 
-namespace MoreKatana.Items.Weapons.Metal
+namespace MoreKatana.Items.Weapons.Gem
 {
     public abstract class BaseGemKatana : KatanaItem
     {
-        public readonly int TotalNumberOfGems;
+        public readonly int TotalGems;
 
-        public BaseGemKatana(int totalNumberOfGems)
+        public BaseGemKatana(int totalGems)
         {
-            TotalNumberOfGems = totalNumberOfGems;
+            TotalGems = totalGems;
         }
 
         public override void SetDefaultsItem()
@@ -23,12 +23,12 @@ namespace MoreKatana.Items.Weapons.Metal
             Item.MKItem().SetKatanaDefaults(Item, 60);
         }
 
-        public override bool AltFunctionUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] >= TotalNumberOfGems;
+        public override bool AltFunctionUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] >= TotalGems;
 
         public override void PassiveSkill(Player player, bool equipment)
         {
-            if (player.ownedProjectileCounts[Item.shoot] < TotalNumberOfGems && player.itemAnimation == 0)
-                Projectile.NewProjectile(player.GetSource_FromThis(), player.MountedCenter, Vector2.Zero, Item.shoot, Item.damage / 2, 0f, player.whoAmI);
+            if (player.ownedProjectileCounts[Item.shoot] < TotalGems && player.itemAnimation == 0)
+                Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, Vector2.Zero, Item.shoot, Item.damage / 2, 0f, player.whoAmI);
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;

@@ -18,7 +18,7 @@ namespace MoreKatana.Items.Weapons.Gem
             Item.useAnimation = 24;
             Item.damage = 17;
             Item.knockBack = 5;
-            Item.value = Item.sellPrice(0, 0, 90, 0);
+            Item.value = Item.sellPrice(0, 0, 90);
             Item.rare = ItemRarityID.Blue;
             Item.shoot = ModContent.ProjectileType<GemShards_Emerald>();
             base.SetDefaultsItem();

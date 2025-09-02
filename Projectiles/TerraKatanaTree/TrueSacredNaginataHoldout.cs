@@ -231,8 +231,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             MoreKatanaUtil.DrawCompression(ring, circleColor, rot, Projectile.Opacity, new Vector2(2, 1), 1, Timer / 10f, BlendState.Additive);
             Main.spriteBatch.Draw(ring, position + offset, null, circleColor, 0f, ring.Size() / 2, 0.5f * PrepareCompletion, SpriteEffects.None, 0);
 
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+            Main.spriteBatch.SetBlendState(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
             // ゲージの描画
             if (PrepareCompletion == 1f && FireCompletion != 1f)

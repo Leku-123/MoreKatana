@@ -33,6 +33,8 @@ namespace MoreKatana
         public int CounterattackCD;
         public int ShieldCD;
 
+        public int NoUsingItems;
+
         public int ScreenShakeTimer;
         public int ScreenShakeStrength;
         public float Flipping;
@@ -64,6 +66,8 @@ namespace MoreKatana
                 DashTimer = 0f;
             if (ScreenShakeTimer > 0)
                 ScreenShakeTimer--;
+            if (NoUsingItems > 0)
+                NoUsingItems--;
             Flipping = 0f;
             R = G = B = A = 1f;
             muramasaCounterattack = false;
@@ -76,6 +80,7 @@ namespace MoreKatana
         {
             ResetEffects();
             GeneralDash = false;
+            NoUsingItems = 0;
             ShieldCD = 0;
             HolyShieldDurability = 0;
             TrueHolyShieldDurability = 0;

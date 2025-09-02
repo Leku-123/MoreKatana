@@ -18,7 +18,7 @@ namespace MoreKatana.Items.Weapons.Gem
             Item.useAnimation = 24;
             Item.damage = 18;
             Item.knockBack = 5;
-            Item.value = Item.sellPrice(0, 1, 35, 0);
+            Item.value = Item.sellPrice(0, 1, 35);
             Item.rare = ItemRarityID.Blue;
             Item.shoot = ModContent.ProjectileType<GemShards_Ruby>();
             base.SetDefaultsItem();
