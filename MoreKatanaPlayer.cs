@@ -45,6 +45,7 @@ namespace MoreKatana
 
         public bool muramasaCounterattack;
         public bool enchantedHurtEffect;
+        public bool skyKatanaJumpEffect;
         public bool holyShield;
         public int HolyShieldDurability;
         public bool trueHolyShield;
@@ -242,7 +243,7 @@ namespace MoreKatana
 
         public override void OnExtraJumpStarted(ExtraJump jump, ref bool playSound)
         {
-
+            jump.GetDurationMultiplier(Player);
         }
 
         public override void ModifyHurt(ref Player.HurtModifiers modifiers)

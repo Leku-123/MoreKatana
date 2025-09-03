@@ -27,4 +27,5 @@ public enum KatanaID
     Hallowed,
     TrueHallowed,
     Enchanted,
+    Sky,
 }
