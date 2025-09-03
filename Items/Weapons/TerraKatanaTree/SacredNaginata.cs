@@ -27,7 +27,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
             Item.useTime = 35;
             Item.useAnimation = 35;
-            Item.UseSound = SoundID.Item169;
+            Item.MKItem().UseSound = SoundID.Item169;
 
             Item.damage = 45;
             Item.knockBack = 4.5f;
@@ -59,8 +59,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         public override void ActiveSkill(Player player)
         {
-            Item.UseSound = SoundID.MaxMana;
-            Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, player.SafeDirectionTo(Main.MouseWorld), ModContent.ProjectileType<SacredNaginataHoldout>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI);
+            Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, player.SafeDirectionTo(player.MKPlayer().MouseWorld), ModContent.ProjectileType<SacredNaginataHoldout>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI);
         }
 
         public override void MeleeEffects(Player player, Rectangle hitbox)

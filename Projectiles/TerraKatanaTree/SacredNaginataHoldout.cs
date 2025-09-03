@@ -100,8 +100,13 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             const float lerp = 0.08f;
             float offset = 60f;
             Vector2 normalizeVel = Vector2.Normalize(Projectile.velocity); //発射体の速度の単位ベクトル
-            Projectile.velocity = Vector2.Lerp(normalizeVel, Vector2.Normalize(Main.MouseWorld - Owner.MountedCenter), lerp);
-            Projectile.velocity.Normalize();
+            Vector2 aim = Vector2.Normalize(Owner.MKPlayer().MouseWorld - Owner.MountedCenter);
+            if (aim.HasNaNs())
+                aim = -Vector2.UnitY;
+            aim = Vector2.Normalize(Vector2.Lerp(normalizeVel, aim, lerp));
+            if (aim != Projectile.velocity)
+                Projectile.netUpdate = true;
+            Projectile.velocity = aim;
             Projectile.position += Projectile.velocity * offset;
 
             // 発射体の回転と向き
@@ -111,7 +116,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             // 発射位置を剣先に調節する
             float fireOffset = 100f;
-            Vector2 firePos = Projectile.position + (Vector2.Normalize(Projectile.velocity) * fireOffset);
+            Vector2 firePos = Projectile.position + (normalizeVel * fireOffset);
 
             if (PrepareCompletion < 0.8f) // 準備
             {
