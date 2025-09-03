@@ -29,5 +29,11 @@ namespace MoreKatana.Items.Weapons.Misc
             Item.MKItem().SetKatanaDefaults(Item, 60);
         }
 
+        public override void PassiveSkill(Player player, bool equipment)
+        {
+            player.MKPlayer().skyKatanaJumpEffect = true;
+            player.slowFall = true;
+        }
+
     }
 }
