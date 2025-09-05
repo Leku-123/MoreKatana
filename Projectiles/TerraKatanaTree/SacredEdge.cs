@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -13,7 +14,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public const int FadeOutLength = 10;
 
-        public bool fadeOut;
+        private bool fadeOut;
 
         public override void SetStaticDefaults()
         {
@@ -36,6 +37,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10;
         }
+
+        public override void SendExtraAI(BinaryWriter writer) => writer.Write(fadeOut);
+        public override void ReceiveExtraAI(BinaryReader reader) => fadeOut = reader.ReadBoolean();
 
         public override void AI()
         {

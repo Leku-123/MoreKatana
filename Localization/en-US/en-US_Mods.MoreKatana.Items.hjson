@@ -288,3 +288,9 @@ IronKatana: {
 	DisplayName: Iron Katana
 	Tooltip: ""
 }
+
+SkyKatana: {
+	FunctionText: Mods.MoreKatana.Items.SkyKatana.FunctionText
+	DisplayName: Sky Katana
+	Tooltip: ""
+}

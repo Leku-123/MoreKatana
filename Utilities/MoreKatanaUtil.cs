@@ -30,8 +30,15 @@ namespace MoreKatana
         //public static Item ActiveItem(this Player player) => Main.mouseItem.IsAir ? player.HeldItem : Main.mouseItem;
         public static Item ActiveItem(this Player player) => player.HeldItem;
 
+        /// <summary> "Player.altFunctionUse == 2"の簡略型 </summary>
         public static bool IsUsingAlt(this Player player) => player.altFunctionUse == 2;
 
+        /// <summary>
+        /// 発射体をホールド出来ない状態かどうかのチェック
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="needsToHold"> channelを考えない場合はここをfalseにします </param>
+        /// <returns></returns>
         public static bool CantUseHoldout(this Player player, bool needsToHold = true) => player == null || !player.active || player.dead || (!player.channel && needsToHold) || player.CCed || player.noItems;
 
         /// <summary>
@@ -51,7 +58,7 @@ namespace MoreKatana
         /// フリップエフェクト
         /// </summary>
         /// <param name="player"></param>
-        /// <param name="value"></param>
+        /// <param name="value"> どの程度フリップさせるか </param>
         public static void FlipEffect(this Player player, float value)
         {
             MoreKatanaPlayer mk = player.MKPlayer();
@@ -252,7 +259,7 @@ namespace MoreKatana
         /// <param name="density"></param>
         /// <param name="speed"></param>
         /// <param name="color"></param>
-        /// <param name="dustSize"></param>
+        /// <param name="dustScale"></param>
         /// <param name="noLight"></param>
         public static void DrawRing(Vector2 position, int[] dustType, int density, float speed, Color color = default, float dustScale = 1f, bool noLight = false)
         {
@@ -291,20 +298,30 @@ namespace MoreKatana
             }
         }
 
+        /// <summary>
+        /// 簡素なゲージを描画する。自動でスクリーン位置に変換される
+        /// </summary>
+        /// <param name="drawPos"></param>
+        /// <param name="ratio"></param>
+        /// <param name="frontColor"></param>
+        /// <param name="lightColor"></param>
+        /// <param name="backColor"></param>
+        /// <param name="dustType"></param>
         public static void DrawGauge(Vector2 drawPos, float ratio, Color frontColor, Color? lightColor = null, Color? backColor = null, int dustType = -1)
         {
+            Texture2D texture = TextureAssets.MagicPixel.Value;
             Vector2 backSize = new Vector2(54, 8);
             Vector2 frontSize = new Vector2(50, 4);
-            Vector2 backPos = new Vector2(drawPos.X - backSize.X * 0.5f, drawPos.Y - backSize.Y * 0.5f);
-            Vector2 frontPos = new Vector2(drawPos.X - frontSize.X * 0.5f, drawPos.Y - frontSize.Y * 0.5f);
+            Vector2 backPos = new Vector2(drawPos.X - backSize.X * 0.5f, drawPos.Y - backSize.Y * 0.5f) - Main.screenPosition;
+            Vector2 frontPos = new Vector2(drawPos.X - frontSize.X * 0.5f, drawPos.Y - frontSize.Y * 0.5f) - Main.screenPosition;
             Color c1 = backColor == null ? Color.Black : (Color)backColor;
             Color c2 = frontColor;
             Color c3 = lightColor == null ? Color.White : (Color)lightColor;
 
-            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, backPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), c1, 0f, Vector2.Zero, new Vector2(backSize.X, backSize.Y), SpriteEffects.None, 0f);
-            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, frontPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), c2, 0f, Vector2.Zero, new Vector2(frontSize.X * ratio, frontSize.Y), SpriteEffects.None, 0f);
-            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, frontPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), c3 * 0.5f, 0f, Vector2.Zero, new Vector2(frontSize.X * ratio, frontSize.Y / 2), SpriteEffects.None, 0f);
-            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, frontPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), c3 * 0.5f, 0f, Vector2.Zero, new Vector2(frontSize.X * ratio, frontSize.Y / 4), SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(texture, backPos, new Rectangle(0, 0, 1, 1), c1, 0f, Vector2.Zero, new Vector2(backSize.X, backSize.Y), SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(texture, frontPos, new Rectangle(0, 0, 1, 1), c2, 0f, Vector2.Zero, new Vector2(frontSize.X * ratio, frontSize.Y), SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(texture, frontPos, new Rectangle(0, 0, 1, 1), c3 * 0.5f, 0f, Vector2.Zero, new Vector2(frontSize.X * ratio, frontSize.Y / 2), SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(texture, frontPos, new Rectangle(0, 0, 1, 1), c3 * 0.5f, 0f, Vector2.Zero, new Vector2(frontSize.X * ratio, frontSize.Y / 4), SpriteEffects.None, 0f);
 
             if (dustType != -1)
             {
