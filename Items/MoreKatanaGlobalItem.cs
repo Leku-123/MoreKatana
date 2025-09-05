@@ -72,7 +72,9 @@ namespace MoreKatana.Items
         /// クールダウンを有効化する
         /// </summary>
         /// <param name="player"></param>
-        public void ActivateCooldown(Player player) => player.AddBuff(ModContent.BuffType<KatanaArtsCD>(), ActiveSkillDelay);
+        public void ActivateCooldown(Player player) => player.MKPlayer().ActiveSkillCD = player.MKPlayer().ActiveSkillCDMax = ActiveSkillDelay;
+
+        //public void ActivateCooldown(Player player) => player.AddBuff(ModContent.BuffType<KatanaArtsCD>(), ActiveSkillDelay);
 
         public override void SetDefaults(Item item)
         {
@@ -111,11 +113,11 @@ namespace MoreKatana.Items
             {
                 if (item.type is ItemID.Katana or ItemID.Muramasa)
                 {
-                    return !player.HasBuff(ModContent.BuffType<KatanaArtsCD>()) && VanillaAltFunctionUse(item, player);
+                    return player.MKPlayer().ActiveSkillCD == 0 && VanillaAltFunctionUse(item, player);
                 }
                 else
                 {
-                    return !player.HasBuff(ModContent.BuffType<KatanaArtsCD>()) && (item.ModItem as KatanaItem).AltFunctionUseItem(player);
+                    return player.MKPlayer().ActiveSkillCD == 0 && (item.ModItem as KatanaItem).AltFunctionUseItem(player);
                 }
             }
             return base.AltFunctionUse(item, player);

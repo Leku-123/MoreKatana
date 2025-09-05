@@ -15,6 +15,7 @@ namespace MoreKatana.Assets.ExtraTextures
         public static Asset<Texture2D> MagicCircleTexture;
         public static Asset<Texture2D> MagicRingTexture;
         public static Asset<Texture2D> ShieldTexture;
+        public static Asset<Texture2D> StarSparkleTexture;
         public static Asset<Texture2D>[] SwordTrailTexture = new Asset<Texture2D>[5];
         public static Asset<Texture2D> EnergyTrailTexture;
         public static Asset<Texture2D> FlameTrailTexture;
@@ -29,6 +30,7 @@ namespace MoreKatana.Assets.ExtraTextures
             MagicCircleTexture = Request<Texture2D>(AdditivePath + "MagicCircle", AssetRequestMode.ImmediateLoad);
             MagicRingTexture = Request<Texture2D>(AdditivePath + "MagicRing", AssetRequestMode.ImmediateLoad);
             ShieldTexture = Request<Texture2D>(AdditivePath + "Shield", AssetRequestMode.ImmediateLoad);
+            StarSparkleTexture = Request<Texture2D>(AdditivePath + "StarSparkle", AssetRequestMode.ImmediateLoad);
 
             for (int i = 0; i < SwordTrailTexture.Length; i++)
                 SwordTrailTexture[i] = Request<Texture2D>(TrailPath + "SwordSlashTrail_" + i, AssetRequestMode.ImmediateLoad);
@@ -47,6 +49,7 @@ namespace MoreKatana.Assets.ExtraTextures
             MagicCircleTexture = null;
             MagicRingTexture = null;
             ShieldTexture = null;
+            StarSparkleTexture = null;
 
             for (int i = 0; i < SwordTrailTexture.Length; i++)
                 SwordTrailTexture[i] = null;

@@ -20,6 +20,12 @@ namespace MoreKatana
 {
     public class MoreKatanaPlayer : ModPlayer
     {
+        // -------- Cooldown --------
+        public int ActiveSkillCD;
+        public int ActiveSkillCDMax;
+        public int CounterattackCD;
+        public int ShieldCD;
+
         // -------- Dash --------
         public bool DashState;
         public bool GeneralDash;
@@ -29,19 +35,23 @@ namespace MoreKatana
         public float DashTimerMax;
         public Vector2 DashDirection, DashStartPos, DashEndPos;
 
-        // -------- Cooldown --------
-        public int CounterattackCD;
-        public int ShieldCD;
-
-        public int NoUsingItems;
-
+        // -------- Screen Shake --------
         public int ScreenShakeTimer;
         public int ScreenShakeStrength;
+
+        // -------- Player Draw --------
         public float Flipping;
         public float R, G, B, A;
-        public int TimePotionSick;
+
+        // -------- World Effect --------
         public int ForgottenAltarEffect;
         public int ForgottenAltarMusicOverride;
+
+        // -------- Buff --------
+        public int TimePotionSick;
+
+        // -------- Item --------
+        public int NoUsingItems;
 
         public bool muramasaCounterattack;
         public bool enchantedHurtEffect;
@@ -53,6 +63,7 @@ namespace MoreKatana
         public bool terraShield;
         public int TerraShieldDurability;
 
+        // -------- Sync --------
         public Vector2 MouseWorld;
 
         public override void OnEnterWorld()
@@ -115,6 +126,7 @@ namespace MoreKatana
                     Player.mount.Dismount(Player);
             }
 
+            // マウス位置の同期
             if (Main.myPlayer == Player.whoAmI)
             {
                 MouseWorld = Main.MouseWorld;
@@ -122,37 +134,28 @@ namespace MoreKatana
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                     SyncData(MessageType.MouseWorld, Player.whoAmI, -1, Player.whoAmI);
             }
-
-            /*if (Gold)
-            {
-                long coin = Utils.CoinsCount(out bool over, Player.inventory);
-                int bonus = 0;
-                if (over || coin >= 10000)
-                    bonus = 10;
-                else if (coin > 999)
-                    bonus = (int)(coin /= 1000);
-                Player.statDefense += 3 + bonus;
-            }*/
         }
 
         public override void PostUpdateMiscEffects()
         {
+            // クールダウン
+            if (ActiveSkillCD > 0)
+                ActiveSkillCD--;
             if (CounterattackCD > 0)
                 CounterattackCD--;
             if (ShieldCD > 0)
                 ShieldCD--;
 
+            // エンチャカタナのシーン効果
             if (ForgottenAltarEffect > 0)
             {
-                Player.dontStarveShader = true;
+                Player.dontStarveShader = true; // TO-DO できればシェーダーを自作する
                 Vector2 screenCenter = Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
                 Vector2 startingPosition = new Vector2(Main.rand.NextFloat(screenCenter.X - Main.screenWidth / 2, screenCenter.X + Main.screenWidth / 2), screenCenter.Y - Main.screenHeight / 2);
 
-                if (Main.rand.NextBool(20))
-                {
-                    if (Main.netMode != NetmodeID.Server)
-                        Gore.NewGore(Player.GetSource_FromThis(), startingPosition, Vector2.Zero, GoreID.TreeLeaf_VanityTreeSakura, 1f);
-                }
+                // 桜の花びらを画面全体に舞わせる
+                if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(20))
+                    Gore.NewGore(Player.GetSource_FromThis(), startingPosition, Vector2.Zero, GoreID.TreeLeaf_VanityTreeSakura, 1f);
 
                 ForgottenAltarEffect--;
             }
@@ -209,6 +212,13 @@ namespace MoreKatana
 
         public override void PostUpdate()
         {
+            if (ActiveSkillCD == 1)
+            {
+                SoundEngine.PlaySound(SoundID.Item37, Player.position);
+                Rectangle textPos = new Rectangle((int)Player.position.X, (int)Player.position.Y - 20, Player.width, Player.height);
+                CombatText.NewText(textPos, Color.OrangeRed, "Cooldown over!");
+            }
+
             if (ShieldCD == 1)
                 SoundEngine.PlaySound(SoundID.MaxMana, Player.position);
             if (ShieldCD <= 0)

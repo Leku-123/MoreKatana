@@ -20,7 +20,7 @@ namespace MoreKatana.Items.Weapons.Gem
 
             Item.MKItem().AltDamage = Item.damage * 2;
             Item.MKItem().UseSound = MoreKatanaSounds.SwordSlash;
-            Item.MKItem().SetKatanaDefaults(Item, 60);
+            Item.MKItem().SetKatanaDefaults(Item, 60 * 5);
         }
 
         public override bool AltFunctionUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] >= TotalGems;

@@ -27,7 +27,7 @@ namespace MoreKatana
 
         //[BackgroundColor(192, 54, 64, 192)]
         [DefaultValue(true)]
-        public bool AccSlotPosLock { get; set; }
+        public bool UIPosLock { get; set; }
 
         //[BackgroundColor(192, 54, 64, 192)]
         //[SliderColor(224, 165, 56, 128)]
@@ -40,6 +40,14 @@ namespace MoreKatana
         [Range(0f, 100f)]
         [DefaultValue(KatanaSlot.DefaultPosY)]
         public float CustomAccSlotPosY { get; set; }
+
+        [Range(0f, 100f)]
+        [DefaultValue(ActiveSkillCooldownUI.DefaultPosX)]
+        public float CustomActiveSkillCDPosX { get; set; }
+
+        [Range(0f, 100f)]
+        [DefaultValue(ActiveSkillCooldownUI.DefaultPosY)]
+        public float CustomActiveSkillCDPosY { get; set; }
 
         [Header("Miscellaneous")]
 

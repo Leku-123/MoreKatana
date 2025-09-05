@@ -29,8 +29,8 @@ Configs: {
 			Tooltip: If you change this, please reload the world
 		}
 
-		AccSlotPosLock: {
-			Label: Lock Katana Slot Position
+		UIPosLock: {
+			Label: Lock UI Position
 			Tooltip: ""
 		}
 
@@ -51,6 +51,16 @@ Configs: {
 
 		ForgottenAltar: {
 			Label: Forgotten Altar
+			Tooltip: ""
+		}
+
+		CustomActiveSkillCDPosX: {
+			Label: Custom Active Skill C D Pos X
+			Tooltip: ""
+		}
+
+		CustomActiveSkillCDPosY: {
+			Label: Custom Active Skill C D Pos Y
 			Tooltip: ""
 		}
 	}

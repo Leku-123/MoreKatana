@@ -37,7 +37,7 @@ namespace MoreKatana.UI
         {
             get
             {
-                if (!Config.AccSlotPosLock)
+                if (!Config.UIPosLock)
                     return Location;
 
                 // カスタム位置がロックされている場合nullを返す
@@ -82,7 +82,7 @@ namespace MoreKatana.UI
 
             Location = screenPos;
 
-            if (!Config.AccSlotPosLock)
+            if (!Config.UIPosLock)
             {
                 bool changed = false;
                 if (Config.CustomAccSlotPosX != screenRatioPosition.X)
