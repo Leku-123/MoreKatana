@@ -146,7 +146,7 @@ namespace MoreKatana
             if (ShieldCD > 0)
                 ShieldCD--;
 
-            // エンチャカタナのシーン効果
+            // ForgottenAltarのシーン効果
             if (ForgottenAltarEffect > 0)
             {
                 Player.dontStarveShader = true; // TO-DO できればシェーダーを自作する
