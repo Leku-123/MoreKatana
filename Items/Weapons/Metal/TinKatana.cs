@@ -11,8 +11,6 @@ namespace MoreKatana.Items.Weapons.Metal
 
         public override void SetDefaultsItem()
         {
-            Item.width = 44;
-            Item.height = 50;
             Item.useTime = 20;
             Item.useAnimation = 20;
             Item.damage = 12;

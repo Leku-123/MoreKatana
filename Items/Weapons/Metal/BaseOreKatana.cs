@@ -18,6 +18,8 @@ namespace MoreKatana.Items.Weapons.Metal
 
         public override void SetDefaultsItem()
         {
+            Item.width = 56;
+            Item.height = 56;
             Item.MKItem().AltDamage = Item.damage * 2;
             Item.rare = ItemRarityID.White;
             Item.MKItem().UseSound = SoundID.Item1;

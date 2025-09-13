@@ -6,7 +6,7 @@ using Terraria.UI;
 namespace MoreKatana.UI
 {
     [Autoload(Side = ModSide.Client)]
-    internal class WeaponsOverhaulUI : ModSystem
+    internal class MoreKatanaUI : ModSystem
     {
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
         {
