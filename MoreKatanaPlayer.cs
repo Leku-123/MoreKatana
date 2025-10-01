@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Dusts;
 using MoreKatana.Items.Weapons.Misc;
 using MoreKatana.Items.Weapons.TerraKatanaTree;
+using MoreKatana.Projectiles.Misc;
 using MoreKatana.Projectiles.TerraKatanaTree;
 using MoreKatana.UI;
 using System;
@@ -56,6 +57,7 @@ namespace MoreKatana
         public bool muramasaCounterattack;
         public bool enchantedHurtEffect;
         public bool skyKatanaJumpEffect;
+        public bool isExtraJumping;
         public bool holyShield;
         public int HolyShieldDurability;
         public bool trueHolyShield;
@@ -86,6 +88,8 @@ namespace MoreKatana
             enchantedHurtEffect = false;
             holyShield = false;
             trueHolyShield = false;
+            if (Player.velocity.Y == 0)
+                isExtraJumping = false;
         }
 
         public override void UpdateDead()
@@ -96,6 +100,7 @@ namespace MoreKatana
             ShieldCD = 0;
             HolyShieldDurability = 0;
             TrueHolyShieldDurability = 0;
+            isExtraJumping = false;
         }
 
         public override void ModifyScreenPosition()
@@ -212,6 +217,7 @@ namespace MoreKatana
 
         public override void PostUpdate()
         {
+            ExtraJumpProjCreate();
             if (ActiveSkillCD == 1)
             {
                 SoundEngine.PlaySound(SoundID.Item37, Player.position);
@@ -253,7 +259,28 @@ namespace MoreKatana
 
         public override void OnExtraJumpStarted(ExtraJump jump, ref bool playSound)
         {
-            jump.GetDurationMultiplier(Player);
+            //jump.GetDurationMultiplier(Player);
+            if (skyKatanaJumpEffect)
+            {
+                if (jump is not FlipperJump && !Player.controlMount)
+                    isExtraJumping = true;
+            }
+        }
+
+        public override void OnExtraJumpEnded(ExtraJump jump)
+        {
+            isExtraJumping = false;
+        }
+
+        /// <summary>
+        /// ２段目以降のジャンプ時にダメージ判定を発生させる。
+        /// </summary>
+        public void ExtraJumpProjCreate()
+        {
+            if (isExtraJumping)
+            {
+                Projectile.NewProjectile(Player.GetSource_FromThis(), Player.MountedCenter, new Vector2(0, 0.5f), ModContent.ProjectileType<SkyJumpDamageEffect>(), 10, 0f, Player.whoAmI);
+            }
         }
 
         public override void ModifyHurt(ref Player.HurtModifiers modifiers)

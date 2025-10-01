@@ -10,11 +10,11 @@ namespace MoreKatana.Projectiles.Misc
         public override void SetDefaults()
         {
             //とりあえず瓶雲用にプロパティを調整
-            Projectile.width = 90;
+            Projectile.width = 60;
             Projectile.height = 24;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 120;
+            Projectile.timeLeft = 30;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.tileCollide = true;
