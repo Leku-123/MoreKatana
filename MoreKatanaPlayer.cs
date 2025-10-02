@@ -277,10 +277,9 @@ namespace MoreKatana
         /// </summary>
         public void ExtraJumpProjCreate()
         {
-            if (isExtraJumping)
-            {
-                Projectile.NewProjectile(Player.GetSource_FromThis(), Player.MountedCenter, new Vector2(0, 0.5f), ModContent.ProjectileType<SkyJumpDamageEffect>(), 10, 0f, Player.whoAmI);
-            }
+            if (!isExtraJumping) return;
+            if (Player.whoAmI != Main.myPlayer) return;
+            Projectile.NewProjectile(Player.GetSource_FromThis(), Player.MountedCenter, new Vector2(0, 0.5f), ModContent.ProjectileType<SkyJumpDamageEffect>(), 10, 0f, Player.whoAmI);
         }
 
         public override void ModifyHurt(ref Player.HurtModifiers modifiers)
