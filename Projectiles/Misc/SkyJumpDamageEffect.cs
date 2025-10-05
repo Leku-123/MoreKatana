@@ -3,6 +3,10 @@ using Terraria.ModLoader;
 
 namespace MoreKatana.Projectiles.Misc
 {
+    /// <summary>
+    /// スカイ刀のジャンプ時攻撃。
+    /// <br>二段ジャンプ時に当たり判定を加える
+    /// </summary>
     public class SkyJumpDamageEffect : ModProjectile
     {
         public override string Texture => MoreKatana.EmptyTexture;
@@ -14,7 +18,7 @@ namespace MoreKatana.Projectiles.Misc
             Projectile.height = 24;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 30;
+            Projectile.timeLeft = 15;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.tileCollide = true;
