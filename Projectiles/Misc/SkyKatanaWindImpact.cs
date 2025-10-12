@@ -16,7 +16,6 @@ namespace MoreKatana.Projectiles.Misc
             Projectile.width = 120;
             Projectile.height = 360;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.damage = 1;
             Projectile.knockBack = 25f;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 120;

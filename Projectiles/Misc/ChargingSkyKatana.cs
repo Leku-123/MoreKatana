@@ -121,7 +121,7 @@ namespace MoreKatana.Projectiles.Misc
                 if (!impacted)
                 {
                     impacted = true;
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.position, new(Projectile.direction * 30f, 0f), ModContent.ProjectileType<SkyKatanaWindImpact>(), 1, 25f, Projectile.owner);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.position, new(Projectile.direction * 30f, 0f), ModContent.ProjectileType<SkyKatanaWindImpact>(), Projectile.damage, 25f, Projectile.owner);
                 }
             }
         }
