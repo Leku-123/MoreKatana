@@ -239,7 +239,13 @@ GrassKatana: {
 VolcanoKatana: {
 	DisplayName: Volcano Katana
 	Tooltip: ""
-	FunctionText: Mods.MoreKatana.Items.VolcanoKatana.FunctionText
+	FunctionText:
+		'''
+		Katana Spell [c/fd3e03:<Ball of Volcano>]
+		- Fire a fireball as an attack.
+		Katana Arts [c/fe7902:<Volcanic Cinder>]
+		- It fires volcanic projectiles whose number increases based on how long the sword is held aloft.
+		'''
 }
 
 SacredNaginata: {
