@@ -86,5 +86,13 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
                 Bomber = false;
             }
         }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+                .AddIngredient(ItemID.HellstoneBar, 20)
+                .AddTile(TileID.Anvils)
+                .Register();
+        }
     }
 }

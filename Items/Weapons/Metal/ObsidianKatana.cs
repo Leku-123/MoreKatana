@@ -22,7 +22,7 @@ namespace MoreKatana.Items.Weapons.Metal
         private bool FireTrigger = false;
 
         public static Asset<Texture2D> FireTexture;
-       
+
         public override void SetStaticDefaults()
         {
             FireTexture = ModContent.Request<Texture2D>(Texture + "_Fire");
@@ -142,6 +142,15 @@ namespace MoreKatana.Items.Weapons.Metal
             Vector2 origin = texture.Size() / 2f;
             spriteBatch.Draw(texture, position, null, lightColor, rotation, origin, scale, SpriteEffects.None, 0);
             return false;
+        }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+                .AddIngredient(ItemID.Obsidian, 15)
+                .AddIngredient(ItemID.LavaBucket, 5)
+                .AddTile(TileID.Anvils)
+                .Register();
         }
     }
 }
