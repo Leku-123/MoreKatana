@@ -52,9 +52,9 @@ Muramasa.FunctionText:
 	'''
 
 TestKatana: {
-	FunctionText: Mods.MoreKatana.Items.TestKatana.FunctionText
 	DisplayName: Test Katana
 	Tooltip: Test Item
+	FunctionText: Mods.MoreKatana.Items.TestKatana.FunctionText
 }
 
 WoodenKatana: {
@@ -237,9 +237,9 @@ GrassKatana: {
 }
 
 VolcanoKatana: {
-	FunctionText: Mods.MoreKatana.Items.VolcanoKatana.FunctionText
 	DisplayName: Volcano Katana
 	Tooltip: ""
+	FunctionText: Mods.MoreKatana.Items.VolcanoKatana.FunctionText
 }
 
 SacredNaginata: {
@@ -271,26 +271,26 @@ TrueSacredNaginata: {
 }
 
 ObsidianKatana: {
-	FunctionText: Mods.MoreKatana.Items.ObsidianKatana.FunctionText
 	DisplayName: Obsidian Katana
 	AltName: Magma Katana
 	Tooltip: ""
+	FunctionText: Mods.MoreKatana.Items.ObsidianKatana.FunctionText
 }
 
 EnchantedKatana: {
-	FunctionText: Mods.MoreKatana.Items.EnchantedKatana.FunctionText
 	DisplayName: Enchanted Katana
 	Tooltip: ""
+	FunctionText: Mods.MoreKatana.Items.EnchantedKatana.FunctionText
 }
 
 IronKatana: {
-	FunctionText: Mods.MoreKatana.Items.IronKatana.FunctionText
 	DisplayName: Iron Katana
 	Tooltip: ""
+	FunctionText: Mods.MoreKatana.Items.IronKatana.FunctionText
 }
 
 SkyKatana: {
-	FunctionText: Mods.MoreKatana.Items.SkyKatana.FunctionText
 	DisplayName: Sky Katana
 	Tooltip: ""
+	FunctionText: Mods.MoreKatana.Items.SkyKatana.FunctionText
 }
