@@ -50,23 +50,23 @@ Configs: {
 		}
 
 		ForgottenAltar: {
-			Label: Forgotten Altar
+			Label: Enable Forgotten Altar
 			Tooltip: ""
 		}
 
 		CustomActiveSkillCDPosX: {
-			Label: Custom Active Skill C D Pos X
+			Label: Custom Active Skill Cool Down Gauge Pos X
 			Tooltip: ""
 		}
 
 		CustomActiveSkillCDPosY: {
-			Label: Custom Active Skill C D Pos Y
+			Label: Custom Active Skill Cool Down Gauge Pos Y
 			Tooltip: ""
 		}
 	}
 }
 
-WorldGen.ForgottenAltarMessage: Building the Forgotten Altar
+WorldGen.ForgottenAltarMessage: "Forgotten Altar is being forgotten..."
 
 Tiles: {
 	SamuraiStatue.MapEntry: Samurai Statue
