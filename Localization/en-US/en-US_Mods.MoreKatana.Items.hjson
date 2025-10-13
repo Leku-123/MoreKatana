@@ -300,3 +300,9 @@ SkyKatana: {
 	Tooltip: ""
 	FunctionText: Mods.MoreKatana.Items.SkyKatana.FunctionText
 }
+
+LightsSlasher: {
+	FunctionText: Mods.MoreKatana.Items.LightsSlasher.FunctionText
+	DisplayName: Lights Slasher
+	Tooltip: ""
+}
