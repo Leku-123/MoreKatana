@@ -42,7 +42,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         {
             if (type == 2)
             {
-                Projectile.localNPCHitCooldown = item.useAnimation / 3;
+                Projectile.localNPCHitCooldown = item.useAnimation / 3 * Projectile.MaxUpdates;
                 NoSpeedBonus = true;
             }
             else

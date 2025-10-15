@@ -2,6 +2,7 @@
 using MoreKatana.Projectiles.Base;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -130,6 +131,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             return false;
         }
 
+        /// <summary>
+        /// マルチ未対応
+        /// </summary>
         public class MuramasaCounterattackSwing : CustomSword
         {
             public const float SwingUseTime = 10f;
@@ -141,6 +145,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             private Projectile HostProj => Main.projectile[hostIndex];
 
+            public override void SafeSendExtraAI(BinaryWriter writer) => writer.Write7BitEncodedInt(hostIndex);
+            public override void SafeReceiveExtraAI(BinaryReader reader) => hostIndex = reader.Read7BitEncodedInt();
+
             public override void SetSwordPosition(Vector2 v)
             {
                 // 発射体の位置と向き
@@ -151,9 +158,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 // 発射体の回転を調節する
                 Projectile.rotation = (Projectile.Center - HostProj.Center).ToRotation()
                     + (MathHelper.PiOver2 - MathHelper.PiOver4 * Projectile.spriteDirection);
-
-                // クローンの保持する発射体のIDを更新する
-                clone.heldProj = Projectile.whoAmI;
 
                 // クローンの腕の回転の設定をする
                 float armRot = (HostProj.Center - Projectile.Center).ToRotation() + (float)Math.PI / 2f;

@@ -308,10 +308,10 @@ namespace MoreKatana.Projectiles.Base
                 // 基本的にはプレイヤーの背中側になる
                 startRotation = (-Projectile.velocity).ToRotation();
 
+                Projectile.localNPCHitCooldown = (int)(Projectile.localNPCHitCooldown / ModifiedAttackSpeed * Projectile.MaxUpdates);
+
                 // 初期設定
                 Initialization(SwordItem, SwingType);
-
-                Projectile.localNPCHitCooldown = (int)(Projectile.localNPCHitCooldown / ModifiedAttackSpeed * Projectile.MaxUpdates);
 
                 Projectile.netUpdate = true;
             }

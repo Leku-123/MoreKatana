@@ -1,6 +1,5 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MoreKatana.Buffs;
 using MoreKatana.Items.Weapons;
 using MoreKatana.Projectiles;
 using MoreKatana.Projectiles.TerraKatanaTree;
@@ -96,13 +95,13 @@ namespace MoreKatana.Items
             if (item.type == ItemID.Katana && MoreKatanaConfig.Instance.KatanaRework)
             {
                 UseSound = SoundID.Item1;
-                item.MKItem().AltDamage = 36;
+                AltDamage = 36;
                 SetKatanaDefaults(item, 60, true);
             }
             if (item.type == ItemID.Muramasa && MoreKatanaConfig.Instance.MuramasaRework)
             {
                 UseSound = SoundID.Item1;
-                item.MKItem().AltDamage = 48;
+                AltDamage = 48;
                 SetKatanaDefaults(item, 60, true, combo: 2);
             }
         }

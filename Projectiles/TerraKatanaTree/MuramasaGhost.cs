@@ -5,11 +5,13 @@ using MoreKatana.Projectiles.Base;
 using MoreKatana.Projectiles.PrimTrails;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static MoreKatana.MoreKatanaUtil;
 
 namespace MoreKatana.Projectiles.TerraKatanaTree
 {
@@ -21,8 +23,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         private const float LifeTime = 10 * 60;
         private const int ComboCount = 2;
         private int swingType;
-
-        public bool Attackable => Owner.ItemAnimationJustStarted && !Owner.IsUsingAlt();
 
         public Player clone;
 
@@ -48,6 +48,16 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.ContinuouslyUpdateDamageStats = true;
             Projectile.MKProjectile().SourceIsItemUse = true;
             Projectile.MKProjectile().ActivateCD = true;
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+
         }
 
         public override void AI()
@@ -86,7 +96,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 clone.compositeBackArm = Owner.compositeBackArm;
                 clone.compositeFrontArm = Owner.compositeFrontArm;
 
-                if (Attackable) // プレイヤーの攻撃が開始された場合
+                if (Owner.ItemAnimationJustStarted && !Owner.IsUsingAlt()) // プレイヤーの攻撃が開始された場合
                 {
                     Owner.ScreenShake(4, 4);
                     SoundEngine.PlaySound(SoundID.Item71, Owner.Center);
@@ -95,7 +105,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     // スイングのホストとなる発射体とクローンを設定し、コンボのカウントを変更する
                     if (Projectile.owner == Main.myPlayer)
                     {
-                        int p = Projectile.NewProjectile(Owner.GetSource_ItemUse(ActiveItem), Projectile.Center, Projectile.SafeDirectionTo(Main.MouseWorld), proj, Projectile.damage * 2, Projectile.knockBack, Projectile.owner, swingType);
+                        int p = Projectile.NewProjectile(Owner.GetSource_ItemUse(ActiveItem), Projectile.Center, Projectile.SafeDirectionTo(Owner.MKPlayer().MouseWorld), proj, Projectile.damage * 2, Projectile.knockBack, Projectile.owner, swingType);
                         MuramasaGhostSwing swing = (MuramasaGhostSwing)Main.projectile[p].ModProjectile;
                         swing.hostIndex = Projectile.whoAmI;
                         swing.clone = clone;
@@ -121,7 +131,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Main.dust[newDust].noGravity = true;
             }
 
-            // 光
+            // 発光
             Lighting.AddLight(Projectile.position, Color.White.ToVector3());
         }
 
@@ -161,10 +171,11 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Color bloomColor = Color.Blue;
             Main.EntitySpriteDraw(bloom, position, null, bloomColor with { A = 0 } * 0.5f, Projectile.rotation, bloom.Size() / 2f, new Vector2(1f, 1f), 0, 0);
 
+            // クローンの傾きを制御する
             float rot = Owner.velocity.X * 0.03f;
             rot = Math.Clamp(rot, -0.3f, 0.3f);
 
-            // 拍動するプレイヤーのテクスチャを描画
+            // 拍動するクローンのテクスチャを描画
             float backglowAmount = 12f;
             for (int i = 0; i < backglowAmount; i++)
             {
@@ -175,17 +186,20 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Main.PlayerRenderer.DrawPlayer(Main.Camera, clone, Projectile.position + backglowOffset, rot, clone.fullRotationOrigin, 0f, 1f);
             }
 
-            // 本体のプレイヤーのテクスチャを描画
+            // 本体のクローンのテクスチャを描画
             clone.DrawColorEffect(Color.SkyBlue.ToVector3(), 0.5f);
             Main.PlayerRenderer.DrawPlayer(Main.Camera, clone, Projectile.position, rot, clone.fullRotationOrigin, 0f, 1f);
 
-            // ゲージの描画
+            // ゲージを描画
             Vector2 gaugePos = Owner.Center + new Vector2(0, 50);
-            MoreKatanaUtil.DrawGauge(gaugePos, Projectile.timeLeft / LifeTime, Color.DeepSkyBlue, dustType: DustID.DungeonWater);
+            DrawGauge(gaugePos, Projectile.timeLeft / LifeTime, Color.DeepSkyBlue, dustType: DustID.DungeonWater);
 
             return false;
         }
 
+        /// <summary>
+        /// マルチ対応出来ねぇんだけど
+        /// </summary>
         public class MuramasaGhostSwing : CustomSword
         {
             public Player clone;
@@ -194,35 +208,35 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             private Projectile HostProj => Main.projectile[hostIndex];
 
-            private CustomSwordPrimTrail trail;
+            public override void SetDefaults()
+            {
+                base.SetDefaults();
+                Projectile.ownerHitCheck = false;
+            }
+
+            public override void SafeSendExtraAI(BinaryWriter writer) => writer.Write7BitEncodedInt(hostIndex);
+            public override void SafeReceiveExtraAI(BinaryReader reader) => hostIndex = reader.Read7BitEncodedInt();
 
             public override void DrawTrail(int dir, int type)
             {
-                if (Timer != 0f)
+                if (GetProgress(type) >= 0f)
                 {
                     // トレイルを描画する
                     if (!PrimsCreated)
                     {
                         PrimsCreated = true;
-                        trail = new CustomSwordPrimTrail(Projectile, TrailColor, SwordLength, (int)(SwingTime * 1.5f));
-                        MoreKatana.primitives.CreateTrail(trail);
+                        SwordTrail = new CustomSwordPrimTrail(Projectile, TrailColor, SwordLength, (int)(SwingTime * 1.5f));
+                        MoreKatana.primitives.CreateTrail(SwordTrail);
                     }
 
-                    if (Main.netMode != NetmodeID.Server)
-                    {
-                        // トレイルの設定
-                        trail.TextureType = 2;
-                        trail.Direction = clone.direction * -dir;
-                        trail.PrimCenter = clone.MountedCenter;
-                        trail.Points.Add(Projectile.Center - clone.MountedCenter);
-
-                        // 剣を描画しない場合トレイルを消す
-                        if (Progress >= 0.98f)
-                            trail?.OnDestroy();
-                    }
+                    // トレイルの情報を更新する
+                    UpdateTrail(SwordTrail, GetProgress(type) >= 0.95f, type: 2, width: SwordLength);
                 }
             }
 
+            /// <summary>
+            /// このスイングはプレイヤー中心ではなく発射体を中心に動くため、このメソッドをオーバーライドする
+            /// </summary>
             public override void SetSwordPosition(Vector2 v)
             {
                 // 発射体の位置と向き
@@ -230,13 +244,10 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 clone.direction = Projectile.direction;
                 Projectile.spriteDirection = Projectile.direction;
 
-                // 発射体の回転を調節する。Backspinも考慮する
+                // 発射体の回転を調節する
                 Projectile.rotation = (Projectile.Center - HostProj.Center).ToRotation()
                     + (MathHelper.PiOver2 - MathHelper.PiOver4 * Projectile.spriteDirection)
                     * SwingDirection;
-
-                // クローンの保持する発射体のIDを更新する
-                clone.heldProj = Projectile.whoAmI;
 
                 // クローンの腕の回転の設定をする
                 float armRot = (HostProj.Center - Projectile.Center).ToRotation() + (float)Math.PI / 2f;
@@ -246,38 +257,35 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             public override void Initialization(Item item, int type)
             {
-                Projectile.localNPCHitCooldown = Owner.itemAnimationMax / 2 * Projectile.MaxUpdates;
+                Projectile.localNPCHitCooldown = -1; // 1振りで同じターゲットに2回ヒットしないようにする
+                Projectile.Opacity = 0.5f;
                 GetTextureValues();
             }
 
             public override bool SwingPattern(Item item, int type)
             {
-                float num = Owner.itemAnimationMax;
-                SwingStats(num, 0.5f, backspin: type % 2 != 0);
-
-                DelayTimer = num;
-
+                SwingStats(item.useAnimation * 2, 0.5f, backspin: type % 2 != 0);
                 return base.SwingPattern(item, type);
             }
+
+            public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f); // 振りのアニメーション
+            public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f); // 振りの減衰のアニメーション
+            public override float GetProgress(int type) => PiecewiseAnimation(Progress, execute, unwind);
 
             public override void AdditionalAI(Item item, int type, bool onDelay)
             {
                 // ホストとなるクローンの発射体が無い場合は消滅
-                if (Owner.ownedProjectileCounts[ModContent.ProjectileType<MuramasaGhost>()] == 0)
+                if (!HostProj.active || HostProj.type != ModContent.ProjectileType<MuramasaGhost>())
                 {
                     Projectile.Kill();
                     return;
                 }
 
-                Projectile.Opacity = 0.8f;
-
                 // スケールをスイング進行度によって調節する
-                if (Progress < 0.5f)
-                    Projectile.scale = MathHelper.SmoothStep(0.5f, 3f, Progress * 2f);
+                if (GetProgress(type) < 0.5f)
+                    Projectile.scale = MathHelper.SmoothStep(0.5f, 3f, GetProgress(type) * 2f);
                 else
-                    Projectile.scale = MathHelper.SmoothStep(3f, 1f, (Progress * 2f) - 1f);
-
-                trail.ModifiedWidth = SwordLength;
+                    Projectile.scale = MathHelper.SmoothStep(3f, 1f, (GetProgress(type) * 2f) - 1f);
             }
 
             public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => overPlayers.Add(index);
@@ -298,14 +306,14 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 SpriteEffects spriteEffects2 = SwingDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
                 // 背面にアウトラインを描画
-                MoreKatanaUtil.DrawBackglow(texture, position, rectangle, trailColor with { A = 0 }, Projectile.rotation, 2f, new Vector2(Projectile.scale), spriteEffects | spriteEffects2);
+                DrawBackglow(texture, position, rectangle, trailColor with { A = 0 }, Projectile.rotation, 2f, new Vector2(Projectile.scale), spriteEffects | spriteEffects2);
 
                 // 本体の描画
                 Main.EntitySpriteDraw(texture, position, rectangle, color, Projectile.rotation, origin, Projectile.scale, spriteEffects | spriteEffects2, 0);
 
                 // 剣先にスパークルを描画
                 Vector2 offset = Utils.DirectionTo(HostProj.Center, Projectile.Center) * 40 * Projectile.scale;
-                MoreKatanaUtil.DrawPrettyStarSparkle(1f, SpriteEffects.None, position + offset, glowColor * (1 - Progress), trailColor * (1 - Progress),
+                DrawPrettyStarSparkle(1f, SpriteEffects.None, position + offset, glowColor * (1 - Progress), trailColor * (1 - Progress),
                         0.5f, 0f, 0.1f, 0.9f, 1f, 0f, new Vector2(Projectile.scale, Projectile.scale * 2.5f), new Vector2(1f, 1f));
 
                 return false;

@@ -9,7 +9,7 @@ namespace MoreKatana.Projectiles.PrimTrails
 {
     public class SlashEffectPrimTrail : PrimTrail
     {
-        public SlashEffectPrimTrail(Projectile projectile, Color color, int width = 20, int cap = 50)
+        public SlashEffectPrimTrail(Projectile projectile, Color color, int width = 40, int cap = 50)
         {
             Entity = projectile;
             EntityType = projectile.type;
