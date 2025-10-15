@@ -241,16 +241,15 @@ namespace MoreKatana
         #endregion
 
         #region -------- Drawing Utils --------
-        public static void SetBlendState(this SpriteBatch spriteBatch, SpriteSortMode sortMode, BlendState blendState, SamplerState samplerState, DepthStencilState depthStencilState, RasterizerState rasterizerState, Effect effect, Matrix transformMatrix)
+        public static void SetEndBegin(this SpriteBatch spriteBatch, SpriteSortMode sortMode, BlendState blendState, SamplerState samplerState, DepthStencilState depthStencilState, RasterizerState rasterizerState, Effect effect, Matrix transformMatrix)
         {
             spriteBatch.End();
             spriteBatch.Begin(sortMode, blendState, samplerState, depthStencilState, rasterizerState, effect, transformMatrix);
         }
-        public static void SetBlendState(this SpriteBatch spriteBatch, SpriteSortMode sortMode, BlendState blendState, SamplerState samplerState, DepthStencilState depthStencilState, RasterizerState rasterizerState) 
-            => spriteBatch.SetBlendState(sortMode, blendState, samplerState, depthStencilState, rasterizerState, null, Main.UIScaleMatrix);
-        public static void SetBlendState(this SpriteBatch spriteBatch, SpriteSortMode sortMode, BlendState blendState) 
-            => spriteBatch.SetBlendState(sortMode, blendState, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
-
+        public static void SetEndBegin(this SpriteBatch spriteBatch, SpriteSortMode sortMode, BlendState blendState, SamplerState samplerState, DepthStencilState depthStencilState, RasterizerState rasterizerState) 
+            => spriteBatch.SetEndBegin(sortMode, blendState, samplerState, depthStencilState, rasterizerState, null, Main.UIScaleMatrix);
+        public static void SetEndBegin(this SpriteBatch spriteBatch, SpriteSortMode sortMode, BlendState blendState) 
+            => spriteBatch.SetEndBegin(sortMode, blendState, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
         /// <summary>
         /// リング状にダストをスポーンする
         /// </summary>
@@ -352,7 +351,7 @@ namespace MoreKatana
         /// <param name="fatness"></param>
         public static void DrawPrettyStarSparkle(float opacity, SpriteEffects dir, Vector2 drawpos, Color drawColor, Color shineColor, float flareCounter, float fadeInStart, float fadeInEnd, float fadeOutStart, float fadeOutEnd, float rotation, Vector2 scale, Vector2 fatness)
         {
-            Texture2D texture2D = TextureAssets.Extra[98].Value;
+            Texture2D texture2D = TextureAssets.Extra[ExtrasID.SharpTears].Value;
             Color color1 = shineColor * opacity * 0.5f;
             color1.A = 0;
             Vector2 origin = texture2D.Size() / 2f;
@@ -381,7 +380,7 @@ namespace MoreKatana
         /// <param name="blendMode"></param>
         public static void DrawCompression(Texture2D texture, Color color, float rotation, float opacity, Vector2 Scale, float Direction, float CircularRotation, BlendState blendMode)
         {
-            Main.spriteBatch.SetBlendState(SpriteSortMode.Immediate, blendMode);
+            Main.spriteBatch.SetEndBegin(SpriteSortMode.Immediate, blendMode);
             Matrix viewMatrix;
             Matrix projectionMatrix;
             ShaderHelpers.CalculatePerspectiveMatricies(out viewMatrix, out projectionMatrix, 0);

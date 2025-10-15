@@ -20,8 +20,8 @@ namespace MoreKatana.Items.Weapons.Metal
         {
             Item.width = 56;
             Item.height = 56;
-            Item.MKItem().AltDamage = Item.damage * 2;
             Item.rare = ItemRarityID.White;
+            Item.MKItem().AltDamage = Item.damage * 2;
             Item.MKItem().UseSound = SoundID.Item1;
             Item.MKItem().SetKatanaDefaults(Item, 60, true);
         }
@@ -36,7 +36,7 @@ namespace MoreKatana.Items.Weapons.Metal
             // クールダウンを有効化
             Item.MKItem().ActivateCooldown(player);
 
-            // ダッシュ切り
+            // ダッシュ切りを実行
             player.CreateDashSlash(player.GetSource_ItemUse(Item), Item.MKItem().AltDamage, Item.knockBack, DashSlashDistance, DashSlashTime);
         }
     }

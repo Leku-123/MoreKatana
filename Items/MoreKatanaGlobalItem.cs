@@ -309,13 +309,13 @@ namespace MoreKatana.Items
             {
                 Vector2 lineposition = new Vector2(line.OriginalX, line.OriginalY);
                 Utils.DrawBorderString(Main.spriteBatch, line.Text, lineposition, Color.LightGoldenrodYellow);
-                Main.spriteBatch.SetBlendState(SpriteSortMode.Deferred, BlendState.Additive, null, null, null, null, Main.UIScaleMatrix);
+                Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null, null, Main.UIScaleMatrix);
                 for (int i = 0; i < 4; i++)
                 {
                     Vector2 drawpos = lineposition + new Vector2(0, 2 * ((float)Math.Sin(Main.GlobalTimeWrappedHourly * 4) / 2)).RotatedBy(i * MathHelper.PiOver2);
                     Utils.DrawBorderString(Main.spriteBatch, line.Text, drawpos, Color.Goldenrod);
                 }
-                Main.spriteBatch.SetBlendState(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
+                Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
                 return false;
             }
             return base.PreDrawTooltipLine(item, line, ref yOffset);
