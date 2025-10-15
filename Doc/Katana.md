@@ -34,7 +34,7 @@
 | クラス(ローカライズ) | 実装状況 | 管轄 | 備考 |
 | :-------------:| :------------:| :-------------: | :-------------|
 | Enchanted Katana | **WIP** | かつ丼 | 要マルチ確認 |
-| SkyKatana        | **WIP** | かつ丼 | 要発射体 要マルチ確認 |
+| SkyKatana        | **WIP** | かつ丼 | 発射体制作、要マルチ確認 |
 
 ## -------- TerraKatanaTree --------
 | クラス(ローカライズ) | 実装状況 | 管轄 | 備考 |
@@ -42,7 +42,7 @@
 | Grass Katana (Kusanagi) | **Done** | もりりん ||
 | Volcano Katana (Kagutsuchi) | **WIP** | かつ丼 | 発射体制作、要マルチ確認 |
 | Sacred Naginata (Gaeborg) | **Done** | もりりん ||
-| TrueSacred Naginata (True Gaeborg) | **WIP** | もりりん | マルチ未対応 |
+| TrueSacred Naginata (True Gaeborg) | **Done** | もりりん ||
 
 ## -------- Wood --------
 | クラス(ローカライズ) | 実装状況 | 管轄 | 備考 |

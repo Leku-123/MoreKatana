@@ -19,7 +19,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         private Vector2 DirectionToProj => Utils.DirectionTo(Owner.MountedCenter, Projectile.Center);
 
-        private CustomSwordPrimTrail trail, trail2;
+        private CustomSwordPrimTrail SubTrail;
 
         /// <summary>
         /// 刀身が長いためトレイルの横幅を小さくして、オフセットを先端に調節する
@@ -28,32 +28,33 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         /// <param name="dir"></param>
         public override void DrawTrail(int dir, int type)
         {
-            if (!PrimsCreated)
+            if (GetProgress(type) >= 0f)
             {
-                PrimsCreated = true;
-                trail = new CustomSwordPrimTrail(Projectile, Color.Gold * 0.3f, 20, (int)(SwingTime * 1.5f));
-                trail2 = new CustomSwordPrimTrail(Projectile, Color.Crimson * 0.3f, 20, (int)(SwingTime * 1.5f));
-                MoreKatana.primitives.CreateTrail(trail);
-                MoreKatana.primitives.CreateTrail(trail2);
-            }
+                if (!PrimsCreated)
+                {
+                    PrimsCreated = true;
+                    SwordTrail = new CustomSwordPrimTrail(Projectile, Color.Gold * 0.3f, 20, (int)(SwingTime * 1.5f));
+                    SubTrail = new CustomSwordPrimTrail(Projectile, Color.Crimson * 0.3f, 20, (int)(SwingTime * 1.5f));
+                    MoreKatana.primitives.CreateTrail(SwordTrail);
+                    MoreKatana.primitives.CreateTrail(SubTrail);
+                }
 
-            Vector2 offset = DirectionToProj * 50f;
-            Vector2 offset2 = DirectionToProj * 60f;
-            Vector2 p = Projectile.Center - Owner.MountedCenter;
-            UpdateTrail(trail, GetProgress(type) >= 0.98f, point: p + offset);
-            UpdateTrail(trail2, GetProgress(type) >= 0.98f, point: p + offset2);
+                Vector2 p = Projectile.Center - Owner.MountedCenter;
+                UpdateTrail(SwordTrail, GetProgress(type) >= 0.98f, point: p + (DirectionToProj * 50f));
+                UpdateTrail(SubTrail, GetProgress(type) >= 0.98f, point: p + (DirectionToProj * 60f));
+            }
         }
 
         public override void Initialization(Item item, int type)
         {
             if (type == 2)
             {
-                Projectile.localNPCHitCooldown = Owner.itemAnimationMax / 3 * Projectile.MaxUpdates;
+                Projectile.localNPCHitCooldown = item.useAnimation / 3 * Projectile.MaxUpdates;
                 NoSpeedBonus = true;
             }
             else
             {
-                Projectile.localNPCHitCooldown = Owner.itemAnimationMax * Projectile.MaxUpdates;
+                Projectile.localNPCHitCooldown = -1;
                 NoSpeedBonus = false;
             }
 
@@ -63,13 +64,17 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override bool SwingPattern(Item item, int type)
         {
-            SwingEllipse = new(1f, 0.45f);
-            SwingStats(Owner.itemAnimationMax, 0.6f, 0.2f, type % 2 != 0);
-
             if (type == 2)
             {
                 SwingEllipse = new(0.5f);
-                SwingStats(Owner.itemAnimationMax, 2.6f, 0.25f, delay: Owner.itemAnimationMax / 2f);
+                SwingStats(item.useAnimation * 1.5f, 2.6f, 0.25f, delay: item.useAnimation / 2f);
+                ImpactCharge = 4;
+            }
+            else
+            {
+                SwingEllipse = new(1f, 0.45f);
+                float usetime = type == 0 ? item.useAnimation / 2f : item.useAnimation;
+                SwingStats(usetime, 0.6f, 0.2f, type % 2 != 0);
             }
 
             return base.SwingPattern(item, type);
@@ -77,17 +82,24 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f);
         public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f);
+        public float NormalAnimation => PiecewiseAnimation(Progress, execute, unwind); // 1,2振り目のアニメーション
+
+        public CurveSegment prepare = new CurveSegment(SineOutEasing, 0f, 0f, -0.05f);
+        public CurveSegment spinning = new CurveSegment(LinearEasing, 0.2f, -0.05f, 1.05f);
+        public float SpinAnimation => PiecewiseAnimation(Progress, prepare, spinning); // 3振り目のアニメーション
+        public float SpinAnimationDelay => MathHelper.SmoothStep(1f, 1.01f, DelayProgress); // 3振り目のディレイ
+
         public override float GetProgress(int type)
         {
             if (type == 2)
             {
                 if (Progress != 1f)
-                    return LinearEasing(Progress, 1);
+                    return SpinAnimation;
                 else
-                    return MathHelper.SmoothStep(1, 1.01f, DelayProgress);
+                    return SpinAnimationDelay;
             }
             else
-                return PiecewiseAnimation(Progress, execute, unwind);
+                return NormalAnimation;
         }
 
         public override void AdditionalAI(Item item, int type, bool delay)
@@ -99,15 +111,14 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             {
                 if (!delay)
                 {
-                    Owner.FlipEffect(Progress * 9f);
+                    Projectile.friendly = GetProgress(type) >= 0f;
+                    Owner.FlipEffect(GetProgress(type) * 9f);
 
-                    if (Projectile.soundDelay <= 0)
-                    {
-                        Projectile.soundDelay = 15 * Projectile.MaxUpdates;
+                    if (Timer % (20 * Projectile.MaxUpdates) == 0)
+                        SoundEngine.PlaySound(SoundID.Item169, Owner.Center);
 
-                        if (GetProgress(type) > 0.1f)
-                            SoundEngine.PlaySound(SoundID.Item169, Owner.Center);
-                    }
+                    if (Timer % (10 * Projectile.MaxUpdates) == 0)
+                        SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.6f }, Owner.Center);
 
                     if (Timer % (4 * Projectile.MaxUpdates) == 0)
                     {
@@ -129,6 +140,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 }
                 else
                 {
+                    Projectile.friendly = false;
                     Projectile.Opacity = 1 - CircOutEasing(DelayProgress, 1);
                     Owner.reuseDelay = 5;
                 }
@@ -147,12 +159,19 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             particleOrchestraSettings.PositionInWorld = Main.rand.NextVector2FromRectangle(target.Hitbox);
             ParticleOrchestrator.RequestParticleSpawn(false, ParticleOrchestraType.TrueExcalibur, particleOrchestraSettings, Projectile.owner);
 
+            SoundEngine.PlaySound(MoreKatanaSounds.SlashHit, Owner.Center);
+
             for (int i = 0; i < 2; i++)
             {
                 Vector2 vector = Main.rand.NextVector2Unit() * 200;
                 int edgeProj = ModContent.ProjectileType<SacredEdge>();
                 if (Owner.ownedProjectileCounts[edgeProj] < 6)
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center + vector, -vector / 10, edgeProj, Projectile.damage / 3, 0, Projectile.owner);
+                {
+                    if (Projectile.owner == Main.myPlayer)
+                    {
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center + vector, -vector / 10, edgeProj, Projectile.damage / 3, 0, Projectile.owner);
+                    }
+                }
             }
         }
 

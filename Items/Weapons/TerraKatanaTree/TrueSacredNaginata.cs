@@ -4,6 +4,7 @@ using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Projectiles.TerraKatanaTree;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -27,7 +28,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
             Item.useTime = 35;
             Item.useAnimation = 35;
-            Item.UseSound = SoundID.Item169;
+            Item.MKItem().UseSound = SoundID.Item169;
 
             Item.damage = 45;
             Item.knockBack = 4.5f;
@@ -59,7 +60,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         public override void ActiveSkill(Player player)
         {
-            Item.UseSound = SoundID.MaxMana;
+            SoundEngine.PlaySound(SoundID.MaxMana, player.Center);
             Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, player.SafeDirectionTo(Main.MouseWorld), ModContent.ProjectileType<TrueSacredNaginataHoldout>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI);
         }
 
@@ -129,34 +130,37 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
                     Main.spriteBatch.Draw(texture, ShieldCenter - Main.screenPosition, rectangle, shieldColor with { A = 0 }, 0f, origin, shieldScale, SpriteEffects.None, 0);
             }
 
-            // ゲージの充填率
-            float durabilityRatio = (float)drawPlayer.MKPlayer().TrueHolyShieldDurability / ShieldDurabilityMax;
-            float cooldownRatio = (float)drawPlayer.MKPlayer().ShieldCD / ShieldRechargeTime;
+            if (Main.myPlayer == drawPlayer.whoAmI)
+            {
+                // ゲージの充填率
+                float durabilityRatio = (float)drawPlayer.MKPlayer().TrueHolyShieldDurability / ShieldDurabilityMax;
+                float cooldownRatio = (float)drawPlayer.MKPlayer().ShieldCD / ShieldRechargeTime;
 
-            // ゲージの位置
-            Vector2 gaugePos = new Vector2(drawInfo.Center.X, drawInfo.Center.Y) + new Vector2(0, 35);
+                // ゲージの位置
+                Vector2 gaugePos = new Vector2(drawInfo.Center.X, drawInfo.Center.Y) + new Vector2(0, 35);
 
-            // ゲージとテキストの色
-            Color c1 = Color.Gold;
-            Color c2 = Color.Red;
-            Color c3 = Color.White;
+                // ゲージとテキストの色
+                Color c1 = Color.Gold;
+                Color c2 = Color.Red;
+                Color c3 = Color.White;
 
-            // シールドの耐久率が下がった時ゲージを揺らす
-            if (durabilityRatio < 0.3f && cooldownRatio == 0)
-                gaugePos += Main.rand.NextVector2Unit();
+                // シールドの耐久率が下がった時ゲージを揺らす
+                if (durabilityRatio < 0.3f && cooldownRatio == 0)
+                    gaugePos += Main.rand.NextVector2Unit();
 
-            // ゲージを描画する
-            if (cooldownRatio != 0)
-                MoreKatanaUtil.DrawGauge(gaugePos, 1 - cooldownRatio, c2, c2);
-            else
-                MoreKatanaUtil.DrawGauge(gaugePos, durabilityRatio, c1);
+                // ゲージを描画する
+                if (cooldownRatio != 0)
+                    MoreKatanaUtil.DrawGauge(gaugePos, 1 - cooldownRatio, c2, c2);
+                else
+                    MoreKatanaUtil.DrawGauge(gaugePos, durabilityRatio, c1);
 
-            // テキストを描画する
-            var font = FontAssets.MouseText.Value;
-            int numerator = cooldownRatio == 0 ? drawPlayer.MKPlayer().TrueHolyShieldDurability : (int)(ShieldDurabilityMax * (1 - cooldownRatio));
-            string text = MoreKatanaUtil.GetTextValue("Tooltips.Life") + ":" + $"{numerator}" + "/" + $"{ShieldDurabilityMax}";
-            Vector2 textPos = gaugePos + new Vector2(-25, 5) - Main.screenPosition;
-            ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, textPos, cooldownRatio != 0 ? c2 : c3, 0f, new Vector2(0.5f, 0.5f), Vector2.One);
+                // テキストを描画する
+                var font = FontAssets.MouseText.Value;
+                int numerator = cooldownRatio == 0 ? drawPlayer.MKPlayer().TrueHolyShieldDurability : (int)(ShieldDurabilityMax * (1 - cooldownRatio));
+                string text = MoreKatanaUtil.GetTextValue("Tooltips.Life") + ":" + $"{numerator}" + "/" + $"{ShieldDurabilityMax}";
+                Vector2 textPos = gaugePos + new Vector2(-25, 5) - Main.screenPosition;
+                ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, textPos, cooldownRatio != 0 ? c2 : c3, 0f, new Vector2(0.5f, 0.5f), Vector2.One);
+            }
         }
     }
 }

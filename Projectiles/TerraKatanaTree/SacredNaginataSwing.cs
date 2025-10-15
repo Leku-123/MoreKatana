@@ -106,7 +106,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     Projectile.friendly = GetProgress(type) >= 0f;
                     Owner.FlipEffect(GetProgress(type) * 9f);
 
-                    if (GetProgress(type) % 0.3f == 0)
+                    if (Timer % (20 * Projectile.MaxUpdates) == 0)
                         SoundEngine.PlaySound(SoundID.Item169, Owner.Center);
                 }
                 else

@@ -205,11 +205,14 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
        
             Main.spriteBatch.SetEndBegin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-            // ゲージの描画
-            if (PrepareCompletion == 1f && FireCompletion != 1f)
+            if (Projectile.owner == Main.myPlayer)
             {
-                Vector2 gaugePos = Owner.Center - new Vector2(0, 50);
-                MoreKatanaUtil.DrawGauge(gaugePos, 1 - FireCompletion, Color.Gold, dustType: DustID.HallowedWeapons);
+                // ゲージの描画
+                if (PrepareCompletion == 1f && FireCompletion != 1f)
+                {
+                    Vector2 gaugePos = Owner.Center - new Vector2(0, 50);
+                    MoreKatanaUtil.DrawGauge(gaugePos, 1 - FireCompletion, Color.Gold, dustType: DustID.HallowedWeapons);
+                }
             }
 
             return false;

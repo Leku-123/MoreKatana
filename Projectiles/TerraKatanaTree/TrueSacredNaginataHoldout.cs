@@ -100,11 +100,16 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             // 発射体の速度をマウス方向への線形補完した速度の単位ベクトルに変換
             // 発射体の位置を単位ベクトル方向にオフセット分移動させる
-            const float lerp = 0.05f;
+            const float lerp = 0.08f;
             float offset = 60f;
             Vector2 normalizeVel = Vector2.Normalize(Projectile.velocity); //発射体の速度の単位ベクトル
-            Projectile.velocity = Vector2.Lerp(normalizeVel, Vector2.Normalize(Main.MouseWorld - Owner.MountedCenter), lerp);
-            Projectile.velocity.Normalize();
+            Vector2 aim = Vector2.Normalize(Owner.MKPlayer().MouseWorld - Owner.MountedCenter);
+            if (aim.HasNaNs())
+                aim = -Vector2.UnitY;
+            aim = Vector2.Normalize(Vector2.Lerp(normalizeVel, aim, lerp));
+            if (aim != Projectile.velocity)
+                Projectile.netUpdate = true;
+            Projectile.velocity = aim;
             Projectile.position += Projectile.velocity * offset;
 
             // 発射体の回転と向き
@@ -233,11 +238,14 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             Main.spriteBatch.SetEndBegin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-            // ゲージの描画
-            if (PrepareCompletion == 1f && FireCompletion != 1f)
+            if (Projectile.owner == Main.myPlayer)
             {
-                Vector2 gaugePos = Owner.Center - new Vector2(0, 50);
-                MoreKatanaUtil.DrawGauge(gaugePos, 1 - FireCompletion, Color.Gold, dustType: DustID.HallowedWeapons);
+                // ゲージの描画
+                if (PrepareCompletion == 1f && FireCompletion != 1f)
+                {
+                    Vector2 gaugePos = Owner.Center - new Vector2(0, 50);
+                    MoreKatanaUtil.DrawGauge(gaugePos, 1 - FireCompletion, Color.Gold, dustType: DustID.HallowedWeapons);
+                }
             }
 
             return false;

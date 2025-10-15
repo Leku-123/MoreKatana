@@ -70,7 +70,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             // 発射体の速度をマウス方向への線形補完した速度の単位ベクトルに変換
             const float lerp = 0.08f;
             Vector2 normalizeVel = Vector2.Normalize(Projectile.velocity); //発射体の速度の単位ベクトル
-            Projectile.velocity = Vector2.Lerp(normalizeVel, Vector2.Normalize(Main.MouseWorld - Projectile.Center), lerp);
+            Projectile.velocity = Vector2.Lerp(normalizeVel, Vector2.Normalize(player.MKPlayer().MouseWorld - Projectile.Center), lerp);
             Projectile.velocity.Normalize();
 
             // ベロシティの方向に回転
