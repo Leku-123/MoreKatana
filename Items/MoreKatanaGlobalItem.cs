@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Items.Weapons;
 using MoreKatana.Projectiles;
+using MoreKatana.Projectiles.Misc;
 using MoreKatana.Projectiles.TerraKatanaTree;
 using MoreKatana.UI;
 using System;
@@ -266,8 +267,7 @@ namespace MoreKatana.Items
         {
             if (item.type == ItemID.Katana)
             {
-                ActivateCooldown(player);
-                player.CreateDashSlash(player.GetSource_ItemUse(item), AltDamage, item.knockBack, 400, 10f);
+                Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<KatanaSlashHoldout>(), item.damage, item.knockBack, player.whoAmI);
             }
             if (item.type == ItemID.Muramasa)
             {

@@ -36,6 +36,13 @@ namespace MoreKatana
         public float DashTimerMax;
         public Vector2 DashDirection, DashStartPos, DashEndPos;
 
+        // -------- Backflip --------
+        public bool Rolling;
+        public int RollingCount;
+        public int RollingDirection;
+        public float RollingTimer;
+        public float RollingTimerMax;
+
         // -------- Screen Shake --------
         public int ScreenShakeTimer;
         public int ScreenShakeStrength;
@@ -78,6 +85,8 @@ namespace MoreKatana
             DashState = false;
             if (!GeneralDash)
                 DashTimer = 0f;
+            if (!Rolling)
+                RollingTimer = 0f;
             if (ScreenShakeTimer > 0)
                 ScreenShakeTimer--;
             if (NoUsingItems > 0)
@@ -96,6 +105,7 @@ namespace MoreKatana
         {
             ResetEffects();
             GeneralDash = false;
+            Rolling = false;
             NoUsingItems = 0;
             ShieldCD = 0;
             HolyShieldDurability = 0;
@@ -129,6 +139,26 @@ namespace MoreKatana
                 Player.RemoveAllGrapplingHooks();
                 if (Player.mount.Active)
                     Player.mount.Dismount(Player);
+            }
+
+            // プレイヤーの宙返り
+            if (Rolling && RollingTimerMax != 0)
+            {
+                float rollingProgress = RollingTimer / RollingTimerMax;
+                if (rollingProgress < 1f)
+                {
+                    float baseRotation = MathHelper.WrapAngle(rollingProgress * MathHelper.TwoPi * RollingDirection);
+                    Player.fullRotation = baseRotation * RollingCount;
+                    Player.fullRotationOrigin = Player.Center - Player.position;
+                }
+                else
+                {
+                    Player.fullRotation = 0f;
+                    Rolling = false;
+                    RollingTimer = 0f;
+                }
+
+                RollingTimer++;
             }
 
             // マウス位置の同期

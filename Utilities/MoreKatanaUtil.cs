@@ -83,6 +83,15 @@ namespace MoreKatana
             mk.SuddenStop = stop;
         }
 
+        public static void UpdateRotation(this Player player, int count, int direction, float timer)
+        {
+            MoreKatanaPlayer mk = player.MKPlayer();
+            mk.Rolling = true;
+            mk.RollingCount = count;
+            mk.RollingDirection = direction;
+            mk.RollingTimerMax = timer;
+        }
+
         public static void DrawColorEffect(this Player player, float r, float g, float b, float a)
         {
             MoreKatanaPlayer mk = player.MKPlayer();
@@ -458,13 +467,6 @@ namespace MoreKatana
         public static void AddCameraModifier(this ICameraModifier modifier) => Main.instance.CameraModifiers.Add(modifier);
         #endregion
 
-        #region -------- Debug --------
-        public static void InChatText(this string value) => Main.NewText($"{value}");
-        public static void InChatText(this int value) => Main.NewText($"{value}");
-        public static void InChatText(this float value) => Main.NewText($"{value}");
-        public static void InChatText(this bool value) => Main.NewText($"{value}");
-        public static void InChatText(this Vector2 value) => Main.NewText($"{value}");
-        public static void InChatText(this Rectangle value) => Main.NewText($"{value}");
-        #endregion
+        public static void InChatText(this object value) => Main.NewText($"{value}");
     }
 }

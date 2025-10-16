@@ -308,7 +308,13 @@ SkyKatana: {
 }
 
 LightsSlasher: {
-	FunctionText: Mods.MoreKatana.Items.LightsSlasher.FunctionText
-	DisplayName: Lights Slasher
+	DisplayName: Murasame
 	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.KS} <Oboro Style>
+		- 
+		{$Tooltips.KA} <Haze Step>
+		- 
+		'''
 }
