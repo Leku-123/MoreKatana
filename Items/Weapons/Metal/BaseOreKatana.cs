@@ -1,5 +1,6 @@
 ﻿using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace MoreKatana.Items.Weapons.Metal
 {
@@ -15,6 +16,8 @@ namespace MoreKatana.Items.Weapons.Metal
             DashSlashDistance = dashSlashDistance;
             DashSlashTime = dashSlashTime;
         }
+
+        public override LocalizedText FunctionText => base.FunctionText.WithFormatArgs(DefenseBonus);
 
         public override void SetDefaultsItem()
         {

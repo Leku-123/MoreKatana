@@ -8,6 +8,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI.Chat;
 
@@ -18,6 +19,8 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
         public static int ShieldRechargeTime = 30 * 60;
         public static int ShieldDurabilityMax = 50;
         public const int ShieldDefenseBoost = 10;
+
+        public override LocalizedText FunctionText => base.FunctionText.WithFormatArgs(ShieldDurabilityMax, ShieldDefenseBoost, ShieldRechargeTime / 60);
 
         public override KatanaID ID => KatanaID.Hallowed;
 

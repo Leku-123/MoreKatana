@@ -9,8 +9,8 @@ namespace MoreKatana.Systems
     {
         public override void AddRecipes()
         {
-            Recipe.Create(ItemID.Katana)
-                .AddIngredient(ItemID.IronBar, 10)
+            Recipe.Create(ItemID.DirtBlock)
+                .AddIngredient(ItemID.Katana)
                 .AddTile(TileID.Anvils)
                 .Register();
         }

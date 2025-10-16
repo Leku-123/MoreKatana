@@ -266,13 +266,12 @@ namespace MoreKatana.Items
         {
             if (item.type == ItemID.Katana)
             {
-                UseSound = SoundID.Item71;
                 ActivateCooldown(player);
                 player.CreateDashSlash(player.GetSource_ItemUse(item), AltDamage, item.knockBack, 400, 10f);
             }
             if (item.type == ItemID.Muramasa)
             {
-                UseSound = SoundID.NPCDeath33;
+                SoundEngine.PlaySound(SoundID.NPCDeath33, player.Center);
                 Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<MuramasaGhost>(), item.damage, item.knockBack, player.whoAmI);
             }
         }

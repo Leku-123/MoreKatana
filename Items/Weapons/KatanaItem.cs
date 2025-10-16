@@ -6,7 +6,7 @@ namespace MoreKatana.Items.Weapons
 {
     public abstract class KatanaItem : ModItem
     {
-        public LocalizedText FunctionText => this.GetLocalization(nameof(FunctionText));
+        public virtual LocalizedText FunctionText => this.GetLocalization(nameof(FunctionText));
 
         public abstract KatanaID ID { get; }
 
