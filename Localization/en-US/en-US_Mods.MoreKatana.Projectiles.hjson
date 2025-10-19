@@ -7,6 +7,10 @@ GemShards_Diamond.DisplayName: Diamond Shard
 GemShards_Amethyst.DisplayName: Amethyst Shard
 # -------- Metal --------
 ObsidianSwing.DisplayName: Obsidian Swing
+# -------- Misc --------
+KatanaSlash.DisplayName: Katana Slash
+KatanaSlashHoldout.DisplayName: Katana Slash
+KatanaSlashEffect.DisplayName: Katana Slash
 # -------- TerraKatanaTree --------
 GrassLeaf.DisplayName: Grass Leaf
 GrassKatanaSwing.DisplayName: Kusanagi
@@ -47,6 +51,3 @@ SkyJumpDamageEffect.DisplayName: Sky Jump Damage Effect
 ChargingSkyKatana.DisplayName: Charging Sky Katana
 SkyKatanaWindImpact.DisplayName: Sky Katana Wind Impact
 LightsTeleport.DisplayName: Lights Teleport
-KatanaSlash.DisplayName: Katana Slash
-KatanaSlashHoldout.DisplayName: Katana Slash Holdout
-KatanaSlashEffect.DisplayName: Katana Slash Effect

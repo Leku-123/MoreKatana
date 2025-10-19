@@ -13,9 +13,6 @@ using Terraria.ModLoader;
 
 namespace MoreKatana
 {
-    /// <summary>
-    /// 今後分ける可能性あるのでpartialです
-    /// </summary>
     public static partial class MoreKatanaUtil
     {
         #region -------- General Extension Utils --------
@@ -83,6 +80,13 @@ namespace MoreKatana
             mk.SuddenStop = stop;
         }
 
+        /// <summary>
+        /// プレイヤーの回転
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="count"> 回転数 </param>
+        /// <param name="direction"> 回転の向き </param>
+        /// <param name="timer"> 回転に要する時間 </param>
         public static void UpdateRotation(this Player player, int count, int direction, float timer)
         {
             MoreKatanaPlayer mk = player.MKPlayer();
@@ -92,6 +96,7 @@ namespace MoreKatana
             mk.RollingTimerMax = timer;
         }
 
+        /// <summary> プレイヤーの色を変更する </summary>
         public static void DrawColorEffect(this Player player, float r, float g, float b, float a)
         {
             MoreKatanaPlayer mk = player.MKPlayer();
@@ -488,8 +493,12 @@ namespace MoreKatana
         /// </summary>
         /// <param name="modifier"></param>
         public static void AddCameraModifier(this ICameraModifier modifier) => Main.instance.CameraModifiers.Add(modifier);
-        #endregion
 
+        /// <summary>
+        /// デバッグ用
+        /// </summary>
+        /// <param name="value"></param>
         public static void InChatText(this object value) => Main.NewText($"{value}");
+        #endregion
     }
 }

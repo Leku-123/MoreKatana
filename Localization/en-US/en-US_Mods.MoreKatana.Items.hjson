@@ -37,10 +37,10 @@ SamuraiStatueGift: {
 # -------- Weapons --------
 Katana.FunctionText:
 	'''
-	{$Tooltips.KS} [c/CDDEEF:<Iron Protection>]
-	- +2 defense
-	{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
-	- Dash and attack the enemy.
+	{$Tooltips.KS}
+	- 
+	{$Tooltips.KA} [c/FFFFFF:<Flash of Lightning>]
+	- Perform a chained dash attack up to 6 times against enemies.
 	'''
 Muramasa.FunctionText:
 	'''

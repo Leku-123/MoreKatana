@@ -267,6 +267,7 @@ namespace MoreKatana.Items
         {
             if (item.type == ItemID.Katana)
             {
+                SoundEngine.PlaySound(SoundID.Item1, player.Center);
                 Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, player.SafeDirectionTo(player.MKPlayer().MouseWorld), ModContent.ProjectileType<KatanaSlashHoldout>(), AltDamage, item.knockBack, player.whoAmI);
             }
             if (item.type == ItemID.Muramasa)

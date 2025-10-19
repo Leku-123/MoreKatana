@@ -36,6 +36,7 @@ namespace MoreKatana.Projectiles.Misc
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.hide = true;
+            Projectile.noEnchantmentVisuals = true;
         }
 
         public override void AI()
@@ -99,8 +100,12 @@ namespace MoreKatana.Projectiles.Misc
             if (target.type == NPCID.TargetDummy || target.friendly)
                 Projectile.Kill();
 
-            target.position = target.oldPosition;
-            target.velocity = Vector2.Zero;
+            Owner.ScreenShake(5, 15);
+            hit[Projectile.penetrate - 1] = target;
+            Timer = 0;
+
+            if (Main.netMode != NetmodeID.Server)
+                trail.Points.Add(target.Center);
 
             if (Main.myPlayer == Projectile.owner)
             {
@@ -113,19 +118,13 @@ namespace MoreKatana.Projectiles.Misc
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center + spawnOffset, sliceVelocity, ModContent.ProjectileType<KatanaSlashEffect>(), Projectile.damage, 0f, Projectile.owner);
             }
 
-            Owner.ScreenShake(5, 15);
-            hit[Projectile.penetrate - 1] = target;
-            Timer = 0;
-
-            if (Main.netMode != NetmodeID.Server)
-                trail.Points.Add(Projectile.Center);
-
             teleportPos = new Vector2(target.Center.X, target.Center.Y - (Owner.height / 2));
             target = TargetNext(target);
             if (target != null)
             {
                 Projectile.velocity = Projectile.SafeDirectionTo(target.Center, Vector2.UnitY);
                 Projectile.velocity *= 15f;
+                Projectile.netUpdate = true;
             }
             else
             {
@@ -137,12 +136,16 @@ namespace MoreKatana.Projectiles.Misc
         {
             if (teleportPos != Vector2.Zero)
             {
-                // テレポートを実行
+                // テレポート
                 Owner.Teleport(teleportPos, -1);
-                NetMessage.SendData(MessageID.TeleportEntity, -1, -1, null, 0, Owner.whoAmI, teleportPos.X, teleportPos.Y, 1);
+                NetMessage.SendData(MessageID.TeleportEntity, -1, -1, null, 0, Owner.whoAmI, teleportPos.X, teleportPos.Y, -1);
 
+                // プレイヤーの反動
                 if (Projectile.velocity != Vector2.Zero)
+                {
                     Owner.velocity = Vector2.Normalize(Projectile.velocity) * 8f;
+                    NetMessage.SendData(MessageID.PlayerControls, number: Owner.whoAmI);
+                }
             }
         }
     }

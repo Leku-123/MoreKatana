@@ -30,7 +30,7 @@ namespace MoreKatana.Projectiles.Misc
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10;
             Projectile.noEnchantmentVisuals = true;
-            Projectile.scale = Main.rand.NextFloat(0.05f, 0.09f);
+            Projectile.scale = 0.09f;
             Projectile.stopsDealingDamageAfterPenetrateHits = true;
         }
 
@@ -44,7 +44,6 @@ namespace MoreKatana.Projectiles.Misc
 
                 Projectile.rotation = vel.ToRotation();
             }
-
 
             Projectile.scale *= 0.95f;
             Squash.X *= 0.8f;
