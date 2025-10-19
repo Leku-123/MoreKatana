@@ -247,6 +247,28 @@ namespace MoreKatana
             }
             return closestTarget;
         }
+
+        public static NPC ClosestNPCfromTwoPoints(Vector2 point1, Vector2 point2, float maxDistanceToCheck)
+        {
+            NPC closestTarget = null;
+            float distance = maxDistanceToCheck + Vector2.Distance(point1, point2);
+
+            for (int index = 0; index < Main.npc.Length; index++)
+            {
+                if (!(Vector2.Distance(point1, Main.npc[index].Center) < maxDistanceToCheck))
+                    continue;
+
+                if (Main.npc[index].CanBeChasedBy(null, false))
+                {
+                    if (Vector2.Distance(point2, Main.npc[index].Center) < distance)
+                    {
+                        distance = Vector2.Distance(point2, Main.npc[index].Center);
+                        closestTarget = Main.npc[index];
+                    }
+                }
+            }
+            return closestTarget;
+        }
         #endregion
 
         #region -------- Drawing Utils --------
@@ -255,10 +277,11 @@ namespace MoreKatana
             spriteBatch.End();
             spriteBatch.Begin(sortMode, blendState, samplerState, depthStencilState, rasterizerState, effect, transformMatrix);
         }
-        public static void SetEndBegin(this SpriteBatch spriteBatch, SpriteSortMode sortMode, BlendState blendState, SamplerState samplerState, DepthStencilState depthStencilState, RasterizerState rasterizerState) 
+        public static void SetEndBegin(this SpriteBatch spriteBatch, SpriteSortMode sortMode, BlendState blendState, SamplerState samplerState, DepthStencilState depthStencilState, RasterizerState rasterizerState)
             => spriteBatch.SetEndBegin(sortMode, blendState, samplerState, depthStencilState, rasterizerState, null, Main.UIScaleMatrix);
-        public static void SetEndBegin(this SpriteBatch spriteBatch, SpriteSortMode sortMode, BlendState blendState) 
+        public static void SetEndBegin(this SpriteBatch spriteBatch, SpriteSortMode sortMode, BlendState blendState)
             => spriteBatch.SetEndBegin(sortMode, blendState, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
+
         /// <summary>
         /// リング状にダストをスポーンする
         /// </summary>

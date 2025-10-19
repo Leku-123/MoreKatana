@@ -267,7 +267,7 @@ namespace MoreKatana.Items
         {
             if (item.type == ItemID.Katana)
             {
-                Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<KatanaSlashHoldout>(), item.damage, item.knockBack, player.whoAmI);
+                Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, player.SafeDirectionTo(player.MKPlayer().MouseWorld), ModContent.ProjectileType<KatanaSlashHoldout>(), AltDamage, item.knockBack, player.whoAmI);
             }
             if (item.type == ItemID.Muramasa)
             {

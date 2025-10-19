@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MoreKatana.Projectiles.PrimTrails;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -9,11 +8,10 @@ namespace MoreKatana.Projectiles.Misc
 {
     public class KatanaSlash : ModProjectile
     {
-        public override string Texture => MoreKatana.EmptyTexture;
-
         private ref float Timer => ref Projectile.ai[0];
 
-        private readonly NPC[] hit = new NPC[5];
+        private const int projPenet = 6;
+        private readonly NPC[] hit = new NPC[projPenet];
 
         private Vector2 teleportPos;
 
@@ -23,19 +21,21 @@ namespace MoreKatana.Projectiles.Misc
 
         private Player Owner => Main.player[Projectile.owner];
 
+        public override string Texture => MoreKatana.EmptyTexture;
+
         public override void SetDefaults()
         {
-            Projectile.width = 18;
-            Projectile.height = 18;
+            Projectile.width = 4;
+            Projectile.height = 4;
             Projectile.aiStyle = -1;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 5;
+            Projectile.penetrate = projPenet;
             Projectile.timeLeft = 36000;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.alpha = 255;
+            Projectile.hide = true;
         }
 
         public override void AI()
@@ -51,53 +51,16 @@ namespace MoreKatana.Projectiles.Misc
                     trail = new KatanaSlashPrimTrail(Projectile, Color.White);
                     MoreKatana.primitives.CreateTrail(trail);
                 }
-
-                NPC target = Owner.Center.ClosestNPCAt(KatanaSlashHoldout.AttackRange);
-                if (target != null)
-                {
-                    Vector2 vector = Projectile.SafeDirectionTo(target.Center, Vector2.UnitY);
-
-                    // 発射体に速度を加算する
-                    float speed = 15f;
-                    Projectile.velocity = vector * speed;
-
-                    SoundEngine.PlaySound(MoreKatanaSounds.SlashEffect, Owner.position);
-
-                    Owner.ScreenShake(10, 15);
-
-                    for (int i = 0; i < 12; i++)
-                    {
-                        int newDust = Dust.NewDust(Owner.MountedCenter, 32, 32, DustID.Smoke, 0f, 0f, 100, default, 2f);
-                        Main.dust[newDust].velocity -= Vector2.Normalize(Projectile.velocity) * 2f;
-                        Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(15));
-                        Main.dust[newDust].velocity *= Main.rand.NextFloat(1f, 3f);
-                    }
-                }
-                else
-                {
-                    Projectile.Kill();
-                    return;
-                }
             }
             else
             {
                 Projectile.extraUpdates = 7;
             }
 
-            //for (int i = 0; i < 3; i++)
-            //{
-            //    Vector2 vector = Projectile.Center;
-            //    vector -= Projectile.velocity * (i * 0.25f);
-            //    int newDust = Dust.NewDust(vector, 1, 1, DustID.GemDiamond, 0f, 0f, 0, default, 0.9f);
-            //    Main.dust[newDust].position = vector;
-            //    Main.dust[newDust].noGravity = true;
-            //    Dust dust = Main.dust[newDust];
-            //    dust.velocity *= 0.2f;
-            //}
-
             Owner.immune = true;
             Owner.immuneTime = 120;
             Owner.immuneAlpha = 255;
+            Owner.AddBuff(BuffID.Swiftness, 120);
 
             Timer++;
         }
@@ -113,15 +76,14 @@ namespace MoreKatana.Projectiles.Misc
         private NPC TargetNext(NPC current)
         {
             float range = KatanaSlashHoldout.AttackRange;
-            range *= range;
             NPC target = null;
             var center = Projectile.Center;
-            for (int i = 0; i < 200; ++i)
+            for (int i = 0; i < Main.maxNPCs; ++i)
             {
                 NPC npc = Main.npc[i];
                 if (npc != current && npc.active && npc.CanBeChasedBy(null) && CanTarget(npc))
                 {
-                    float dist = Vector2.DistanceSquared(center, npc.Center);
+                    float dist = Vector2.Distance(center, npc.Center);
                     if (dist < range)
                     {
                         range = dist;
@@ -134,15 +96,29 @@ namespace MoreKatana.Projectiles.Misc
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hitInfo, int damageDone)
         {
-            Projectile.velocity = Vector2.Zero;
+            if (target.type == NPCID.TargetDummy || target.friendly)
+                Projectile.Kill();
+
+            target.position = target.oldPosition;
+            target.velocity = Vector2.Zero;
+
+            if (Main.myPlayer == Projectile.owner)
+            {
+                float maxOffset = target.width * 0.4f;
+                if (maxOffset > 300f)
+                    maxOffset = 300f;
+
+                Vector2 spawnOffset = (MathHelper.Pi + Main.rand.NextFloatDirection() * 0.2f).ToRotationVector2() * Main.rand.NextFloatDirection() * maxOffset;
+                Vector2 sliceVelocity = spawnOffset.SafeNormalize(Vector2.UnitY) * 0.1f;
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center + spawnOffset, sliceVelocity, ModContent.ProjectileType<KatanaSlashEffect>(), Projectile.damage, 0f, Projectile.owner);
+            }
+
+            Owner.ScreenShake(5, 15);
             hit[Projectile.penetrate - 1] = target;
             Timer = 0;
 
             if (Main.netMode != NetmodeID.Server)
                 trail.Points.Add(Projectile.Center);
-
-            if (target.type == NPCID.TargetDummy || target.friendly)
-                Projectile.Kill();
 
             teleportPos = new Vector2(target.Center.X, target.Center.Y - (Owner.height / 2));
             target = TargetNext(target);
@@ -161,9 +137,12 @@ namespace MoreKatana.Projectiles.Misc
         {
             if (teleportPos != Vector2.Zero)
             {
+                // テレポートを実行
                 Owner.Teleport(teleportPos, -1);
                 NetMessage.SendData(MessageID.TeleportEntity, -1, -1, null, 0, Owner.whoAmI, teleportPos.X, teleportPos.Y, 1);
-                Owner.AddBuff(BuffID.Swiftness, 120);
+
+                if (Projectile.velocity != Vector2.Zero)
+                    Owner.velocity = Vector2.Normalize(Projectile.velocity) * 8f;
             }
         }
     }
