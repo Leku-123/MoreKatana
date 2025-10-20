@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Items.Weapons;
 using MoreKatana.Projectiles;
 using MoreKatana.Projectiles.Misc;
@@ -7,12 +8,15 @@ using MoreKatana.Projectiles.TerraKatanaTree;
 using MoreKatana.UI;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 namespace MoreKatana.Items
 {
@@ -95,9 +99,12 @@ namespace MoreKatana.Items
         {
             if (item.type == ItemID.Katana && MoreKatanaConfig.Instance.KatanaRework)
             {
+                item.useTime = 30;
+                item.useAnimation = 30;
                 UseSound = SoundID.Item1;
                 AltDamage = 36;
-                SetKatanaDefaults(item, 60, true);
+                SetKatanaDefaults(item, 60, false, ModContent.ProjectileType<KatanaHoldout>());
+                item.autoReuse = false;
             }
             if (item.type == ItemID.Muramasa && MoreKatanaConfig.Instance.MuramasaRework)
             {
@@ -189,6 +196,15 @@ namespace MoreKatana.Items
             }
         }
 
+        public override void ModifyShootStats(Item item, Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+        {
+            if (Katana)
+            {
+                if (item.type == ItemID.Katana)
+                    velocity = new Vector2(player.direction, 0);
+            }
+        }
+
         public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             if (Katana)
@@ -253,10 +269,6 @@ namespace MoreKatana.Items
 
         private void VanillaPassiveSkill(Item item, Player player, bool equipment)
         {
-            if (item.type == ItemID.Katana)
-            {
-                player.statDefense += 2;
-            }
             if (item.type == ItemID.Muramasa)
             {
                 player.MKPlayer().muramasaCounterattack = true;
@@ -317,6 +329,53 @@ namespace MoreKatana.Items
                 Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
                 return false;
             }
+
+            if (line.Name == "FunctionText")
+            {
+                string text = line.Text;
+                string[] linebreak = text.Split('\n');
+                Vector2 lineposition = new Vector2(line.OriginalX, line.OriginalY);
+
+                Utils.DrawBorderString(Main.spriteBatch, text, lineposition, line.Color);
+
+                int t = 0;
+                foreach (string i in linebreak)
+                {
+                    if (i.Contains('<') && i.Contains('>') && !i.Contains('-'))
+                    {
+                        Color lineColor = line.Color;
+                        string[] entry = i.Split('<');
+                        if (i.Contains('[') && i.Contains(']'))
+                        {
+                            entry = i.Split('[');
+
+                            Match matchedHex = Regex.Match(i, @"c/.*:");
+                            string hex = matchedHex.ToString().Replace("c/", "#").Replace(":", "");
+                            lineColor = hex.ColorFromHex();
+                        }
+
+                        Vector2 entrySize = ChatManager.GetStringSize(FontAssets.MouseText.Value, entry[0], Vector2.One);
+                        lineposition = new Vector2(line.OriginalX + entrySize.X, line.OriginalY + (entrySize.Y * t));
+
+                        Match matchedObject = Regex.Match(i, @"<.*>");
+
+                        Texture2D bloom = MoreKatanaTextures.BloomTexture.Value;
+                        Vector2 nameSize = ChatManager.GetStringSize(FontAssets.MouseText.Value, matchedObject.ToString(), Vector2.One);
+                        Main.spriteBatch.Draw(bloom, lineposition + nameSize / 2, null, lineColor with { A = 0 } * 0.3f, 0f, bloom.Size() / 2f, new Vector2(nameSize.X / 150, nameSize.Y / 150), SpriteEffects.None, 0);
+
+                        Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null, null, Main.UIScaleMatrix);
+                        for (int j = 0; j < 4; j++)
+                        {
+                            Vector2 drawpos = lineposition + new Vector2(0, 2 * ((float)Math.Sin(Main.GlobalTimeWrappedHourly * 4) / 2)).RotatedBy(j * MathHelper.PiOver2);
+                            Utils.DrawBorderString(Main.spriteBatch, matchedObject.ToString(), drawpos, line.Color * 0.5f);
+                        }
+                        Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
+                    }
+                    t++;
+                }
+                return false;
+            }
+
             return base.PreDrawTooltipLine(item, line, ref yOffset);
         }
 
@@ -329,13 +388,17 @@ namespace MoreKatana.Items
                     return;
 
                 // ダメージ表記を新たに挿入
-                TooltipLine dam = new TooltipLine(Mod, "Verbose:NewDamage", $"{item.damage} / [c/FFB6C1:{AltDamage}] {item.DamageType.DisplayName}");
+                string defDamage = $"{item.damage}";
+                if (item.type == ItemID.Katana)
+                    defDamage = $"{item.damage}-{item.damage * 3}";
+
+                TooltipLine dam = new TooltipLine(Mod, "NewDamage", $"{defDamage} / [c/FFB6C1:{AltDamage}] {item.DamageType.DisplayName}");
                 tooltips.Insert(index + 1, dam);
 
                 // 元々のダメージ表記のラインを非表示にする
                 foreach (var i in tooltips)
                 {
-                    if (i.Name.EndsWith("Damage") && !i.Name.EndsWith(":NewDamage"))
+                    if (i.Name.EndsWith("Damage") && !i.Name.EndsWith("NewDamage"))
                         i.Hide();
                 }
 
@@ -348,6 +411,9 @@ namespace MoreKatana.Items
                     int index2 = tooltips.FindIndex(x => x.Name == "Material");
                     if (index2 < 0)
                         return;
+
+                    TooltipLine tooltip0 = new TooltipLine(Mod, "Tooltip0", MoreKatanaUtil.GetTextValue("Items." + ItemID.Search.GetName(item.type) + ".Tooltip"));
+                    tooltips.Insert(index2 + 1, tooltip0);
 
                     TooltipLine tip;
                     if (!ItemSlot.ShiftInUse)

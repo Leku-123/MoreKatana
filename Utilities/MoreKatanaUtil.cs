@@ -343,11 +343,11 @@ namespace MoreKatana
         /// <param name="lightColor"></param>
         /// <param name="backColor"></param>
         /// <param name="dustType"></param>
-        public static void DrawGauge(Vector2 drawPos, float ratio, Color frontColor, Color? lightColor = null, Color? backColor = null, int dustType = -1)
+        public static void DrawGauge(Vector2 drawPos, float ratio, Color frontColor, Color? lightColor = null, Color? backColor = null, int dustType = -1, Vector2? size = null)
         {
             Texture2D texture = TextureAssets.MagicPixel.Value;
-            Vector2 backSize = new Vector2(54, 8);
-            Vector2 frontSize = new Vector2(50, 4);
+            Vector2 backSize = size == null ? new Vector2(54, 8) : (Vector2)size;
+            Vector2 frontSize = new Vector2(backSize.X - 4, backSize.Y - 4);
             Vector2 backPos = new Vector2(drawPos.X - backSize.X * 0.5f, drawPos.Y - backSize.Y * 0.5f) - Main.screenPosition;
             Vector2 frontPos = new Vector2(drawPos.X - frontSize.X * 0.5f, drawPos.Y - frontSize.Y * 0.5f) - Main.screenPosition;
             Color c1 = backColor == null ? Color.Black : (Color)backColor;
@@ -446,18 +446,32 @@ namespace MoreKatana
             texture.GetData(xy); // テクスチャ内のすべての色で色の配列を埋める
             return xy;
         }
+
+        public static Color ToXnaColor(this in System.Drawing.Color c)
+        {
+            return new Color(c.R, c.G, c.B, c.A);
+        }
+
+        public static Color ColorFromHex(this string hex)
+        {
+            return System.Drawing.ColorTranslator.FromHtml(hex).ToXnaColor();
+        }
         #endregion
 
         #region -------- Localization Utils --------
         /// <summary>
         /// ローカライズの簡略化
-        /// 指定されたキーの前に"Mods.MoreKatana."を付けてローカライズを指定する
+        /// 指定されたキーの前に"Mods.MoreKatana."を付けてローカライズを取得する
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
         public static string GetTextValue(string key)
         {
             return Language.GetTextValue("Mods.MoreKatana." + key);
+        }
+        public static LocalizedText GetOrRegister(string key)
+        {
+            return Language.GetOrRegister("Mods.MoreKatana." + key);
         }
         #endregion
 

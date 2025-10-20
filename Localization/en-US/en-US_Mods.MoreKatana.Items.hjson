@@ -35,26 +35,28 @@ SamuraiStatueGift: {
 }
 
 # -------- Weapons --------
-Katana.FunctionText:
-	'''
-	{$Tooltips.KS}
-	- 
-	{$Tooltips.KA} [c/FFFFFF:<Flash of Lightning>]
-	- Perform a chained dash attack up to 6 times against enemies.
-	'''
-Muramasa.FunctionText:
-	'''
-	{$Tooltips.KS} [c/0000FA:<Revengeance>]
-	- When damaged, the ghost will counterattack.
-	{$Tooltips.KA} [c/0000CD:<Bloodthirsty Ghost>]
-	- Summon a ghost for 10 seconds.
-	- When the player attacks, the ghost will perform an additional attack.
-	'''
+Katana: {
+	Tooltip: '''"This weapon requires skill to handle."'''
+	FunctionText:
+		'''
+		{$Tooltips.KS} [c/FFD700:<Technical Tactics>]
+		- Change normal attacks to charged attacks.
+		- A fully charged attack has the power to deflect enemy projectiles. But it has no effect on the boss.
+		{$Tooltips.KA} [c/FFFFFF:<Flash of Lightning>]
+		- Perform a chained dash attack up to 6 times against enemies.
+		'''
+}
 
-TestKatana: {
-	DisplayName: Test Katana
-	Tooltip: Test Item
-	FunctionText: Mods.MoreKatana.Items.TestKatana.FunctionText
+Muramasa: {
+	Tooltip: '''"Make the curse your ally!"'''
+	FunctionText:
+		'''
+		{$Tooltips.KS} [c/0000FA:<Revengeance>]
+		- When damaged, the ghost will counterattack.
+		{$Tooltips.KA} [c/0000CD:<Bloodthirsty Ghost>]
+		- Summon a ghost for 10 seconds.
+		- When the player attacks, the ghost will perform an additional attack.
+		'''
 }
 
 WoodenKatana: {

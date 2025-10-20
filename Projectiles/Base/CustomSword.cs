@@ -36,7 +36,7 @@ namespace MoreKatana.Projectiles.Base
 
         #region -------- SwordSize --------
         /// <summary> 剣のサイズ </summary>
-        private int SwordWidth, SwordHeight;
+        public int SwordWidth, SwordHeight;
 
         /// <summary> 剣の長さ </summary>
         protected int SwordLength => (int)((SwordWidth / 2f + SwordHeight / 2f) / 2f / Math.Sin(Math.PI * 45 / 180) * Projectile.scale);
@@ -575,13 +575,18 @@ namespace MoreKatana.Projectiles.Base
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
-            hitTimer = ImpactCharge * Projectile.MaxUpdates;
+            ImpactChargeLaunch();
 
             // ノックバックをプレイヤーから遠ざける
             modifiers.HitDirectionOverride = target.position.X > Owner.Center.X ? 1 : -1;
 
             // アイテムから効果を取得する
             ItemLoader.ModifyHitNPC(SwordItem, Owner, target, ref modifiers);
+        }
+
+        public void ImpactChargeLaunch()
+        {
+            hitTimer = ImpactCharge * Projectile.MaxUpdates;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

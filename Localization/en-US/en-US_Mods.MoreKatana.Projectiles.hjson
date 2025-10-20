@@ -8,6 +8,8 @@ GemShards_Amethyst.DisplayName: Amethyst Shard
 # -------- Metal --------
 ObsidianSwing.DisplayName: Obsidian Swing
 # -------- Misc --------
+KatanaHoldout.DisplayName: Katana
+KatanaSwing.DisplayName: Katana
 KatanaSlash.DisplayName: Katana Slash
 KatanaSlashHoldout.DisplayName: Katana Slash
 KatanaSlashEffect.DisplayName: Katana Slash
