@@ -314,8 +314,12 @@ namespace MoreKatana.Items
             return base.CanEquipAccessory(item, player, slot, modded);
         }
 
+       private bool Japanese;
         public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
         {
+            if (MoreKatanaUtil.IsJapanese(line.Text))
+                Japanese = true;
+
             if (line.Name == "DefaultText")
             {
                 Vector2 lineposition = new Vector2(line.OriginalX, line.OriginalY);
@@ -323,7 +327,11 @@ namespace MoreKatana.Items
                 Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null, null, Main.UIScaleMatrix);
                 for (int i = 0; i < 4; i++)
                 {
-                    Vector2 drawpos = lineposition + new Vector2(0, 2 * ((float)Math.Sin(Main.GlobalTimeWrappedHourly * 4) / 2)).RotatedBy(i * MathHelper.PiOver2);
+                    float amount = 2f;
+                    if (Japanese)
+                        amount = 1.4f;
+
+                    Vector2 drawpos = lineposition + new Vector2(0, amount * ((float)Math.Sin(Main.GlobalTimeWrappedHourly * 4) / 2)).RotatedBy(i * MathHelper.PiOver2);
                     Utils.DrawBorderString(Main.spriteBatch, line.Text, drawpos, Color.Goldenrod);
                 }
                 Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
@@ -354,10 +362,12 @@ namespace MoreKatana.Items
                             lineColor = hex.ColorFromHex();
                         }
 
+                        Match matchedObject = Regex.Match(i, @"<.*>");
+
                         Vector2 entrySize = ChatManager.GetStringSize(FontAssets.MouseText.Value, entry[0], Vector2.One);
                         lineposition = new Vector2(line.OriginalX + entrySize.X, line.OriginalY + (entrySize.Y * t));
-
-                        Match matchedObject = Regex.Match(i, @"<.*>");
+                        if (Japanese)
+                            lineposition.Y -= 2f * t;
 
                         Texture2D bloom = MoreKatanaTextures.BloomTexture.Value;
                         Vector2 nameSize = ChatManager.GetStringSize(FontAssets.MouseText.Value, matchedObject.ToString(), Vector2.One);
@@ -366,8 +376,12 @@ namespace MoreKatana.Items
                         Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null, null, Main.UIScaleMatrix);
                         for (int j = 0; j < 4; j++)
                         {
-                            Vector2 drawpos = lineposition + new Vector2(0, 2 * ((float)Math.Sin(Main.GlobalTimeWrappedHourly * 4) / 2)).RotatedBy(j * MathHelper.PiOver2);
-                            Utils.DrawBorderString(Main.spriteBatch, matchedObject.ToString(), drawpos, line.Color * 0.5f);
+                            float amount = 2f;
+                            if (Japanese)
+                                amount = 1.4f;
+
+                            Vector2 drawpos = lineposition + new Vector2(0, amount * ((float)Math.Sin(Main.GlobalTimeWrappedHourly * 4) / 2)).RotatedBy(j * MathHelper.PiOver2);
+                            Utils.DrawBorderString(Main.spriteBatch, matchedObject.ToString(), drawpos, Color.White * 0.5f);
                         }
                         Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
                     }

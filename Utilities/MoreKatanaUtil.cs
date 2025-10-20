@@ -2,6 +2,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Items;
 using MoreKatana.Projectiles;
+using System;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -456,6 +459,39 @@ namespace MoreKatana
         {
             return System.Drawing.ColorTranslator.FromHtml(hex).ToXnaColor();
         }
+
+        public static bool GetHexColor(string hexString, out Vector3 hsl)
+        {
+            if (hexString.StartsWith("#"))
+            {
+                hexString = hexString.Substring(1);
+            }
+            uint result = default(uint);
+            if (hexString.Length <= 6 && uint.TryParse(hexString, (NumberStyles)515, (IFormatProvider)(object)CultureInfo.CurrentCulture, out result))
+            {
+                uint b = result & 0xFFu;
+                uint g = (result >> 8) & 0xFFu;
+                uint r = (result >> 16) & 0xFFu;
+                hsl = RgbToScaledHsl(new Color((int)r, (int)g, (int)b));
+                return true;
+            }
+            hsl = Vector3.Zero;
+            return false;
+        }
+        public static Vector3 RgbToScaledHsl(Color color)
+        {
+            Vector3 vector = Main.rgbToHsl(color);
+            vector.Z = (vector.Z - 0.15f) / 0.85f;
+            return Vector3.Clamp(vector, Vector3.Zero, Vector3.One);
+        }
+        public static Color ScaledHslToRgb(Vector3 hsl)
+        {
+            return ScaledHslToRgb(hsl.X, hsl.Y, hsl.Z);
+        }
+        public static Color ScaledHslToRgb(float hue, float saturation, float luminosity)
+        {
+            return Main.hslToRgb(hue, saturation, luminosity * 0.85f + 0.15f, 255);
+        }
         #endregion
 
         #region -------- Localization Utils --------
@@ -472,6 +508,11 @@ namespace MoreKatana
         public static LocalizedText GetOrRegister(string key)
         {
             return Language.GetOrRegister("Mods.MoreKatana." + key);
+        }
+
+        public static bool IsJapanese(string text)
+        {
+            return Regex.IsMatch(text, @"[\p{IsHiragana}\p{IsKatakana}\p{IsCJKUnifiedIdeographs}]+"); ;
         }
         #endregion
 
