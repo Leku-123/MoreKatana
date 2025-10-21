@@ -474,7 +474,6 @@ namespace MoreKatana.Projectiles.Base
                 PrimsCreated = true;
                 SwordTrail = new CustomSwordPrimTrail(Projectile, TrailColor with { A = 0 }, SwordLength, (int)(SwingTime * 1.5f));
                 MoreKatana.primitives.CreateTrail(SwordTrail);
-                Projectile.netUpdate = true;
             }
 
             // トレイルの更新

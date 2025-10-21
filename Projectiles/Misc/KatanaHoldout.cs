@@ -3,7 +3,6 @@ using MoreKatana.Projectiles.Base;
 using System;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -67,7 +66,7 @@ namespace MoreKatana.Projectiles.Misc
 
             if (charge < chargeMax)
                 charge++;
-           
+
             if (charge == chargeMax)
             {
                 if (!fullyCharged)
@@ -91,7 +90,7 @@ namespace MoreKatana.Projectiles.Misc
                 if (fullyCharged)
                 {
                     ai0 = 1;
-                    Owner.ScreenShake(10, 2);
+                    Owner.ScreenShake(2, 10);
                 }
 
                 int swing = ModContent.ProjectileType<KatanaSwing>();
@@ -120,10 +119,31 @@ namespace MoreKatana.Projectiles.Misc
 
     public class KatanaSwing : CustomSword
     {
+        public bool Reflected;
+        public bool ExecuteReflection;
+        public int ReflectedIndex = -1;
         private Vector2 defVelocity;
 
-        public override void SendExtraAI(BinaryWriter writer) => writer.WriteVector2(defVelocity);
-        public override void ReceiveExtraAI(BinaryReader reader) => defVelocity = reader.ReadVector2();
+        public bool ReflectionCheck(Projectile p)
+            => p.active && p.hostile && p.damage > 0 && p.velocity.Length() > 0
+            && Projectile.Colliding(Projectile.Hitbox, p.Hitbox)
+            && !Reflected;
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(Reflected);
+            writer.Write(ExecuteReflection);
+            writer.Write(ReflectedIndex);
+            writer.WriteVector2(defVelocity);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            Reflected = reader.ReadBoolean();
+            ExecuteReflection = reader.ReadBoolean();
+            ReflectedIndex = reader.ReadInt32();
+            defVelocity = reader.ReadVector2();
+        }
 
         public override void Initialization(Item item, int type)
         {
@@ -136,7 +156,7 @@ namespace MoreKatana.Projectiles.Misc
             SwingEllipse = new(1f, 0.7f);
             SwingStats(item.useAnimation, 0.7f);
             if (type == 1)
-                ImpactCharge = 4;
+                ImpactCharge = 5;
             return base.SwingPattern(item, type);
         }
 
@@ -149,86 +169,88 @@ namespace MoreKatana.Projectiles.Misc
             // プレイヤーのアイテム使用時間を延長する
             Owner.SetDummyItemTime(2);
 
-            if (GetProgress(type) <= 0.95f)
+            if (GetProgress(type) < 0.95f)
             {
                 if (type == 1)
                 {
-                    Main.projectile.Where(p => p.active && p.hostile && p.damage > 0
-                    && Vector2.Distance(p.Center, Projectile.Center) <= SwordLength + Math.Min(p.width, p.height) / 2
-                    && ProjectileLoader.CanDamage(p) != false && ProjectileLoader.CanHitPlayer(p, Owner)
-                    ).ToList().ForEach(p =>
+                    foreach (Projectile p in Main.projectile.Where(ReflectionCheck))
                     {
-                        if (p.aiStyle == ProjAIStyleID.FallingTile && p.velocity.X == 0)
-                            return;
+                        ImpactChargeLaunch();
 
-                        if (Projectile.localAI[0] == 0)
+                        ReflectedIndex = p.whoAmI; // 反射する発射体のインデックスを保存
+                        Reflected = true;
+                        defVelocity = p.velocity;
+                        p.velocity = Vector2.Zero;
+                        p.netUpdate = true;
+                        Projectile.netUpdate = true;
+
+                        // スクリーンシェイクを止める
+                        Owner.ScreenShake(0, 0);
+
+                        // プレイヤーのベロシティを0にする
+                        Owner.velocity = Vector2.Zero;
+                        NetMessage.SendData(MessageID.PlayerControls, number: Owner.whoAmI);
+                    }
+
+                    if (OnImpact && ReflectedIndex != -1)
+                    {
+                        ExecuteReflection = true;
+                        Projectile.netUpdate = true;
+                    }
+
+                    if (ExecuteReflection)
+                    {
+                        Projectile reflected = Main.projectile[ReflectedIndex];
+
+                        // 発射体のオーナーを設定する
+                        reflected.hostile = false;
+                        reflected.friendly = true;
+                        reflected.owner = Projectile.owner;
+
+                        // 発射体の速度を設定する
+                        reflected.velocity = Vector2.Normalize(Projectile.velocity);
+                        reflected.velocity *= defVelocity.Length();
+
+                        // ダメージ
+                        reflected.damage = Projectile.damage;
+
+                        // 一応これもやっとく
+                        reflected.netUpdate = true;
+
+                        ExecuteReflection = false;
+                        ReflectedIndex = -1;
+                        Projectile.netUpdate = true;
+
+                        // プレイヤーに反動を付ける
+                        Owner.velocity = Vector2.Normalize(Projectile.velocity);
+                        Owner.velocity *= -5f;
+                        NetMessage.SendData(MessageID.PlayerControls, number: Owner.whoAmI);
+
+                        Owner.ScreenShake(5, 30);
+                        // サウンド
+                        SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = +0.3f }, Owner.position);
+
+                        // ダスト
+                        for (int i = 0; i < 5; i++)
                         {
-                            Projectile.localAI[0] = 1;
-                            defVelocity = p.velocity;
-                            p.velocity *= 0.01f;
-                            p.netUpdate = true;
-                            ImpactChargeLaunch();
-                            Projectile.netUpdate = true;
+                            int newDust = Dust.NewDust(new Vector2(reflected.position.X, reflected.position.Y + 2f), reflected.width, reflected.height, DustID.GemDiamond, reflected.velocity.X * 0.2f, reflected.velocity.Y * 0.2f, 100, default, 3f);
+                            Main.dust[newDust].noGravity = true;
                         }
-                        
-                        if (OnImpact)
+
+                        if (Main.myPlayer == Projectile.owner)
                         {
-                            // 発射体のオーナーを設定する
-                            p.hostile = false;
-                            p.friendly = true;
-                            p.owner = Owner.whoAmI;
-
-                            // 速度を逆向きに
-                            p.velocity = -defVelocity;
-
-                            // ダメージ
-                            p.damage = Projectile.damage;
-
-                            // スプライト(テクスチャ)を反転させる
-                            if (p.Center.X > Owner.Center.X)
+                            for (int i = 0; i < 2; i++)
                             {
-                                p.direction = 1;
-                                p.spriteDirection = 1;
-                            }
-                            else
-                            {
-                                p.direction = -1;
-                                p.spriteDirection = -1;
-                            }
+                                float maxOffset = reflected.width * 0.4f;
+                                if (maxOffset > 300f)
+                                    maxOffset = 300f;
 
-                            p.netUpdate = true;
-                            Projectile.netUpdate = true;
-
-                            // プレイヤーに反動を付ける
-                            Owner.velocity = Vector2.Normalize(p.Center - Owner.Center);
-                            Owner.velocity *= -5f;
-                            NetMessage.SendData(MessageID.PlayerControls, number: Owner.whoAmI);
-
-                            // サウンド
-                            SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = +0.3f }, Owner.position);
-
-                            // ダスト
-                            for (int i = 0; i < 5; i++)
-                            {
-                                int newDust = Dust.NewDust(new Vector2(p.position.X, p.position.Y + 2f), p.width, p.height + 5, DustID.GemDiamond, p.velocity.X * 0.2f, p.velocity.Y * 0.2f, 100, default, 3f);
-                                Main.dust[newDust].noGravity = true;
-                            }
-
-                            if (Main.myPlayer == Projectile.owner)
-                            {
-                                for (int i = 0; i < 2; i++)
-                                {
-                                    float maxOffset = p.width * 0.4f;
-                                    if (maxOffset > 300f)
-                                        maxOffset = 300f;
-
-                                    Vector2 spawnOffset = (MathHelper.Pi + Main.rand.NextFloatDirection() * 0.2f).ToRotationVector2() * Main.rand.NextFloatDirection() * maxOffset;
-                                    Vector2 sliceVelocity = spawnOffset.SafeNormalize(Vector2.UnitY) * 0.1f;
-                                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), p.Center + spawnOffset, sliceVelocity, ModContent.ProjectileType<KatanaSlashEffect>(), Projectile.damage, 0f, Projectile.owner);
-                                }
+                                Vector2 spawnOffset = (MathHelper.Pi + Main.rand.NextFloatDirection() * 0.2f).ToRotationVector2() * Main.rand.NextFloatDirection() * maxOffset;
+                                Vector2 sliceVelocity = spawnOffset.SafeNormalize(Vector2.UnitY) * 0.1f;
+                                Projectile.NewProjectile(Projectile.GetSource_FromThis(), reflected.Center + spawnOffset, sliceVelocity, ModContent.ProjectileType<KatanaSlashEffect>(), Projectile.damage, 0f, Projectile.owner);
                             }
                         }
-                    });
+                    }
                 }
             }
         }
