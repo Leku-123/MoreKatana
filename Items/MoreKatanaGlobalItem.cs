@@ -314,80 +314,85 @@ namespace MoreKatana.Items
             return base.CanEquipAccessory(item, player, slot, modded);
         }
 
-       private bool Japanese;
+        private bool Japanese;
         public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
         {
-            if (MoreKatanaUtil.IsJapanese(line.Text))
-                Japanese = true;
-
-            if (line.Name == "DefaultText")
+            if (Katana)
             {
-                Vector2 lineposition = new Vector2(line.OriginalX, line.OriginalY);
-                Utils.DrawBorderString(Main.spriteBatch, line.Text, lineposition, Color.LightGoldenrodYellow);
-                Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null, null, Main.UIScaleMatrix);
-                for (int i = 0; i < 4; i++)
+                if (MoreKatanaUtil.IsJapanese(line.Text))
+                    Japanese = true;
+
+                if (line.Name == "DefaultText")
                 {
-                    float amount = 2f;
-                    if (Japanese)
-                        amount = 1.4f;
-
-                    Vector2 drawpos = lineposition + new Vector2(0, amount * ((float)Math.Sin(Main.GlobalTimeWrappedHourly * 4) / 2)).RotatedBy(i * MathHelper.PiOver2);
-                    Utils.DrawBorderString(Main.spriteBatch, line.Text, drawpos, Color.Goldenrod);
-                }
-                Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
-                return false;
-            }
-
-            if (line.Name == "FunctionText")
-            {
-                string text = line.Text;
-                string[] linebreak = text.Split('\n');
-                Vector2 lineposition = new Vector2(line.OriginalX, line.OriginalY);
-
-                Utils.DrawBorderString(Main.spriteBatch, text, lineposition, line.Color);
-
-                int t = 0;
-                foreach (string i in linebreak)
-                {
-                    if (i.Contains('<') && i.Contains('>') && !i.Contains('-'))
+                    Vector2 lineposition = new Vector2(line.OriginalX, line.OriginalY);
+                    Utils.DrawBorderString(Main.spriteBatch, line.Text, lineposition, Color.LightGoldenrodYellow);
+                    Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null, null, Main.UIScaleMatrix);
+                    for (int i = 0; i < 4; i++)
                     {
-                        Color lineColor = line.Color;
-                        string[] entry = i.Split('<');
-                        if (i.Contains('[') && i.Contains(']'))
-                        {
-                            entry = i.Split('[');
-
-                            Match matchedHex = Regex.Match(i, @"c/.*:");
-                            string hex = matchedHex.ToString().Replace("c/", "#").Replace(":", "");
-                            lineColor = hex.ColorFromHex();
-                        }
-
-                        Match matchedObject = Regex.Match(i, @"<.*>");
-
-                        Vector2 entrySize = ChatManager.GetStringSize(FontAssets.MouseText.Value, entry[0], Vector2.One);
-                        lineposition = new Vector2(line.OriginalX + entrySize.X, line.OriginalY + (entrySize.Y * t));
+                        float amount = 2f;
                         if (Japanese)
-                            lineposition.Y -= 2f * t;
+                            amount = 1.4f;
 
-                        Texture2D bloom = MoreKatanaTextures.BloomTexture.Value;
-                        Vector2 nameSize = ChatManager.GetStringSize(FontAssets.MouseText.Value, matchedObject.ToString(), Vector2.One);
-                        Main.spriteBatch.Draw(bloom, lineposition + nameSize / 2, null, lineColor with { A = 0 } * 0.3f, 0f, bloom.Size() / 2f, new Vector2(nameSize.X / 150, nameSize.Y / 150), SpriteEffects.None, 0);
-
-                        Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null, null, Main.UIScaleMatrix);
-                        for (int j = 0; j < 4; j++)
-                        {
-                            float amount = 2f;
-                            if (Japanese)
-                                amount = 1.4f;
-
-                            Vector2 drawpos = lineposition + new Vector2(0, amount * ((float)Math.Sin(Main.GlobalTimeWrappedHourly * 4) / 2)).RotatedBy(j * MathHelper.PiOver2);
-                            Utils.DrawBorderString(Main.spriteBatch, matchedObject.ToString(), drawpos, Color.White * 0.5f);
-                        }
-                        Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
+                        Vector2 drawpos = lineposition + new Vector2(0, amount * ((float)Math.Sin(Main.GlobalTimeWrappedHourly * 4) / 2)).RotatedBy(i * MathHelper.PiOver2);
+                        Utils.DrawBorderString(Main.spriteBatch, line.Text, drawpos, Color.Goldenrod);
                     }
-                    t++;
+                    Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
+                    return false;
                 }
-                return false;
+
+                if (line.Name == "FunctionText")
+                {
+                    //line.X += 26;
+
+                    string text = line.Text;
+                    string[] linebreak = text.Split('\n');
+                    Vector2 lineposition = new Vector2(line.OriginalX, line.OriginalY);
+
+                    Utils.DrawBorderString(Main.spriteBatch, text, lineposition, line.Color);
+
+                    int t = 0;
+                    foreach (string i in linebreak)
+                    {
+                        if (i.Contains('<') && i.Contains('>') && !i.Contains('-'))
+                        {
+                            Color lineColor = line.Color;
+                            string[] entry = i.Split('<');
+                            if (i.Contains('[') && i.Contains(']'))
+                            {
+                                entry = i.Split('[');
+
+                                Match matchedHex = Regex.Match(i, @"c/.*:");
+                                string hex = matchedHex.ToString().Replace("c/", "#").Replace(":", "");
+                                lineColor = hex.ColorFromHex();
+                            }
+
+                            Match matchedObject = Regex.Match(i, @"<.*>");
+
+                            Vector2 entrySize = ChatManager.GetStringSize(FontAssets.MouseText.Value, entry[0], Vector2.One);
+                            lineposition = new Vector2(line.OriginalX + entrySize.X, line.OriginalY + (entrySize.Y * t));
+                            if (Japanese)
+                                lineposition.Y -= 2f * t;
+
+                            Texture2D bloom = MoreKatanaTextures.BloomTexture.Value;
+                            Vector2 nameSize = ChatManager.GetStringSize(FontAssets.MouseText.Value, matchedObject.ToString(), Vector2.One);
+                            Main.spriteBatch.Draw(bloom, lineposition + nameSize / 2, null, lineColor with { A = 0 } * 0.3f, 0f, bloom.Size() / 2f, new Vector2(nameSize.X / 150, nameSize.Y / 150), SpriteEffects.None, 0);
+
+                            Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null, null, Main.UIScaleMatrix);
+                            for (int j = 0; j < 4; j++)
+                            {
+                                float amount = 2f;
+                                if (Japanese)
+                                    amount = 1.4f;
+
+                                Vector2 drawpos = lineposition + new Vector2(0, amount * ((float)Math.Sin(Main.GlobalTimeWrappedHourly * 4) / 2)).RotatedBy(j * MathHelper.PiOver2);
+                                Utils.DrawBorderString(Main.spriteBatch, matchedObject.ToString(), drawpos, Color.White * 0.5f);
+                            }
+                            Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
+                        }
+                        t++;
+                    }
+                    return false;
+                }
             }
 
             return base.PreDrawTooltipLine(item, line, ref yOffset);
@@ -402,6 +407,7 @@ namespace MoreKatana.Items
                     return;
 
                 // ダメージ表記を新たに挿入
+                // TO-DO: Onフックで処理するかも
                 string defDamage = $"{item.damage}";
                 if (item.type == ItemID.Katana)
                     defDamage = $"{item.damage}-{item.damage * 3}";
