@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Assets.ItemTextures;
 using MoreKatana.Prim;
+using MoreKatana.Projectiles.PrimTrails;
 using MoreKatana.Utilities;
 using ReLogic.Content;
 using System;
@@ -25,6 +26,7 @@ namespace MoreKatana
 
         public static Effect PrimitiveTextureMap;
         public static PrimTrailManager primitives;
+        public static TrailManager TrailManager;
 
         private Vector2 _lastScreenSize;
 
@@ -49,6 +51,8 @@ namespace MoreKatana
                 PrimitiveTextureMap = ModContent.Request<Effect>("MoreKatana/Effects/PrimitiveTextureMap", AssetRequestMode.ImmediateLoad).Value;
                 primitives = new PrimTrailManager();
                 primitives.LoadContent(Main.graphics.GraphicsDevice);
+
+                TrailManager = new TrailManager();
             }
         }
 
@@ -70,6 +74,7 @@ namespace MoreKatana
         {
             PrimitiveTextureMap = null;
             primitives = null;
+            TrailManager = null;
 
             MoreKatanaDetours.Unload();
             MoreKatanaTextures.UnloadTextures();
@@ -78,7 +83,8 @@ namespace MoreKatana
 
         public enum MessageType : byte
         {
-            MouseWorld
+            MouseWorld = 0,
+            SpawnTrail,
         }
 
         public static void SyncData(MessageType msgType, int whoAmI, int toClient = -1, int ignoreClient = -1, object value = null, object value2 = null, object value3 = null)
@@ -99,6 +105,12 @@ namespace MoreKatana
                         packet.Write((byte)whoAmI);
                         packet.WriteVector2(Main.player[whoAmI].MKPlayer().MouseWorld);
                         packet.Write(Main.player[whoAmI].controlUseTile);
+                        packet.Send(toClient, ignoreClient);
+                        break;
+                    case MessageType.SpawnTrail:
+                        packet = mod.GetPacket(256);
+                        packet.Write((byte)MessageType.SpawnTrail);
+                        packet.Write(whoAmI);
                         packet.Send(toClient, ignoreClient);
                         break;
                     default:
@@ -133,11 +145,24 @@ namespace MoreKatana
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
             MessageType msgType = (MessageType)reader.ReadByte();
+            int proj;
 
             switch (msgType)
             {
                 case MessageType.MouseWorld:
                     MoreKatanaPlayer.SyncMouseWorld(this, reader, whoAmI);
+                    break;
+                case MessageType.SpawnTrail:
+                    proj = reader.ReadInt32();
+
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        SyncData(msgType, proj);
+                        break;
+                    }
+
+                    if (Main.projectile[proj].ModProjectile is IManualTrailProjectile trailProj)
+                        trailProj.DoTrailCreation(TrailManager);
                     break;
                 default:
                     Logger.WarnFormat("MoreKatana: Unknown Message type: {0}", msgType);

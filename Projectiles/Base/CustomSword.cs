@@ -15,7 +15,7 @@ namespace MoreKatana.Projectiles.Base
     {
         #region -------- Variables --------
         /// <summary> 現在の剣の振りのタイプ </summary>
-        public int SwingType
+        private int SwingType
         {
             get => (int)Projectile.ai[0];
             set
@@ -456,69 +456,58 @@ namespace MoreKatana.Projectiles.Base
                 DelayTimer++;
             }
 
-            DrawTrail(SwingDirection, SwingType);
+            if (Main.netMode != NetmodeID.Server)
+                DrawTrail(SwingType);
+
             AdditionalAI(SwordItem, SwingType, !execute);
         }
 
         /// <summary>
         /// トレイルの処理
         /// </summary>
-        /// <param name="dir"></param>
         /// <param name="type"></param>
-        public virtual void DrawTrail(int dir, int type)
+        public virtual void DrawTrail(int type)
         {
-            // トレイルをスポーン
-            if (!PrimsCreated)
+            // トレイルを描画
+            if (!PrimsCreated && Timer > 1f)
             {
                 PrimsCreated = true;
-                SwordTrail = new CustomSwordPrimTrail(Projectile, TrailColor, SwordLength, (int)(SwingTime * 1.5f));
+                SwordTrail = new CustomSwordPrimTrail(Projectile, TrailColor with { A = 0 }, SwordLength, (int)(SwingTime * 1.5f));
                 MoreKatana.primitives.CreateTrail(SwordTrail);
+                Projectile.netUpdate = true;
             }
 
+            // トレイルの更新
             UpdateTrail(SwordTrail);
         }
 
         /// <summary>
         /// トレイルの情報を更新する
         /// </summary>
-        /// <param name="t"></param>
-        /// <param name="kill"></param>
-        /// <param name="dir"></param>
-        /// <param name="center"></param>
-        /// <param name="point"></param>
-        /// <param name="type"></param>
-        /// <param name="width"></param>
-        public void UpdateTrail(CustomSwordPrimTrail t, bool? kill = null, int? dir = null, Vector2? center = null, Vector2? point = null, int type = 0, int width = 0)
+        /// <param name="t"> 更新を行うトレイルの種類 </param>
+        /// <param name="kill"> トレイルを消すかどうか </param>
+        /// <param name="dir"> トレイルの向き </param>
+        /// <param name="center"> トレイルの中心 </param>
+        /// <param name="point"> トレイルの描画ポイント </param>
+        /// <param name="type"> トレイルのテクスチャーのタイプ </param>
+        /// <param name="width"> トレイルの横幅の調節 </param>
+        public void UpdateTrail(CustomSwordPrimTrail t, bool? kill = null, int? dir = null, Vector2? center = null, Vector2? point = null, int type = 4, int width = 0)
         {
-            if (PrimsCreated && Timer != 0f)
+            if (PrimsCreated)
             {
-                if (Main.netMode != NetmodeID.Server)
-                {
-                    // トレイルの向き
-                    int primDir = (dir == null) ? Owner.direction * -SwingDirection : (int)dir;
-                    t.Direction = primDir;
+                if (kill ?? (GetProgress(SwingType) > 0.95f || KillPrims))
+                    t?.OnDestroy();
 
-                    // トレイルの位置
-                    Vector2 primCenter = (center == null) ? Owner.MountedCenter : (Vector2)center;
-                    t.PrimCenter = primCenter;
+                t.Direction = dir ?? Owner.direction * -SwingDirection;
 
-                    // トレイルの横幅の調節
-                    if (width != 0)
-                        t.ModifiedWidth = width;
+                t.PrimCenter = center ?? Owner.MountedCenter;
 
-                    // トレイルのテクスチャータイプ
-                    t.TextureType = type;
+                if (hitTimer <= 0)
+                    t?.Points.Add(point ?? Projectile.Center - t.PrimCenter);
 
-                    // トレイルの描画ポイント
-                    Vector2 primPoint = (point == null) ? Projectile.Center - Owner.MountedCenter : (Vector2)point;
-                    if (hitTimer <= 0)
-                        t.Points.Add(primPoint);
+                t.TextureType = type;
 
-                    // トレイルを消す
-                    bool killPrims = (kill == null) ? GetProgress(SwingType) >= 0.95f || KillPrims : (bool)kill;
-                    if (killPrims)
-                        t?.OnDestroy();
-                }
+                if (width != 0) t.ModifiedWidth = width;
             }
         }
 
@@ -584,10 +573,7 @@ namespace MoreKatana.Projectiles.Base
             ItemLoader.ModifyHitNPC(SwordItem, Owner, target, ref modifiers);
         }
 
-        public void ImpactChargeLaunch()
-        {
-            hitTimer = ImpactCharge * Projectile.MaxUpdates;
-        }
+        public void ImpactChargeLaunch() => hitTimer = ImpactCharge * Projectile.MaxUpdates;
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {

@@ -19,7 +19,7 @@ namespace MoreKatana.Projectiles.Misc
         public override void SafeSendExtraAI(BinaryWriter writer) => writer.Write(animationStoppedPoint);
         public override void SafeReceiveExtraAI(BinaryReader reader) => animationStoppedPoint = reader.ReadSingle();
 
-        public override void DrawTrail(int dir, int type)
+        public override void DrawTrail(int type)
         {
             if (type == 1 && GetProgress(type) >= 0f)
             {

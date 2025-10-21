@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace MoreKatana.Projectiles.Misc
 {
-    public class EnchantedKatanaBeam : ModProjectile
+    public class EnchantedKatanaBeam : ModProjectile, ITrailProjectile
     {
         private int AttackType
         {
@@ -21,8 +21,6 @@ namespace MoreKatana.Projectiles.Misc
         public int SelectDustType => Utils.SelectRandom(Main.rand, EnchantedKatana.EnchantedDustType);
 
         public int collisionCount = 2;
-
-        private TextureMapPrimTrail trail;
 
         public override void SetDefaults()
         {
@@ -37,15 +35,13 @@ namespace MoreKatana.Projectiles.Misc
             Projectile.ignoreWater = false;
         }
 
+        public void DoTrailCreation(TrailManager tManager)
+        {
+            tManager.CreateTrail(Projectile, Color.DeepSkyBlue, MoreKatanaTextures.StraightlineTrailTexture.Value, 10, 20);
+        }
+
         public override void AI()
         {
-            if (Projectile.localAI[0] == 0)
-            {
-                Projectile.localAI[0] = 1;
-                trail = new TextureMapPrimTrail(Projectile, Color.DeepSkyBlue, MoreKatanaTextures.StraightlineTrailTexture.Value, 8, 20);
-                MoreKatana.primitives.CreateTrail(trail);
-            }
-
             Projectile.tileCollide = AttackType != 1;
             Projectile.spriteDirection = (Vector2.Dot(Projectile.velocity, Vector2.UnitX) >= 0f).ToDirectionInt();
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2 - MathHelper.PiOver4 * Projectile.spriteDirection;

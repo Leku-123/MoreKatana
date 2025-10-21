@@ -26,7 +26,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         /// 二種類のトレイルを重ねてスポーンさせる
         /// </summary>
         /// <param name="dir"></param>
-        public override void DrawTrail(int dir, int type)
+        public override void DrawTrail(int type)
         {
             if (GetProgress(type) >= 0f)
             {

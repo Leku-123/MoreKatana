@@ -217,7 +217,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             public override void SafeSendExtraAI(BinaryWriter writer) => writer.Write7BitEncodedInt(hostIndex);
             public override void SafeReceiveExtraAI(BinaryReader reader) => hostIndex = reader.Read7BitEncodedInt();
 
-            public override void DrawTrail(int dir, int type)
+            public override void DrawTrail(int type)
             {
                 if (GetProgress(type) >= 0f)
                 {

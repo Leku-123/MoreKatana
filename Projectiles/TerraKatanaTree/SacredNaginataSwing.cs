@@ -21,7 +21,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         /// 刀身が長いためトレイルの横幅を小さくして、オフセットを先端に調節する
         /// </summary>
         /// <param name="dir"></param>
-        public override void DrawTrail(int dir, int type)
+        public override void DrawTrail(int type)
         {
             if (GetProgress(type) >= 0f)
             {
