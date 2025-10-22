@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Assets.ExtraTextures;
+using MoreKatana.Projectiles.PrimTrails;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -8,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace MoreKatana.Projectiles.TerraKatanaTree
 {
-    public class GrassLeaf : ModProjectile
+    public class GrassLeaf : ModProjectile, ITrailProjectile
     {
         private ref float Timer => ref Projectile.ai[0];
         public const int PrepareTime = 30;
@@ -27,13 +29,18 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.height = 16;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 1;
-            Projectile.timeLeft = 120;
+            Projectile.timeLeft = 90;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10;
+        }
+
+        public void DoTrailCreation(TrailManager tManager)
+        {
+            tManager.CreateTrail(Projectile, new Color(0, 70, 0), MoreKatanaTextures.EnergyTrailTexture.Value, 32, 8);
         }
 
         public override void AI()

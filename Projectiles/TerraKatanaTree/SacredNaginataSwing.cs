@@ -17,10 +17,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         private Vector2 DirectionToProj => Utils.DirectionTo(Owner.MountedCenter, Projectile.Center);
 
-        /// <summary>
-        /// 刀身が長いためトレイルの横幅を小さくして、オフセットを先端に調節する
-        /// </summary>
-        /// <param name="dir"></param>
+        /// <summary> 刀身が長いためトレイルの横幅を小さくして、オフセットを先端に調節する </summary>
         public override void DrawTrail(int type)
         {
             if (GetProgress(type) >= 0f)
@@ -38,41 +35,35 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             }
         }
 
-        public override void Initialization(Item item, int type)
+        public override void Initialize(Item item, int type)
         {
             if (type == 2)
             {
                 Projectile.localNPCHitCooldown = item.useAnimation / 3 * Projectile.MaxUpdates;
                 NoSpeedBonus = true;
+                SwingEllipse = new(0.5f);
+                ImpactCharge = 4;
+                CreateSound = false;
             }
             else
             {
                 Projectile.localNPCHitCooldown = -1;
                 NoSpeedBonus = false;
+                SwingEllipse = new(1f, 0.45f);
             }
 
             SwordSize(124);
             TrailColor = Color.Gold * 0.3f;
         }
 
-        public override bool SwingPattern(Item item, int type)
-        {
-            if (type == 2)
-            {
-                SwingEllipse = new(0.5f);
-                SwingStats(item.useAnimation * 1.5f, 2.6f, 0.25f, delay: item.useAnimation / 2f);
-                ImpactCharge = 4;
-            }
-            else
-            {
-                SwingEllipse = new(1f, 0.45f);
-                float usetime = type == 0 ? item.useAnimation / 2f : item.useAnimation;
-                SwingStats(usetime, 0.6f, 0.2f, type % 2 != 0);
-            }
+        #region 振りの設定
+        public SwingData Down => new SwingData(SwordItem.useAnimation / 2f, 0.6f, 0.2f); // 1振り目
+        public SwingData Up => new SwingData(SwordItem.useAnimation, 0.6f, 0.2f, true); // 2振り目
+        public SwingData Spin => new SwingData(SwordItem.useAnimation * 1.5f, 2.6f, 0.25f, delay: SwordItem.useAnimation / 2f); // 3振り目
+        public override SwingData GetSwingData(int type) => SwingData.SwingRegister(type, Down, Up, Spin);
+        #endregion
 
-            return base.SwingPattern(item, type);
-        }
-
+        #region 振りのアニメーションの設定
         public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f);
         public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f);
         public float NormalAnimation => PiecewiseAnimation(Progress, execute, unwind); // 1,2振り目のアニメーション
@@ -94,6 +85,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             else
                 return NormalAnimation;
         }
+        #endregion
 
         public override void AdditionalAI(Item item, int type, bool delay)
         {
@@ -103,11 +95,13 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             {
                 if (!delay)
                 {
+                    // 振りかぶり時はダメージを与えないようにする
                     Projectile.friendly = GetProgress(type) >= 0f;
+
                     Owner.FlipEffect(GetProgress(type) * 9f);
 
-                    if (Timer % (20 * Projectile.MaxUpdates) == 0)
-                        SoundEngine.PlaySound(SoundID.Item169, Owner.Center);
+                    if (Projectile.soundDelay % (20 * Projectile.MaxUpdates) == 0)
+                        SoundEngine.PlaySound(SoundID.Item169, Owner.position);
                 }
                 else
                 {

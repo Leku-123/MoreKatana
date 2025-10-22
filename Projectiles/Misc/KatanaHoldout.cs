@@ -145,19 +145,13 @@ namespace MoreKatana.Projectiles.Misc
             defVelocity = reader.ReadVector2();
         }
 
-        public override void Initialization(Item item, int type)
+        public override void Initialize(Item item, int type)
         {
             Projectile.localNPCHitCooldown = -1; // 1振りで同じターゲットに2回ヒットしないようにする
-            GetTextureValues();
-        }
-
-        public override bool SwingPattern(Item item, int type)
-        {
             SwingEllipse = new(1f, 0.7f);
-            SwingStats(item.useAnimation, 0.7f);
+            GetTextureValues();
             if (type == 1)
                 ImpactCharge = 5;
-            return base.SwingPattern(item, type);
         }
 
         public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f); // 振りのアニメーション
@@ -175,14 +169,13 @@ namespace MoreKatana.Projectiles.Misc
                 {
                     foreach (Projectile p in Main.projectile.Where(ReflectionCheck))
                     {
-                        ImpactChargeLaunch();
-
                         ReflectedIndex = p.whoAmI; // 反射する発射体のインデックスを保存
                         Reflected = true;
                         defVelocity = p.velocity;
                         p.velocity = Vector2.Zero;
                         p.netUpdate = true;
-                        Projectile.netUpdate = true;
+
+                        ImpactChargeLaunch();
 
                         // スクリーンシェイクを止める
                         Owner.ScreenShake(0, 0);
@@ -192,11 +185,11 @@ namespace MoreKatana.Projectiles.Misc
                         NetMessage.SendData(MessageID.PlayerControls, number: Owner.whoAmI);
                     }
 
-                    if (OnImpact && ReflectedIndex != -1)
-                    {
-                        ExecuteReflection = true;
-                        Projectile.netUpdate = true;
-                    }
+                    //if (OnImpact && ReflectedIndex != -1)
+                    //{
+                    //    ExecuteReflection = true;
+                    //    Projectile.netUpdate = true;
+                    //}
 
                     if (ExecuteReflection)
                     {

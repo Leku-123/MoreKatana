@@ -14,24 +14,21 @@ namespace MoreKatana.Projectiles.Metal
     {
         public override string Texture => this.GetTexture(Name);
 
-        public override void Initialization(Item item, int type)
+        public override void Initialize(Item item, int type)
         {
-            Projectile.localNPCHitCooldown = Owner.itemAnimationMax * Projectile.MaxUpdates;
-            SwordSize(58);
-            TrailColor = new Color(83, 5, 1);
-        }
+            Projectile.localNPCHitCooldown = -1;
 
-        public override bool SwingPattern(Item item, int type)
-        {
             float x = Main.rand.NextFloat(1f, 1.3f);
             float y = Main.rand.NextFloat(0.7f, 0.9f);
             SwingEllipse = new(x, y);
 
-            float swingRange = Main.rand.NextFloat(0.7f, 0.8f);
-            SwingStats(Owner.itemAnimationMax, swingRange, (0.9f - swingRange) / 2f, type % 2 != 0);
-
-            return base.SwingPattern(item, type);
+            GetTextureValues();
+            TrailColor = new Color(83, 5, 1);
         }
+
+        public SwingData Down => new SwingData(SwordItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f));
+        public SwingData Up => new SwingData(SwordItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f), backspin: true);
+        public override SwingData GetSwingData(int type) => SwingData.SwingRegister(type, Down, Up);
 
         public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f);
         public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f);

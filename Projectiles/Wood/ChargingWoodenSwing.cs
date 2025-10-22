@@ -27,36 +27,31 @@ namespace MoreKatana.Projectiles.Wood
                     MoreKatana.primitives.CreateTrail(SwordTrail);
                 }
 
-                bool kill = GetProgress(type) >= 0.90f || SwingStop;
-                UpdateTrail(SwordTrail, kill, type: 2);
+                UpdateTrail(SwordTrail, type: 2);
             }
         }
 
-        public override void Initialization(Item item, int type)
+        public override void Initialize(Item item, int type)
         {
             Projectile.localNPCHitCooldown = -1;
             Projectile.MKProjectile().ActivateCD = true;
 
+            SwingEllipse = new(0.9f);
             ContinuousSwing = true;
             FixedDirection = true;
             CreateSound = false;
             GetTextureValues();
         }
 
-        public override bool SwingPattern(Item item, int type)
-        {
-            SwingEllipse = new(0.9f);
+        public SwingData Upward => new SwingData(60, -0.4f, 0.5f, delay: 5f); // 2振り目
+        public SwingData Down => new SwingData(40, 0.8f, 0.1f, delay: 30f); // 1振り目
 
-            switch (type)
-            {
-                case 0:
-                    SwingStats(60, -0.4f, 0.5f, delay: 5f);
-                    break;
-                case 1:
-                    SwingStats(40, 0.8f, 0.1f, delay: 30f);
-                    return false;
-            }
-            return true;
+        public override SwingData GetSwingData(int type)
+        {
+            if (type < 2)
+                return SwingData.SwingRegister(type, Upward, Down);
+            else
+                return new SwingData();
         }
 
         public float UpwardAnimation => CircOutEasing(Progress, 1); // 振り上げのアニメーション

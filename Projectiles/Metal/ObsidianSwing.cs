@@ -16,18 +16,14 @@ namespace MoreKatana.Projectiles.Metal
 
         public override string Texture => this.GetTexture(Name);
 
-        public override void Initialization(Item item, int type)
+        public override void Initialize(Item item, int type)
         {
-            Projectile.localNPCHitCooldown = Owner.itemAnimationMax * Projectile.MaxUpdates;
+            Projectile.localNPCHitCooldown = -1;
+            SwingEllipse = new(0.8f);
             GetTextureValues();
         }
 
-        public override bool SwingPattern(Item item, int type)
-        {
-            SwingEllipse = new(0.8f);
-            SwingStats(Owner.itemAnimationMax, 0.8f);
-            return base.SwingPattern(item, type);
-        }
+        public override SwingData GetSwingData(int type) => SwingData.SwingRegister(type, new SwingData(Owner.itemAnimationMax, 0.8f));
 
         public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f);
         public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f);

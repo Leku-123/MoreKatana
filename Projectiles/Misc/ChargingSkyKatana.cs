@@ -35,7 +35,7 @@ namespace MoreKatana.Projectiles.Misc
             }
         }
 
-        public override void Initialization(Item item, int type)
+        public override void Initialize(Item item, int type)
         {
             Projectile.localNPCHitCooldown = -1;
             Projectile.MKProjectile().ActivateCD = true;
@@ -46,22 +46,22 @@ namespace MoreKatana.Projectiles.Misc
             GetTextureValues();
         }
 
-        public override bool SwingPattern(Item item, int type)
-        {
-            SwingEllipse = new(0.9f);
+        //public override bool SwingPattern(Item item, int type)
+        //{
+        //    SwingEllipse = new(0.9f);
 
-            //Note: SwingStatsのTimeを大きくすると多分振りが早くなる。
-            switch (type)
-            {
-                case 0:
-                    SwingStats(70, -0.4f, 0.5f, delay: 5f);
-                    break;
-                case 1:
-                    SwingStats(50, 0.8f, 0.1f, delay: 30f);
-                    return false;
-            }
-            return true;
-        }
+        //    //Note: SwingStatsのTimeを大きくすると多分振りが早くなる。
+        //    switch (type)
+        //    {
+        //        case 0:
+        //            SwingStats(70, -0.4f, 0.5f, delay: 5f);
+        //            break;
+        //        case 1:
+        //            SwingStats(50, 0.8f, 0.1f, delay: 30f);
+        //            return false;
+        //    }
+        //    return true;
+        //}
 
         public float UpwardAnimation => CircOutEasing(Progress, 1); // 振り上げのアニメーション
 

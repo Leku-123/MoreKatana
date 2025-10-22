@@ -21,7 +21,7 @@ namespace MoreKatana.Items.Weapons.Misc
 
             Item.useTime = 21;
             Item.useAnimation = 21;
-            Item.UseSound = SoundID.Item1;
+            Item.MKItem().UseSound = SoundID.Item1;
 
             Item.damage = 25;
             Item.knockBack = 4.25f;

@@ -18,7 +18,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
             Item.useTime = 18;
             Item.useAnimation = 18;
-            Item.UseSound = SoundID.Item1;
+            Item.MKItem().UseSound = SoundID.Item1;
 
             Item.damage = 15;
             Item.knockBack = 4.5f;

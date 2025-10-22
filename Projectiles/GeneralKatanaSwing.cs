@@ -5,45 +5,39 @@ using static MoreKatana.MoreKatanaUtil;
 namespace MoreKatana.Projectiles
 {
     /// <summary>
-    /// 基本的な剣の振り
+    /// 汎用のカタナの振りの発射体
     /// </summary>
     public class GeneralKatanaSwing : CustomSword
     {
-        public override void Initialization(Item item, int type)
+        /// <summary> 初期設定 </summary>
+        public override void Initialize(Item item, int type)
         {
-            Projectile.localNPCHitCooldown = -1; // 1振りで同じターゲットに2回ヒットしないようにする
-            GetTextureValues();
-        }
+            // 1振りで同じターゲットに2回ヒットしないようにする
+            Projectile.localNPCHitCooldown = -1;
 
-        public override bool SwingPattern(Item item, int type)
-        {
-            // 振りの描く弧にランダム性を持たせる
+            // 振りの弧の描きかたをランダムに設定
             float x = Main.rand.NextFloat(1f, 1.3f);
             float y = Main.rand.NextFloat(0.7f, 0.9f);
             SwingEllipse = new(x, y);
 
-            // 振る範囲にランダム性を持たせる
-            float swingRange = Main.rand.NextFloat(0.7f, 0.8f);
-            SwingStats(item.useAnimation, swingRange, (0.9f - swingRange) / 2f, type % 2 != 0);
+            // アイテムテクスチャからサイズと色を取得する
+            GetTextureValues();
 
-            return base.SwingPattern(item, type);
+            // ちょっとスクリーンシェイク
+            Owner.ScreenShake(2, 3);
         }
 
+        /// <summary> 全ての振りの設定 </summary>
+        public SwingData Down => new SwingData(SwordItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f)); // 1振り目
+        public SwingData Up => new SwingData(SwordItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f), backspin: true); // 2振り目
+        public override SwingData GetSwingData(int type) => SwingData.SwingRegister(type, Down, Up);
+
+        /// <summary> 振りのアニメーションの設定 </summary>
         public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f); // 振りのアニメーション
         public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f); // 振りの減衰のアニメーション
         public override float GetProgress(int type) => PiecewiseAnimation(Progress, execute, unwind);
 
-        public override void AdditionalAI(Item item, int type, bool delay)
-        {
-            // プレイヤーのアイテム使用時間を延長する
-            Owner.SetDummyItemTime(2);
-
-            // スクリーンシェイク
-            if (Projectile.localAI[0] == 0)
-            {
-                Projectile.localAI[0] = 1;
-                Owner.ScreenShake(2, 2);
-            }
-        }
+        /// <summary> 追加AI </summary>
+        public override void AdditionalAI(Item item, int type, bool delay) => Owner.SetDummyItemTime(2); // プレイヤーのアイテム使用時間を延長する
     }
 }

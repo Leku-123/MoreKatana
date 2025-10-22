@@ -9,7 +9,7 @@ namespace MoreKatana.Projectiles.PrimTrails
 {
     public class KatanaSlashPrimTrail : PrimTrail
     {
-        public KatanaSlashPrimTrail(Projectile projectile, Color color, int width = 8, int cap = 80)
+        public KatanaSlashPrimTrail(Projectile projectile, Color color, int width = 12, int cap = 80)
         {
             Entity = projectile;
             EntityType = projectile.type;

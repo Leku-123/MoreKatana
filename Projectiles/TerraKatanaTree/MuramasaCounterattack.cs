@@ -165,18 +165,14 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 clone.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRot);
             }
 
-            public override void Initialization(Item item, int type)
+            public override void Initialize(Item item, int type)
             {
                 Projectile.localNPCHitCooldown = -1; // 1振りで同じターゲットに2回ヒットしないようにする
                 Projectile.Opacity = 0.5f;
                 GetTextureValues();
             }
 
-            public override bool SwingPattern(Item item, int type)
-            {
-                SwingStats(25f, 0.5f);
-                return base.SwingPattern(item, type);
-            }
+            public override SwingData GetSwingData(int type) => new SwingData(25f, 0.5f);
 
             public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f);
             public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f);
