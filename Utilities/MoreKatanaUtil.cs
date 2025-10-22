@@ -160,7 +160,7 @@ namespace MoreKatana
             {
                 int p = Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<GeneralDashSlash>(), damage, knockBack, player.whoAmI);
                 GeneralDashSlash dash = (GeneralDashSlash)Main.projectile[p].ModProjectile;
-                dash.DashDirection = dir == null ? player.SafeDirectionTo(player.MKPlayer().MouseWorld) : (Vector2)dir;
+                dash.DashDirection = dir ?? player.SafeDirectionTo(player.MKPlayer().MouseWorld);
                 dash.DashDistance = distance;
                 dash.DashTimerMax = timer;
                 dash.SuddenStop = stop;
@@ -349,13 +349,13 @@ namespace MoreKatana
         public static void DrawGauge(Vector2 drawPos, float ratio, Color frontColor, Color? lightColor = null, Color? backColor = null, int dustType = -1, Vector2? size = null)
         {
             Texture2D texture = TextureAssets.MagicPixel.Value;
-            Vector2 backSize = size == null ? new Vector2(54, 8) : (Vector2)size;
+            Vector2 backSize = size ?? new Vector2(54, 8);
             Vector2 frontSize = new Vector2(backSize.X - 4, backSize.Y - 4);
             Vector2 backPos = new Vector2(drawPos.X - backSize.X * 0.5f, drawPos.Y - backSize.Y * 0.5f) - Main.screenPosition;
             Vector2 frontPos = new Vector2(drawPos.X - frontSize.X * 0.5f, drawPos.Y - frontSize.Y * 0.5f) - Main.screenPosition;
-            Color c1 = backColor == null ? Color.Black : (Color)backColor;
+            Color c1 = backColor ?? Color.Black;
             Color c2 = frontColor;
-            Color c3 = lightColor == null ? Color.White : (Color)lightColor;
+            Color c3 = lightColor ?? Color.White;
 
             Main.spriteBatch.Draw(texture, backPos, new Rectangle(0, 0, 1, 1), c1, 0f, Vector2.Zero, new Vector2(backSize.X, backSize.Y), SpriteEffects.None, 0f);
             Main.spriteBatch.Draw(texture, frontPos, new Rectangle(0, 0, 1, 1), c2, 0f, Vector2.Zero, new Vector2(frontSize.X * ratio, frontSize.Y), SpriteEffects.None, 0f);

@@ -320,3 +320,9 @@ LightsSlasher: {
 		- 
 		'''
 }
+
+TerraKatana: {
+	FunctionText: Mods.MoreKatana.Items.TerraKatana.FunctionText
+	DisplayName: Terra Katana
+	Tooltip: ""
+}
