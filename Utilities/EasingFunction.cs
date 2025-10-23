@@ -104,7 +104,7 @@ namespace MoreKatana
             /// </summary>
             public float elevationShift;
             /// <summary>
-            /// 選択されたイージングモードが多項式の場合の次数
+            /// 選択されたイージングモードが多項式(Poly)­の場合の次数
             /// </summary>
             public int degree;
 

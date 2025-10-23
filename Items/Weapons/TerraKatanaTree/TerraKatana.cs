@@ -15,8 +15,8 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             Item.width = 62;
             Item.height = 68;
 
-            Item.useTime = 14;
-            Item.useAnimation = 14;
+            Item.useTime = 18;
+            Item.useAnimation = 18;
             Item.MKItem().UseSound = SoundID.Item1;
 
             Item.damage = 15;

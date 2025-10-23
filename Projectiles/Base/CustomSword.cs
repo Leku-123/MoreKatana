@@ -8,6 +8,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static MoreKatana.MoreKatanaUtil;
 
 namespace MoreKatana.Projectiles.Base
 {
@@ -154,6 +155,10 @@ namespace MoreKatana.Projectiles.Base
             vector4 /= a * 2;
             TrailColor = new Color(vector4.X, vector4.Y, vector4.Z, 0);
         }
+
+        private CurveSegment ExecuteAnimation => new CurveSegment(SineOutEasing, 0f, 0f, 0.95f); // 振りのアニメーション
+        private CurveSegment UnwindAnimation => new CurveSegment(LinearEasing, 0.5f, ExecuteAnimation.EndingHeight, 0.05f); // 振りの減衰のアニメーション
+        public float GeneralSwingAnimation(float progress) => PiecewiseAnimation(progress, ExecuteAnimation, UnwindAnimation);
         #endregion
 
         public override string Texture => MoreKatana.EmptyTexture;

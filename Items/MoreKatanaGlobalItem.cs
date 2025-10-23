@@ -173,8 +173,8 @@ namespace MoreKatana.Items
                 if (item == player.ActiveItem())
                 {
                     // 120fごとにコンボをリセットする
-                    if (ComboExpireTimer++ >= 120)
-                        AttackType = 0;
+                    //if (ComboExpireTimer++ >= 120)
+                    //    AttackType = 0;
 
                     if (item.type is ItemID.Katana or ItemID.Muramasa)
                     {

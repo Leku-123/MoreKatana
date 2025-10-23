@@ -32,10 +32,11 @@ namespace MoreKatana.Projectiles
         public SwingData Up => new SwingData(SwordItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f), backspin: true); // 2振り目
         public override SwingData GetSwingData(int type) => SwingData.SwingRegister(type, Down, Up);
 
-        /// <summary> 振りのアニメーションの設定 </summary>
-        public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f); // 振りのアニメーション
-        public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f); // 振りの減衰のアニメーション
-        public override float GetProgress(int type) => PiecewiseAnimation(Progress, execute, unwind);
+        /// <summary> 
+        /// 振りのアニメーションの設定 
+        /// <see cref="GeneralSwingAnimation(float)"/> は基本的な振りと振りの減衰のみのアニメーション。困ったときはこれを使えばよい
+        /// </summary>
+        public override float GetProgress(int type) => GeneralSwingAnimation(Progress);
 
         /// <summary> 追加AI </summary>
         public override void AdditionalAI(Item item, int type, bool delay) => Owner.SetDummyItemTime(2); // プレイヤーのアイテム使用時間を延長する
