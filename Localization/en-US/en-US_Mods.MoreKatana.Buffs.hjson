@@ -16,3 +16,8 @@ ObsidianBurnBuff: {
 	DisplayName: Obsidian Burn!
 	Description: Obsidian katana is burning!
 }
+
+TerraMark: {
+	DisplayName: Terra Mark
+	Description: Mods.MoreKatana.Buffs.TerraMark.Description
+}

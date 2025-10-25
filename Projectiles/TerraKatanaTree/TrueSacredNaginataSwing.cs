@@ -115,9 +115,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     {
                         if (Projectile.owner == Main.myPlayer)
                         {
-                            float rad = 30 * projCount * Owner.direction;
+                            float rad = -30 * projCount * Owner.direction;
                             float offset = 100f;
-                            Vector2 vector = Vector2.UnitY.RotatedBy(rad) * offset;
+                            Vector2 vector = -Vector2.UnitY.RotatedBy(rad) * offset;
 
                             ParticleOrchestraSettings particleOrchestraSettings = default;
                             particleOrchestraSettings.PositionInWorld = Owner.MountedCenter + vector;

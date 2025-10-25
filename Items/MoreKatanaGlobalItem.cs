@@ -32,7 +32,7 @@ namespace MoreKatana.Items
         public int SwingComboCount = 1; // 振りのコンボ数
         public int SwingType = 0;       // 振りの種類
 
-        private int AttackType;
+        public int AttackType;
         private int ComboExpireTimer = 0;
 
         public SoundStyle? UseSound;

@@ -20,6 +20,7 @@ namespace MoreKatana.Assets.ExtraTextures
         public static Asset<Texture2D> EnergyTrailTexture;
         public static Asset<Texture2D> FlameTrailTexture;
         public static Asset<Texture2D> StraightlineTrailTexture;
+        public static Asset<Texture2D> DoublelinesTrailTexture;
 
         public static void LoadTextures()
         {
@@ -38,6 +39,7 @@ namespace MoreKatana.Assets.ExtraTextures
             EnergyTrailTexture = Request<Texture2D>(TrailPath + "Trail_0", AssetRequestMode.ImmediateLoad);
             FlameTrailTexture = Request<Texture2D>(TrailPath + "Trail_1", AssetRequestMode.ImmediateLoad);
             StraightlineTrailTexture = Request<Texture2D>(TrailPath + "Trail_2", AssetRequestMode.ImmediateLoad);
+            DoublelinesTrailTexture = Request<Texture2D>(TrailPath + "Trail_3", AssetRequestMode.ImmediateLoad);
         }
 
         public static void UnloadTextures()
@@ -57,6 +59,7 @@ namespace MoreKatana.Assets.ExtraTextures
             EnergyTrailTexture = null;
             FlameTrailTexture = null;
             StraightlineTrailTexture = null;
+            DoublelinesTrailTexture = null;
         }
     }
 }

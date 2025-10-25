@@ -60,15 +60,27 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override void CutTiles()
         {
+            // ExampleMod:
+            // tilecut_0 は、タイルがどのようにカットされるかを CutTiles に伝える無名の逆コンパイルされた変数です（この場合、Projectile 経由でカットされます）。
             DelegateMethods.tilecut_0 = TileCuttingContext.AttackProjectile;
             Utils.TileActionAttempt cut = new Utils.TileActionAttempt(DelegateMethods.CutTiles);
             Vector2 beamStartPos = Projectile.Center;
             Vector2 beamEndPos = beamStartPos + Projectile.velocity * BeamLength;
+
+            // PlotTileLine は、描画された線に沿って指定された幅のすべてのタイルに対して、指定されたアクションを実行する関数です。
+            // この場合、例えば草や壺など、投射物によって破壊可能なすべてのタイルをカットします。
             Utils.PlotTileLine(beamStartPos, beamEndPos, Projectile.width * Projectile.scale, cut);
         }
 
         public override void AI()
         {
+            // 何らかの原因でこの発射体がTrueSacredBeamじゃなくなった場合、この発射体を削除する
+            if (Projectile.type != ModContent.ProjectileType<TrueSacredBeam>())
+            {
+                Projectile.Kill();
+                return;
+            }
+
             Projectile hostProj = Main.projectile[(int)HostIndex];
             if (!hostProj.active || hostProj.type != ModContent.ProjectileType<TrueSacredNaginataHoldout>())
             {
@@ -111,13 +123,15 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             const float lerp = 0.75f;
             BeamLength = MathHelper.Lerp(BeamLength, MaxBeamLength, lerp);
 
-            // 水をかき乱すシェーダー
+            // ビームのx, yの寸法
             Vector2 beamDims = new Vector2(Projectile.velocity.Length() * BeamLength, Projectile.width * Projectile.scale);
+
+            // 水をかき乱すシェーダー
             if (Main.netMode != NetmodeID.Server)
                 ProduceWaterRipples(beamDims);
 
             // ビームが光るようにする
-            // ExampleModより:
+            // ExampleMod:
             // v3_1 は、DelegateMethods.CastLight によって生成される色を示す、名前が付けられていないデコンパイルされた変数です
             DelegateMethods.v3_1 = Color.Gold.ToVector3() * 0.75f * fireRatio;
             Utils.PlotTileLine(Projectile.Center, Projectile.Center + Projectile.velocity * BeamLength, beamDims.Y, new Utils.TileActionAttempt(DelegateMethods.CastLight));
@@ -159,7 +173,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Utils.DrawLaser(spriteBatch, texture, startPosition, endPosition, drawScale, lineFraming);
         }
 
-        // めんどいのでExampleModからコピペ
         private void ProduceWaterRipples(Vector2 beamDims)
         {
             WaterShaderData shaderData = (WaterShaderData)Filters.Scene["WaterDistortion"].GetShader();
