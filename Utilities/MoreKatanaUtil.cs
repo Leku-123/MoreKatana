@@ -14,6 +14,7 @@ using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MoreKatana
 {
@@ -151,6 +152,17 @@ namespace MoreKatana
                 return p < Main.maxProjectiles ? Main.LocalPlayer.ownedProjectileCounts[ModContent.ProjectileType<ShockWaveEffect>()] == 0 ? Main.projectile[p] : null : null;
             }
             return null;
+        }
+
+        public static void CreateImpactEffect(this Player player, IEntitySource source, Vector2 position, Vector2 velocity, int owner = 255, float impactSize = 1f, Color color = default)
+        {
+            if (Main.myPlayer == player.whoAmI)
+            {
+                int p = Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<ImpactEffect>(), 0, 0f, owner);
+                ImpactEffect impact = (ImpactEffect)Main.projectile[p].ModProjectile;
+                impact.ImpactSize = impactSize;
+                impact.ImpactColor = color;
+            }
         }
 
         /// <summary>

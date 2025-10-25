@@ -10,7 +10,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 {
     public class GrassKatanaDance : CustomSword
     {
-        public const int TotalSwing = 5; // 振りの合計
+        public const int TotalSwing = 5; // 振り数の合計
         public const float SwingUseTime = 20f; // 剣の振る時間
 
         public override void Initialize(Item item, int type)
@@ -50,17 +50,25 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Owner.AddBuff(BuffID.Featherfall, 10);
             Owner.FlipEffect(Progress * 6f); // フリップエフェクト
 
-            if (GetProgress(type) == 0.5f) // 本当はこういうのは不確かなんだけど、今回は振る速度が固定なのでこれで大丈夫です
+            if (GetProgress(type) > 0.5f)
             {
-                // 葉の発射体をスポーン
-                SpawnLeaf(out Vector2 vel);
-
-                // トレイルのみの斬撃を発射
-                // トレイルのみにする理由は演出面の問題
-                if (Projectile.owner == Main.myPlayer && type < TotalSwing - 1)
+                if (!Projectile.MKProj().Bool[0])
                 {
-                    int subSwing = ModContent.ProjectileType<GrassKatanaDance2>();
-                    Projectile.NewProjectile(Owner.GetSource_ItemUse(item), Owner.MountedCenter, vel, subSwing, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+                    Projectile.MKProj().Bool[0] = true;
+
+                    // 葉の発射体をスポーン
+                    SpawnLeaf(out Vector2 vel);
+
+                    // トレイルのみの斬撃を発射
+                    // トレイルのみにする理由は演出面の問題
+                    if (type < TotalSwing - 1)
+                    {
+                        if (Projectile.owner == Main.myPlayer)
+                        {
+                            int subSwing = ModContent.ProjectileType<GrassKatanaDance2>();
+                            Projectile.NewProjectile(Owner.GetSource_ItemUse(item), Owner.MountedCenter, vel, subSwing, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+                        }
+                    }
                 }
             }
         }
@@ -72,6 +80,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             // 発射の向きをランダムにする
             vel = Vector2.UnitY.RotatedByRandom(MathHelper.TwoPi);
+
+            // 葉を発射
             if (Projectile.owner == Main.myPlayer)
             {
                 float speed = 16f;

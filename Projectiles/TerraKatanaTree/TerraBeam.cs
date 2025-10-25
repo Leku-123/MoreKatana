@@ -172,8 +172,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Texture2D starTex = MoreKatanaTextures.StarSparkleTexture.Value;
             Vector2 position = Projectile.Center - Main.screenPosition;
             Color color = new Color(96, 248, 96) with { A = 0 };
-            Main.EntitySpriteDraw(bloomTex, position, null, color, 0f, bloomTex.Size() / 2f, Projectile.scale * 0.4f, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(starTex, position, null, color, 0f, starTex.Size() / 2f, new Vector2(Projectile.scale * 0.7f, Projectile.scale * 1.1f), SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(bloomTex, position, null, color, 0f, bloomTex.Size() / 2f, Projectile.scale * 0.5f, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(starTex, position, null, color, 0f, starTex.Size() / 2f, new Vector2(Projectile.scale * 0.7f, Projectile.scale * 1.5f), SpriteEffects.None, 0);
 
             return false;
         }

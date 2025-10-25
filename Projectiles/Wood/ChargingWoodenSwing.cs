@@ -133,6 +133,7 @@ namespace MoreKatana.Projectiles.Wood
                     {
                         SwingStop = true;
                         Owner.ScreenShake(4, 10);
+                        Owner.CreateImpactEffect(Projectile.GetSource_FromThis(), collisionPoint, -Vector2.UnitY, Projectile.owner, 0.3f, Color.White);
                         SoundEngine.PlaySound(SoundID.Dig, Owner.Center);
                     }
 

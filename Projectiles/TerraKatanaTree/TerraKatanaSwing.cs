@@ -112,6 +112,16 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                         Projectile.MKProj().Bool[0] = true;
                         SoundEngine.PlaySound(SoundID.Item4, Owner.Center);
 
+                        for (int i = 0; i < 12; i++)
+                        {
+                            int newDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Terra, 0f, 0f, 100, default, 1.5f);
+                            Main.dust[newDust].scale *= Main.rand.NextFloat(1, 2.5f);
+                            Main.dust[newDust].noGravity = true;
+                            Main.dust[newDust].velocity = normalized * 8f;
+                            Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(60));
+                            Main.dust[newDust].velocity *= Main.rand.NextFloat(1f, 3f);
+                        }
+
                         if (Projectile.owner == Main.myPlayer)
                         {
                             int edge = ModContent.ProjectileType<TerraEdge>();
