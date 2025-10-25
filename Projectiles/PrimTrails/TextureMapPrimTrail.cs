@@ -95,6 +95,12 @@ namespace MoreKatana.Projectiles.PrimTrails
                 OnDestroy();
             else
                 Points.Add(projectile.Center);
+
+            if (projectile.ModProjectile is ITrailProjectile)
+            {
+                if ((projectile.ModProjectile as ITrailProjectile).DoTrailDeletion())
+                    OnDestroy();
+            }
         }
 
         public override void OnDestroy()
@@ -102,6 +108,7 @@ namespace MoreKatana.Projectiles.PrimTrails
             Destroyed = true;
             Width *= 0.8f;
             Width += (float)Math.Sin(Counter * 2) * 0.3f;
+            AlphaValue *= 0.8f;
 
             if (Width < 0.05f)
                 Dispose();

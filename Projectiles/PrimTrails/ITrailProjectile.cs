@@ -16,6 +16,8 @@ namespace MoreKatana.Projectiles.PrimTrails
     public interface IManualTrailProjectile
     {
         void DoTrailCreation(TrailManager tManager);
+
+        bool DoTrailDeletion() => default;
     }
 
     public interface ITrailProjectile : IManualTrailProjectile
