@@ -43,7 +43,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.ignoreWater = true;
             Projectile.hide = true;
             Projectile.noEnchantmentVisuals = true;
-            Projectile.MKProjectile().SourceIsItemUse = true;
+            Projectile.MKProj().SourceIsItemUse = true;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -143,7 +143,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             else if (PrepareCompletion == 1f && FireCompletion < 1f) // 発射
             {
                 Owner.ScreenShake(5, 2); // スクリーンシェイク
-                Projectile.MKProjectile().ActivateCD = true; // この発射体消滅後にクールダウンを有効化する
+                Projectile.MKProj().ActivateCD = true; // この発射体消滅後にクールダウンを有効化する
 
                 if (Timer % 10 == 0)
                 {

@@ -37,7 +37,7 @@ namespace MoreKatana.Projectiles.Misc
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.noEnchantmentVisuals = true;
-            Projectile.MKProjectile().ActivateCD = true;
+            Projectile.MKProj().ActivateCD = true;
         }
 
         public override void SendExtraAI(BinaryWriter writer) => writer.Write(slash);

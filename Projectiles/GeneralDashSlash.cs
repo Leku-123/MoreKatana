@@ -44,8 +44,8 @@ namespace MoreKatana.Projectiles
             Projectile.ownerHitCheck = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.noEnchantmentVisuals = true;
-            Projectile.MKProjectile().SourceIsItemUse = true;
-            Projectile.MKProjectile().DashProjectile = true;
+            Projectile.MKProj().SourceIsItemUse = true;
+            Projectile.MKProj().DashProjectile = true;
         }
 
         public override void SendExtraAI(BinaryWriter writer)

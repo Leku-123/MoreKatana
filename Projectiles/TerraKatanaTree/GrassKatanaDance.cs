@@ -16,7 +16,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         public override void Initialize(Item item, int type)
         {
             Projectile.localNPCHitCooldown = (int)SwingUseTime;
-            Projectile.MKProjectile().ActivateCD = true;
+            Projectile.MKProj().ActivateCD = true;
 
             SwingEllipse = new(1.8f, 0.5f);
             ContinuousSwing = true;

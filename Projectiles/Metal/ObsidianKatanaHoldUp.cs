@@ -36,7 +36,7 @@ namespace MoreKatana.Projectiles.Metal
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.noEnchantmentVisuals = true;
-            Projectile.MKProjectile().SourceIsItemUse = true;
+            Projectile.MKProj().SourceIsItemUse = true;
         }
 
         public override bool? CanDamage() => false;

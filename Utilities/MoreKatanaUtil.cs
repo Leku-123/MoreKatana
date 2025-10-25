@@ -4,6 +4,7 @@ using MoreKatana.Items;
 using MoreKatana.Projectiles;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Terraria;
 using Terraria.DataStructures;
@@ -22,7 +23,7 @@ namespace MoreKatana
         public static MoreKatanaPlayer MKPlayer(this Player player) => player.GetModPlayer<MoreKatanaPlayer>();
         public static MoreKatanaGlobalItem MKItem(this Item item) => item.GetGlobalItem<MoreKatanaGlobalItem>();
         public static MoreKatanaGlobalNPC MKNPC(this NPC npc) => npc.GetGlobalNPC<MoreKatanaGlobalNPC>();
-        public static MoreKatanaGlobalProjectile MKProjectile(this Projectile projectile) => projectile.GetGlobalProjectile<MoreKatanaGlobalProjectile>();
+        public static MoreKatanaGlobalProjectile MKProj(this Projectile projectile) => projectile.GetGlobalProjectile<MoreKatanaGlobalProjectile>();
         #endregion
 
         #region -------- Player Utils --------
@@ -126,6 +127,16 @@ namespace MoreKatana
         public static void ExpandHitboxBy(this Projectile projectile, int newSize) => projectile.ExpandHitboxBy(newSize, newSize);
         public static void ExpandHitboxBy(this Projectile projectile, Vector2 newSize) => projectile.ExpandHitboxBy((int)newSize.X, (int)newSize.Y);
         public static void ExpandHitboxBy(this Projectile projectile, float expandRatio) => projectile.ExpandHitboxBy((int)(projectile.width * expandRatio), (int)(projectile.height * expandRatio));
+
+        public static Projectile ProjectileExists(int whoAmI, params int[] types)
+        {
+            return whoAmI > -1 && whoAmI < Main.maxProjectiles && Main.projectile[whoAmI].active && (types.Length == 0 || types.Contains(Main.projectile[whoAmI].type)) ? Main.projectile[whoAmI] : null;
+        }
+
+        public static Projectile ProjectileExists(float whoAmI, params int[] types)
+        {
+            return ProjectileExists((int)whoAmI, types);
+        }
 
         public static Projectile CreateShockwave(IEntitySource source, Vector2 position, int owner = 255, int rippleCount = 10, int rippleSize = 5, float rippleSpeed = 15f)
         {
@@ -311,6 +322,65 @@ namespace MoreKatana
                 Main.dust[d].noGravity = true;
                 Main.dust[d].velocity = velocity;
                 Main.dust[d].scale = dustScale;
+            }
+        }
+
+        /// <summary>
+        /// 円形にダストをスポーンする。楕円も可能
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="dustType"></param>
+        /// <param name="mainSize"></param>
+        /// <param name="RatioX"></param>
+        /// <param name="RatioY"></param>
+        /// <param name="dustDensity"></param>
+        /// <param name="dustSize"></param>
+        /// <param name="randomAmount"></param>
+        /// <param name="rotationAmount"></param>
+        /// <param name="noGravity"></param>
+        public static void DrawCircle(Vector2 position, int dustType, float mainSize = 1, float RatioX = 1, float RatioY = 1, float dustDensity = 1, float dustSize = 1f, float randomAmount = 0, float rotationAmount = 0, bool noGravity = false)
+        {
+            float rot;
+            if (rotationAmount < 0) { rot = Main.rand.NextFloat(0, (float)Math.PI * 2); } else { rot = rotationAmount; }
+
+            float density = 1 / dustDensity * 0.1f;
+
+            for (float k = 0; k < 6.28f; k += density)
+            {
+                float rand = 0;
+                if (randomAmount > 0) { rand = Main.rand.NextFloat(-0.01f, 0.01f) * randomAmount; }
+
+                float x = (float)Math.Cos(k + rand) * RatioX;
+                float y = (float)Math.Sin(k + rand) * RatioY;
+                if (dustType == 222 || dustType == 130 || noGravity)
+                {
+                    Dust.NewDustPerfect(position, dustType, new Vector2(x, y).RotatedBy(rot) * mainSize, 0, default, dustSize).noGravity = true;
+                }
+                else
+                {
+                    Dust.NewDustPerfect(position, dustType, new Vector2(x, y).RotatedBy(rot) * mainSize, 0, default, dustSize);
+                }
+            }
+        }
+
+        public static void DrawElectricity(Vector2 point1, Vector2 point2, int dusttype, float scale = 1, int armLength = 30, Color color = default, float density = 0.05f)
+        {
+            int nodeCount = (int)Vector2.Distance(point1, point2) / armLength;
+            Vector2[] nodes = new Vector2[nodeCount + 1];
+
+            nodes[nodeCount] = point2;
+
+            for (int k = 1; k < nodes.Length; k++)
+            {
+                nodes[k] = Vector2.Lerp(point1, point2, k / (float)nodeCount) +
+                    (k == nodes.Length - 1 ? Vector2.Zero : Vector2.Normalize(point1 - point2).RotatedBy(1.58f) * Main.rand.NextFloat(-armLength / 2, armLength / 2));
+
+                Vector2 prevPos = k == 1 ? point1 : nodes[k - 1];
+                for (float i = 0; i < 1; i += density)
+                {
+                    Dust d = Dust.NewDustPerfect(Vector2.Lerp(prevPos, nodes[k], i), dusttype, Vector2.Zero, 0, color, scale);
+                    d.noGravity = true;
+                }
             }
         }
 
@@ -535,6 +605,13 @@ namespace MoreKatana
             return (destination - entity.Center).SafeNormalize(fallback.Value);
         }
 
+        public static int ToDirection(this float dir)
+        {
+            if (dir >= 0)
+                return 1;
+            else
+                return -1;
+        }
         /// <summary>
         /// オブジェクトの名前空間と名前からTextureを手動で取得します
         /// </summary>

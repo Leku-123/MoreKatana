@@ -190,7 +190,7 @@ namespace MoreKatana.Projectiles.Base
             Projectile.ownerHitCheck = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.noEnchantmentVisuals = true;
-            Projectile.MKProjectile().SourceIsItemUse = true;
+            Projectile.MKProj().SourceIsItemUse = true;
         }
 
         public override void SendExtraAI(BinaryWriter writer)
@@ -557,8 +557,8 @@ namespace MoreKatana.Projectiles.Base
         {
             ImpactChargeLaunch();
 
-            // ノックバックをプレイヤーから遠ざける
-            modifiers.HitDirectionOverride = target.position.X > Owner.Center.X ? 1 : -1;
+            // 命中した際の方向を正しくする
+            modifiers.HitDirectionOverride = (Projectile.Center.X < target.Center.X).ToDirectionInt();
 
             // アイテムから効果を取得する
             ItemLoader.ModifyHitNPC(SwordItem, Owner, target, ref modifiers);

@@ -38,7 +38,7 @@ namespace MoreKatana.Projectiles.Misc
         public override void Initialize(Item item, int type)
         {
             Projectile.localNPCHitCooldown = -1;
-            Projectile.MKProjectile().ActivateCD = true;
+            Projectile.MKProj().ActivateCD = true;
 
             ContinuousSwing = true;
             FixedDirection = true;

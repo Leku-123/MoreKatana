@@ -46,8 +46,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.ignoreWater = true;
             Projectile.noEnchantmentVisuals = true;
             Projectile.ContinuouslyUpdateDamageStats = true;
-            Projectile.MKProjectile().SourceIsItemUse = true;
-            Projectile.MKProjectile().ActivateCD = true;
+            Projectile.MKProj().SourceIsItemUse = true;
+            Projectile.MKProj().ActivateCD = true;
         }
 
         public override void SendExtraAI(BinaryWriter writer)

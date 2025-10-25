@@ -34,7 +34,7 @@ namespace MoreKatana.Projectiles.Wood
         public override void Initialize(Item item, int type)
         {
             Projectile.localNPCHitCooldown = -1;
-            Projectile.MKProjectile().ActivateCD = true;
+            Projectile.MKProj().ActivateCD = true;
 
             SwingEllipse = new(0.9f);
             ContinuousSwing = true;

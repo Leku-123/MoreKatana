@@ -39,8 +39,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.ignoreWater = true;
             Projectile.hide = true;
             Projectile.noEnchantmentVisuals = true;
-            Projectile.MKProjectile().SourceIsItemUse = true;
-            Projectile.MKProjectile().ActivateCD = true;
+            Projectile.MKProj().SourceIsItemUse = true;
+            Projectile.MKProj().ActivateCD = true;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
