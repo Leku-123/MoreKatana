@@ -18,8 +18,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override void SetStaticDefaults()
         {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
         }
 
         public override void SetDefaults()

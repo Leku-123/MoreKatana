@@ -1,14 +1,28 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Projectiles.TerraKatanaTree;
+using System;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.UI.Chat;
 
 namespace MoreKatana.Items.Weapons.TerraKatanaTree
 {
     public class TerraKatana : KatanaItem
     {
+        public static int ShieldRechargeTime = 30 * 60;
+        public static int ShieldDurabilityMax = 100;
+        public const int ShieldDefenseBoost = 10;
+
+        public override LocalizedText FunctionText => base.FunctionText.WithFormatArgs(ShieldDurabilityMax, ShieldDefenseBoost, ShieldRechargeTime / 60);
+
+        public static Color Color = new Color(96, 248, 96);
         public override KatanaID ID => KatanaID.None;
 
         public override void SetDefaultsItem()
@@ -22,9 +36,9 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
             Item.damage = 80;
             Item.knockBack = 4.5f;
-            Item.MKItem().AltDamage = 22;
+            Item.MKItem().AltDamage = 800;
 
-            Item.value = Item.sellPrice(silver: 55);
+            Item.value = Item.sellPrice(gold: 20);
             Item.rare = ItemRarityID.Yellow;
 
             Item.MKItem().SetKatanaDefaults(Item, 60, true, ModContent.ProjectileType<TerraKatanaSwing>(), 5);
@@ -32,10 +46,16 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         public override void PassiveSkill(Player player, bool equipment)
         {
+            player.MKPlayer().terraShield = true;
+
+            if (player.MKPlayer().TerraShieldDurability > 0)
+                player.statDefense += ShieldDefenseBoost;
         }
 
         public override void ActiveSkill(Player player)
         {
+            player.ChangeDir(Main.MouseWorld.X - player.Center.X > 0 ? 1 : -1);
+            Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, new Vector2(player.direction, 0), ModContent.ProjectileType<TerraDestructionHoldout>(), Item.MKItem().AltDamage / 10, Item.knockBack, player.whoAmI);
         }
 
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
@@ -51,10 +71,96 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             particleOrchestraSettings.PositionInWorld = Main.rand.NextVector2FromRectangle(target.Hitbox);
             ParticleOrchestrator.RequestParticleSpawn(false, ParticleOrchestraType.TerraBlade, particleOrchestraSettings, player.whoAmI);
         }
+
         public override void MeleeEffects(Player player, Rectangle hitbox)
         {
             if (Main.rand.NextBool(3))
                 Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustID.Terra);
+        }
+
+        private static Vector2 ShieldCenter;
+
+        public static void DrawTerraShield(ref PlayerDrawSet drawInfo)
+        {
+            Player drawPlayer = drawInfo.drawPlayer;
+
+            if (drawPlayer.dead || drawPlayer.ghost || !drawPlayer.active)
+                return;
+
+            if (drawInfo.shadow != 0f)
+                return;
+
+            if (!drawPlayer.MKPlayer().terraShield)
+                return;
+
+            if (drawPlayer.ownedProjectileCounts[ModContent.ProjectileType<TerraDestructionBase>()] != 0)
+                return;
+
+            // シールド
+            Texture2D texture = MoreKatanaTextures.ShieldTexture.Value;
+            Rectangle rectangle = new Rectangle(0, 0, texture.Width, texture.Height);
+            Vector2 origin = rectangle.Size() / 2f;
+
+            const int amount = 5;
+            for (int i = 0; i < amount; i++)
+            {
+                float aroundTime = 20 * amount;
+                float globalTimer = Main.GlobalTimeWrappedHourly * 24 * 2;
+                float f = (i / (float)amount + (globalTimer / aroundTime)) * ((float)Math.PI * 2f);
+                float scaleFactor = 3f + amount * 3f;
+
+                Vector2 value = f.ToRotationVector2();
+                Vector2 value2 = drawPlayer.MountedCenter + (value * new Vector2(10f, 0.1f) * scaleFactor);
+                ShieldCenter = Vector2.Lerp(ShieldCenter, value2, 0.3f);
+
+                float completion = value.Y;
+                float distanceCompletion = drawPlayer.MountedCenter.Distance(ShieldCenter) / ((scaleFactor * 3f) - 5f);
+
+                // シールドのスケール
+                Vector2 shieldScale = new Vector2(0.5f + (completion / 10f));
+                shieldScale *= new Vector2(1.5f - distanceCompletion, 1.5f);
+
+                // シールドの色
+                Color shieldColor = Color;
+                if (completion < 0f)
+                    shieldColor *= distanceCompletion;
+
+                // クールダウンがない場合はシールドを描画する
+                if (drawPlayer.MKPlayer().ShieldCD <= 0)
+                    Main.spriteBatch.Draw(texture, ShieldCenter - Main.screenPosition, rectangle, shieldColor with { A = 0 }, 0f, origin, shieldScale, SpriteEffects.None, 0);
+            }
+
+            if (Main.myPlayer == drawPlayer.whoAmI)
+            {
+                // ゲージの充填率
+                float durabilityRatio = (float)drawPlayer.MKPlayer().TerraShieldDurability / ShieldDurabilityMax;
+                float cooldownRatio = (float)drawPlayer.MKPlayer().ShieldCD / ShieldRechargeTime;
+
+                // ゲージの位置
+                Vector2 gaugePos = new Vector2(drawInfo.Center.X, drawInfo.Center.Y) + new Vector2(0, 35);
+
+                // ゲージとテキストの色
+                Color c1 = Color;
+                Color c2 = Color.Red;
+                Color c3 = Color.White;
+
+                // シールドの耐久率が下がった時ゲージを揺らす
+                if (durabilityRatio < 0.3f && cooldownRatio == 0)
+                    gaugePos += Main.rand.NextVector2Unit();
+
+                // ゲージを描画する
+                if (cooldownRatio != 0)
+                    MoreKatanaUtil.DrawGauge(gaugePos, 1 - cooldownRatio, c2, c2);
+                else
+                    MoreKatanaUtil.DrawGauge(gaugePos, durabilityRatio, c1);
+
+                // テキストを描画する
+                var font = FontAssets.MouseText.Value;
+                int numerator = cooldownRatio == 0 ? drawPlayer.MKPlayer().TerraShieldDurability : (int)(ShieldDurabilityMax * (1 - cooldownRatio));
+                string text = MoreKatanaUtil.GetTextValue("Tooltips.Life") + ":" + $"{numerator}" + "/" + $"{ShieldDurabilityMax}";
+                Vector2 textPos = gaugePos + new Vector2(-25, 5) - Main.screenPosition;
+                ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, textPos, cooldownRatio != 0 ? c2 : c3, 0f, new Vector2(0.5f, 0.5f), Vector2.One);
+            }
         }
     }
 }

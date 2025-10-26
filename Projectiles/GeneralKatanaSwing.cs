@@ -1,6 +1,5 @@
 ﻿using MoreKatana.Projectiles.Base;
 using Terraria;
-using static MoreKatana.MoreKatanaUtil;
 
 namespace MoreKatana.Projectiles
 {

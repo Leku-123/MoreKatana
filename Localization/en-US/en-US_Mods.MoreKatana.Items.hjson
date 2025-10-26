@@ -290,6 +290,22 @@ TrueSacredNaginata: {
 		'''
 }
 
+TerraKatana: {
+	DisplayName: Terra Katana
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.KS} [c/00FF00:<Guardian of Terra>]
+		- Projects an terra shield that absorbs up to {0} damage. The shield grants {1} defense while active.
+		- After the shield is broken, it takes {2} seconds to charge back up.
+		- Using a healing potion fully restores the shield's durability and cooldown.
+		{$Tooltips.KA} [c/60F860:<Terra Destruction>]
+		- Press and hold the Right-click to aim. And press the Left-click to disable auto-aiming on enemies.
+		- When released, it teleports and unleashes a continuous barrage of slashes.
+		- During the slash, the player takes no damage, and the final slash brings down a bolt of lightning.
+		'''
+}
+
 ObsidianKatana: {
 	DisplayName: Obsidian Katana
 	AltName: Magma Katana
@@ -319,10 +335,4 @@ LightsSlasher: {
 		{$Tooltips.KA} <Haze Step>
 		- 
 		'''
-}
-
-TerraKatana: {
-	FunctionText: Mods.MoreKatana.Items.TerraKatana.FunctionText
-	DisplayName: Terra Katana
-	Tooltip: ""
 }

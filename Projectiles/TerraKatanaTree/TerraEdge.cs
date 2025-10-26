@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
-using MoreKatana.Buffs;
 using MoreKatana.Projectiles.PrimTrails;
 using Terraria;
 using Terraria.GameContent;
@@ -25,6 +24,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             set => Projectile.ai[0] = (int)value;
         }
 
+        private const int Lifetime = 120;
         public int TargetIndex = -1;
 
         public override void SetDefaults()
@@ -34,7 +34,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.aiStyle = -1;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 120;
+            Projectile.timeLeft = Lifetime;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.tileCollide = false;
@@ -56,6 +56,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         {
             Projectile.spriteDirection = (Vector2.Dot(Projectile.velocity, Vector2.UnitX) >= 0f).ToDirectionInt();
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2 - MathHelper.PiOver4 * Projectile.spriteDirection;
+            Projectile.scale = Utils.GetLerpValue(0f, 0.1f, Projectile.timeLeft / (float)Lifetime, true);
             Projectile.alpha = 0;
 
             if (CurrentType == AttackType.Firing)
@@ -129,11 +130,12 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Vector2 origin = rectangle.Size() / 2f;
             Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
             Color color = Color.White with { A = 0 };
+            float bladeScale = Utils.GetLerpValue(3f, 13f, Projectile.velocity.Length(), true);
             SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            Main.EntitySpriteDraw(texture, position, rectangle, color, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
+            Main.EntitySpriteDraw(texture, position, rectangle, color, Projectile.rotation, origin, Projectile.scale * bladeScale, spriteEffects, 0);
 
-            Vector2 offset = Vector2.Normalize(Projectile.velocity) * 65f * Projectile.scale;
+            Vector2 offset = Vector2.Normalize(Projectile.velocity) * 65f * Projectile.scale * bladeScale;
             MoreKatanaUtil.DrawPrettyStarSparkle(1f, SpriteEffects.None, position + offset, color, new Color(96, 248, 96),
                     0.5f, 0f, 0.1f, 0.9f, 1f, 0f, new Vector2(Projectile.scale, Projectile.scale * 1.5f), new Vector2(1f, 1f));
             return false;

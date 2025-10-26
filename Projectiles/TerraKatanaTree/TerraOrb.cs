@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
+using MoreKatana.Items.Weapons.TerraKatanaTree;
 using MoreKatana.Projectiles.PrimTrails;
 using System;
 using System.IO;
@@ -62,6 +63,18 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override void AI()
         {
+            if (Owner.CantUseHoldout(false))
+            {
+                Projectile.Kill();
+                return;
+            }
+
+            if (Owner.ActiveItem().type != ModContent.ItemType<TerraKatana>())
+            {
+                Projectile.Kill();
+                return;
+            }
+
             Direction = Direction.ToDirection();
 
             switch (CurrentState)
@@ -139,9 +152,10 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
                             if (Direction == 1)
                             {
-                                Owner.ScreenShake(3, 15);
                                 SoundEngine.PlaySound(SoundID.Item29, Owner.Center);
                                 SoundEngine.PlaySound(SoundID.Item60, Owner.Center);
+                                Owner.ScreenShake(3, 15);
+                                Owner.CreateImpactEffect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Projectile.owner, 1f, new Color(96, 248, 96));
 
                                 for (int i = 0; i < 24; i++)
                                 {
@@ -154,7 +168,10 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                                 }
 
                                 if (Projectile.owner == Main.myPlayer)
-                                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Projectile.velocity * 2f, Projectile.velocity, ModContent.ProjectileType<TerraEdge>(), Projectile.damage * 2, Projectile.knockBack, Projectile.owner, (int)TerraEdge.AttackType.Firing);
+                                {
+                                    int edge = ModContent.ProjectileType<TerraEdge>();
+                                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Projectile.velocity * 2f, Projectile.velocity, edge, Projectile.damage * 2, Projectile.knockBack, Projectile.owner, (int)TerraEdge.AttackType.Firing);
+                                }
                             }
 
                             Projectile.netUpdate = true;
@@ -178,12 +195,10 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             particleOrchestraSettings.PositionInWorld = Main.rand.NextVector2FromRectangle(target.Hitbox);
             ParticleOrchestrator.RequestParticleSpawn(false, ParticleOrchestraType.TerraBlade, particleOrchestraSettings, Projectile.owner);
 
-            if (CurrentState != State.Hit)
+            if (CurrentState == State.Firing)
+            {
                 CurrentState = State.Hit;
 
-            if (!Projectile.MKProj().Bool[2])
-            {
-                Projectile.MKProj().Bool[2] = true;
                 Projectile.velocity = Vector2.UnitY * Direction;
                 Projectile.velocity *= 40f;
                 Projectile.timeLeft = 22;
@@ -193,9 +208,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     trail = new TextureMapPrimTrail(Projectile, new Color(96, 248, 96), MoreKatanaTextures.FlameTrailTexture.Value, 16);
                     MoreKatana.primitives.CreateTrail(trail);
                 }
-            }
 
-            Projectile.netUpdate = true;
+                Projectile.netUpdate = true;
+            }
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

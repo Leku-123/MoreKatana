@@ -173,8 +173,14 @@ namespace MoreKatana.UI
             }
             else
             {
-                Rectangle rectangle = new Rectangle(0, 0, (int)(sheatheTexture.Width * (1 - ratio)), sheatheTexture.Width);
                 spriteBatch.Draw(sheatheTexture, screenPos, null, Color.Gray, 0f, sheatheTexture.Size() * 0.5f, uiScale, SpriteEffects.None, 0);
+
+                Rectangle rectangle = new Rectangle(0, 0, (int)(sheatheTexture.Width * (1 - ratio)), sheatheTexture.Height);
+
+                Rectangle highlightRect = rectangle;
+                highlightRect.Width += 4;
+                spriteBatch.Draw(sheatheTexture, screenPos, highlightRect, Color.White with { A = 0 }, 0f, sheatheTexture.Size() * 0.5f, uiScale, SpriteEffects.None, 0);
+
                 spriteBatch.Draw(sheatheTexture, screenPos, rectangle, Color.White, 0f, sheatheTexture.Size() * 0.5f, uiScale, SpriteEffects.None, 0);
             }
 

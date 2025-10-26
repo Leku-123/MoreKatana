@@ -30,13 +30,24 @@ MuramasaGhostSwing.DisplayName: Muramasa
 MuramasaSlash.DisplayName: Muramasa
 MuramasaCounterattack.DisplayName: Muramasa Counterattack
 MuramasaCounterattackSwing.DisplayName: Muramasa Counterattack
+LightsTeleport.DisplayName: Lights Teleport
+TerraKatanaSwing.DisplayName: Terra Katana
+TerraWave.DisplayName: Terra Wave
+TerraOrb.DisplayName: Terra Orb
+TerraEdge.DisplayName: Terra Edge
+TerraBeam.DisplayName: Terra Beam
+TerraDestructionHoldout.DisplayName: Terra Destruction
+TerraDestructionBase.DisplayName: Terra Destruction
+TerraSlash.DisplayName: Terra Slash
+TerraLightning.DisplayName: Terra Lightning
 # -------- Wood --------
 ChargingWoodenSwing.DisplayName: Wooden Katana
 # -------- General --------
 Empty.DisplayName: Empty
 GeneralKatanaSwing.DisplayName: Katana
 GeneralDashSlash.DisplayName: Dash Slash
-ShockWaveEffect.DisplayName: Shock Wave Effect
+ShockWaveEffect.DisplayName: Shockwave
+ImpactEffect.DisplayName: Impact
 # -------- Not yet --------
 CustomDashSlash.DisplayName: Dash Slash
 BallofVolcano.DisplayName: Ball of Volcano
@@ -52,14 +63,3 @@ ObsidianKatanaHoldUp.DisplayName: Obsidian Katana Hold Up
 SkyJumpDamageEffect.DisplayName: Sky Jump Damage Effect
 ChargingSkyKatana.DisplayName: Charging Sky Katana
 SkyKatanaWindImpact.DisplayName: Sky Katana Wind Impact
-LightsTeleport.DisplayName: Lights Teleport
-TerraKatanaSwing.DisplayName: Terra Katana Swing
-TerraKatanaWave.DisplayName: Terra Katana Wave
-TerraKatanaBeam.DisplayName: Terra Katana Beam
-TerraKatanaFragment.DisplayName: Terra Katana Fragment
-TerraKatanaRay.DisplayName: Terra Katana Ray
-TerraOrb.DisplayName: Terra Orb
-TerraEdge.DisplayName: Terra Edge
-TerraHitMark.DisplayName: Terra Hit Mark
-TerraWave.DisplayName: Terra Wave
-TerraBeam.DisplayName: Terra Beam

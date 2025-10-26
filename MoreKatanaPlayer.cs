@@ -50,6 +50,7 @@ namespace MoreKatana
         // -------- Player Draw --------
         public float Flipping;
         public float R, G, B, A;
+        public bool FullBright;
 
         // -------- World Effect --------
         public int ForgottenAltarEffect;
@@ -93,10 +94,12 @@ namespace MoreKatana
                 NoUsingItems--;
             Flipping = 0f;
             R = G = B = A = 1f;
+            FullBright = false;
             muramasaCounterattack = false;
             enchantedHurtEffect = false;
             holyShield = false;
             trueHolyShield = false;
+            terraShield = false;
             if (Player.velocity.Y == 0)
                 isExtraJumping = false;
         }
@@ -110,6 +113,7 @@ namespace MoreKatana
             ShieldCD = 0;
             HolyShieldDurability = 0;
             TrueHolyShieldDurability = 0;
+            TerraShieldDurability = 0;
             isExtraJumping = false;
         }
 
@@ -266,6 +270,9 @@ namespace MoreKatana
 
                 if (TrueHolyShieldDurability == 0)
                     TrueHolyShieldDurability = TrueSacredNaginata.ShieldDurabilityMax;
+
+                if (TerraShieldDurability == 0)
+                    TerraShieldDurability = TerraKatana.ShieldDurabilityMax;
             }
 
             if (TimePotionSick == 1)
@@ -273,6 +280,7 @@ namespace MoreKatana
                 ShieldCD = 0;
                 HolyShieldDurability = SacredNaginata.ShieldDurabilityMax;
                 TrueHolyShieldDurability = TrueSacredNaginata.ShieldDurabilityMax;
+                TerraShieldDurability = TerraKatana.ShieldDurabilityMax;
             }
         }
 
@@ -338,6 +346,18 @@ namespace MoreKatana
                 particleOrchestraSettings.PositionInWorld = Main.rand.NextVector2FromRectangle(Player.Hitbox);
                 ParticleOrchestrator.RequestParticleSpawn(false, ParticleOrchestraType.TrueExcalibur, particleOrchestraSettings, Player.whoAmI);
             }
+            if (terraShield && TerraShieldDurability > 0)
+            {
+                // ヒットした際に音を鳴らす。デフォルトのヒット音は消す
+                modifiers.DisableSound();
+                SoundEngine.PlaySound(SoundID.NPCHit42 with { Pitch = +0.3f }, Player.position);
+                SoundEngine.PlaySound(SoundID.NPCHit4, Player.position);
+
+                // パーティクル
+                ParticleOrchestraSettings particleOrchestraSettings = default;
+                particleOrchestraSettings.PositionInWorld = Main.rand.NextVector2FromRectangle(Player.Hitbox);
+                ParticleOrchestrator.RequestParticleSpawn(false, ParticleOrchestraType.TerraBlade, particleOrchestraSettings, Player.whoAmI);
+            }
         }
 
         public override void OnHurt(Player.HurtInfo info)
@@ -350,6 +370,7 @@ namespace MoreKatana
                     int shieldDurability = SacredNaginata.ShieldDurabilityMax;
                     HolyShieldDurability -= info.Damage;
                     TrueHolyShieldDurability -= (int)(info.Damage * ((float)TrueSacredNaginata.ShieldDurabilityMax / shieldDurability));
+                    TerraShieldDurability -= (int)(info.Damage * ((float)TerraKatana.ShieldDurabilityMax / shieldDurability));
 
                     // シールドが破壊された時の処理
                     if (HolyShieldDurability <= 0)
@@ -374,6 +395,7 @@ namespace MoreKatana
                     int shieldDurability = TrueSacredNaginata.ShieldDurabilityMax;
                     TrueHolyShieldDurability -= info.Damage;
                     HolyShieldDurability -= (int)(info.Damage * ((float)SacredNaginata.ShieldDurabilityMax / shieldDurability));
+                    TerraShieldDurability -= (int)(info.Damage * ((float)TerraKatana.ShieldDurabilityMax / shieldDurability));
 
                     // シールドが破壊された時の処理
                     if (TrueHolyShieldDurability <= 0)
@@ -392,6 +414,31 @@ namespace MoreKatana
                     // ダメージの処理
                     OnDamage(ref info, TrueHolyShieldDurability);
                 }
+                if (terraShield && TerraShieldDurability > 0)
+                {
+                    // すべてのシールドにダメージを与える。
+                    int shieldDurability = TrueSacredNaginata.ShieldDurabilityMax;
+                    TerraShieldDurability -= info.Damage;
+                    HolyShieldDurability -= (int)(info.Damage * ((float)SacredNaginata.ShieldDurabilityMax / shieldDurability));
+                    TrueHolyShieldDurability -= (int)(info.Damage * ((float)TrueSacredNaginata.ShieldDurabilityMax / shieldDurability));
+
+                    // シールドが破壊された時の処理
+                    if (TerraShieldDurability <= 0)
+                    {
+                        CrashEffect(TerraKatana.ShieldRechargeTime);
+
+                        double spread = 2 * Math.PI / 12;
+                        for (int i = 0; i < 24; i++)
+                        {
+                            Vector2 velocity = new Vector2(2, 2).RotatedBy(spread * i);
+                            int newDust = Dust.NewDust(Player.Center, 0, 0, ModContent.DustType<PixelDust>(), velocity.X, velocity.Y, 0, Main.rand.NextBool() ? Color.Gold : Color.Crimson, 1f);
+                            Main.dust[newDust].scale *= 6f * Main.rand.Next(1, 3);
+                        }
+                    }
+
+                    // ダメージの処理
+                    OnDamage(ref info, TerraShieldDurability);
+                }
 
                 void CrashEffect(int cd)
                 {
@@ -401,6 +448,7 @@ namespace MoreKatana
                     // シールドの耐久値を0にする
                     HolyShieldDurability = 0;
                     TrueHolyShieldDurability = 0;
+                    TerraShieldDurability = 0;
 
                     // 音とスクリーンシェイク
                     SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath, Player.position);
@@ -484,6 +532,9 @@ namespace MoreKatana
         public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
         {
             r = R; g = G; b = B; a = A;
+
+            if (FullBright)
+                fullBright = true;
         }
 
         public static void SyncMouseWorld(Mod mod, BinaryReader reader, int whoAmI)
@@ -502,6 +553,7 @@ namespace MoreKatana
         {
             SacredNaginata.DrawHolyShield(ref drawinfo);
             TrueSacredNaginata.DrawTrueHolyShield(ref drawinfo);
+            TerraKatana.DrawTerraShield(ref drawinfo);
         }
 
         public static void AddRenderUI(SpriteBatch spriteBatch, Player player)
