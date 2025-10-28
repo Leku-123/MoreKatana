@@ -16,13 +16,15 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 {
     public class TerraKatana : KatanaItem
     {
-        public static int ShieldRechargeTime = 30 * 60;
-        public static int ShieldDurabilityMax = 100;
+        public const int ShieldRechargeTime = 30 * 60;
+        public const int ShieldDurabilityMax = 100;
         public const int ShieldDefenseBoost = 10;
+
+        public const int DustType = DustID.Terra;
+        public static Color[] TerraColor = [new Color(96, 248, 96), new Color(0, 162, 230)];
 
         public override LocalizedText FunctionText => base.FunctionText.WithFormatArgs(ShieldDurabilityMax, ShieldDefenseBoost, ShieldRechargeTime / 60);
 
-        public static Color Color = new Color(96, 248, 96);
         public override KatanaID ID => KatanaID.None;
 
         public override void SetDefaultsItem()
@@ -32,7 +34,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
             Item.useTime = 18;
             Item.useAnimation = 18;
-            Item.MKItem().UseSound = SoundID.Item1;
+            Item.MKItem().UseSound = MoreKatanaSounds.SwordSlash;
 
             Item.damage = 80;
             Item.knockBack = 4.5f;
@@ -41,7 +43,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             Item.value = Item.sellPrice(gold: 20);
             Item.rare = ItemRarityID.Yellow;
 
-            Item.MKItem().SetKatanaDefaults(Item, 60, true, ModContent.ProjectileType<TerraKatanaSwing>(), 5);
+            Item.MKItem().SetKatanaDefaults(Item, 10 * 60, true, ModContent.ProjectileType<TerraKatanaSwing>(), 5);
         }
 
         public override void PassiveSkill(Player player, bool equipment)
@@ -75,11 +77,10 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
         public override void MeleeEffects(Player player, Rectangle hitbox)
         {
             if (Main.rand.NextBool(3))
-                Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustID.Terra);
+                Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustType);
         }
 
         private static Vector2 ShieldCenter;
-
         public static void DrawTerraShield(ref PlayerDrawSet drawInfo)
         {
             Player drawPlayer = drawInfo.drawPlayer;
@@ -121,7 +122,8 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
                 shieldScale *= new Vector2(1.5f - distanceCompletion, 1.5f);
 
                 // シールドの色
-                Color shieldColor = Color;
+                float lerp = (float)Math.Sin(Main.GameUpdateCount / 15f * i) / 2 + 0.5f;
+                Color shieldColor = Color.Lerp(TerraColor[0], TerraColor[1], MoreKatanaUtil.CircInEasing(lerp, 1));
                 if (completion < 0f)
                     shieldColor *= distanceCompletion;
 
@@ -140,7 +142,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
                 Vector2 gaugePos = new Vector2(drawInfo.Center.X, drawInfo.Center.Y) + new Vector2(0, 35);
 
                 // ゲージとテキストの色
-                Color c1 = Color;
+                Color c1 = Color.Lerp(TerraColor[0], TerraColor[1], cooldownRatio);
                 Color c2 = Color.Red;
                 Color c3 = Color.White;
 

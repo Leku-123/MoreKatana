@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
+using MoreKatana.Items.Weapons.TerraKatanaTree;
 using System;
 using Terraria;
 using Terraria.GameContent;
@@ -78,7 +79,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             clone.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRot);
             clone.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRot);
 
-            clone.MKPlayer().FullBright = true;
+            clone.FullBright();
 
             // 本体のクローンのテクスチャを描画
             float denominator = (float)FrameCount * (Main.projFrames[Projectile.type] + 1) * Projectile.MaxUpdates;
@@ -86,12 +87,12 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Vector2 clonePos = Projectile.Center + (Projectile.rotation.ToRotationVector2() * 250 * progress);
 
             Texture2D bloom = MoreKatanaTextures.BloomTexture.Value;
-            Color color = new Color(96, 248, 96) with { A = 0 };
+            Color color = TerraKatana.TerraColor[0] with { A = 0 };
             Main.EntitySpriteDraw(bloom, clonePos - Main.screenPosition, null, color * 0.5f, Projectile.rotation, bloom.Size() / 2f, new Vector2(1f, 1f), SpriteEffects.None, 0f);
 
             if (clone != null)
                 Main.PlayerRenderer.DrawPlayer(Main.Camera, clone, clonePos, 0f, clone.fullRotationOrigin, 0f, 1f);
-            Lighting.AddLight(clonePos, new Color(96, 248, 96).ToVector3());
+            Lighting.AddLight(clonePos, TerraKatana.TerraColor[0].ToVector3());
 
             Texture2D texture = TextureAssets.Projectile[Type].Value;
             Rectangle rectangle = texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame);

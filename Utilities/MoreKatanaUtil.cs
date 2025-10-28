@@ -111,6 +111,12 @@ namespace MoreKatana
         }
         public static void DrawColorEffect(this Player player, float value) => player.DrawColorEffect(value, value, value, value);
         public static void DrawColorEffect(this Player player, Vector3 rgb, float a = 1) => player.DrawColorEffect(rgb.X, rgb.Y, rgb.Z, a);
+
+        public static void FullBright(this Player player)
+        {
+            MoreKatanaPlayer mk = player.MKPlayer();
+            mk.FullBright = true;
+        }
         #endregion
 
         #region -------- Projectile Utils --------

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace MoreKatana.Items.Weapons.Gem
 {
@@ -19,7 +20,7 @@ namespace MoreKatana.Items.Weapons.Gem
             Item.height = 60;
 
             Item.MKItem().AltDamage = Item.damage * 2;
-            Item.MKItem().UseSound = MoreKatanaSounds.SwordSlash;
+            Item.MKItem().UseSound = SoundID.Item1;
             Item.MKItem().SetKatanaDefaults(Item, 60 * 5);
         }
 

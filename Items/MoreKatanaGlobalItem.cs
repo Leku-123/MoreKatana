@@ -26,14 +26,13 @@ namespace MoreKatana.Items
 
         public KatanaID ID; // 図鑑用ID
 
-        public bool Katana;             // 刀
+        public bool Katana;             // 刀のアイテム
         public int AltDamage;           // アクティブスキルのダメージ
         public int ActiveSkillDelay;    // アクティブスキルのCDの時間
         public int SwingComboCount = 1; // 振りのコンボ数
         public int SwingType = 0;       // 振りの種類
 
         public int AttackType;
-        private int ComboExpireTimer = 0;
 
         public SoundStyle? UseSound;
 
@@ -78,8 +77,6 @@ namespace MoreKatana.Items
         /// <param name="player"></param>
         public void ActivateCooldown(Player player) => player.MKPlayer().ActiveSkillCD = player.MKPlayer().ActiveSkillCDMax = ActiveSkillDelay;
 
-        //public void ActivateCooldown(Player player) => player.AddBuff(ModContent.BuffType<KatanaArtsCD>(), ActiveSkillDelay);
-
         public override void SetDefaults(Item item)
         {
             if (item.type == ItemID.Katana)
@@ -92,7 +89,11 @@ namespace MoreKatana.Items
                 ID = KatanaID.Muramasa;
                 item.StatsModifiedBy.Add(Mod);
             }
+
             SetDefaultsVanillaItem(item);
+            
+            if (item.ModItem is KatanaItem)
+                (item.ModItem as KatanaItem).SetDefaultsItem();
         }
 
         private void SetDefaultsVanillaItem(Item item)
@@ -172,10 +173,6 @@ namespace MoreKatana.Items
             {
                 if (item == player.ActiveItem())
                 {
-                    // 120fごとにコンボをリセットする
-                    //if (ComboExpireTimer++ >= 120)
-                    //    AttackType = 0;
-
                     if (item.type is ItemID.Katana or ItemID.Muramasa)
                     {
                         // アイテムの設定を更新する
@@ -192,6 +189,10 @@ namespace MoreKatana.Items
                         // Modアイテムのパッシブスキル
                         (item.ModItem as KatanaItem).PassiveSkill(player, false);
                     }
+                }
+                else
+                {
+                    AttackType = 0;
                 }
             }
         }
@@ -213,7 +214,6 @@ namespace MoreKatana.Items
                 {
                     Projectile.NewProjectile(source, position, velocity, SwingType, damage, knockback, player.whoAmI, AttackType);
                     AttackType = (AttackType + 1) % SwingComboCount;
-                    ComboExpireTimer = 0;
                 }
             }
 

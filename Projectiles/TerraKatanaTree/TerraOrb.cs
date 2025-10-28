@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace MoreKatana.Projectiles.TerraKatanaTree
 {
-    public class TerraOrb : ModProjectile
+    public class TerraOrb : ModProjectile, ITrailProjectile
     {
         private ref float Direction => ref Projectile.ai[0];
 
@@ -34,8 +34,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         private Vector2 swingVel = Vector2.Zero;
 
-        private TextureMapPrimTrail trail;
-
         public Player Owner => Main.player[Projectile.owner];
 
         public override string Texture => MoreKatana.EmptyTexture;
@@ -55,6 +53,11 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10;
             Projectile.noEnchantmentVisuals = true;
+        }
+
+        public void DoTrailCreation(TrailManager tManager)
+        {
+            tManager.CreateTrail(Projectile, TerraKatana.TerraColor[0], MoreKatanaTextures.FlameTrailTexture.Value, 16, 15);
         }
 
         public override void SendExtraAI(BinaryWriter writer) => writer.WriteVector2(swingVel);
@@ -155,11 +158,11 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                                 SoundEngine.PlaySound(SoundID.Item29, Owner.Center);
                                 SoundEngine.PlaySound(SoundID.Item60, Owner.Center);
                                 Owner.ScreenShake(3, 15);
-                                Owner.CreateImpactEffect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Projectile.owner, 1f, new Color(96, 248, 96));
+                                Owner.CreateImpactEffect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Projectile.owner, 1f, TerraKatana.TerraColor[0]);
 
                                 for (int i = 0; i < 24; i++)
                                 {
-                                    int newDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Terra, 0f, 0f, 100, default, 1.5f);
+                                    int newDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, TerraKatana.DustType, 0f, 0f, 100, default, 1.5f);
                                     Main.dust[newDust].scale *= Main.rand.NextFloat(1, 2.5f);
                                     Main.dust[newDust].noGravity = true;
                                     Main.dust[newDust].velocity = Vector2.Normalize(Projectile.velocity) * 15f;
@@ -198,17 +201,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             if (CurrentState == State.Firing)
             {
                 CurrentState = State.Hit;
-
                 Projectile.velocity = Vector2.UnitY * Direction;
                 Projectile.velocity *= 40f;
                 Projectile.timeLeft = 22;
-
-                if (Main.netMode != NetmodeID.Server)
-                {
-                    trail = new TextureMapPrimTrail(Projectile, new Color(96, 248, 96), MoreKatanaTextures.FlameTrailTexture.Value, 16);
-                    MoreKatana.primitives.CreateTrail(trail);
-                }
-
                 Projectile.netUpdate = true;
             }
         }
@@ -231,7 +226,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Texture2D bloomTex = MoreKatanaTextures.BloomTexture.Value;
             Texture2D starTex = MoreKatanaTextures.StarSparkleTexture.Value;
             Vector2 position = Projectile.Center - Main.screenPosition;
-            Color color = new Color(96, 248, 96) with { A = 0 };
+            Color color = TerraKatana.TerraColor[0] with { A = 0 };
             Main.EntitySpriteDraw(bloomTex, position, null, color, 0f, bloomTex.Size() / 2f, Projectile.scale * 0.4f, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(starTex, position, null, color, Main.GlobalTimeWrappedHourly * Direction, starTex.Size() / 2f, Projectile.scale * 0.7f, SpriteEffects.None, 0);
             return false;

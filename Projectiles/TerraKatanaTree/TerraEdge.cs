@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
+using MoreKatana.Items.Weapons.TerraKatanaTree;
 using MoreKatana.Projectiles.PrimTrails;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace MoreKatana.Projectiles.TerraKatanaTree
@@ -48,8 +48,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public void DoTrailCreation(TrailManager tManager)
         {
-            tManager.CreateTrail(Projectile, new Color(96, 248, 96), MoreKatanaTextures.EnergyTrailTexture.Value, 42, 15);
-            tManager.CreateTrail(Projectile, new Color(0, 162, 230) * 0.2f, MoreKatanaTextures.StraightlineTrailTexture.Value, 42, 18);
+            tManager.CreateTrail(Projectile, TerraKatana.TerraColor[0], MoreKatanaTextures.EnergyTrailTexture.Value, 42, 15);
+            tManager.CreateTrail(Projectile, TerraKatana.TerraColor[1] * 0.2f, MoreKatanaTextures.StraightlineTrailTexture.Value, 42, 18);
         }
 
         public override void AI()
@@ -63,7 +63,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             {
                 if (Main.rand.NextBool())
                 {
-                    Dust dust = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(40f, 40f) + Projectile.velocity, DustID.Terra, Projectile.velocity * -1.2f, 0);
+                    Dust dust = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(40f, 40f) + Projectile.velocity, TerraKatana.DustType, Projectile.velocity * -1.2f, 0);
                     dust.scale = 0.3f;
                     dust.fadeIn = Main.rand.NextFloat() * 1.2f;
                     dust.noGravity = true;
@@ -108,18 +108,18 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             if (CurrentType == AttackType.Homing)
             {
-                Projectile.ExpandHitboxBy(150);
-                Projectile.Damage();
-                Projectile.Kill();
-
                 for (int i = 0; i < 12; ++i)
                 {
-                    int newDust = Dust.NewDust(target.position, target.width, target.height, DustID.Terra, 0f, 0f, 100, default, 1f);
+                    int newDust = Dust.NewDust(target.position, target.width, target.height, TerraKatana.DustType, 0f, 0f, 100, default, 1f);
                     Main.dust[newDust].noGravity = true;
                     Main.dust[newDust].noLight = true;
                     Main.dust[newDust].velocity = Vector2.Normalize(Projectile.velocity).RotatedBy(15);
                     Main.dust[newDust].velocity *= 10;
                 }
+
+                Projectile.ExpandHitboxBy(150);
+                Projectile.Damage();
+                Projectile.Kill();
             }
         }
 
@@ -129,14 +129,14 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Rectangle rectangle = new Rectangle(0, 0, texture.Width, texture.Height);
             Vector2 origin = rectangle.Size() / 2f;
             Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-            Color color = Color.White with { A = 0 };
+            Color color = Color.White with { A = 0 } * Projectile.Opacity;
             float bladeScale = Utils.GetLerpValue(3f, 13f, Projectile.velocity.Length(), true);
             SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
             Main.EntitySpriteDraw(texture, position, rectangle, color, Projectile.rotation, origin, Projectile.scale * bladeScale, spriteEffects, 0);
 
             Vector2 offset = Vector2.Normalize(Projectile.velocity) * 65f * Projectile.scale * bladeScale;
-            MoreKatanaUtil.DrawPrettyStarSparkle(1f, SpriteEffects.None, position + offset, color, new Color(96, 248, 96),
+            MoreKatanaUtil.DrawPrettyStarSparkle(1f, SpriteEffects.None, position + offset, color, TerraKatana.TerraColor[0],
                     0.5f, 0f, 0.1f, 0.9f, 1f, 0f, new Vector2(Projectile.scale, Projectile.scale * 1.5f), new Vector2(1f, 1f));
             return false;
         }

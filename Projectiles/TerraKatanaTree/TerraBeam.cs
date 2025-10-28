@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
-using MoreKatana.Buffs;
+using MoreKatana.Items.Weapons.TerraKatanaTree;
 using System;
 using Terraria;
 using Terraria.Enums;
+using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.Shaders;
 using Terraria.Graphics.Effects;
@@ -15,9 +16,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 {
     public class TerraBeam : ModProjectile
     {
-        private const int Lifetime = 28;
-        private const int BeamDustID = DustID.Terra;
+        public ref float BeamLength => ref Projectile.ai[0];
 
+        private const int Lifetime = 28;
         private const float MaxBeamScale = 1.2f;
 
         private const float MaxBeamLength = 2400f;
@@ -30,7 +31,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         private const float MaxBeamBrightness = 0.75f;
 
         private const float MainDustBeamEndOffset = 14.5f;
-        private const float SidewaysDustBeamEndOffset = 4f;
         private const float BeamRenderTileOffset = 10.5f;
         private const float BeamLengthReductionFactor = 14.5f;
 
@@ -56,6 +56,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override void AI()
         {
+            // 何らかの原因でこの発射体がTerraBeamじゃなくなったら発射体を削除する
             if (Projectile.type != ModContent.ProjectileType<TerraBeam>())
             {
                 Projectile.Kill();
@@ -63,7 +64,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             }
 
             // 1フレームでベロシティと回転を設定
-            // 実際のベロシティは0にする
+            // beamVectorをベロシティの値として保存して、実際のベロシティは0にする
             if (Projectile.velocity != Vector2.Zero)
             {
                 beamVector = Vector2.Normalize(Projectile.velocity);
@@ -83,10 +84,10 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             for (int i = 0; i < laserScanResults.Length; ++i)
                 avg += laserScanResults[i];
             avg /= NumSamplePoints;
-            Projectile.ai[0] = MathHelper.Lerp(Projectile.ai[0], avg, BeamLengthChangeFactor);
+            Projectile.ai[0] = MathHelper.Lerp(BeamLength, avg, BeamLengthChangeFactor);
 
             // ビームのx, yの寸法
-            Vector2 beamDims = new Vector2(beamVector.Length() * Projectile.ai[0], Projectile.width * Projectile.scale);
+            Vector2 beamDims = new Vector2(beamVector.Length() * BeamLength, Projectile.width * Projectile.scale);
 
             Color beamColor = GetBeamColor();
             ProduceBeamDust(beamColor);
@@ -101,7 +102,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             // ExampleMod:
             // v3_1 は、DelegateMethods.CastLight によって生成される色を示す、名前が付けられていないデコンパイルされた変数です
             DelegateMethods.v3_1 = beamColor.ToVector3() * power * MaxBeamBrightness;
-            Utils.PlotTileLine(Projectile.Center, Projectile.Center + beamVector * Projectile.ai[0], beamDims.Y, DelegateMethods.CastLight);
+            Utils.PlotTileLine(Projectile.Center, Projectile.Center + beamVector * BeamLength, beamDims.Y, DelegateMethods.CastLight);
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -112,7 +113,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             // それ以外の場合は、AABB線衝突チェックを実行してビーム全体をチェックする
             float _ = float.NaN;
-            Vector2 beamEndPos = Projectile.Center + beamVector * Projectile.ai[0];
+            Vector2 beamEndPos = Projectile.Center + beamVector * BeamLength;
             float hitboxCollisionWidth = 15f;
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, beamEndPos, hitboxCollisionWidth * Projectile.scale, ref _);
         }
@@ -133,60 +134,61 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         private Color GetBeamColor()
         {
-            Color c = new Color(96, 248, 96);
+            Color c = TerraKatana.TerraColor[0];
+            c.A = 64;
             return c;
         }
 
         public override bool PreDraw(ref Color lightColor)
         {
+            // ビームに明確な方向が無い場合描画しない
             if (beamVector == Vector2.Zero || Projectile.velocity != Vector2.Zero)
                 return false;
 
-            Texture2D tex = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
-            float beamLength = Projectile.ai[0];
+            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
+            float beamLength = BeamLength;
             Vector2 centerFloored = Projectile.Center.Floor() + beamVector * Projectile.scale * BeamRenderTileOffset;
             Vector2 scaleVec = new Vector2(Projectile.scale);
 
             beamLength -= BeamLengthReductionFactor * Projectile.scale * Projectile.scale;
 
-            DelegateMethods.f_1 = 1f; // f_1 is an unnamed decompiled variable whose function is unknown. Leave it at 1.
+            // ExampleMod: f_1 は名前が付けられていないデコンパイルされた変数で、その機能は不明です。1fのままにしておいてください。
+            DelegateMethods.f_1 = 1f;
             Vector2 beamStartPos = centerFloored - Main.screenPosition;
             Vector2 beamEndPos = beamStartPos + beamVector * beamLength;
             Utils.LaserLineFraming llf = new Utils.LaserLineFraming(DelegateMethods.RainbowLaserDraw);
 
-            // Draw the outermost beam
-            // c_1 is an unnamed decompiled variable which is the render color of the beam drawn by DelegateMethods.RainbowLaserDraw
             Color beamColor = GetBeamColor();
             DelegateMethods.c_1 = beamColor * OuterBeamOpacityMultiplier * Projectile.Opacity;
             Utils.DrawLaser(Main.spriteBatch, tex, beamStartPos, beamEndPos, scaleVec, llf);
 
             for (int i = 0; i < 5; ++i)
             {
-                beamColor = Color.Lerp(beamColor, Color.White, 0.4f);
+                Color beamColor2 = beamColor;
+                beamColor2 = Color.Lerp(beamColor2, Color.White, 0.4f);
                 scaleVec *= 0.85f;
-                DelegateMethods.c_1 = beamColor * InnerBeamOpacityMultiplier * Projectile.Opacity;
+                DelegateMethods.c_1 = beamColor2 * InnerBeamOpacityMultiplier * Projectile.Opacity;
                 Utils.DrawLaser(Main.spriteBatch, tex, beamStartPos, beamEndPos, scaleVec, llf);
             }
 
             Texture2D bloomTex = MoreKatanaTextures.BloomTexture.Value;
             Texture2D starTex = MoreKatanaTextures.StarSparkleTexture.Value;
             Vector2 position = Projectile.Center - Main.screenPosition;
-            Color color = new Color(96, 248, 96) with { A = 0 };
-            Main.EntitySpriteDraw(bloomTex, position, null, color, 0f, bloomTex.Size() / 2f, Projectile.scale * 0.5f, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(starTex, position, null, color, 0f, starTex.Size() / 2f, new Vector2(Projectile.scale * 0.7f, Projectile.scale * 1.5f), SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(bloomTex, position, null, beamColor with { A = 0 }, 0f, bloomTex.Size() / 2f, Projectile.scale * 0.5f, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(starTex, position, null, beamColor with { A = 0 }, 0f, starTex.Size() / 2f, new Vector2(Projectile.scale * 0.7f, Projectile.scale * 1.5f), SpriteEffects.None, 0);
 
             return false;
         }
 
         private void ProduceBeamDust(Color beamColor)
         {
-            Vector2 laserEndPos = Projectile.Center + beamVector * (Projectile.ai[0] - MainDustBeamEndOffset * Projectile.scale);
+            Vector2 laserEndPos = Projectile.Center + beamVector * (BeamLength - MainDustBeamEndOffset * Projectile.scale);
             for (int i = 0; i < 2; ++i)
             {
                 float dustAngle = Projectile.rotation + (Main.rand.NextBool() ? 1f : -1f) * MathHelper.PiOver2;
                 float dustStartDist = Main.rand.NextFloat(1f, 1.8f);
                 Vector2 dustVel = dustAngle.ToRotationVector2() * dustStartDist;
-                int d = Dust.NewDust(laserEndPos, 0, 0, BeamDustID, dustVel.X, dustVel.Y, 0, beamColor);
+                int d = Dust.NewDust(laserEndPos, 0, 0, TerraKatana.DustType, dustVel.X, dustVel.Y, 0, beamColor);
                 Main.dust[d].color = beamColor;
                 Main.dust[d].noGravity = true;
                 Main.dust[d].scale = 0.7f;
@@ -207,8 +209,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             if (Main.rand.NextBool(5))
             {
                 Vector2 dustOffset = beamVector.RotatedBy(MathHelper.PiOver2) * (Main.rand.NextFloat() - 0.5f) * Projectile.width;
-                Vector2 dustPos = laserEndPos + dustOffset - Vector2.One * SidewaysDustBeamEndOffset;
-                int d = Dust.NewDust(dustPos, 8, 8, BeamDustID, 0f, 0f, 100, beamColor, 1.2f);
+                Vector2 dustPos = laserEndPos + dustOffset - Vector2.One * 4f;
+                int d = Dust.NewDust(dustPos, 8, 8, TerraKatana.DustType, 0f, 0f, 100, beamColor, 1.2f);
                 Main.dust[d].velocity *= 0.5f;
                 Main.dust[d].velocity.Y = -Math.Abs(Main.dust[d].velocity.Y);
             }
@@ -221,7 +223,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             DelegateMethods.tilecut_0 = TileCuttingContext.AttackProjectile;
             Utils.TileActionAttempt cut = new Utils.TileActionAttempt(DelegateMethods.CutTiles);
             Vector2 beamStartPos = Projectile.Center;
-            Vector2 beamEndPos = beamStartPos + beamVector * Projectile.ai[0];
+            Vector2 beamEndPos = beamStartPos + beamVector * BeamLength;
 
             // PlotTileLine は、描画された線に沿って指定された幅のすべてのタイルに対して、指定されたアクションを実行する関数です。
             // この場合、例えば草や壺など、投射物によって破壊可能なすべてのタイルをカットします。

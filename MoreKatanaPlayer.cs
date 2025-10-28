@@ -254,7 +254,7 @@ namespace MoreKatana
             ExtraJumpProjCreate();
             if (ActiveSkillCD == 1)
             {
-                SoundEngine.PlaySound(SoundID.Item37, Player.position);
+                SoundEngine.PlaySound(MoreKatanaSounds.DrawSword, Player.position);
                 Rectangle textPos = new Rectangle((int)Player.position.X, (int)Player.position.Y - 20, Player.width, Player.height);
                 CombatText.NewText(textPos, Color.OrangeRed, "Cooldown over!");
             }

@@ -147,7 +147,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Vector2 centerFloored = Projectile.Center.Floor() + Projectile.velocity * Projectile.scale * 10.5f;
             Vector2 drawScale = new Vector2(Projectile.scale);
 
-            // ExampleModより: f_1 は名前が付けられていないデコンパイルされた変数で、その機能は不明です。1 のままにしておいてください。
+            // ExampleMod: f_1 は名前が付けられていないデコンパイルされた変数で、その機能は不明です。1 のままにしておいてください。
             DelegateMethods.f_1 = 1f;
             Vector2 startPosition = centerFloored - Main.screenPosition;
             Vector2 endPosition = startPosition + Projectile.velocity * BeamLength;

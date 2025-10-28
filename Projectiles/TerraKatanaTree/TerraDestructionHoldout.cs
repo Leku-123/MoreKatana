@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
+using MoreKatana.Items.Weapons.TerraKatanaTree;
 using System;
-using System.IO;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -35,9 +35,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.noEnchantmentVisuals = true;
             Projectile.MKProj().SourceIsItemUse = true;
         }
-
-        public override void SendExtraAI(BinaryWriter writer) => writer.Write(aiming);
-        public override void ReceiveExtraAI(BinaryReader reader) => aiming = reader.ReadBoolean();
 
         public override bool? CanDamage() => false;
 
@@ -81,6 +78,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
                 // ターゲットのNPCを取得
                 target = Owner.MKPlayer().MouseWorld.ClosestNPCAt(AttackRange);
+
+                // テレポート位置のチェック
                 TeleportCheck(target);
 
                 // テレポートする位置からAttackRangeの範囲のダストをスポーンさせる
@@ -90,7 +89,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     double angle = Main.rand.NextDouble() * 2d * Math.PI;
                     offset.X += (float)(Math.Sin(angle) * AttackRange);
                     offset.Y += (float)(Math.Cos(angle) * AttackRange);
-                    int newDust = Dust.NewDust(teleportPos + offset, 0, 0, DustID.Terra, 0, 0, 100, default, 0.5f);
+                    int newDust = Dust.NewDust(teleportPos + offset, 0, 0, TerraKatana.DustType, 0, 0, 100, default, 0.5f);
                     Main.dust[newDust].noGravity = true;
                     Main.dust[newDust].velocity = Owner.velocity;
                 }
@@ -100,7 +99,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 {
                     for (int i = 0; i < 15; i++)
                     {
-                        int newDust = Dust.NewDust(new Vector2(Owner.Center.X - Owner.width, Owner.Center.Y + Owner.height / 2), Owner.width * 2 - 3, 0, DustID.Terra, 0, Main.rand.Next(-5, -2), 150, default, 0.5f);
+                        int newDust = Dust.NewDust(new Vector2(Owner.Center.X - Owner.width, Owner.Center.Y + Owner.height / 2), Owner.width * 2 - 3, 0, TerraKatana.DustType, 0, Main.rand.Next(-5, -2), 150, default, 0.5f);
                         Main.dust[newDust].fadeIn = 0.3f;
                         Main.dust[newDust].noGravity = true;
                     }
@@ -110,7 +109,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             {
                 // テレポート位置とは逆方向にImpactEffectの演出をする
                 Vector2 vector = Owner.SafeDirectionTo(teleportPos, Vector2.UnitY);
-                Owner.CreateImpactEffect(Projectile.GetSource_FromThis(), Owner.Center, -vector, Projectile.owner, 1f, new Color(96, 248, 96));
+                Owner.CreateImpactEffect(Projectile.GetSource_FromThis(), Owner.Center, -vector, Projectile.owner, 1f, TerraKatana.TerraColor[0]);
 
                 // めり込み防止の為にテレポート位置がプレイヤーより下にある場合はY位置を調節する
                 bool lookingDownOn = false;
@@ -202,7 +201,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             // 剣先の光の描画
             Texture2D starTex = MoreKatanaTextures.StarSparkleTexture.Value;
-            Color color = new Color(96, 248, 96);
+            Color color = TerraKatana.TerraColor[0];
             float rot = Main.GlobalTimeWrappedHourly;
             Main.spriteBatch.Draw(starTex, armPosition - new Vector2(50 * Owner.direction, -23), null, color with { A = 0 }, rot, starTex.Size() / 2f, Projectile.scale * 0.15f, SpriteEffects.None, 0f);
             Main.spriteBatch.Draw(starTex, armPosition - new Vector2(50 * Owner.direction, -23), null, color with { A = 0 }, -rot, starTex.Size() / 2f, Projectile.scale * 0.25f, SpriteEffects.None, 0f);

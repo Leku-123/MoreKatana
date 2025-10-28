@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Items.Weapons.TerraKatanaTree;
 using MoreKatana.Projectiles.Base;
 using MoreKatana.Projectiles.PrimTrails;
 using System;
@@ -96,7 +97,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                         Projectile.MKProj().Bool[0] = true;
                         SoundEngine.PlaySound(SoundID.Item60, Owner.Center);
 
-                        // 衝撃波を発射する
                         if (Projectile.owner == Main.myPlayer)
                         {
                             int wave = ModContent.ProjectileType<TerraWave>();
@@ -114,7 +114,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
                         for (int i = 0; i < 12; i++)
                         {
-                            int newDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Terra, 0f, 0f, 100, default, 1.5f);
+                            int newDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, TerraKatana.DustType, 0f, 0f, 100, default, 1.5f);
                             Main.dust[newDust].scale *= Main.rand.NextFloat(1, 2.5f);
                             Main.dust[newDust].noGravity = true;
                             Main.dust[newDust].velocity = normalized * 8f;
@@ -152,12 +152,17 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
                     foreach (Projectile proj in Main.projectile)
                     {
-                        if (proj.whoAmI == Projectile.whoAmI || !proj.active || proj.owner != Projectile.owner || proj.type != ModContent.ProjectileType<TerraOrb>())
+                        if (proj.whoAmI == Projectile.whoAmI || !proj.active || proj.owner != Projectile.owner
+                            || proj.type != ModContent.ProjectileType<TerraOrb>())
                             continue;
 
                         if (Projectile.Colliding(Projectile.Hitbox, proj.Hitbox))
                         {
-                            Owner.velocity = Vector2.Zero;
+                            Owner.immune = true;
+                            Owner.immuneTime = 2;
+                            Owner.position = Owner.oldPosition;
+                            NetMessage.SendData(MessageID.PlayerControls, number: proj.owner);
+
                             if (proj.ai[2] == (float)TerraOrb.State.Holding)
                             {
                                 proj.ai[2] = (float)TerraOrb.State.Firing;
@@ -187,12 +192,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                             float speed = 25f;
                             Vector2 center = Projectile.Center + normalized * distance;
 
-                            if (Projectile.owner == Main.myPlayer)
-                            {
-                                int beam = ModContent.ProjectileType<TerraBeam>();
-                                Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), center, normalized * speed, beam, Projectile.damage, Projectile.knockBack, Projectile.owner);
-                            }
-
                             for (int i = 1; i <= 3; i++)
                             {
                                 for (int j = 0; j < 60; j++)
@@ -200,11 +199,17 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                                     Vector2 vector2 = Vector2.UnitX * -Projectile.width / 2f;
                                     vector2 += Utils.RotatedBy(Vector2.UnitY, j * Math.PI / 30f) * new Vector2(30f * i, 15f * i);
                                     vector2 = Utils.RotatedBy(vector2, normalized.ToRotation() - Math.PI / 2f) * 1.3f;
-                                    int newDust = Dust.NewDust(center + vector2 + (normalized * 60 * i), 0, 0, DustID.Terra, 0f, 0f, 160, default, 2f);
+                                    int newDust = Dust.NewDust(center + vector2 + (normalized * 60 * i), 0, 0, TerraKatana.DustType, 0f, 0f, 160, default, 2f);
                                     Main.dust[newDust].noGravity = true;
                                     Main.dust[newDust].velocity = Projectile.velocity * 0.5f;
                                     Main.dust[newDust].velocity = Vector2.Normalize(Projectile.Center - Projectile.velocity * 3f - Main.dust[newDust].position) * 1.5f;
                                 }
+                            }
+
+                            if (Projectile.owner == Main.myPlayer)
+                            {
+                                int beam = ModContent.ProjectileType<TerraBeam>();
+                                Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), center, normalized * speed, beam, Projectile.damage, Projectile.knockBack, Projectile.owner);
                             }
                         }
                     }

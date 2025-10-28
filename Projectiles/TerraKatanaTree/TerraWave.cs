@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
+using MoreKatana.Items.Weapons.TerraKatanaTree;
 using MoreKatana.Projectiles.PrimTrails;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace MoreKatana.Projectiles.TerraKatanaTree
@@ -36,9 +36,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public void DoTrailCreation(TrailManager tManager)
         {
-            tManager.CreateTrail(Projectile, new Color(96, 248, 96), MoreKatanaTextures.EnergyTrailTexture.Value, 150, 15);
-            tManager.CreateTrail(Projectile, new Color(0, 162, 230) * 0.2f, MoreKatanaTextures.StraightlineTrailTexture.Value, 150, 18);
-            tManager.CreateTrail(Projectile, new Color(96, 248, 96) * 0.2f, MoreKatanaTextures.DoublelinesTrailTexture.Value, 70, 8);
+            tManager.CreateTrail(Projectile, TerraKatana.TerraColor[0], MoreKatanaTextures.EnergyTrailTexture.Value, 150, 15);
+            tManager.CreateTrail(Projectile, TerraKatana.TerraColor[1] * 0.2f, MoreKatanaTextures.StraightlineTrailTexture.Value, 150, 18);
+            tManager.CreateTrail(Projectile, TerraKatana.TerraColor[0] * 0.2f, MoreKatanaTextures.DoublelinesTrailTexture.Value, 70, 8);
         }
 
         public bool DoTrailDeletion() => Projectile.timeLeft <= 25;
@@ -67,7 +67,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     Projectile.timeLeft = 25;
             }
 
-            Dust dust = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(HitboxDims, HitboxDims) + Projectile.velocity, DustID.Terra, -Projectile.velocity, 0);
+            Dust dust = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(HitboxDims, HitboxDims) + Projectile.velocity, TerraKatana.DustType, -Projectile.velocity, 0);
             dust.scale = 0.3f;
             dust.fadeIn = Main.rand.NextFloat() * 1.2f;
             dust.noGravity = true;
@@ -116,13 +116,13 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         {
             Texture2D texture = TextureAssets.Projectile[Type].Value;
             Vector2 position = Projectile.Center - (Vector2.Normalize(Projectile.velocity) * 16f) - Main.screenPosition;
-            Main.EntitySpriteDraw(texture, position, null, new Color(96, 248, 96) with { A = 0 } * Projectile.Opacity, Projectile.rotation, texture.Size() / 2, Projectile.scale * new Vector2(1.4f, 1), SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(texture, position, null, TerraKatana.TerraColor[0] with { A = 0 } * Projectile.Opacity, Projectile.rotation, texture.Size() / 2, Projectile.scale * new Vector2(1.4f, 1), SpriteEffects.None, 0);
 
             for (int i = -1; i <= 1; i++)
             {
                 Vector2 offset = Vector2.Normalize(Projectile.velocity).RotatedBy(MathHelper.ToRadians(60) * i) * 30f * Projectile.scale;
                 MoreKatanaUtil.DrawPrettyStarSparkle(1f, SpriteEffects.None, position + offset,
-                    Color.White * Projectile.Opacity, Color.Lime * Projectile.Opacity,
+                    TerraKatana.TerraColor[1] * Projectile.Opacity, TerraKatana.TerraColor[0] * Projectile.Opacity,
                     0.5f, 0f, 0.1f, 0.9f, 1f, 0f, new Vector2(Projectile.scale * 1.5f), new Vector2(1f, 1f));
             }
 

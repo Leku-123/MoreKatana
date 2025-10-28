@@ -43,9 +43,29 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.extraUpdates = LightningLength / 5;
         }
 
-        public override void SendExtraAI(BinaryWriter writer) => writer.Write(fadeOut);
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            if (points != null)
+            {
+                writer.Write(points.Length);
+                for (int i = 0; i < points.Length; i++)
+                    writer.WriteVector2(points[i]);
+            }
 
-        public override void ReceiveExtraAI(BinaryReader reader) => fadeOut = reader.ReadBoolean();
+            writer.Write(fadeOut);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            if (points != null)
+            {
+                int length = reader.ReadInt32();
+                for (int i = 0; i < length; i++)
+                    points[i] = reader.ReadVector2();
+            }
+
+            fadeOut = reader.ReadBoolean();
+        }
 
         public override void AI()
         {

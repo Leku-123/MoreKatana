@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
+using MoreKatana.Items.Weapons.TerraKatanaTree;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -14,6 +15,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         private NPC Target => Main.npc[(int)Projectile.ai[0]];
 
         public ref float Timer => ref Projectile.ai[1];
+
         public ref float SlashCount => ref Projectile.ai[2];
 
         private const int MaxSlashCount = 5;
@@ -23,7 +25,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         public Player Owner => Main.player[Projectile.owner];
 
         public override string Texture => MoreKatana.EmptyTexture;
-
 
         public override void SetDefaults()
         {
@@ -45,6 +46,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override void AI()
         {
+            // 発射体のベロシティを0にする
             Projectile.velocity = Vector2.Zero;
 
             // ターゲットがいる場合といない場合で発射体の位置を調節する
@@ -55,11 +57,13 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     Projectile.position = Target.position;
 
                 // そうでなければ発射体の位置をプレイヤーのの位置にする
+                // 完全な位置のズレを無くすためoldPositionにする
                 else
                     Projectile.position = Owner.oldPosition;
             }
             else
             {
+                // 発射体の位置をプレイヤーのの位置にする
                 Projectile.position = Owner.oldPosition;
             }
 
@@ -87,7 +91,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Owner.controlUseTile = false;
             Owner.controlHook = false;
             Owner.controlMount = false;
-            Owner.canRocket = false;
+            Owner.canRocket = false; // ロケットブーツなどでの飛行をさせない
 
             // フックとマウントの解除
             Owner.RemoveAllGrapplingHooks();
@@ -109,7 +113,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 double angle = Main.rand.NextDouble() * 2d * Math.PI;
                 offset.X += (float)(Math.Sin(angle) * AttackRange);
                 offset.Y += (float)(Math.Cos(angle) * AttackRange);
-                int newDust = Dust.NewDust(Owner.Center + offset, 0, 0, DustID.Terra, 0, 0, 100, default, 0.5f);
+                int newDust = Dust.NewDust(Owner.Center + offset, 0, 0, TerraKatana.DustType, 0, 0, 100, default, 0.5f);
                 Main.dust[newDust].noGravity = true;
                 if (Main.rand.NextBool(3))
                     Main.dust[newDust].velocity += Vector2.Normalize(offset) * 5f;
@@ -120,7 +124,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             if (Projectile.friendly)
             {
                 Owner.ScreenShake(2, 5);
-                SoundEngine.PlaySound(SoundID.Item1 with { Pitch = +0.5f }, Owner.Center);
+                SoundEngine.PlaySound(MoreKatanaSounds.SwordSlash_3 with { Pitch = +Main.rand.NextFloat(0.3f) }, Owner.Center);
 
                 Vector2 slashPosition = Projectile.Center; // 斬撃の位置
                 Vector2 slashDirection = -Vector2.UnitY; // 斬撃の向き
@@ -150,6 +154,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
                         // 衝撃波のエフェクト
                         MoreKatanaUtil.CreateShockwave(Projectile.GetSource_FromThis(), Owner.Center, Projectile.owner);
+
+                        // サウンドの入りのズレがあるためここで鳴らし始める
+                        SoundEngine.PlaySound(MoreKatanaSounds.Thunder, Owner.Center);
                         break;
                     default:
                         break;
@@ -174,9 +181,11 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
                 // カウントを増加
                 SlashCount++;
+
+                Projectile.netUpdate = true;
             }
 
-            // 斬撃がすべて終わったら発射体を消滅させる
+            // 斬撃がすべて終わったら発射体を削除する
             if (Timer > SlashTime * MaxSlashCount)
             {
                 Projectile.Kill();
@@ -205,20 +214,42 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override void OnKill(int timeLeft)
         {
-            SoundEngine.PlaySound(SoundID.Item60, Owner.Center);
-            SoundEngine.PlaySound(SoundID.DD2_DefenseTowerSpawn, Projectile.Center);
-            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item60 with { Volume = 0.7f }, Owner.Center);
+            SoundEngine.PlaySound(SoundID.DD2_DefenseTowerSpawn with { Volume = 0.7f }, Owner.Center);
+            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 0.7f }, Owner.Center);
+
             Owner.ScreenShake(20, 25);
-            Owner.CreateImpactEffect(Projectile.GetSource_FromThis(), Owner.Center + new Vector2(0, 100), -Vector2.UnitY, Projectile.owner, 2f, new Color(96, 248, 96));
+            Owner.CreateImpactEffect(Projectile.GetSource_FromThis(), Owner.Center + new Vector2(0, 100), -Vector2.UnitY, Projectile.owner, 2f, TerraKatana.TerraColor[0]);
 
             // ダスト盛り盛り
+            ProduceDust(TerraKatana.DustType);
+
+            if (Projectile.owner == Main.myPlayer)
+            {
+                for (int i = 0; i < Main.maxNPCs; i++)
+                {
+                    if (Main.npc[i].active && Projectile.Distance(Main.npc[i].Center) < AttackRange)
+                        Main.npc[i].immune[Projectile.owner] = 0;
+                }
+
+                Projectile.friendly = true;
+                Projectile.damage *= 10;
+                Projectile.Damage();
+
+                int lightning = ModContent.ProjectileType<TerraLightning>();
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center - new Vector2(0, 800), new Vector2(0, 10), lightning, Projectile.damage, 3, Projectile.owner);
+            }
+        }
+
+        private void ProduceDust(int tyoe)
+        {
             for (int i = 0; i < 40; ++i)
             {
-                int newDust = Dust.NewDust(Owner.Center, Owner.width, Owner.height, DustID.Terra);
+                int newDust = Dust.NewDust(Owner.Center, Owner.width, Owner.height, tyoe);
                 Main.dust[newDust].velocity *= 10f;
                 Main.dust[newDust].fadeIn = 1f;
                 Main.dust[newDust].scale = 1 + Main.rand.NextFloat() + Main.rand.Next(4) * 0.3f;
-                if (Main.rand.Next(3) != 0)
+                if (Main.rand.NextBool(3))
                 {
                     Main.dust[newDust].noGravity = true;
                     Main.dust[newDust].velocity *= 3f;
@@ -227,11 +258,11 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             }
             for (int i = 0; i < 30; i++)
             {
-                int newDust = Dust.NewDust(Owner.Center, Owner.width, Owner.height, DustID.Terra);
+                int newDust = Dust.NewDust(Owner.Center, Owner.width, Owner.height, tyoe);
                 Main.dust[newDust].scale = Main.rand.NextFloat(1f, 4f);
                 Main.dust[newDust].noGravity = true;
                 Main.dust[newDust].velocity.Y = -10f;
-                Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(60));
+                Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(30));
                 Main.dust[newDust].velocity *= Main.rand.NextFloat(1f, 3f);
             }
             for (int i = 0; i < 12; i++)
@@ -251,27 +282,11 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     Vector2 vector2 = Vector2.UnitX * -Projectile.width / 2f;
                     vector2 += Utils.RotatedBy(Vector2.UnitY, j * Math.PI / 15f) * new Vector2(50f * i, 10f);
                     vector2 = Utils.RotatedBy(vector2, Vector2.UnitY.ToRotation() - Math.PI / 2f) * 1.3f;
-                    int newDust = Dust.NewDust(Owner.Bottom + vector2 - (Vector2.UnitY * 50 * i), 0, 0, DustID.Terra, 0f, 0f, 160, default, 2f);
+                    int newDust = Dust.NewDust(Owner.Bottom + vector2 - (Vector2.UnitY * 50 * i), 0, 0, tyoe, 0f, 0f, 160, default, 2f);
                     Main.dust[newDust].noGravity = true;
                     Main.dust[newDust].velocity = Projectile.velocity * 0.5f;
                     Main.dust[newDust].velocity = Vector2.Normalize(Owner.Center - Projectile.velocity * 3f - Main.dust[newDust].position) * 1.5f;
                 }
-            }
-
-            if (Projectile.owner == Main.myPlayer)
-            {
-                for (int i = 0; i < Main.maxNPCs; i++)
-                {
-                    if (Main.npc[i].active && Projectile.Distance(Main.npc[i].Center) < AttackRange)
-                        Main.npc[i].immune[Projectile.owner] = 0;
-                }
-
-                Projectile.friendly = true;
-                Projectile.damage *= 10;
-                Projectile.Damage();
-
-                int lightning = ModContent.ProjectileType<TerraLightning>();
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center - new Vector2(0, 800), new Vector2(0, 10), lightning, Projectile.damage, 3, Projectile.owner);
             }
         }
 
@@ -279,8 +294,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         {
             Texture2D bloomTex = MoreKatanaTextures.BloomTexture.Value;
             Vector2 position = Projectile.Center - Main.screenPosition;
-            Color color = new Color(96, 248, 96) with { A = 0 } * 0.2f;
-            Main.EntitySpriteDraw(bloomTex, position, null, color, 0f, bloomTex.Size() / 2f, 6f, SpriteEffects.None, 0);
+            Color color = TerraKatana.TerraColor[0] with { A = 0 } * 0.2f;
+            Main.spriteBatch.Draw(bloomTex, position, null, color, 0f, bloomTex.Size() / 2f, 6f, SpriteEffects.None, 0);
             return false;
         }
     }
