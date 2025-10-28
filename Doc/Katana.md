@@ -9,12 +9,12 @@
 ## -------- Gem --------
 | クラス(ローカライズ) | 実装状況 | 管轄 | 備考 |
 | :-------------:| :------------:| :-------------: | :-------------|
-| Amethyst Katana | **Done** | もりりん ||
-| Ruby Katana     | **Done** | もりりん ||
-| Emerald Katana  | **Done** | もりりん ||
-| Sapphire Katana | **Done** | もりりん ||
-| Topaz Katana    | **Done** | もりりん ||
-| Diamond Katana  | **Done** | もりりん ||
+| Amethyst Katana     | **Done** | もりりん ||
+| Ruby Katana         | **Done** | もりりん ||
+| Emerald Katana      | **Done** | もりりん ||
+| Sapphire Katana     | **Done** | もりりん ||
+| Topaz Katana        | **Done** | もりりん ||
+| Diamond Katana      | **Done** | もりりん ||
 | Katana of Ornaments | 未実装 | もりりん ||
 
 ## -------- Metal --------
@@ -39,12 +39,12 @@
 ## -------- TerraKatanaTree --------
 | クラス(ローカライズ) | 実装状況 | 管轄 | 備考 |
 | :-------------:| :------------:| :-------------: | :-------------|
-| Grass Katana (Kusanagi) | **Done** | もりりん ||
-| Volcano Katana (Kagutsuchi) | **WIP** | かつ丼 | 発射体制作、要マルチ確認 |
-| Lights Slasher (Murasame) | **WIP** | mga | 要マルチ確認 |
-| Sacred Naginata (Gaeborg) | **Done** | もりりん ||
+| Grass Katana (Kusanagi)            | **Done** | もりりん ||
+| Volcano Katana (Kagutsuchi)        | **WIP** | かつ丼 | 発射体制作、要マルチ確認 |
+| Lights Slasher (Murasame)          | **WIP** | mga | 要マルチ確認 |
+| Sacred Naginata (Gaeborg)          | **Done** | もりりん ||
 | TrueSacred Naginata (True Gaeborg) | **Done** | もりりん ||
-| Terra Katana | **WIP** | 要マルチ確認 ||
+| Terra Katana                       | **Done** | もりりん ||
 
 ## -------- Wood --------
 | クラス(ローカライズ) | 実装状況 | 管轄 | 備考 |
