@@ -23,6 +23,20 @@ namespace MoreKatana
         [DefaultValue(true)]
         public bool ForgottenAltar { get; set; }
 
+        [Header("Particle")]
+
+        //[BackgroundColor(154, 204, 254, 192)]
+        //[SliderColor(224, 165, 56, 128)]
+        [Range(100f, 1000f)]
+        [DefaultValue(500f)]
+        [DrawTicks]
+        [Increment(100f)]
+        public float MaxParticles { get; set; }
+
+        //[BackgroundColor(154, 204, 254, 192)]
+        [DefaultValue(true)]
+        public bool ForegroundParticles { get; set; }
+
         [Header("UI")]
 
         //[BackgroundColor(192, 54, 64, 192)]

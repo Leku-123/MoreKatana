@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Items.Weapons.TerraKatanaTree;
+using MoreKatana.Particles;
 using System;
 using Terraria;
 using Terraria.GameContent;
@@ -107,9 +108,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             }
             else // 攻撃時
             {
-                // テレポート位置とは逆方向にImpactEffectの演出をする
                 Vector2 vector = Owner.SafeDirectionTo(teleportPos, Vector2.UnitY);
-                Owner.CreateImpactEffect(Projectile.GetSource_FromThis(), Owner.Center, -vector, Projectile.owner, 1f, TerraKatana.TerraColor[0]);
+                ParticleHandler.SpawnParticle(new ImpactEffect(Owner.Center, -vector, TerraKatana.TerraColor[0], new Vector2(1f), 10));
 
                 // めり込み防止の為にテレポート位置がプレイヤーより下にある場合はY位置を調節する
                 bool lookingDownOn = false;

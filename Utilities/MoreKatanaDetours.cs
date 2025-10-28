@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Particles;
 using MoreKatana.Projectiles.PrimTrails;
 using Terraria;
 using Terraria.DataStructures;
@@ -16,6 +18,7 @@ namespace MoreKatana.Utilities
             On_Main.DrawNPCs += Main_DrawNPCs;
             On_Main.DrawProjectiles += Main_DrawProjectiles;
             On_Main.Update += Main_Update;
+            On_Main.DrawInterface += DrawParticles;
             On_Main.DrawInfernoRings += On_Main_DrawInfernoRings;
         }
 
@@ -27,6 +30,7 @@ namespace MoreKatana.Utilities
             On_Main.DrawNPCs -= Main_DrawNPCs;
             On_Main.DrawProjectiles -= Main_DrawProjectiles;
             On_Main.Update -= Main_Update;
+            On_Main.DrawInterface -= DrawParticles;
             On_Main.DrawInfernoRings -= On_Main_DrawInfernoRings;
         }
 
@@ -80,6 +84,15 @@ namespace MoreKatana.Utilities
         private static void Main_Update(On_Main.orig_Update orig, Main self, GameTime gameTime)
         {
             MoreKatana.Instance?.CheckScreenSize();
+            orig(self, gameTime);
+        }
+
+        private static void DrawParticles(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime)
+        {
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
+            ParticleHandler.DrawAllParticles(Main.spriteBatch);
+            Main.spriteBatch.End();
+
             orig(self, gameTime);
         }
 

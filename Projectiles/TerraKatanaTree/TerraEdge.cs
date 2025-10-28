@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Items.Weapons.TerraKatanaTree;
+using MoreKatana.Particles;
 using MoreKatana.Projectiles.PrimTrails;
 using Terraria;
 using Terraria.GameContent;
@@ -61,6 +62,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             if (CurrentType == AttackType.Firing)
             {
+                // ダスト
                 if (Main.rand.NextBool())
                 {
                     Dust dust = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(40f, 40f) + Projectile.velocity, TerraKatana.DustType, Projectile.velocity * -1.2f, 0);

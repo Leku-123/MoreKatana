@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MoreKatana.Particles;
 using MoreKatana.Projectiles.Base;
 using MoreKatana.Projectiles.PrimTrails;
 using System.IO;
@@ -133,8 +134,9 @@ namespace MoreKatana.Projectiles.Wood
                     {
                         SwingStop = true;
                         Owner.ScreenShake(4, 10);
-                        Owner.CreateImpactEffect(Projectile.GetSource_FromThis(), collisionPoint, -Vector2.UnitY, Projectile.owner, 0.3f, Color.White);
                         SoundEngine.PlaySound(SoundID.Dig, Owner.Center);
+
+                        ParticleHandler.SpawnParticle(new ImpactEffect(collisionPoint, -Vector2.UnitY, Color.White, new Vector2(0.3f), 10));
                     }
 
                     Projectile.netUpdate = true;

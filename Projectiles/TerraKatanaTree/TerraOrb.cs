@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Items.Weapons.TerraKatanaTree;
+using MoreKatana.Particles;
 using MoreKatana.Projectiles.PrimTrails;
 using System;
 using System.IO;
@@ -158,7 +159,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                                 SoundEngine.PlaySound(SoundID.Item29, Owner.Center);
                                 SoundEngine.PlaySound(SoundID.Item60, Owner.Center);
                                 Owner.ScreenShake(3, 15);
-                                Owner.CreateImpactEffect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Projectile.owner, 1f, TerraKatana.TerraColor[0]);
+                                ParticleHandler.SpawnParticle(new ImpactEffect(Projectile.Center, Projectile.velocity, TerraKatana.TerraColor[0], Vector2.One, 10));
 
                                 for (int i = 0; i < 24; i++)
                                 {

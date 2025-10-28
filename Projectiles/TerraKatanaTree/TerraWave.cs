@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Items.Weapons.TerraKatanaTree;
+using MoreKatana.Particles;
 using MoreKatana.Projectiles.PrimTrails;
 using Terraria;
 using Terraria.GameContent;
@@ -56,6 +57,19 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     Projectile.velocity *= 0.9f; // ベロシティを遅くしていく
                 }
             }
+            // フェードアウト時以外はパーティクルをスポーンさせる
+            else
+            {
+                if (Main.rand.NextBool(2))
+                {
+                    Vector2 pos = Vector2.Lerp(Projectile.Center, Projectile.Center, Main.rand.NextFloat()) + Main.rand.NextVector2Circular(HitboxDims, HitboxDims);
+                    Vector2 vel = Vector2.Normalize(Projectile.velocity) * 2f;
+                    Color color = Color.Lerp(TerraKatana.TerraColor[1], TerraKatana.TerraColor[0], Main.rand.NextFloat());
+                    Vector2 scale = new Vector2(0.25f, Main.rand.NextFloat(0.5f, 1.5f)) * 2;
+                    Particle line = new ImpactLine(pos, vel, color, scale, 60) { TimeActive = 30 };
+                    ParticleHandler.SpawnParticle(line);
+                }
+            }
 
             // 発射体の回転をベロシティの向きにする
             Projectile.rotation = Projectile.velocity.ToRotation();
@@ -66,11 +80,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 if (Projectile.timeLeft > 25)
                     Projectile.timeLeft = 25;
             }
-
-            Dust dust = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(HitboxDims, HitboxDims) + Projectile.velocity, TerraKatana.DustType, -Projectile.velocity, 0);
-            dust.scale = 0.3f;
-            dust.fadeIn = Main.rand.NextFloat() * 1.2f;
-            dust.noGravity = true;
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity)
@@ -122,7 +131,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             {
                 Vector2 offset = Vector2.Normalize(Projectile.velocity).RotatedBy(MathHelper.ToRadians(60) * i) * 30f * Projectile.scale;
                 MoreKatanaUtil.DrawPrettyStarSparkle(1f, SpriteEffects.None, position + offset,
-                    TerraKatana.TerraColor[1] * Projectile.Opacity, TerraKatana.TerraColor[0] * Projectile.Opacity,
+                    Color.White * Projectile.Opacity, TerraKatana.TerraColor[0] * Projectile.Opacity,
                     0.5f, 0f, 0.1f, 0.9f, 1f, 0f, new Vector2(Projectile.scale * 1.5f), new Vector2(1f, 1f));
             }
 

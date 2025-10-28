@@ -19,6 +19,7 @@ Configs: {
 			Miscellaneous: Miscellaneous
 			VanillaRework: Vanilla Rework (If you change this, please reload the world)
 			WorldGen: World Generation
+			Particle: Particle Header
 		}
 
 		KatanaRework: {
@@ -63,6 +64,16 @@ Configs: {
 
 		CustomActiveSkillCDPosY: {
 			Label: Custom Active Skill Cool Down Gauge Pos Y
+			Tooltip: ""
+		}
+
+		MaxParticles: {
+			Label: Max Particles
+			Tooltip: ""
+		}
+
+		ForegroundParticles: {
+			Label: Foreground Particles
 			Tooltip: ""
 		}
 	}

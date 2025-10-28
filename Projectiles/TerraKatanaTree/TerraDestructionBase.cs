@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Items.Weapons.TerraKatanaTree;
+using MoreKatana.Particles;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -219,7 +220,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 0.7f }, Owner.Center);
 
             Owner.ScreenShake(20, 25);
-            Owner.CreateImpactEffect(Projectile.GetSource_FromThis(), Owner.Center + new Vector2(0, 100), -Vector2.UnitY, Projectile.owner, 2f, TerraKatana.TerraColor[0]);
+
+            ParticleHandler.SpawnParticle(new ImpactEffect(Owner.Center + new Vector2(0, 100), -Vector2.UnitY, TerraKatana.TerraColor[0], new Vector2(2f), 10));
 
             // ダスト盛り盛り
             ProduceDust(TerraKatana.DustType);

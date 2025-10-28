@@ -159,23 +159,12 @@ namespace MoreKatana
             return null;
         }
 
-        public static void CreateImpactEffect(this Player player, IEntitySource source, Vector2 position, Vector2 velocity, int owner = 255, float impactSize = 1f, Color color = default)
-        {
-            if (Main.myPlayer == player.whoAmI)
-            {
-                int p = Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<ImpactEffect>(), 0, 0f, owner);
-                ImpactEffect impact = (ImpactEffect)Main.projectile[p].ModProjectile;
-                impact.ImpactSize = impactSize;
-                impact.ImpactColor = color;
-            }
-        }
-
         /// <summary>
         /// ダッシュ切り発射体を簡単に処理する
         /// <param name="source">はItemUse系にしてください
         /// </summary>
         /// <param name="player"></param>
-        /// <param name="source"> ItemUse系 </param>
+        /// <param name="source"> ItemUse </param>
         /// <param name="damage"></param>
         /// <param name="knockBack"></param>
         /// <param name="distance"> ダッシュの距離 </param>

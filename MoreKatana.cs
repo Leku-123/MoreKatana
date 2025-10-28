@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Assets.ItemTextures;
+using MoreKatana.Particles;
 using MoreKatana.Prim;
 using MoreKatana.Projectiles.PrimTrails;
 using MoreKatana.Utilities;
@@ -37,6 +38,11 @@ namespace MoreKatana
 
         public override void Load()
         {
+            if (!Main.dedServ)
+            {
+                ParticleHandler.RegisterParticles();
+            }
+
             MoreKatanaDetours.Initialize();
             MoreKatanaTextures.LoadTextures();
             MoreKatanaItemTextures.LoadItemTextures();
@@ -76,6 +82,7 @@ namespace MoreKatana
             primitives = null;
             TrailManager = null;
 
+            ParticleHandler.Unload();
             MoreKatanaDetours.Unload();
             MoreKatanaTextures.UnloadTextures();
             MoreKatanaItemTextures.UnloadItemTextures();
