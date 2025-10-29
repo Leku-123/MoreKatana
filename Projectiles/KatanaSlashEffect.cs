@@ -1,19 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Particles;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.ModLoader;
 
-namespace MoreKatana.Projectiles.Misc
+namespace MoreKatana.Projectiles
 {
-    /// <summary>
-    /// パーティクル作るまでの繋ぎ
-    /// てきとう
-    /// </summary>
     public class KatanaSlashEffect : ModProjectile
     {
+        public Color slashColor = Main.rand.NextBool() ? Color.Silver : Color.DimGray;
 
-        public Vector2 Squash = new Vector2(2f, 0.5f);
+        public override string Texture => MoreKatana.EmptyTexture;
 
         public override void SetDefaults()
         {
@@ -27,27 +23,26 @@ namespace MoreKatana.Projectiles.Misc
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
+            Projectile.scale = 0.75f;
+            Projectile.hide = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10;
             Projectile.noEnchantmentVisuals = true;
-            Projectile.scale = 0.09f;
-            Projectile.stopsDealingDamageAfterPenetrateHits = true;
         }
 
         public override void AI()
         {
-            if (Projectile.localAI[0] == 0)
+            Vector2 vel = new Vector2(0.1f, 0.1f).RotatedByRandom(100);
+
+            if (!Projectile.MKProj().Bool[0])
             {
-                Projectile.localAI[0] = 1;
+                Projectile.MKProj().Bool[0] = true;
 
-                Vector2 vel = new Vector2(0.1f, 0.1f).RotatedByRandom(100);
-
-                Projectile.rotation = vel.ToRotation();
+                Particle glowSpark = new GlowSparkParticle(Projectile.Center, vel, false, 15, Main.rand.NextFloat(0.05f, 0.09f), slashColor, new Vector2(2f, 0.5f), true);
+                ParticleHandler.SpawnParticle(glowSpark);
             }
 
-            Projectile.scale *= 0.95f;
-            Squash.X *= 0.8f;
-            Squash.Y *= 1.12f;
+            Projectile.rotation = vel.ToRotation();
         }
 
         public override bool ShouldUpdatePosition() => true;
@@ -66,15 +61,6 @@ namespace MoreKatana.Projectiles.Misc
             if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), end, tip, 10f * Projectile.scale, ref dummy))
                 return true;
 
-            return false;
-        }
-
-        public override bool PreDraw(ref Color lightColor)
-        {
-            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
-            Vector2 scale = Squash * Projectile.scale;
-
-            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, Color.White with { A = 0 }, Projectile.rotation, texture.Size() * 0.5f, scale * new Vector2(0.45f, 1f), 0, 0f);
             return false;
         }
     }

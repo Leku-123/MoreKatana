@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
+using MoreKatana.Items.Materials;
 using MoreKatana.Projectiles.TerraKatanaTree;
 using MoreKatana.Systems.CrossMod;
 using System;
@@ -85,6 +86,29 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
         {
             if (Main.rand.NextBool(4))
                 Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustType);
+        }
+
+        public override void AddRecipes()
+        {
+            if (ModLoader.TryGetMod("CalamityMod", out Mod calamity))
+            {
+                CreateRecipe()
+                    .AddIngredient(ItemID.TrueNightsEdge)
+                    .AddIngredient(ModContent.ItemType<TrueSacredNaginata>())
+                    .AddIngredient(ModContent.ItemType<BrokenHeroKatana>())
+                    .AddIngredient(calamity.Find<ModItem>("LivingShard").Type, 12)
+                    .AddTile(TileID.MythrilAnvil)
+                    .Register();
+            }
+            else
+            {
+                CreateRecipe()
+                    .AddIngredient(ItemID.TrueNightsEdge)
+                    .AddIngredient(ModContent.ItemType<TrueSacredNaginata>())
+                    .AddIngredient(ModContent.ItemType<BrokenHeroKatana>())
+                    .AddTile(TileID.MythrilAnvil)
+                    .Register();
+            }
         }
 
         private static Vector2 ShieldCenter;

@@ -234,7 +234,16 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             {
                 Vector2 particleCenter = Owner.Bottom - (Vector2.UnitY * 40 * i);
                 Vector2 particleScale = new Vector2(0.3f * (i * 0.5f), 1.5f * (i * 0.5f));
-                ParticleHandler.SpawnParticle(new PulseCircle(particleCenter, Vector2.UnitY, TerraKatana.TerraColor[0], particleScale, 40, MoreKatanaUtil.CircOutEasing));
+                Particle pulse = new PulseCircle(particleCenter, Vector2.UnitY, TerraKatana.TerraColor[0], particleScale, 40, MoreKatanaUtil.CircOutEasing);
+                ParticleHandler.SpawnParticle(pulse);
+            }
+            for (int i = 0; i < 9; i++)
+            {
+                Vector2 velocity = Vector2.UnitY.RotatedByRandom(MathHelper.ToRadians(60));
+                velocity *= Main.rand.Next(6, 9);
+                Color color = Color.Lerp(TerraKatana.TerraColor[0], TerraKatana.TerraColor[1], Main.rand.NextFloat());
+                Particle line = new ImpactLine(Owner.Bottom, velocity, color, new Vector2(0.5f, 4f * (Main.rand.NextFloat(1, 3) / 6f)), 16);
+                ParticleHandler.SpawnParticle(line);
             }
 
             if (Projectile.owner == Main.myPlayer)

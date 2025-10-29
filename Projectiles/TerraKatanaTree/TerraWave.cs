@@ -64,7 +64,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 {
                     Vector2 pos = Vector2.Lerp(Projectile.Center, Projectile.Center, Main.rand.NextFloat()) + Main.rand.NextVector2Circular(HitboxDims, HitboxDims);
                     Vector2 vel = Vector2.Normalize(Projectile.velocity) * 2f;
-                    Color color = Color.Lerp(TerraKatana.TerraColor[1], TerraKatana.TerraColor[0], Main.rand.NextFloat());
+                    Color color = Color.Lerp(TerraKatana.TerraColor[0], TerraKatana.TerraColor[1], Main.rand.NextFloat());
                     Vector2 scale = new Vector2(0.25f, Main.rand.NextFloat(0.5f, 1.5f)) * 2;
                     Particle line = new ImpactLine(pos, vel, color, scale, 60) { TimeActive = 30 };
                     ParticleHandler.SpawnParticle(line);

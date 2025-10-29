@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MoreKatana.Projectiles.Misc;
+using MoreKatana.Systems.CrossMod;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -13,6 +14,12 @@ namespace MoreKatana.Items.Weapons.Misc
 
         public static int[] EnchantedDustType = [DustID.MagicMirror, DustID.Enchanted_Gold, DustID.Enchanted_Pink];
         public static Color EnchantedDamageColor = new(150, 60, 255, 255);
+
+        public override void SetStaticDefaults()
+        {
+            Item.AddElement(RedemptionCompat.Arcane, true);
+            Item.SetSlashBonus();
+        }
 
         public override void SetDefaultsItem()
         {

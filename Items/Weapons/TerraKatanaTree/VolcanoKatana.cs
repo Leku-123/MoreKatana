@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MoreKatana.Projectiles.TerraKatanaTree;
+using MoreKatana.Systems.CrossMod;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -14,6 +15,13 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
         private readonly int[] VolcanoBuffImmune = [BuffID.Frostburn, BuffID.Chilled, BuffID.Frozen, BuffID.Frostburn2];
 
         public override KatanaID ID => KatanaID.Volcano;
+
+        public override void SetStaticDefaults()
+        {
+            Item.AddElement(RedemptionCompat.Fire, true);
+            Item.SetSlashBonus();
+        }
+
 
         public override void SetDefaultsItem()
         {

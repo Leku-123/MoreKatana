@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using MoreKatana.Projectiles.TerraKatanaTree;
+using MoreKatana.Systems.CrossMod;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -12,6 +13,12 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
         public override KatanaID ID => KatanaID.Lights;
 
         public const float MaxTeleportDistance = 300f;
+
+        public override void SetStaticDefaults()
+        {
+            Item.AddElement(RedemptionCompat.Shadow, true);
+            Item.SetSlashBonus();
+        }
 
         public override void SetDefaultsItem()
         {

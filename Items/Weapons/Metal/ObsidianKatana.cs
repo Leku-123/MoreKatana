@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Buffs;
 using MoreKatana.Projectiles.Metal;
+using MoreKatana.Systems.CrossMod;
 using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
@@ -26,6 +27,8 @@ namespace MoreKatana.Items.Weapons.Metal
         public override void SetStaticDefaults()
         {
             FireTexture = ModContent.Request<Texture2D>(Texture + "_Fire");
+            Item.AddElement(RedemptionCompat.Fire, true);
+            Item.SetSlashBonus();
         }
 
         public override void SetDefaultsItem()

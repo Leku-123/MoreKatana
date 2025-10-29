@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using MoreKatana.Buffs;
 using MoreKatana.Projectiles.TerraKatanaTree;
+using MoreKatana.Systems.CrossMod;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -10,6 +11,12 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
     public class GrassKatana : KatanaItem
     {
         public override KatanaID ID => KatanaID.Grass;
+
+        public override void SetStaticDefaults()
+        {
+            Item.AddElement(RedemptionCompat.Nature, true);
+            Item.SetSlashBonus();
+        }
 
         public override void SetDefaultsItem()
         {

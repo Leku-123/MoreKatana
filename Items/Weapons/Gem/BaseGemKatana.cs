@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MoreKatana.Systems.CrossMod;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -12,6 +13,12 @@ namespace MoreKatana.Items.Weapons.Gem
         public BaseGemKatana(int totalGems)
         {
             TotalGems = totalGems;
+        }
+
+        public override void SetStaticDefaults()
+        {
+            Item.AddElement(RedemptionCompat.Arcane, true);
+            Item.SetSlashBonus();
         }
 
         public override void SetDefaultsItem()

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MoreKatana.Projectiles.Misc;
+using MoreKatana.Systems.CrossMod;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -9,6 +10,12 @@ namespace MoreKatana.Items.Weapons.Misc
     public class SkyKatana : KatanaItem
     {
         public override KatanaID ID => KatanaID.Sky;
+
+        public override void SetStaticDefaults()
+        {
+            Item.AddElement(RedemptionCompat.Wind, true);
+            Item.SetSlashBonus();
+        }
 
         public override void SetDefaultsItem()
         {
