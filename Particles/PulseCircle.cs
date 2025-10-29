@@ -1,30 +1,31 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using static MoreKatana.MoreKatanaUtil;
 
 namespace MoreKatana.Particles
 {
-    public class ImpactEffect : Particle
+    public class PulseCircle : Particle
     {
+        private EasingFunction easing;
+
         private Vector2 Direction;
         private Vector2 ScaleMod;
         private int MaxTime;
-
-        private int FrameCounter;
-        private int Frame;
-        private const int MaxFrames = 3;
-
+        private bool FullBright;
         public override bool UseCustomDraw => true;
 
         public override bool UseAdditiveBlend => true;
 
-        public ImpactEffect(Vector2 position, Vector2 direction, Color color, Vector2 scale, int maxTime)
+        public PulseCircle(Vector2 position, Vector2 direction, Color color, Vector2 scale, int maxTime, EasingFunction mode = null, bool fullBright = false)
         {
             Position = position;
             Direction = direction;
             Color = color;
             ScaleMod = scale;
             MaxTime = maxTime;
+            easing = mode ?? LinearEasing;
+            FullBright = fullBright;
         }
 
         public override void Update()
@@ -34,15 +35,6 @@ namespace MoreKatana.Particles
 
             Rotation = Direction.ToRotation();
 
-            FrameCounter++;
-            if (FrameCounter > MaxTime / 3)
-            {
-                FrameCounter = 0;
-                Frame++;
-                if (Frame > MaxFrames)
-                    Kill();
-            }
-
             if (TimeActive > MaxTime)
                 Kill();
         }
@@ -50,10 +42,10 @@ namespace MoreKatana.Particles
         public override void CustomDraw(SpriteBatch spriteBatch)
         {
             Texture2D texture = ParticleHandler.GetTexture(Type);
-            Vector2 position = Position + Rotation.ToRotationVector2() * (texture.Width / 2) * ScaleMod.X;
-            Rectangle rectangle = texture.Frame(1, MaxFrames, 0, Frame);
-            Vector2 origin = rectangle.Size() / 2f;
-            spriteBatch.Draw(texture, position - Main.screenPosition, rectangle, Color, Rotation, origin, ScaleMod, SpriteEffects.None, 0);
+            float progress = easing((float)TimeActive / MaxTime, 1);
+            Vector2 scale = 0.1f * ScaleMod * progress;
+            Color color = Color * (!FullBright ? (1f - progress * 0.8f) : 1f);
+            spriteBatch.Draw(texture, Position - Main.screenPosition, null, color, Rotation, texture.Size() / 2, scale, SpriteEffects.None, 0);
         }
     }
 }

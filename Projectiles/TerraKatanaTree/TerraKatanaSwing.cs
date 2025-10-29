@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Items.Weapons.TerraKatanaTree;
+using MoreKatana.Particles;
 using MoreKatana.Projectiles.Base;
 using MoreKatana.Projectiles.PrimTrails;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -194,16 +194,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
                             for (int i = 1; i <= 3; i++)
                             {
-                                for (int j = 0; j < 60; j++)
-                                {
-                                    Vector2 vector2 = Vector2.UnitX * -Projectile.width / 2f;
-                                    vector2 += Utils.RotatedBy(Vector2.UnitY, j * Math.PI / 30f) * new Vector2(30f * i, 15f * i);
-                                    vector2 = Utils.RotatedBy(vector2, normalized.ToRotation() - Math.PI / 2f) * 1.3f;
-                                    int newDust = Dust.NewDust(center + vector2 + (normalized * 60 * i), 0, 0, TerraKatana.DustType, 0f, 0f, 160, default, 2f);
-                                    Main.dust[newDust].noGravity = true;
-                                    Main.dust[newDust].velocity = Projectile.velocity * 0.5f;
-                                    Main.dust[newDust].velocity = Vector2.Normalize(Projectile.Center - Projectile.velocity * 3f - Main.dust[newDust].position) * 1.5f;
-                                }
+                                Vector2 particleCenter = center + (normalized * 40 * i);
+                                Vector2 particleScale = new Vector2(0.5f * (i * 0.5f), 1f * (i * 0.5f));
+                                ParticleHandler.SpawnParticle(new PulseCircle(particleCenter, normalized, TerraKatana.TerraColor[0], particleScale, 18, SineOutEasing));
                             }
 
                             if (Projectile.owner == Main.myPlayer)

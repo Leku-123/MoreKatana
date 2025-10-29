@@ -133,6 +133,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 MoreKatanaUtil.DrawPrettyStarSparkle(1f, SpriteEffects.None, position + offset,
                     Color.White * Projectile.Opacity, TerraKatana.TerraColor[0] * Projectile.Opacity,
                     0.5f, 0f, 0.1f, 0.9f, 1f, 0f, new Vector2(Projectile.scale * 1.5f), new Vector2(1f, 1f));
+                MoreKatanaUtil.DrawPrettyStarSparkle(1f, SpriteEffects.None, position + offset,
+                    Color.White * Projectile.Opacity, TerraKatana.TerraColor[1] * Projectile.Opacity,
+                    0.5f, 0f, 0.1f, 0.9f, 1f, MathHelper.PiOver4, new Vector2(Projectile.scale * 0.8f), new Vector2(1f, 1f));
             }
 
             return false;

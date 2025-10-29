@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Particles;
 using MoreKatana.Projectiles.PrimTrails;
+using MoreKatana.Systems.CrossMod;
 using System;
 using System.IO;
 using Terraria;
@@ -586,15 +587,8 @@ namespace MoreKatana.Projectiles.Base
             // アイテムから効果を取得する
             ItemLoader.OnHitNPC(SwordItem, Owner, target, hit, damageDone);
 
-            // パーティクル
-            Vector2 pos = Main.rand.NextVector2FromRectangle(target.Hitbox);
-            for (int i = 0; i < 7; i++)
-            {
-                float velLength = Main.rand.NextFloat(1, 3);
-                Vector2 vel = Main.rand.NextVector2Unit() * velLength;
-                Particle line = new ImpactLine(pos, vel, Color.Silver, new Vector2(0.3f, 2f * (velLength / 6f)), 16);
-                ParticleHandler.SpawnParticle(line);
-            }
+            // RedemptionのDecapitationシステム
+            RedemptionCompat.Decapitation(target, ref damageDone, ref hit.Crit);
         }
 
         public override bool PreDraw(ref Color lightColor)

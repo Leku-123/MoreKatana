@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Projectiles.TerraKatanaTree;
+using MoreKatana.Systems.CrossMod;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -26,6 +27,12 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
         public override LocalizedText FunctionText => base.FunctionText.WithFormatArgs(ShieldDurabilityMax, ShieldDefenseBoost, ShieldRechargeTime / 60);
 
         public override KatanaID ID => KatanaID.None;
+
+        public override void SetStaticDefaults()
+        {
+            Item.AddElement(RedemptionCompat.Nature, true);
+            Item.SetSlashBonus();
+        }
 
         public override void SetDefaultsItem()
         {
@@ -76,7 +83,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         public override void MeleeEffects(Player player, Rectangle hitbox)
         {
-            if (Main.rand.NextBool(3))
+            if (Main.rand.NextBool(4))
                 Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustType);
         }
 

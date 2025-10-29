@@ -10,11 +10,12 @@ namespace MoreKatana.Particles
         private readonly Entity etity = null;
 
         private Color InitialColor;
-        private Vector2 scaleMod;
+        private Vector2 ScaleMod;
         private Vector2 Offset;
         private int MaxTime;
 
         public override bool UseCustomDraw => true;
+
         public override bool UseAdditiveBlend => true;
 
         public ImpactLine(Vector2 position, Vector2 velocity, Color color, Vector2 scale, int timeLeft, Entity attatchedEntity = null)
@@ -22,7 +23,7 @@ namespace MoreKatana.Particles
             Position = position;
             Velocity = velocity;
             InitialColor = color;
-            scaleMod = scale;
+            ScaleMod = scale;
             MaxTime = timeLeft;
             etity = attatchedEntity;
 
@@ -54,19 +55,20 @@ namespace MoreKatana.Particles
 
         public override void CustomDraw(SpriteBatch spriteBatch)
         {
+            Texture2D texture = ParticleHandler.GetTexture(Type);
+            Vector2 origin = new Vector2(texture.Width / 2, texture.Height);
+
             float progress = (float)Math.Sin(TimeActive / (float)MaxTime * MathHelper.Pi);
-            Vector2 scale = new Vector2(0.5f, progress) * scaleMod;
+            Vector2 scale = new Vector2(0.5f, progress) * ScaleMod;
             Vector2 offset = Vector2.Zero;
-            Texture2D tex = ParticleHandler.GetTexture(Type);
-            Vector2 origin = new Vector2(tex.Width / 2, tex.Height);
 
             if (TimeActive > MaxTime / 2)
             {
-                offset = Vector2.UnitX.RotatedBy(Rotation - MathHelper.PiOver2) * tex.Height * scale.Y;
+                offset = Vector2.UnitX.RotatedBy(Rotation - MathHelper.PiOver2) * texture.Height * scale.Y;
                 origin.Y = 0;
             }
 
-            spriteBatch.Draw(tex, Position + offset - Main.screenPosition, null, Color * (progress / 5 + 0.8f), Rotation, origin, scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(texture, Position + offset - Main.screenPosition, null, Color * (progress / 5 + 0.8f), Rotation, origin, scale, SpriteEffects.None, 0);
         }
     }
 }

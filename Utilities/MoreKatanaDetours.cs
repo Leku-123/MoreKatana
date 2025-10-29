@@ -57,9 +57,7 @@ namespace MoreKatana.Utilities
                 if (Main.netMode == NetmodeID.SinglePlayer)
                     (projectile.ModProjectile as ITrailProjectile).DoTrailCreation(MoreKatana.TrailManager);
                 else
-                {
                     MoreKatana.SyncData(MoreKatana.MessageType.SpawnTrail, index);
-                }
             }
 
             return index;

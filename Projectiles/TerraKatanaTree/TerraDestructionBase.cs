@@ -6,6 +6,7 @@ using MoreKatana.Particles;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent.Events;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -186,6 +187,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 Projectile.netUpdate = true;
             }
 
+            // ホワイトアウトの演出
+            //MoonlordDeathDrama.RequestLight(1f, Owner.Center);
+
             // 斬撃がすべて終わったら発射体を削除する
             if (Timer > SlashTime * MaxSlashCount)
             {
@@ -215,16 +219,23 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override void OnKill(int timeLeft)
         {
-            SoundEngine.PlaySound(SoundID.Item60 with { Volume = 0.7f }, Owner.Center);
+            SoundEngine.PlaySound(SoundID.Item60, Owner.Center);
             SoundEngine.PlaySound(SoundID.DD2_DefenseTowerSpawn with { Volume = 0.7f }, Owner.Center);
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 0.7f }, Owner.Center);
 
             Owner.ScreenShake(20, 25);
 
-            ParticleHandler.SpawnParticle(new ImpactEffect(Owner.Center + new Vector2(0, 100), -Vector2.UnitY, TerraKatana.TerraColor[0], new Vector2(2f), 10));
-
             // ダスト盛り盛り
             ProduceDust(TerraKatana.DustType);
+
+            // パーティクル
+            ParticleHandler.SpawnParticle(new ImpactEffect(Owner.Center + new Vector2(0, 100), -Vector2.UnitY, TerraKatana.TerraColor[0], new Vector2(2f), 10));
+            for (int i = 1; i <= 3; i++)
+            {
+                Vector2 particleCenter = Owner.Bottom - (Vector2.UnitY * 40 * i);
+                Vector2 particleScale = new Vector2(0.3f * (i * 0.5f), 1.5f * (i * 0.5f));
+                ParticleHandler.SpawnParticle(new PulseCircle(particleCenter, Vector2.UnitY, TerraKatana.TerraColor[0], particleScale, 40, MoreKatanaUtil.CircOutEasing));
+            }
 
             if (Projectile.owner == Main.myPlayer)
             {
@@ -269,26 +280,13 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             }
             for (int i = 0; i < 12; i++)
             {
-                int newDust = Dust.NewDust(Owner.Center, Owner.width, Owner.height, DustID.Smoke, 0f, 0f, 150, default, 1f);
+                int newDust = Dust.NewDust(Owner.Center, Owner.width, Owner.height, DustID.Smoke, 0f, 0f, 150);
                 Main.dust[newDust].scale = Main.rand.NextFloat(1f, 4f);
                 Main.dust[newDust].fadeIn = 1.25f;
                 Main.dust[newDust].noLight = true;
                 Main.dust[newDust].velocity = new Vector2(0f, Main.rand.Next(-5, -2));
                 Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(90));
                 Main.dust[newDust].velocity *= Main.rand.NextFloat(0.5f, 2f);
-            }
-            for (int i = 1; i <= 3; i++)
-            {
-                for (int j = 0; j < 30; j++)
-                {
-                    Vector2 vector2 = Vector2.UnitX * -Projectile.width / 2f;
-                    vector2 += Utils.RotatedBy(Vector2.UnitY, j * Math.PI / 15f) * new Vector2(50f * i, 10f);
-                    vector2 = Utils.RotatedBy(vector2, Vector2.UnitY.ToRotation() - Math.PI / 2f) * 1.3f;
-                    int newDust = Dust.NewDust(Owner.Bottom + vector2 - (Vector2.UnitY * 50 * i), 0, 0, tyoe, 0f, 0f, 160, default, 2f);
-                    Main.dust[newDust].noGravity = true;
-                    Main.dust[newDust].velocity = Projectile.velocity * 0.5f;
-                    Main.dust[newDust].velocity = Vector2.Normalize(Owner.Center - Projectile.velocity * 3f - Main.dust[newDust].position) * 1.5f;
-                }
             }
         }
 

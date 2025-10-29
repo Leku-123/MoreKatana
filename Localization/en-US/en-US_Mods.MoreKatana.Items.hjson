@@ -1,6 +1,7 @@
 DebugItem: Debug Item
 SetupFirstStatue.DisplayName: Setup first statue
 ResetSeenBiomeFlag.DisplayName: Reset first seen biome flag
+ResetCD.DisplayName: Reset CD
 
 THXForPlaying: {
 	DisplayName: Thanks for playing More Katana!

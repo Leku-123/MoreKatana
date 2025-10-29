@@ -19,8 +19,8 @@ namespace MoreKatana.Items
         {
             Item.width = 40;
             Item.height = 40;
-            Item.useTime = 60;
-            Item.useAnimation = 60;
+            Item.useTime = 30;
+            Item.useAnimation = 30;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.UseSound = SoundID.MenuTick;
         }
