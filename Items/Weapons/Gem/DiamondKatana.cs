@@ -10,8 +10,6 @@ namespace MoreKatana.Items.Weapons.Gem
     {
         public DiamondKatana() : base(4) { }
 
-        public override KatanaID ID => KatanaID.Diamond;
-
         public override void SetDefaultsItem()
         {
             Item.useTime = 24;

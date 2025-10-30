@@ -10,8 +10,6 @@ namespace MoreKatana.Items.Weapons.Gem
     {
         public RubyKatana() : base(4) { }
 
-        public override KatanaID ID => KatanaID.Ruby;
-
         public override void SetDefaultsItem()
         {
             Item.useTime = 24;

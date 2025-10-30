@@ -6,6 +6,7 @@ using Terraria.ID;
 
 namespace MoreKatana.Items.Weapons.Gem
 {
+    /// <summary> アクティブスキルの処理は召喚された宝石の発射体内で行われます </summary>
     public abstract class BaseGemKatana : KatanaItem
     {
         public readonly int TotalGems;
@@ -36,9 +37,14 @@ namespace MoreKatana.Items.Weapons.Gem
         public override void PassiveSkill(Player player, bool equipment)
         {
             if (player.ownedProjectileCounts[Item.shoot] < TotalGems && player.itemAnimation == 0)
+            {
                 Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, Vector2.Zero, Item.shoot, Item.damage / 2, 0f, player.whoAmI);
+            }
         }
 
+        /// <summary> 
+        /// Item.shootが召喚される宝石の発射体として設定されているためfalseにしてアイテム使用時に発射させないようにする 
+        /// </summary>
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
     }
 }

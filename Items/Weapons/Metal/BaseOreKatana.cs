@@ -1,5 +1,5 @@
 ﻿using MoreKatana.Projectiles;
-using System;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

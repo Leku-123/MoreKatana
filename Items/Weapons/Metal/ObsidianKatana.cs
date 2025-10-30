@@ -14,8 +14,6 @@ namespace MoreKatana.Items.Weapons.Metal
 {
     public class ObsidianKatana : KatanaItem
     {
-        public override KatanaID ID => KatanaID.Obsidian;
-
         public const int FireBuffTime = 60 * 5;
 
         private int SwingType = ProjectileID.None;
@@ -38,7 +36,7 @@ namespace MoreKatana.Items.Weapons.Metal
 
             Item.useTime = 25;
             Item.useAnimation = 25;
-            Item.UseSound = SoundID.Item1;
+            Item.MKItem().UseSound = SoundID.Item1;
 
             Item.damage = 20;
             Item.knockBack = 4.5f;
@@ -87,7 +85,6 @@ namespace MoreKatana.Items.Weapons.Metal
 
         public override void ActiveSkill(Player player)
         {
-            Item.UseSound = null;
             player.ChangeDir(Main.MouseWorld.X - player.Center.X > 0 ? 1 : -1);
             Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.MountedCenter, new Vector2(player.direction, 0), ModContent.ProjectileType<ObsidianKatanaHoldUp>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI);
         }
