@@ -77,7 +77,7 @@ CopperKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.KS} [c/C56A2B:<Copper Protection>]
-		- +{0} defense
+		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
 		{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
 		- Dash and attack the enemy.
 		'''
@@ -89,7 +89,7 @@ TinKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.KS} [c/ADAC58:<Tin Protection>]
-		- +{0} defense
+		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
 		{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
 		- Dash and attack the enemy.
 		'''
@@ -101,7 +101,7 @@ IronKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.KS} [c/A79862:<Iron Protection>]
-		- +{0} defense
+		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
 		{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
 		- Dash and attack the enemy.
 		'''
@@ -113,7 +113,7 @@ LeadKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.KS} [c/6B8C9E:<Lead Protection>]
-		- +{0} defense
+		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
 		{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
 		- Dash and attack the enemy.
 		'''
@@ -125,7 +125,7 @@ SilverKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.KS} [c/B5BCBF:<Silver Protection>]
-		- +{0} defense
+		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
 		{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
 		- Dash and attack the enemy.
 		'''
@@ -137,7 +137,7 @@ TungstenKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.KS} [c/C4E5C2:<Tungsten Protection>]
-		- +{0} defense
+		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
 		{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
 		- Dash and attack the enemy.
 		'''
@@ -149,7 +149,7 @@ GoldKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.KS} [c/D5DA5D:<Gold Protection>]
-		- +{0} defense
+		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
 		{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
 		- Dash and attack the enemy.
 		'''
@@ -161,7 +161,7 @@ PlatinumKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.KS} [c/E6E6E6:<Platinum Protection>]
-		- +{0} defense
+		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
 		{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
 		- Dash and attack the enemy.
 		'''

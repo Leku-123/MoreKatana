@@ -160,31 +160,6 @@ namespace MoreKatana
         }
 
         /// <summary>
-        /// ダッシュ切り発射体を簡単に処理する
-        /// <param name="source">はItemUse系にしてください
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="source"> ItemUse </param>
-        /// <param name="damage"></param>
-        /// <param name="knockBack"></param>
-        /// <param name="distance"> ダッシュの距離 </param>
-        /// <param name="timer"> ダッシュの時間 </param>
-        /// <param name="dir"> ダッシュの方向。デフォルトはマウス方向 </param>
-        /// <param name="stop"> ダッシュ後に勢いが止まるかどうか </param>
-        public static void CreateDashSlash(this Player player, IEntitySource source, int damage, float knockBack, int distance, float timer, Vector2? dir = null, bool stop = true)
-        {
-            if (Main.myPlayer == player.whoAmI)
-            {
-                int p = Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<GeneralDashSlash>(), damage, knockBack, player.whoAmI);
-                GeneralDashSlash dash = (GeneralDashSlash)Main.projectile[p].ModProjectile;
-                dash.DashDirection = dir ?? player.SafeDirectionTo(player.MKPlayer().MouseWorld);
-                dash.DashDistance = distance;
-                dash.DashTimerMax = timer;
-                dash.SuddenStop = stop;
-            }
-        }
-
-        /// <summary>
         /// 発射体を全方位に発射させる
         /// </summary>
         /// <param name="source"></param>
@@ -633,6 +608,7 @@ namespace MoreKatana
             else
                 return -1;
         }
+
         /// <summary>
         /// オブジェクトの名前空間と名前からTextureを手動で取得します
         /// </summary>

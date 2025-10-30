@@ -7,7 +7,10 @@ namespace MoreKatana.Items.Weapons.Metal
     {
         public GoldKatana() : base(4, 500, 10f) { }
 
-        public override KatanaID ID => KatanaID.Gold;
+        public override int HeadID => ItemID.GoldHelmet;
+        public override int BodyID => ItemID.GoldChainmail;
+        public override int LegID => ItemID.GoldGreaves;
+        public override int[] AltHeadIDs => [ItemID.AncientGoldHelmet];
 
         public override void SetDefaultsItem()
         {

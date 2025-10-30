@@ -7,7 +7,9 @@ namespace MoreKatana.Items.Weapons.Metal
     {
         public LeadKatana() : base(2, 400, 10f) { }
 
-        public override KatanaID ID => KatanaID.Lead;
+        public override int HeadID => ItemID.LeadHelmet;
+        public override int BodyID => ItemID.LeadChainmail;
+        public override int LegID => ItemID.LeadGreaves;
 
         public override void SetDefaultsItem()
         {

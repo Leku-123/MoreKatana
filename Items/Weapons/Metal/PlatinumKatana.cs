@@ -7,7 +7,9 @@ namespace MoreKatana.Items.Weapons.Metal
     {
         public PlatinumKatana() : base(4, 500, 10f) { }
 
-        public override KatanaID ID => KatanaID.Platinum;
+        public override int HeadID => ItemID.PlatinumHelmet;
+        public override int BodyID => ItemID.PlatinumChainmail;
+        public override int LegID => ItemID.PlatinumGreaves;
 
         public override void SetDefaultsItem()
         {

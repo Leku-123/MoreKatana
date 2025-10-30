@@ -7,7 +7,9 @@ namespace MoreKatana.Items.Weapons.Metal
     {
         public TungstenKatana() : base(3, 450, 10f) { }
 
-        public override KatanaID ID => KatanaID.Tungsten;
+        public override int HeadID => ItemID.TungstenHelmet;
+        public override int BodyID => ItemID.TungstenChainmail;
+        public override int LegID => ItemID.TungstenGreaves;
 
         public override void SetDefaultsItem()
         {

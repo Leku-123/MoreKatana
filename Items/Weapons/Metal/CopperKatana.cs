@@ -7,7 +7,9 @@ namespace MoreKatana.Items.Weapons.Metal
     {
         public CopperKatana() : base(1, 350, 10f) { }
 
-        public override KatanaID ID => KatanaID.Copper;
+        public override int HeadID => ItemID.CopperHelmet;
+        public override int BodyID => ItemID.CopperChainmail;
+        public override int LegID => ItemID.CopperGreaves;
 
         public override void SetDefaultsItem()
         {

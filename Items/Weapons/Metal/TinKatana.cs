@@ -7,7 +7,9 @@ namespace MoreKatana.Items.Weapons.Metal
     {
         public TinKatana() : base(1, 350, 10f) { }
 
-        public override KatanaID ID => KatanaID.Tin;
+        public override int HeadID => ItemID.TinHelmet;
+        public override int BodyID => ItemID.TinChainmail;
+        public override int LegID => ItemID.TinGreaves;
 
         public override void SetDefaultsItem()
         {
