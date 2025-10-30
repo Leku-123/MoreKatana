@@ -106,9 +106,9 @@ namespace MoreKatana.Projectiles.PrimTrails
         public override void OnDestroy()
         {
             Destroyed = true;
-            Width *= 0.8f;
+            Width *= 0.85f;
             Width += (float)Math.Sin(Counter * 2) * 0.3f;
-            AlphaValue *= 0.8f;
+            AlphaValue *= 0.85f;
 
             if (Width < 0.05f)
                 Dispose();

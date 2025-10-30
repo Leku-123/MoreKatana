@@ -155,7 +155,7 @@ namespace MoreKatana.Projectiles.Base
                 }
             }
             vector4 /= a * 2;
-            TrailColor = new Color(vector4.X, vector4.Y, vector4.Z, 0);
+            TrailColor = new Color(vector4.X, vector4.Y, vector4.Z, 255);
         }
 
         private CurveSegment ExecuteAnimation => new CurveSegment(SineOutEasing, 0f, 0f, 0.95f); // 振りのアニメーション
