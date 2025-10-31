@@ -38,6 +38,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.timeLeft = 9999;
             Projectile.friendly = false;
             Projectile.hostile = false;
+            Projectile.tileCollide = false;
             Projectile.hide = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 5;
