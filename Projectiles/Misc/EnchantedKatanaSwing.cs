@@ -11,7 +11,7 @@ namespace MoreKatana.Projectiles.Misc
     {
         public int flipCount;
 
-        public override void Initialize(Item item, int type)
+        public override void Initialize(int type)
         {
             Projectile.localNPCHitCooldown = -1;
             GetTextureValues();
@@ -30,11 +30,11 @@ namespace MoreKatana.Projectiles.Misc
             }
         }
 
-        public SwingData Normal => new SwingData(SwordItem.useAnimation, 1, 0f);
-        public SwingData Special => new SwingData(SwordItem.useAnimation * 2, 3.25f, 0.25f);
+        public SwingData Normal => new SwingData(OwnerItem.useAnimation, 1, 0f);
+        public SwingData Special => new SwingData(OwnerItem.useAnimation * 2, 3.25f, 0.25f);
         public override SwingData GetSwingData(int type) => SwingData.SwingRegister(type, Normal, Special);
 
-        public override void AdditionalAI(Item item, int type, bool onDelay)
+        public override void AdditionalAI(int type, bool onDelay)
         {
             Owner.SetDummyItemTime(2);
             Owner.FlipEffect(GetProgress(type) * 6 * flipCount); // フリップエフェクト
@@ -43,7 +43,7 @@ namespace MoreKatana.Projectiles.Misc
             {
                 if (Projectile.soundDelay <= 0)
                 {
-                    Projectile.soundDelay = (int)(SwordItem.useAnimation / 1.5f + 1) * Projectile.MaxUpdates;
+                    Projectile.soundDelay = (int)(OwnerItem.useAnimation / 1.5f + 1) * Projectile.MaxUpdates;
                     SoundEngine.PlaySound(SoundID.Item1, Owner.position);
                 }
             }

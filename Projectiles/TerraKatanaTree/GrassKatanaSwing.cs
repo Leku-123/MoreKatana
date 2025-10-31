@@ -9,7 +9,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 {
     public class GrassKatanaSwing : CustomSword
     {
-        public override void Initialize(Item item, int type)
+        public override void Initialize(int type)
         {
             Projectile.localNPCHitCooldown = -1;
 
@@ -22,7 +22,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override SwingData GetSwingData(int type)
         {
-            float swingTime = SwordItem.useAnimation;
+            float swingTime = OwnerItem.useAnimation;
             if (type == 2)
                 swingTime *= 2;
             return new SwingData(swingTime, Main.rand.NextFloat(0.7f, 0.8f), backspin: type % 2 != 0);
@@ -39,7 +39,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 return PiecewiseAnimation(Progress, execute, unwind);
         }
 
-        public override void AdditionalAI(Item item, int type, bool delay)
+        public override void AdditionalAI(int type, bool delay)
         {
             Owner.SetDummyItemTime(2);
 

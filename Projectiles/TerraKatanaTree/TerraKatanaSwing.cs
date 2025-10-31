@@ -15,7 +15,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 {
     public class TerraKatanaSwing : CustomSword
     {
-        public override void Initialize(Item item, int type)
+        public override void Initialize(int type)
         {
             // 1振りで同じターゲットに2回ヒットしないようにする
             Projectile.localNPCHitCooldown = -1;
@@ -51,11 +51,11 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         }
 
         // 全てのスイングデータを設定する
-        public SwingData StandardDown => new SwingData(SwordItem.useAnimation * 1.2f, 0.8f); // 通常の切り下げ
-        public SwingData FastUp => new SwingData(SwordItem.useAnimation * 0.6f, 0.6f, backspin: true); // 早めの切り上げ
-        public SwingData FastDown => new SwingData(SwordItem.useAnimation * 0.8f, 0.65f, 0.2f, delay: 10f); // 早めの切り下げ
-        public SwingData LargeDown => new SwingData(SwordItem.useAnimation * 2.5f, 0.65f, 0.2f); // 大振りの切り下げ
-        public SwingData Thrusting => new SwingData(SwordItem.useAnimation * 1.5f, 0f, 0.5f, delay: 10f); // 突き
+        public SwingData StandardDown => new SwingData(OwnerItem.useAnimation * 1.2f, 0.8f); // 通常の切り下げ
+        public SwingData FastUp => new SwingData(OwnerItem.useAnimation * 0.6f, 0.6f, backspin: true); // 早めの切り上げ
+        public SwingData FastDown => new SwingData(OwnerItem.useAnimation * 0.8f, 0.65f, 0.2f, delay: 10f); // 早めの切り下げ
+        public SwingData LargeDown => new SwingData(OwnerItem.useAnimation * 2.5f, 0.65f, 0.2f); // 大振りの切り下げ
+        public SwingData Thrusting => new SwingData(OwnerItem.useAnimation * 1.5f, 0f, 0.5f, delay: 10f); // 突き
         public override SwingData GetSwingData(int type) => SwingData.SwingRegister(type, StandardDown, FastUp, FastDown, LargeDown, Thrusting);
 
         // 大きな振りのアニメーション
@@ -81,7 +81,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 return GeneralSwingAnimation(Progress);
         }
 
-        public override void AdditionalAI(Item item, int type, bool delay)
+        public override void AdditionalAI(int type, bool delay)
         {
             // プレイヤーのアイテム使用時間を延長する
             Owner.SetDummyItemTime(2);
@@ -146,7 +146,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                         {
                             Projectile.MKProj().Bool[0] = true;
                             Owner.ScreenShake(3, 15);
-                            SoundEngine.PlaySound(item.MKItem().UseSound, Owner.Center);
+                            SoundEngine.PlaySound(OwnerItem.MKItem().UseSound, Owner.Center);
                         }
                     }
 
@@ -230,7 +230,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D texture = TextureAssets.Item[SwordItem.type].Value;
+            Texture2D texture = TextureAssets.Item[OwnerItem.type].Value;
 
             Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
             Rectangle rectangle = new Rectangle(0, 0, texture.Width, texture.Height);

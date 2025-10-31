@@ -165,7 +165,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 clone.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRot);
             }
 
-            public override void Initialize(Item item, int type)
+            public override void Initialize(int type)
             {
                 Projectile.localNPCHitCooldown = -1; // 1振りで同じターゲットに2回ヒットしないようにする
                 Projectile.Opacity = 0.5f;

@@ -145,7 +145,7 @@ namespace MoreKatana.Projectiles.Misc
             defVelocity = reader.ReadVector2();
         }
 
-        public override void Initialize(Item item, int type)
+        public override void Initialize(int type)
         {
             Projectile.localNPCHitCooldown = -1; // 1振りで同じターゲットに2回ヒットしないようにする
             SwingEllipse = new(1f, 0.7f);
@@ -158,7 +158,7 @@ namespace MoreKatana.Projectiles.Misc
         public CurveSegment unwind = new CurveSegment(LinearEasing, 0.25f, 0.95f, 0.05f); // 振りの減衰のアニメーション
         public override float GetProgress(int type) => PiecewiseAnimation(Progress, execute, unwind);
 
-        public override void AdditionalAI(Item item, int type, bool delay)
+        public override void AdditionalAI(int type, bool delay)
         {
             // プレイヤーのアイテム使用時間を延長する
             Owner.SetDummyItemTime(2);

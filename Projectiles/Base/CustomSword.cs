@@ -1,6 +1,5 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MoreKatana.Particles;
 using MoreKatana.Projectiles.PrimTrails;
 using MoreKatana.Systems.CrossMod;
 using System;
@@ -97,23 +96,24 @@ namespace MoreKatana.Projectiles.Base
         /// <summary> trueなら、剣の振りを強制的に終了してディレイに移行する </summary>
         protected bool SwingStop;
 
-        /// <summary> trueなら、全ての振りのパターンを連続的に行う </summary>
+        /// <summary> trueなら、設定した全ての振りを連続で行う </summary>
         protected bool ContinuousSwing;
 
-        /// <summary> trueなら、全ての振りのパターンの方向が固定される </summary>
+        /// <summary> trueなら、設定した全ての振りの方向が固定される </summary>
         protected bool FixedDirection;
 
-        /// <summary> trueなら、速度ボーナスを無くす </summary>
+        /// <summary> trueなら、速度ボーナスを適用しない </summary>
         protected bool NoSpeedBonus;
 
         /// <summary> 速度ボーナス </summary>
         protected float ModifiedAttackSpeed => !NoSpeedBonus ? Owner.GetTotalAttackSpeed(Projectile.DamageType) : 1f;
 
+        /// <summary> サウンドを鳴らすかどうか </summary>
         protected bool CreateSound = true;
 
         protected Player Owner => Main.player[Projectile.owner];
 
-        protected Item SwordItem => Owner.ActiveItem();
+        protected Item OwnerItem => Owner.ActiveItem();
 
         protected CustomSwordPrimTrail SwordTrail;
         #endregion
@@ -136,10 +136,10 @@ namespace MoreKatana.Projectiles.Base
         /// </summary>
         protected void GetTextureValues()
         {
-            Texture2D texture = TextureAssets.Item[SwordItem.type].Value;
+            Texture2D texture = TextureAssets.Item[OwnerItem.type].Value;
 
             // サイズ
-            int frame = Main.itemAnimations[SwordItem.type] == null ? 1 : Main.itemAnimations[SwordItem.type].FrameCount;
+            int frame = Main.itemAnimations[OwnerItem.type] == null ? 1 : Main.itemAnimations[OwnerItem.type].FrameCount;
             SwordSize(texture.Width, texture.Height / frame);
 
             // 色
@@ -155,12 +155,66 @@ namespace MoreKatana.Projectiles.Base
                 }
             }
             vector4 /= a * 2;
-            TrailColor = new Color(vector4.X, vector4.Y, vector4.Z, 255);
+            TrailColor = new Color(vector4.X, vector4.Y, vector4.Z, 0);
         }
 
+        /// <summary>
+        /// 汎用のスイングアイメーション
+        /// </summary>
         private CurveSegment ExecuteAnimation => new CurveSegment(SineOutEasing, 0f, 0f, 0.95f); // 振りのアニメーション
         private CurveSegment UnwindAnimation => new CurveSegment(LinearEasing, 0.5f, ExecuteAnimation.EndingHeight, 0.05f); // 振りの減衰のアニメーション
         public float GeneralSwingAnimation(float progress) => PiecewiseAnimation(progress, ExecuteAnimation, UnwindAnimation);
+        #endregion
+
+        #region -------- struct --------
+        public struct SwingData
+        {
+            /// <summary> 剣の振る時間 </summary>
+            public float time;
+            /// <summary> 剣の振る範囲 </summary>
+            public float range;
+            /// <summary> 剣の振りの開始角度 </summary>
+            public float startAngle;
+            /// <summary> 剣の振りを逆向きにするかどうか </summary>
+            public int direction;
+            /// <summary> ディレイの長さ </summary>
+            public float delay;
+
+            public SwingData(float time, float range, float? startAngle = null, bool backspin = false, float delay = 1f)
+            {
+                this.time = time;
+                this.range = range;
+                this.startAngle = startAngle ?? (1f - range) / 2f;
+                direction = (!backspin).ToDirectionInt();
+                this.delay = delay;
+            }
+
+            /// <summary>
+            /// スイングタイプから対応するスイングデータを取得する
+            /// </summary>
+            /// <param name="type"></param>
+            /// <param name="swingData"></param>
+            /// <returns></returns>
+            public static SwingData SwingRegister(int type, params SwingData[] swingData)
+            {
+                SwingData data = new SwingData(0, 0);
+
+                if (swingData.Length == 0)
+                    return data;
+
+                for (int i = 0; i <= swingData.Length - 1; i++)
+                {
+                    if (type != i)
+                        continue;
+
+                    data = swingData[i];
+
+                    break;
+                }
+
+                return data;
+            }
+        }
         #endregion
 
         public override string Texture => MoreKatana.EmptyTexture;
@@ -208,9 +262,11 @@ namespace MoreKatana.Projectiles.Base
             writer.Write(ModifiedAngle);
             writer.Write((sbyte)SwingDirection);
             writer.Write(SwingDelay);
-            writer.Write(TrailColor.R);
-            writer.Write(TrailColor.G);
-            writer.Write(TrailColor.B);
+            //writer.Write(TrailColor.R);
+            //writer.Write(TrailColor.G);
+            //writer.Write(TrailColor.B);
+            //writer.Write(TrailColor.A);
+            writer.WriteRGB(TrailColor);
             writer.Write(TrailColor.A);
             SafeSendExtraAI(writer);
         }
@@ -233,10 +289,12 @@ namespace MoreKatana.Projectiles.Base
             ModifiedAngle = reader.ReadSingle();
             SwingDirection = reader.ReadSByte();
             SwingDelay = reader.ReadSingle();
-            TrailColor.R = (byte)reader.Read7BitEncodedInt();
-            TrailColor.G = (byte)reader.Read7BitEncodedInt();
-            TrailColor.B = (byte)reader.Read7BitEncodedInt();
-            TrailColor.A = (byte)reader.Read7BitEncodedInt();
+            //TrailColor.R = (byte)reader.Read7BitEncodedInt();
+            //TrailColor.G = (byte)reader.Read7BitEncodedInt();
+            //TrailColor.B = (byte)reader.Read7BitEncodedInt();
+            //TrailColor.A = (byte)reader.Read7BitEncodedInt();
+            TrailColor = reader.ReadRGB();
+            TrailColor.A = reader.ReadByte();
             SafeReceiveExtraAI(reader);
         }
 
@@ -278,18 +336,26 @@ namespace MoreKatana.Projectiles.Base
             if (Timer == 0f)
             {
                 Initialize();
-                Initialize(SwordItem, SwingType);
+                Initialize(SwingType);
                 Projectile.netUpdate = true;
             }
 
+            // サウンド
             if (CreateSound)
             {
                 CreateSound = false;
-                SoundEngine.PlaySound(SwordItem.MKItem().UseSound, Owner.Center);
+                SoundEngine.PlaySound(OwnerItem.MKItem().UseSound, Owner.Center);
             }
 
+            // ヒットタイマーの処理
+            // 要修正
             if (hitTimer >= 0)
+            {
+                int time = hitTimer - 1;
+                if (time != hitTimer)
+                    Projectile.netUpdate = true;
                 hitTimer--;
+            }
 
             // タイマーを増加
             if (!SwingStop && hitTimer <= 0)
@@ -337,9 +403,8 @@ namespace MoreKatana.Projectiles.Base
         /// <summary>
         /// 初期設定
         /// </summary>
-        /// <param name="item"></param>
         /// <param name="type"></param>
-        public virtual void Initialize(Item item, int type)
+        public virtual void Initialize(int type)
         {
 
         }
@@ -350,7 +415,7 @@ namespace MoreKatana.Projectiles.Base
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public virtual SwingData GetSwingData(int type) => new SwingData(SwordItem.useAnimation, 0.7f);
+        public virtual SwingData GetSwingData(int type) => new SwingData(OwnerItem.useAnimation, 0.7f);
 
         /// <summary>
         /// 剣の位置
@@ -411,7 +476,7 @@ namespace MoreKatana.Projectiles.Base
                     bool validTile = Collision.SolidTiles(collisionBase, 2, 2, true);
                     if (validTile)
                     {
-                        SafeTileCollide(SwordItem, SwingType, collisionBase, modifiedProgress);
+                        SafeTileCollide(SwingType, collisionBase, modifiedProgress);
                     }
                 }
 
@@ -421,7 +486,7 @@ namespace MoreKatana.Projectiles.Base
                     Rectangle rectangle = Utils.CenteredRectangle(Projectile.Center, new Vector2(SwordWidth * Projectile.scale, SwordHeight * Projectile.scale));
 
                     // アイテムから効果を取得する
-                    ItemLoader.MeleeEffects(SwordItem, Owner, rectangle);
+                    ItemLoader.MeleeEffects(OwnerItem, Owner, rectangle);
                 }
             }
             else
@@ -450,6 +515,14 @@ namespace MoreKatana.Projectiles.Base
                             Projectile.velocity = Owner.MountedCenter.DirectionTo(Owner.MKPlayer().MouseWorld);
                         }
 
+                        // 次のスイングデータが空の場合発射他を消滅させる
+                        SwingData data = GetSwingData(SwingType + 1);
+                        if (data.time == 0)
+                        {
+                            Projectile.Kill();
+                            return;
+                        }
+
                         // 次の振りのパターンへ
                         SwingType++;
                     }
@@ -473,7 +546,7 @@ namespace MoreKatana.Projectiles.Base
             if (Main.netMode != NetmodeID.Server)
                 DrawTrail(SwingType);
 
-            AdditionalAI(SwordItem, SwingType, !execute);
+            AdditionalAI(SwingType, !execute);
         }
 
         /// <summary>
@@ -535,7 +608,8 @@ namespace MoreKatana.Projectiles.Base
         /// 追加で行うAI
         /// </summary>
         /// <param name="type"></param>
-        public virtual void AdditionalAI(Item item, int type, bool delay)
+        /// <param name="delay"> trueならディレイ中 </param>
+        public virtual void AdditionalAI(int type, bool delay)
         {
 
         }
@@ -546,11 +620,10 @@ namespace MoreKatana.Projectiles.Base
         /// タイルに衝突したときの処理
         /// <see cref="OnTileCollide(Vector2)"/>と別物
         /// </summary>
-        /// <param name="item"></param>
         /// <param name="type"></param>
         /// <param name="collisionPoint"> 衝突した位置 </param>
         /// <param name="oldProgress"> 衝突時のスイングの進行度 </param>
-        public virtual void SafeTileCollide(Item item, int type, Vector2 collisionPoint, float oldProgress)
+        public virtual void SafeTileCollide(int type, Vector2 collisionPoint, float oldProgress)
         {
 
         }
@@ -563,7 +636,7 @@ namespace MoreKatana.Projectiles.Base
             modifiers.HitDirectionOverride = (Projectile.Center.X < target.Center.X).ToDirectionInt();
 
             // アイテムから効果を取得する
-            ItemLoader.ModifyHitNPC(SwordItem, Owner, target, ref modifiers);
+            ItemLoader.ModifyHitNPC(OwnerItem, Owner, target, ref modifiers);
         }
 
         /// <summary>
@@ -580,12 +653,12 @@ namespace MoreKatana.Projectiles.Base
         {
             Projectile.netUpdate = true;
 
-            Owner.StatusToNPC(SwordItem.type, target.whoAmI);
+            Owner.StatusToNPC(OwnerItem.type, target.whoAmI);
             if (target.life > 5)
                 Owner.OnHit(target.Center.X, target.Center.Y, target);
 
             // アイテムから効果を取得する
-            ItemLoader.OnHitNPC(SwordItem, Owner, target, hit, damageDone);
+            ItemLoader.OnHitNPC(OwnerItem, Owner, target, hit, damageDone);
 
             // RedemptionのDecapitationシステム
             RedemptionCompat.Decapitation(target, ref damageDone, ref hit.Crit);
@@ -593,12 +666,12 @@ namespace MoreKatana.Projectiles.Base
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D texture = TextureAssets.Item[SwordItem.type].Value;
+            Texture2D texture = TextureAssets.Item[OwnerItem.type].Value;
 
             Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-            Rectangle? rectangle = new Rectangle?(Main.itemAnimations[SwordItem.type] == null ? texture.Frame(1, 1, 0, 0, 0, 0) : Main.itemAnimations[SwordItem.type].GetFrame(texture, -1));
+            Rectangle? rectangle = new Rectangle?(Main.itemAnimations[OwnerItem.type] == null ? texture.Frame(1, 1, 0, 0, 0, 0) : Main.itemAnimations[OwnerItem.type].GetFrame(texture, -1));
 
-            float frame = Main.itemAnimations[SwordItem.type] == null ? 1 : Main.itemAnimations[SwordItem.type].FrameCount;
+            float frame = Main.itemAnimations[OwnerItem.type] == null ? 1 : Main.itemAnimations[OwnerItem.type].FrameCount;
             Vector2 origin = new Vector2(texture.Width / 2, texture.Height / frame / 2);
 
             SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
@@ -616,55 +689,6 @@ namespace MoreKatana.Projectiles.Base
             SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             SpriteEffects spriteEffects2 = SwingDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
             Main.EntitySpriteDraw(texture, position, rectangle, color, Projectile.rotation, origin, Projectile.scale, spriteEffects | spriteEffects2, 0);
-        }
-
-        public struct SwingData
-        {
-            /// <summary> 剣の振る時間 </summary>
-            public float time;
-            /// <summary> 剣の振る範囲 </summary>
-            public float range;
-            /// <summary> 剣の振りの開始角度 </summary>
-            public float startAngle;
-            /// <summary> 剣の振りを逆向きにするかどうか </summary>
-            public int direction;
-            /// <summary> ディレイの長さ </summary>
-            public float delay;
-
-            public SwingData(float time, float range, float? startAngle = null, bool backspin = false, float delay = 1f)
-            {
-                this.time = time;
-                this.range = range;
-                this.startAngle = startAngle ?? (1f - range) / 2f;
-                direction = (!backspin).ToDirectionInt();
-                this.delay = delay;
-            }
-
-            /// <summary>
-            /// スイングタイプから対応するスイングデータを取得する
-            /// </summary>
-            /// <param name="type"></param>
-            /// <param name="swingData"></param>
-            /// <returns></returns>
-            public static SwingData SwingRegister(int type, params SwingData[] swingData)
-            {
-                SwingData data = new SwingData(0, 0);
-
-                if (swingData.Length == 0)
-                    return data;
-
-                for (int i = 0; i <= swingData.Length - 1; i++)
-                {
-                    if (type != i)
-                        continue;
-
-                    data = swingData[i];
-
-                    break;
-                }
-
-                return data;
-            }
         }
     }
 }

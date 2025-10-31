@@ -255,20 +255,20 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 clone.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRot);
             }
 
-            public override void Initialize(Item item, int type)
+            public override void Initialize(int type)
             {
                 Projectile.localNPCHitCooldown = -1; // 1振りで同じターゲットに2回ヒットしないようにする
                 Projectile.Opacity = 0.5f;
                 GetTextureValues();
             }
 
-            public override SwingData GetSwingData(int type) => new SwingData(SwordItem.useAnimation * 2, 0.7f, backspin: type % 2 != 0);
+            public override SwingData GetSwingData(int type) => new SwingData(OwnerItem.useAnimation * 2, 0.7f, backspin: type % 2 != 0);
 
             public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f); // 振りのアニメーション
             public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f); // 振りの減衰のアニメーション
             public override float GetProgress(int type) => PiecewiseAnimation(Progress, execute, unwind);
 
-            public override void AdditionalAI(Item item, int type, bool onDelay)
+            public override void AdditionalAI(int type, bool onDelay)
             {
                 // ホストとなるクローンの発射体が無い場合は消滅
                 if (!HostProj.active || HostProj.type != ModContent.ProjectileType<MuramasaGhost>())
@@ -288,7 +288,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             public override bool PreDraw(ref Color lightColor)
             {
-                Texture2D texture = TextureAssets.Item[SwordItem.type].Value;
+                Texture2D texture = TextureAssets.Item[OwnerItem.type].Value;
 
                 Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
                 Rectangle rectangle = new Rectangle(0, 0, texture.Width, texture.Height);

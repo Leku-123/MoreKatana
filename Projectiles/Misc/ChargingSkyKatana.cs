@@ -35,7 +35,7 @@ namespace MoreKatana.Projectiles.Misc
             }
         }
 
-        public override void Initialize(Item item, int type)
+        public override void Initialize(int type)
         {
             Projectile.localNPCHitCooldown = -1;
             Projectile.MKProj().ActivateCD = true;
@@ -73,7 +73,7 @@ namespace MoreKatana.Projectiles.Misc
 
         public override float GetProgress(int type) => type == 0 ? UpwardAnimation : !SwingStop ? SwingAnimation : RecoilAnimationDelay;
 
-        public override void AdditionalAI(Item item, int type, bool onDelay)
+        public override void AdditionalAI(int type, bool onDelay)
         {
             // プレイヤーのアイテム使用時間と発射体が消滅するまでの時間を延長する
             Owner.SetDummyItemTime(2);
@@ -93,7 +93,7 @@ namespace MoreKatana.Projectiles.Misc
                     if (GetProgress(type) > 0f && Projectile.localAI[0] == 0)
                     {
                         Projectile.localAI[0] = 1;
-                        SoundEngine.PlaySound(SwordItem.MKItem().UseSound, Owner.Center);
+                        SoundEngine.PlaySound(OwnerItem.MKItem().UseSound, Owner.Center);
                     }
                 }
             }
@@ -126,7 +126,7 @@ namespace MoreKatana.Projectiles.Misc
             }
         }
 
-        public override void SafeTileCollide(Item item, int type, Vector2 collisionPoint, float oldProgress)
+        public override void SafeTileCollide(int type, Vector2 collisionPoint, float oldProgress)
         {
             // 振り下ろし時
             if (type == 1)

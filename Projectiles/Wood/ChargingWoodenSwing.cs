@@ -17,55 +17,47 @@ namespace MoreKatana.Projectiles.Wood
         public override void SafeSendExtraAI(BinaryWriter writer) => writer.Write(animationStoppedPoint);
         public override void SafeReceiveExtraAI(BinaryReader reader) => animationStoppedPoint = reader.ReadSingle();
 
-        public override void DrawTrail(int type)
-        {
-            if (type == 1 && GetProgress(type) >= 0f)
-            {
-                if (!PrimsCreated)
-                {
-                    PrimsCreated = true;
-                    SwordTrail = new CustomSwordPrimTrail(Projectile, TrailColor, SwordLength, (int)(SwingTime * 1.5f));
-                    MoreKatana.primitives.CreateTrail(SwordTrail);
-                }
-
-                UpdateTrail(SwordTrail, type: 2);
-            }
-        }
-
-        public override void Initialize(Item item, int type)
+        public override void Initialize(int type)
         {
             Projectile.localNPCHitCooldown = -1;
             Projectile.MKProj().ActivateCD = true;
 
             SwingEllipse = new(0.9f);
-            ContinuousSwing = true;
-            FixedDirection = true;
-            CreateSound = false;
+            ContinuousSwing = true; // 設定した全てのスイングを連続で行う
+            FixedDirection = true; // プレイヤーと発射体の方向を固定する
+            CreateSound = false; // デフォルトのサウンドを鳴らさない
+
             GetTextureValues();
         }
 
-        public SwingData Upward => new SwingData(60, -0.4f, 0.5f, delay: 5f); // 2振り目
-        public SwingData Down => new SwingData(40, 0.8f, 0.1f, delay: 30f); // 1振り目
+        // 全てのスイングデータを設定する
+        // 設定したスイング以降は空にして発射体を消す
+        public SwingData Upward => new SwingData(60, -0.4f, 0.5f, delay: 5f); // 振り上げ
+        public SwingData Down => new SwingData(40, 0.8f, 0.1f, delay: 30f); // 振り下げ
+        public override SwingData GetSwingData(int type) => type < 2 ? SwingData.SwingRegister(type, Upward, Down) : new SwingData();
 
-        public override SwingData GetSwingData(int type)
-        {
-            if (type < 2)
-                return SwingData.SwingRegister(type, Upward, Down);
-            else
-                return new SwingData();
-        }
+        // 振り上げのアニメーション
+        public float UpwardAnimation => CircOutEasing(Progress, 1);
 
-        public float UpwardAnimation => CircOutEasing(Progress, 1); // 振り上げのアニメーション
-
+        // 振り下ろしのアニメーション
         public CurveSegment prepare = new CurveSegment(SineOutEasing, 0f, 0f, -0.1f); // 予備動作
         public CurveSegment execute = new CurveSegment(CircOutEasing, 0.2f, -0.1f, 1f); // 振り下ろし
-        public float SwingAnimation => PiecewiseAnimation(Progress, prepare, execute); // 振り下ろしのアニメーション
+        public float SwingAnimation => PiecewiseAnimation(Progress, prepare, execute);
 
-        public float RecoilAnimationDelay => MathHelper.SmoothStep(animationStoppedPoint, animationStoppedPoint - 0.05f, DelayProgress); // タイル接触時の反動のアニメーション
+        // タイル接触時の反動のアニメーション
+        public float RecoilAnimationDelay => MathHelper.SmoothStep(animationStoppedPoint, animationStoppedPoint - 0.05f, DelayProgress);
 
-        public override float GetProgress(int type) => type == 0 ? UpwardAnimation : !SwingStop ? SwingAnimation : RecoilAnimationDelay;
+        public override float GetProgress(int type)
+        {
+            if (type == 0) // 振り上げ
+                return UpwardAnimation;
+            else if (!SwingStop) // 振り下ろし
+                return SwingAnimation;
+            else // 反動
+                return RecoilAnimationDelay;
+        }
 
-        public override void AdditionalAI(Item item, int type, bool onDelay)
+        public override void AdditionalAI(int type, bool onDelay)
         {
             // プレイヤーのアイテム使用時間と発射体が消滅するまでの時間を延長する
             Owner.SetDummyItemTime(2);
@@ -82,10 +74,10 @@ namespace MoreKatana.Projectiles.Wood
                     Projectile.friendly = true;
 
                     // サウンド
-                    if (GetProgress(type) > 0f && Projectile.localAI[0] == 0)
+                    if (GetProgress(type) > 0f && !Projectile.MKProj().Bool[0])
                     {
-                        Projectile.localAI[0] = 1;
-                        SoundEngine.PlaySound(SwordItem.MKItem().UseSound, Owner.Center);
+                        Projectile.MKProj().Bool[0] =true;
+                        SoundEngine.PlaySound(OwnerItem.MKItem().UseSound, Owner.Center);
                     }
                 }
             }
@@ -94,9 +86,9 @@ namespace MoreKatana.Projectiles.Wood
                 // 振り上げ時
                 if (type == 0)
                 {
-                    if (Projectile.localAI[1] == 0)
+                    if (!Projectile.MKProj().Bool[1])
                     {
-                        Projectile.localAI[1] = 1;
+                        Projectile.MKProj().Bool[1] = true;
                         SoundEngine.PlaySound(SoundID.MaxMana, Owner.Center);
                         DrawRing(Projectile.Center, [DustID.PlatinumCoin], 24, 4f);
                     }
@@ -118,7 +110,7 @@ namespace MoreKatana.Projectiles.Wood
             }
         }
 
-        public override void SafeTileCollide(Item item, int type, Vector2 collisionPoint, float oldProgress)
+        public override void SafeTileCollide(int type, Vector2 collisionPoint, float oldProgress)
         {
             // 振り下ろし時
             if (type == 1)
@@ -136,8 +128,12 @@ namespace MoreKatana.Projectiles.Wood
                         Owner.ScreenShake(4, 10);
                         SoundEngine.PlaySound(SoundID.Dig, Owner.Center);
 
+                        // パーティクル
                         ParticleHandler.SpawnParticle(new ImpactEffect(collisionPoint, -Vector2.UnitY, Color.White, new Vector2(0.3f), 10));
                     }
+
+                    // トレイルを消す
+                    KillPrims = true;
 
                     Projectile.netUpdate = true;
                 }
@@ -165,6 +161,22 @@ namespace MoreKatana.Projectiles.Wood
                 Main.dust[newDust].velocity = new Vector2(0f, Main.rand.Next(-2, -1));
                 Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(15));
                 Main.dust[newDust].velocity *= Main.rand.NextFloat(0.5f, 2f);
+            }
+        }
+
+        public override void DrawTrail(int type)
+        {
+            // 振り下ろし時の予備動作後からトレイルがスポーンする
+            if (type == 1 && GetProgress(type) >= 0f)
+            {
+                if (!PrimsCreated)
+                {
+                    PrimsCreated = true;
+                    SwordTrail = new CustomSwordPrimTrail(Projectile, TrailColor, SwordLength, (int)(SwingTime * 1.5f));
+                    MoreKatana.primitives.CreateTrail(SwordTrail);
+                }
+
+                UpdateTrail(SwordTrail, type: 2);
             }
         }
     }

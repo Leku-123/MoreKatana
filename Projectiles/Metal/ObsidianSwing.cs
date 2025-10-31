@@ -16,7 +16,7 @@ namespace MoreKatana.Projectiles.Metal
 
         public override string Texture => this.GetTexture(Name);
 
-        public override void Initialize(Item item, int type)
+        public override void Initialize(int type)
         {
             Projectile.localNPCHitCooldown = -1;
             SwingEllipse = new(0.8f);
@@ -36,9 +36,9 @@ namespace MoreKatana.Projectiles.Metal
                 return MathHelper.SmoothStep(animationStoppedPoint, animationStoppedPoint - 0.05f, DelayProgress);
         }
 
-        public override void AdditionalAI(Item item, int type, bool onDelay) => Owner.SetDummyItemTime(2);
+        public override void AdditionalAI(int type, bool onDelay) => Owner.SetDummyItemTime(2);
 
-        public override void SafeTileCollide(Item item, int type, Vector2 collisionPoint, float oldProgress)
+        public override void SafeTileCollide(int type, Vector2 collisionPoint, float oldProgress)
         {
             if (GetProgress(type) >= 0.5f && GetProgress(type) <= 0.8f)
             {

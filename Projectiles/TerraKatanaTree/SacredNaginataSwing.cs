@@ -35,11 +35,11 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             }
         }
 
-        public override void Initialize(Item item, int type)
+        public override void Initialize(int type)
         {
             if (type == 2)
             {
-                Projectile.localNPCHitCooldown = item.useAnimation / 3 * Projectile.MaxUpdates;
+                Projectile.localNPCHitCooldown = OwnerItem.useAnimation / 3 * Projectile.MaxUpdates;
                 NoSpeedBonus = true;
                 SwingEllipse = new(0.5f);
                 ImpactCharge = 4;
@@ -57,9 +57,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         }
 
         #region 振りの設定
-        public SwingData Down => new SwingData(SwordItem.useAnimation / 2f, 0.6f, 0.2f); // 1振り目
-        public SwingData Up => new SwingData(SwordItem.useAnimation, 0.6f, 0.2f, true); // 2振り目
-        public SwingData Spin => new SwingData(SwordItem.useAnimation * 1.5f, 2.6f, 0.25f, delay: SwordItem.useAnimation / 2f); // 3振り目
+        public SwingData Down => new SwingData(OwnerItem.useAnimation / 2f, 0.6f, 0.2f); // 1振り目
+        public SwingData Up => new SwingData(OwnerItem.useAnimation, 0.6f, 0.2f, true); // 2振り目
+        public SwingData Spin => new SwingData(OwnerItem.useAnimation * 1.5f, 2.6f, 0.25f, delay: OwnerItem.useAnimation / 2f); // 3振り目
         public override SwingData GetSwingData(int type) => SwingData.SwingRegister(type, Down, Up, Spin);
         #endregion
 
@@ -87,7 +87,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         }
         #endregion
 
-        public override void AdditionalAI(Item item, int type, bool delay)
+        public override void AdditionalAI(int type, bool delay)
         {
             Owner.SetDummyItemTime(2);
 

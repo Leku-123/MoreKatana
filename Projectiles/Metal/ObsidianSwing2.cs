@@ -14,7 +14,7 @@ namespace MoreKatana.Projectiles.Metal
     {
         public override string Texture => this.GetTexture(Name);
 
-        public override void Initialize(Item item, int type)
+        public override void Initialize(int type)
         {
             Projectile.localNPCHitCooldown = -1;
 
@@ -26,15 +26,15 @@ namespace MoreKatana.Projectiles.Metal
             TrailColor = new Color(83, 5, 1);
         }
 
-        public SwingData Down => new SwingData(SwordItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f));
-        public SwingData Up => new SwingData(SwordItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f), backspin: true);
+        public SwingData Down => new SwingData(OwnerItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f));
+        public SwingData Up => new SwingData(OwnerItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f), backspin: true);
         public override SwingData GetSwingData(int type) => SwingData.SwingRegister(type, Down, Up);
 
         public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f);
         public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f);
         public override float GetProgress(int type) => PiecewiseAnimation(Progress, execute, unwind);
 
-        public override void AdditionalAI(Item item, int type, bool onDelay)
+        public override void AdditionalAI(int type, bool onDelay)
         {
             Owner.SetDummyItemTime(2);
 
