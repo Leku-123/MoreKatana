@@ -53,9 +53,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             else if (PrepareCompletion == 1)
             {
                 // 最初のフレームで加速する
-                if (Projectile.localAI[0] == 0)
+                if (!Projectile.MKProj().Bool[0])
                 {
-                    Projectile.localAI[0] = 1;
+                    Projectile.MKProj().Bool[0] = true;
 
                     SoundEngine.PlaySound(SoundID.Grass, Projectile.Center);
                     MoreKatanaUtil.DrawRing(Projectile.Center, [DustID.GrassBlades], 24, 6f);

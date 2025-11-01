@@ -105,8 +105,11 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     Projectile.friendly = GetProgress(type) >= 0f;
                     Owner.FlipEffect(GetProgress(type) * 9f);
 
-                    if (Timer % (20 * Projectile.MaxUpdates) == 0)
-                        SoundEngine.PlaySound(SoundID.Item169, Owner.Center);
+                    if (Projectile.soundDelay <= 0 && GetProgress(type) >= 0f)
+                    {
+                        Projectile.soundDelay = 15 * Projectile.MaxUpdates;
+                        SoundEngine.PlaySound(SoundID.Item169, Owner.position);
+                    }
 
                     if (Timer % (10 * Projectile.MaxUpdates) == 0)
                         SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.6f }, Owner.Center);
@@ -149,8 +152,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             ParticleOrchestraSettings particleOrchestraSettings = default;
             particleOrchestraSettings.PositionInWorld = Main.rand.NextVector2FromRectangle(target.Hitbox);
             ParticleOrchestrator.RequestParticleSpawn(false, ParticleOrchestraType.TrueExcalibur, particleOrchestraSettings, Projectile.owner);
-
-            SoundEngine.PlaySound(MoreKatanaSounds.SlashHit, Owner.Center);
 
             for (int i = 0; i < 2; i++)
             {

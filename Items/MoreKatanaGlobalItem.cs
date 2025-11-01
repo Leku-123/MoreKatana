@@ -24,8 +24,6 @@ namespace MoreKatana.Items
     {
         public override bool InstancePerEntity => true;
 
-        public KatanaID ID; // 図鑑用ID
-
         public bool Katana;             // 刀のアイテム
         public int AltDamage;           // アクティブスキルのダメージ
         public int ActiveSkillDelay;    // アクティブスキルのCDの時間
@@ -44,7 +42,7 @@ namespace MoreKatana.Items
         /// <param name="equipment"> 装備可能かどうか </param>
         /// <param name="type"> 振りの種類 </param>
         /// <param name="combo"> 振りのコンボ数 </param>
-        public void SetKatanaDefaults(Item item, int delay, bool equipment = false, int type = ProjectileID.None, int combo = 1)
+        public void SetKatanaDefaults(Item item, int delay, bool equipment = false, int? type = null, int combo = 1)
         {
             item.DamageType = DamageClass.Melee;
             item.useStyle = ItemUseStyleID.Shoot;
@@ -67,7 +65,7 @@ namespace MoreKatana.Items
             ActiveSkillDelay = delay;
 
             // 何もしない場合汎用の振りが適用される
-            SwingType = type == ProjectileID.None ? ModContent.ProjectileType<GeneralKatanaSwing>() : type;
+            SwingType = type ?? ModContent.ProjectileType<GeneralKatanaSwing>();
             SwingComboCount = combo;
         }
 
@@ -81,17 +79,15 @@ namespace MoreKatana.Items
         {
             if (item.type == ItemID.Katana)
             {
-                ID = KatanaID.Kanata;
                 item.StatsModifiedBy.Add(Mod);
             }
             if (item.type == ItemID.Muramasa)
             {
-                ID = KatanaID.Muramasa;
                 item.StatsModifiedBy.Add(Mod);
             }
 
             SetDefaultsVanillaItem(item);
-            
+
             if (item.ModItem is KatanaItem)
                 (item.ModItem as KatanaItem).SetDefaultsItem();
         }
@@ -212,7 +208,7 @@ namespace MoreKatana.Items
             {
                 if (!player.IsUsingAlt())
                 {
-                    Projectile.NewProjectile(source, position, velocity, SwingType, damage, knockback, player.whoAmI, AttackType);
+                    Projectile.NewProjectile(source, position, velocity.Normalized(), SwingType, damage, knockback, player.whoAmI, AttackType);
                     AttackType = (AttackType + 1) % SwingComboCount;
                 }
             }
@@ -285,7 +281,7 @@ namespace MoreKatana.Items
             if (item.type == ItemID.Muramasa)
             {
                 SoundEngine.PlaySound(SoundID.NPCDeath33, player.Center);
-                Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<MuramasaGhost>(), item.damage, item.knockBack, player.whoAmI);
+                Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<MuramasaGhost>(), AltDamage, item.knockBack, player.whoAmI);
             }
         }
 

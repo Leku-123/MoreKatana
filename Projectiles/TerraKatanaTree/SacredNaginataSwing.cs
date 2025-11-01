@@ -15,63 +15,38 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
     {
         public override string Texture => this.GetTexture(Name);
 
-        private Vector2 DirectionToProj => Utils.DirectionTo(Owner.MountedCenter, Projectile.Center);
-
-        /// <summary> 刀身が長いためトレイルの横幅を小さくして、オフセットを先端に調節する </summary>
-        public override void DrawTrail(int type)
-        {
-            if (GetProgress(type) >= 0f)
-            {
-                if (!PrimsCreated)
-                {
-                    PrimsCreated = true;
-                    SwordTrail = new CustomSwordPrimTrail(Projectile, TrailColor, 20, (int)(SwingTime * 1.5f));
-                    MoreKatana.primitives.CreateTrail(SwordTrail);
-                }
-
-                Vector2 offset = DirectionToProj * 60f;
-                Vector2 p = Projectile.Center - Owner.MountedCenter;
-                UpdateTrail(SwordTrail, GetProgress(type) >= 0.98f, point: p + offset);
-            }
-        }
-
         public override void Initialize(int type)
         {
             if (type == 2)
             {
                 Projectile.localNPCHitCooldown = OwnerItem.useAnimation / 3 * Projectile.MaxUpdates;
-                NoSpeedBonus = true;
                 SwingEllipse = new(0.5f);
                 ImpactCharge = 4;
-                CreateSound = false;
+                NoSpeedBonus = true; // 速度ボーナスを適用しない
+                CreateSound = false; // デフォルトのサウンドを鳴らさない
             }
             else
             {
                 Projectile.localNPCHitCooldown = -1;
-                NoSpeedBonus = false;
                 SwingEllipse = new(1f, 0.45f);
+                NoSpeedBonus = false; // 速度ボーナスを適用する
             }
 
             SwordSize(124);
             TrailColor = Color.Gold * 0.3f;
         }
 
-        #region 振りの設定
+        // 全てのスイングデータを設定する
         public SwingData Down => new SwingData(OwnerItem.useAnimation / 2f, 0.6f, 0.2f); // 1振り目
         public SwingData Up => new SwingData(OwnerItem.useAnimation, 0.6f, 0.2f, true); // 2振り目
         public SwingData Spin => new SwingData(OwnerItem.useAnimation * 1.5f, 2.6f, 0.25f, delay: OwnerItem.useAnimation / 2f); // 3振り目
         public override SwingData GetSwingData(int type) => SwingData.SwingRegister(type, Down, Up, Spin);
-        #endregion
 
-        #region 振りのアニメーションの設定
-        public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f);
-        public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f);
-        public float NormalAnimation => PiecewiseAnimation(Progress, execute, unwind); // 1,2振り目のアニメーション
-
-        public CurveSegment prepare = new CurveSegment(SineOutEasing, 0f, 0f, -0.05f);
-        public CurveSegment spinning = new CurveSegment(LinearEasing, 0.2f, -0.05f, 1.05f);
-        public float SpinAnimation => PiecewiseAnimation(Progress, prepare, spinning); // 3振り目のアニメーション
-        public float SpinAnimationDelay => MathHelper.SmoothStep(1f, 1.01f, DelayProgress); // 3振り目のディレイ
+        // スピンのアニメーション
+        public CurveSegment prepare = new CurveSegment(SineOutEasing, 0f, 0f, -0.05f); // 振りかぶり
+        public CurveSegment spinning = new CurveSegment(LinearEasing, 0.2f, -0.05f, 1.05f); // スピン
+        public float SpinAnimation => PiecewiseAnimation(Progress, prepare, spinning); // スピンのアニメーション
+        public float SpinAnimationDelay => MathHelper.SmoothStep(1f, 1.01f, DelayProgress); // スピンのディレイ
 
         public override float GetProgress(int type)
         {
@@ -83,9 +58,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     return SpinAnimationDelay;
             }
             else
-                return NormalAnimation;
+                return GeneralSwingAnimation(Progress);
         }
-        #endregion
 
         public override void AdditionalAI(int type, bool delay)
         {
@@ -100,8 +74,11 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
                     Owner.FlipEffect(GetProgress(type) * 9f);
 
-                    if (Projectile.soundDelay % (20 * Projectile.MaxUpdates) == 0)
+                    if (Projectile.soundDelay <= 0 && GetProgress(type) >= 0f)
+                    {
+                        Projectile.soundDelay = 15 * Projectile.MaxUpdates;
                         SoundEngine.PlaySound(SoundID.Item169, Owner.position);
+                    }
                 }
                 else
                 {
@@ -121,8 +98,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             base.OnHitNPC(target, hit, damageDone);
 
             Owner.ScreenShake(2, 6);
-
-            SoundEngine.PlaySound(MoreKatanaSounds.SlashHit, Owner.Center);
 
             // エクスカリバーのパーティクル
             ParticleOrchestraSettings particleOrchestraSettings = default;
@@ -144,6 +119,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         }
 
         public override void OnKill(int timeLeft) => Owner.FlipEffect(0);
+
+        private Vector2 DirectionToProj => Utils.DirectionTo(Owner.MountedCenter, Projectile.Center);
 
         public override bool PreDraw(ref Color lightColor)
         {
@@ -171,6 +148,24 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     0.5f, 0f, 0.1f, 0.9f, 1f, 0f, new Vector2(Projectile.scale * 2f, Projectile.scale * 5f), new Vector2(1f, 1f));
 
             return false;
+        }
+
+        /// <summary> 刀身が長いためトレイルの横幅を小さくして、オフセットを先端に調節する </summary>
+        public override void DrawTrail(int type)
+        {
+            if (GetProgress(type) >= 0f)
+            {
+                if (!PrimsCreated)
+                {
+                    PrimsCreated = true;
+                    SwordTrail = new CustomSwordPrimTrail(Projectile, TrailColor, 20, (int)(SwingTime * 1.5f));
+                    MoreKatana.primitives.CreateTrail(SwordTrail);
+                }
+
+                Vector2 offset = DirectionToProj * 60f;
+                Vector2 p = Projectile.Center - Owner.MountedCenter;
+                UpdateTrail(SwordTrail, GetProgress(type) >= 0.98f, point: p + offset);
+            }
         }
     }
 }

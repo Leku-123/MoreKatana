@@ -73,7 +73,7 @@ namespace MoreKatana.Projectiles.Base
         private float startRotation;
 
         /// <summary> ターゲットにヒットした際のタイマー </summary>
-        private int hitTimer = -1;
+        public int HitTimer = -1;
 
         /// <summary> 剣の振りのAIの進行状況 </summary>
         protected float Progress;
@@ -255,7 +255,7 @@ namespace MoreKatana.Projectiles.Base
             writer.Write7BitEncodedInt(SwordHeight);
             writer.WriteVector2(swordPos);
             writer.Write(startRotation);
-            writer.Write(hitTimer);
+            writer.Write(HitTimer);
             writer.WriteVector2(SwingEllipse);
             writer.Write(SwingTime);
             writer.Write(SwingRange);
@@ -282,7 +282,7 @@ namespace MoreKatana.Projectiles.Base
             SwordHeight = reader.Read7BitEncodedInt();
             swordPos = reader.ReadVector2();
             startRotation = reader.ReadSingle();
-            hitTimer = reader.ReadInt32();
+            HitTimer = reader.ReadInt32();
             SwingEllipse = reader.ReadVector2();
             SwingTime = reader.ReadSingle();
             SwingRange = reader.ReadSingle();
@@ -349,16 +349,17 @@ namespace MoreKatana.Projectiles.Base
 
             // ヒットタイマーの処理
             // 要修正
-            if (hitTimer >= 0)
+            if (HitTimer >= 0)
             {
-                int time = hitTimer - 1;
-                if (time != hitTimer)
+                Projectile.soundDelay++;
+                int time = HitTimer - 1;
+                if (time != HitTimer)
                     Projectile.netUpdate = true;
-                hitTimer--;
+                HitTimer--;
             }
 
             // タイマーを増加
-            if (!SwingStop && hitTimer <= 0)
+            if (!SwingStop && HitTimer <= 0)
                 Timer++;
 
             SetSwordPosition(swordPos);
@@ -588,7 +589,7 @@ namespace MoreKatana.Projectiles.Base
 
                 t.PrimCenter = center ?? Owner.MountedCenter;
 
-                if (hitTimer <= 0)
+                if (HitTimer <= 0)
                     t?.Points.Add(point ?? Projectile.Center - t.PrimCenter);
 
                 t.TextureType = type;
@@ -645,7 +646,7 @@ namespace MoreKatana.Projectiles.Base
         /// </summary>
         public void ImpactChargeLaunch()
         {
-            hitTimer = ImpactCharge * Projectile.MaxUpdates;
+            HitTimer = ImpactCharge * Projectile.MaxUpdates;
             Projectile.netUpdate = true;
         }
 

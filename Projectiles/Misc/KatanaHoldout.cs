@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MoreKatana.Particles;
 using MoreKatana.Projectiles.Base;
 using System;
 using System.IO;
@@ -13,8 +14,8 @@ namespace MoreKatana.Projectiles.Misc
 {
     public class KatanaHoldout : ModProjectile
     {
-        private float charge;
-        private const float chargeMax = 60;
+        private ref float Charge => ref Projectile.ai[0];
+        private const float ChargeMax = 60;
         private bool fullyCharged;
 
         private Player Owner => Main.player[Projectile.owner];
@@ -32,12 +33,12 @@ namespace MoreKatana.Projectiles.Misc
             Projectile.friendly = false;
             Projectile.hostile = false;
             Projectile.tileCollide = false;
-            Projectile.ignoreWater = true;
             Projectile.noEnchantmentVisuals = true;
             Projectile.hide = true;
         }
 
         public override void SendExtraAI(BinaryWriter writer) => writer.Write(fullyCharged);
+
         public override void ReceiveExtraAI(BinaryReader reader) => fullyCharged = reader.ReadBoolean();
 
         public override bool? CanDamage() => false;
@@ -64,10 +65,10 @@ namespace MoreKatana.Projectiles.Misc
             Projectile.Center = Owner.Center;
             Projectile.velocity = Vector2.Zero;
 
-            if (charge < chargeMax)
-                charge++;
+            if (Charge < ChargeMax)
+                Charge++;
 
-            if (charge == chargeMax)
+            if (Charge == ChargeMax)
             {
                 if (!fullyCharged)
                 {
@@ -94,23 +95,24 @@ namespace MoreKatana.Projectiles.Misc
                 }
 
                 int swing = ModContent.ProjectileType<KatanaSwing>();
-                float damageMultiplier = 1 + 2 * (charge / chargeMax);
-                Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.ActiveItem()), Owner.Center, Owner.SafeDirectionTo(Owner.MKPlayer().MouseWorld), swing, (int)(Projectile.damage * damageMultiplier), Projectile.knockBack, Owner.whoAmI, ai0);
+                float damageMultiplier = 1 + 2 * (Charge / ChargeMax);
+                int damage = (int)(Projectile.damage * damageMultiplier);
+                Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.ActiveItem()), Owner.Center, Owner.SafeDirectionTo(Owner.MKPlayer().MouseWorld), swing, damage, Projectile.knockBack, Owner.whoAmI, ai0);
             }
         }
 
         public override bool PreDraw(ref Color lightColor)
         {
-            // 別途UIを作りたい
+            // 別途UIを作りたい...気もする
             if (Projectile.owner == Main.myPlayer)
             {
                 Vector2 gaugePos = Owner.Center + new Vector2(0, 50);
 
                 Color color = Color.Gold;
-                if (charge >= chargeMax - 3 && charge < chargeMax)
-                    color = Color.White;
+                if (Charge >= ChargeMax - 5 && Charge < ChargeMax)
+                    color = Color.White with { A = 0 };
 
-                DrawGauge(gaugePos, charge / chargeMax, color, size: new Vector2(60, 10));
+                DrawGauge(gaugePos, Charge / ChargeMax, color, size: new Vector2(60, 10));
             }
 
             return false;
@@ -122,10 +124,9 @@ namespace MoreKatana.Projectiles.Misc
         public bool Reflected;
         public bool ExecuteReflection;
         public int ReflectedIndex = -1;
-        private Vector2 defVelocity;
 
         public bool ReflectionCheck(Projectile p)
-            => p.active && p.hostile && p.damage > 0 && p.velocity.Length() > 0
+            => p.active && p.hostile && p.damage > 0 && p.velocity.Length() > 1
             && Projectile.Colliding(Projectile.Hitbox, p.Hitbox)
             && !Reflected;
 
@@ -134,7 +135,6 @@ namespace MoreKatana.Projectiles.Misc
             writer.Write(Reflected);
             writer.Write(ExecuteReflection);
             writer.Write(ReflectedIndex);
-            writer.WriteVector2(defVelocity);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
@@ -142,7 +142,6 @@ namespace MoreKatana.Projectiles.Misc
             Reflected = reader.ReadBoolean();
             ExecuteReflection = reader.ReadBoolean();
             ReflectedIndex = reader.ReadInt32();
-            defVelocity = reader.ReadVector2();
         }
 
         public override void Initialize(int type)
@@ -154,9 +153,7 @@ namespace MoreKatana.Projectiles.Misc
                 ImpactCharge = 5;
         }
 
-        public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f); // 振りのアニメーション
-        public CurveSegment unwind = new CurveSegment(LinearEasing, 0.25f, 0.95f, 0.05f); // 振りの減衰のアニメーション
-        public override float GetProgress(int type) => PiecewiseAnimation(Progress, execute, unwind);
+        public override float GetProgress(int type) => GeneralSwingAnimation(Progress);
 
         public override void AdditionalAI(int type, bool delay)
         {
@@ -169,78 +166,85 @@ namespace MoreKatana.Projectiles.Misc
                 {
                     foreach (Projectile p in Main.projectile.Where(ReflectionCheck))
                     {
+                        Reflected = true; // 反射のフラグを立てる
                         ReflectedIndex = p.whoAmI; // 反射する発射体のインデックスを保存
-                        Reflected = true;
-                        defVelocity = p.velocity;
-                        p.velocity = Vector2.Zero;
+                        Projectile.netUpdate = true;
+
+                        // 一応これらをやっておく
+                        p.position = p.oldPosition;
                         p.netUpdate = true;
 
+                        // ImpactChargeを処理
                         ImpactChargeLaunch();
 
                         // スクリーンシェイクを止める
                         Owner.ScreenShake(0, 0);
-
-                        // プレイヤーのベロシティを0にする
-                        Owner.velocity = Vector2.Zero;
-                        NetMessage.SendData(MessageID.PlayerControls, number: Owner.whoAmI);
                     }
 
-                    //if (OnImpact && ReflectedIndex != -1)
-                    //{
-                    //    ExecuteReflection = true;
-                    //    Projectile.netUpdate = true;
-                    //}
-
-                    if (ExecuteReflection)
+                    if (ReflectedIndex != -1)
                     {
-                        Projectile reflected = Main.projectile[ReflectedIndex];
-
-                        // 発射体のオーナーを設定する
-                        reflected.hostile = false;
-                        reflected.friendly = true;
-                        reflected.owner = Projectile.owner;
-
-                        // 発射体の速度を設定する
-                        reflected.velocity = Vector2.Normalize(Projectile.velocity);
-                        reflected.velocity *= defVelocity.Length();
-
-                        // ダメージ
-                        reflected.damage = Projectile.damage;
-
-                        // 一応これもやっとく
-                        reflected.netUpdate = true;
-
-                        ExecuteReflection = false;
-                        ReflectedIndex = -1;
-                        Projectile.netUpdate = true;
-
-                        // プレイヤーに反動を付ける
-                        Owner.velocity = Vector2.Normalize(Projectile.velocity);
-                        Owner.velocity *= -5f;
-                        NetMessage.SendData(MessageID.PlayerControls, number: Owner.whoAmI);
-
-                        Owner.ScreenShake(5, 30);
-                        // サウンド
-                        SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = +0.3f }, Owner.position);
-
-                        // ダスト
-                        for (int i = 0; i < 5; i++)
+                        // ImpactChargeの終了する時に反射実行のフラグを立てる
+                        if (HitTimer <= 1)
                         {
-                            int newDust = Dust.NewDust(new Vector2(reflected.position.X, reflected.position.Y + 2f), reflected.width, reflected.height, DustID.GemDiamond, reflected.velocity.X * 0.2f, reflected.velocity.Y * 0.2f, 100, default, 3f);
-                            Main.dust[newDust].noGravity = true;
+                            ExecuteReflection = true;
+                            Projectile.netUpdate = true;
                         }
 
-                        if (Main.myPlayer == Projectile.owner)
+                        Projectile reflected = Main.projectile[ReflectedIndex];
+
+                        if (!ExecuteReflection) // 反射の実行前
                         {
+                            // 反射する対象発射体を固定する
+                            reflected.position = reflected.oldPosition;
+
+                            // プレイヤーの位置を固定する
+                            Owner.position = Owner.oldPosition;
+                            NetMessage.SendData(MessageID.PlayerControls, number: Owner.whoAmI);
+                        }
+                        else // 反射を実行
+                        {
+                            // 発射体のオーナーを設定する
+                            reflected.hostile = false;
+                            reflected.friendly = true;
+                            reflected.owner = Projectile.owner;
+
+                            // 発射体のベロシティを設定する
+                            reflected.velocity = Projectile.velocity.Normalized() * reflected.velocity.Length();
+
+                            // ダメージ
+                            reflected.damage = Projectile.damage;
+
+                            // 一応これもやっとく
+                            reflected.netUpdate = true;
+
+                            // 変数を初期化する
+                            ExecuteReflection = false;
+                            ReflectedIndex = -1;
+                            Projectile.netUpdate = true;
+
+                            // プレイヤーに反動を付ける
+                            Owner.velocity = Projectile.velocity.Normalized();
+                            Owner.velocity *= -5f;
+                            NetMessage.SendData(MessageID.PlayerControls, number: Owner.whoAmI);
+
+                            // スクリーンシェイク
+                            Owner.ScreenShake(5, 20);
+
+                            // サウンド
+                            SoundEngine.PlaySound(MoreKatanaSounds.Parry, Owner.position);
+
+                            // ダスト
+                            for (int i = 0; i < 5; i++)
+                            {
+                                int newDust = Dust.NewDust(new Vector2(reflected.position.X, reflected.position.Y + 2f), reflected.width, reflected.height, DustID.GemDiamond, reflected.velocity.X * 0.2f, reflected.velocity.Y * 0.2f, 100, default, 3f);
+                                Main.dust[newDust].noGravity = true;
+                            }
+
+                            // パーティクル
                             for (int i = 0; i < 2; i++)
                             {
-                                float maxOffset = reflected.width * 0.4f;
-                                if (maxOffset > 300f)
-                                    maxOffset = 300f;
-
-                                Vector2 spawnOffset = (MathHelper.Pi + Main.rand.NextFloatDirection() * 0.2f).ToRotationVector2() * Main.rand.NextFloatDirection() * maxOffset;
-                                Vector2 sliceVelocity = spawnOffset.SafeNormalize(Vector2.UnitY) * 0.1f;
-                                Projectile.NewProjectile(Projectile.GetSource_FromThis(), reflected.Center + spawnOffset, sliceVelocity, ModContent.ProjectileType<KatanaSlashEffect>(), Projectile.damage, 0f, Projectile.owner);
+                                Particle glowSpark = new GlowSparkParticle(Projectile.Center, new Vector2(0.1f, 0.1f).RotatedByRandom(100), false, 15, Main.rand.NextFloat(0.05f, 0.09f), Main.rand.NextBool() ? Color.Silver : Color.DimGray, new Vector2(2f, 0.5f), true);
+                                ParticleHandler.SpawnParticle(glowSpark);
                             }
                         }
                     }

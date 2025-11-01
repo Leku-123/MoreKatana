@@ -13,8 +13,8 @@ using Terraria.UI.Chat;
 namespace MoreKatana.UI
 {
     /// <summary>
-    /// 石像に近づいてUIが非表示(Main.hideUI)になる可能性があるので
-    /// UIの表示のタスクとは別のタスクでレンダリングします
+    /// 石像に近づいてUIが非表示(Main.hideUI)になるので
+    /// バニラのUIの表示のタスクとは別のタスクでレンダリングします
     /// </summary>
     public class ForgottenAltarDisplay
     {
@@ -106,13 +106,13 @@ namespace MoreKatana.UI
 
             ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, DisplayText, textPosition - Vector2.UnitX * textArea, Color.White, 0f, textArea * new Vector2(0f, 0.5f), new Vector2(2f));
 
-            spriteBatch.SetEndBegin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null);
+            spriteBatch.SetEndBegin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null, null, Main.UIScaleMatrix);
             for (int i = 0; i < 4; i++)
             {
                 Vector2 drawpos = textPosition + new Vector2(0, 3 * ((float)Math.Sin(Main.GlobalTimeWrappedHourly * 4) / 2)).RotatedBy(i * MathHelper.PiOver2);
                 ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, DisplayText, drawpos - Vector2.UnitX * textArea, Color.White, 0f, textArea * new Vector2(0f, 0.5f), new Vector2(2f));
             }
-            spriteBatch.SetEndBegin(SpriteSortMode.Deferred, null, null, null, null);
+            spriteBatch.SetEndBegin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
         }
     }
 }

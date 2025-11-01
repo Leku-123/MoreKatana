@@ -134,7 +134,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                             }
                         }
 
-                        if (proj.type == ModContent.ProjectileType<TerraOrb>() && proj.Distance(Projectile.position) <= 10f && Direction == 1)
+                        if (proj.type == ModContent.ProjectileType<TerraOrb>() && proj.Distance(Projectile.position) <= 10f && Timer == 0 && Direction == 1)
                         {
                             if (!Projectile.MKProj().Bool[0])
                             {

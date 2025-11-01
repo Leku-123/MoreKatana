@@ -35,6 +35,7 @@ namespace MoreKatana.Projectiles.Misc
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
+            Projectile.extraUpdates = 7;
             Projectile.hide = true;
             Projectile.noEnchantmentVisuals = true;
         }
