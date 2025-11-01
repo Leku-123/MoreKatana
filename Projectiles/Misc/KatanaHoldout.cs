@@ -74,7 +74,7 @@ namespace MoreKatana.Projectiles.Misc
                 {
                     fullyCharged = true;
                     SoundEngine.PlaySound(SoundID.MaxMana, Owner.Center);
-                    DrawRing(Owner.Center, [DustID.GemDiamond], 24, 10f);
+                    DrawRing(Owner.Center, DustID.GemDiamond, 24, 10f);
                 }
 
                 if (Owner.yoraiz0rEye < 2)
@@ -153,7 +153,9 @@ namespace MoreKatana.Projectiles.Misc
                 ImpactCharge = 5;
         }
 
-        public override float GetProgress(int type) => GeneralSwingAnimation(Progress);
+        public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f); // 振りのアニメーション
+        public CurveSegment unwind = new CurveSegment(LinearEasing, 0.25f, 0.95f, 0.05f); // 減衰のアニメーション
+        public override float GetProgress(int type) => PiecewiseAnimation(Progress, execute, unwind);
 
         public override void AdditionalAI(int type, bool delay)
         {

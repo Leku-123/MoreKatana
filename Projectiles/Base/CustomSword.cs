@@ -262,10 +262,6 @@ namespace MoreKatana.Projectiles.Base
             writer.Write(ModifiedAngle);
             writer.Write((sbyte)SwingDirection);
             writer.Write(SwingDelay);
-            //writer.Write(TrailColor.R);
-            //writer.Write(TrailColor.G);
-            //writer.Write(TrailColor.B);
-            //writer.Write(TrailColor.A);
             writer.WriteRGB(TrailColor);
             writer.Write(TrailColor.A);
             SafeSendExtraAI(writer);
@@ -289,10 +285,6 @@ namespace MoreKatana.Projectiles.Base
             ModifiedAngle = reader.ReadSingle();
             SwingDirection = reader.ReadSByte();
             SwingDelay = reader.ReadSingle();
-            //TrailColor.R = (byte)reader.Read7BitEncodedInt();
-            //TrailColor.G = (byte)reader.Read7BitEncodedInt();
-            //TrailColor.B = (byte)reader.Read7BitEncodedInt();
-            //TrailColor.A = (byte)reader.Read7BitEncodedInt();
             TrailColor = reader.ReadRGB();
             TrailColor.A = reader.ReadByte();
             SafeReceiveExtraAI(reader);

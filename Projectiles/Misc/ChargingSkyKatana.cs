@@ -106,7 +106,7 @@ namespace MoreKatana.Projectiles.Misc
                     {
                         Projectile.localAI[1] = 1;
                         SoundEngine.PlaySound(SoundID.MaxMana, Owner.Center);
-                        DrawRing(Projectile.Center, [DustID.PlatinumCoin], 24, 4f);
+                        DrawRing(Projectile.Center, DustID.PlatinumCoin, 24, 4f);
                     }
 
                     // 発射体の位置をランダムで揺らす

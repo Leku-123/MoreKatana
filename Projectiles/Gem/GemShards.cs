@@ -95,7 +95,7 @@ namespace MoreKatana.Projectiles.Gem
                 if (index == 0)
                 {
                     SoundEngine.PlaySound(SoundID.MaxMana, player.Center);
-                    MoreKatanaUtil.DrawRing(player.Center, [DustType], 24, 10f);
+                    MoreKatanaUtil.DrawRing(player.Center, DustType, 24, 10f);
                 }
             }
 

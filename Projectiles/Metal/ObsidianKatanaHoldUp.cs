@@ -81,8 +81,8 @@ namespace MoreKatana.Projectiles.Metal
                     Projectile.ai[1] = 1f;
                     Owner.ScreenShake(10, 7);
                     SoundEngine.PlaySound(SoundID.DD2_BetsysWrathShot, Owner.Center);
-                    MoreKatanaUtil.DrawRing(Owner.Center, [DustID.Torch], 30, 5f);
-                    MoreKatanaUtil.DrawRing(Owner.Center, [DustID.Torch], 24, 10f, dustScale: 3f);
+                    MoreKatanaUtil.DrawRing(Owner.Center, DustID.Torch, 30, 5f);
+                    MoreKatanaUtil.DrawRing(Owner.Center, DustID.Torch, 24, 10f, dustScale: 3f);
 
                     for (int i = 0; i <= 12; i++)
                         Dust.NewDustPerfect(Projectile.Center, DustID.Obsidian, -Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(0.8f, 1f) * 5f);

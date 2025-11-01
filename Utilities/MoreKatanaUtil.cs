@@ -292,7 +292,7 @@ namespace MoreKatana
         /// <param name="color"></param>
         /// <param name="dustScale"></param>
         /// <param name="noLight"></param>
-        public static void DrawRing(Vector2 position, int[] dustType, int density, float speed, Color color = default, float dustScale = 1f, bool noLight = false)
+        public static void DrawRing(Vector2 position, int dustType, int density, float speed, Color color = default, float dustScale = 1f, bool noLight = false)
         {
             for (int i = 0; i < density; i++)
             {

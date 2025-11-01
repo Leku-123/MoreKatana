@@ -140,7 +140,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                             {
                                 Projectile.MKProj().Bool[0] = true;
                                 SoundEngine.PlaySound(SoundID.MaxMana, Owner.Center);
-                                MoreKatanaUtil.DrawRing(Projectile.Center, [DustID.Terra], 24, 15, dustScale: 2f);
+                                MoreKatanaUtil.DrawRing(Projectile.Center, DustID.Terra, 24, 15, dustScale: 2f);
                             }
                         }
                     }

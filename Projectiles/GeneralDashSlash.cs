@@ -28,7 +28,7 @@ namespace MoreKatana.Projectiles
         public const int FadeoutTime = 30;
         private Color TrailColor;
 
-        private Player Owner => Main.player[Projectile.owner];
+        public Player Owner => Main.player[Projectile.owner];
         private Item ActiveItem => Owner.ActiveItem();
 
         public override string Texture => MoreKatana.EmptyTexture;

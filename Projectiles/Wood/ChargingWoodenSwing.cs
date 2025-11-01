@@ -90,7 +90,7 @@ namespace MoreKatana.Projectiles.Wood
                     {
                         Projectile.MKProj().Bool[1] = true;
                         SoundEngine.PlaySound(SoundID.MaxMana, Owner.Center);
-                        DrawRing(Projectile.Center, [DustID.PlatinumCoin], 24, 4f);
+                        DrawRing(Projectile.Center, DustID.PlatinumCoin, 24, 4f);
                     }
 
                     if (DelayTimer > 1f)

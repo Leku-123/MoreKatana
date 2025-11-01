@@ -140,7 +140,7 @@ namespace MoreKatana.Projectiles.Misc
                 }
                 else // ターゲットがいない場合、そのまま発射体を消滅させる
                 {
-                    MoreKatanaUtil.DrawRing(Owner.Center - new Vector2(27 * Projectile.direction, -17), [DustID.GemDiamond], 24, 2.5f);
+                    MoreKatanaUtil.DrawRing(Owner.Center - new Vector2(27 * Projectile.direction, -17), DustID.GemDiamond, 24, 2.5f);
                     Projectile.Kill();
                     return;
                 }

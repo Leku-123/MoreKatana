@@ -108,7 +108,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     if (Projectile.soundDelay <= 0 && GetProgress(type) >= 0f)
                     {
                         Projectile.soundDelay = 15 * Projectile.MaxUpdates;
-                        SoundEngine.PlaySound(SoundID.Item169, Owner.position);
+                        SoundEngine.PlaySound(SoundID.Item169, Owner.Center);
                     }
 
                     if (Timer % (10 * Projectile.MaxUpdates) == 0)

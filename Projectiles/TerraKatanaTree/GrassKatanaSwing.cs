@@ -29,14 +29,13 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         }
 
         public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f); // 振りのアニメーション
-        public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f); // 振りの減衰のアニメーション
-        public CurveSegment unwind2 = new CurveSegment(LinearEasing, 0.25f, 0.95f, 0.05f); // 3振り目の減衰のアニメーション
+        public CurveSegment unwind = new CurveSegment(LinearEasing, 0.25f, 0.95f, 0.05f); // 減衰のアニメーション
         public override float GetProgress(int type)
         {
             if (type == 2)
-                return PiecewiseAnimation(Progress, execute, unwind2);
-            else
                 return PiecewiseAnimation(Progress, execute, unwind);
+            else
+                return GeneralSwingAnimation(Progress);
         }
 
         public override void AdditionalAI(int type, bool delay)

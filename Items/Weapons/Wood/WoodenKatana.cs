@@ -8,8 +8,6 @@ namespace MoreKatana.Items.Weapons.Wood
 {
     public class WoodenKatana : KatanaItem
     {
-        public override KatanaID ID => KatanaID.Wood;
-
         public override void SetDefaultsItem()
         {
             Item.width = 46;

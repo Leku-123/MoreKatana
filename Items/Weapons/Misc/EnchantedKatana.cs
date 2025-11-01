@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using MoreKatana.Projectiles;
 using MoreKatana.Projectiles.Misc;
 using MoreKatana.Systems.CrossMod;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -10,8 +12,6 @@ namespace MoreKatana.Items.Weapons.Misc
 {
     public class EnchantedKatana : KatanaItem
     {
-        public override KatanaID ID => KatanaID.Enchanted;
-
         public static int[] EnchantedDustType = [DustID.MagicMirror, DustID.Enchanted_Gold, DustID.Enchanted_Pink];
         public static Color EnchantedDamageColor = new(150, 60, 255, 255);
 
@@ -50,19 +50,36 @@ namespace MoreKatana.Items.Weapons.Misc
 
         public override void ActiveSkill(Player player)
         {
-            Item.UseSound = SoundID.MaxMana;
-            player.ChangeDir(Main.MouseWorld.X - player.Center.X > 0 ? 1 : -1);
+            // サウンド
+            SoundEngine.PlaySound(MoreKatanaSounds.SwordSlash_2, player.Center);
 
-            for (int i = 0; i < 3; i++)
+            // クールダウンを有効化
+            Item.MKItem().ActivateCooldown(player);
+
+            // ダッシュ切りの発射体
+            // 挙動を追加します
+            int p = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, player.SafeDirectionTo(player.MKPlayer().MouseWorld), ModContent.ProjectileType<GeneralDashSlash>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI, 400, 16);
+            GeneralDashSlash dash = (GeneralDashSlash)Main.projectile[p].ModProjectile;
+            dash.action = delegate (Projectile projectile)
             {
-                float speed = 6f + (2 * i);
-                float scale = 1f + (0.5f * i);
-                MoreKatanaUtil.DrawRing(player.Center, EnchantedDustType, 24, speed, dustScale: scale);
-            }
+                // 最寄りのNPC
+                NPC target = projectile.Center.ClosestNPCAt(500f, false);
 
-            var source = player.GetSource_ItemUse(Item);
-            Projectile.NewProjectile(source, player.Center, new Vector2(player.direction, 0f), Item.MKItem().SwingType, Item.MKItem().AltDamage, Item.knockBack, player.whoAmI, 1f);
-            MoreKatanaUtil.ProjectileSplitInAllDirections(source, player.MountedCenter, Item.shootSpeed, 8, Item.shoot, Item.MKItem().AltDamage, Item.knockBack, player.whoAmI, 1f);
+                // ダッシュ中に最寄りのターゲットが検出された場合、定期的に発射体を発射
+                if (dash.Timer % 4 == 0 && dash.Owner.velocity.Length() > 2f
+                && target != null && projectile.timeLeft > (int)dash.DashTime)
+                {
+                    // サウンド
+                    SoundEngine.PlaySound(SoundID.Item4, player.Center);
+
+                    // ターゲットの方向に発射体を発射
+                    if (projectile.owner == Main.myPlayer)
+                    {
+                        Vector2 vel = projectile.SafeDirectionTo(target.Center, Vector2.UnitY) * Item.shootSpeed;
+                        Projectile.NewProjectile(projectile.GetSource_FromThis(), projectile.Center, vel, ModContent.ProjectileType<EnchantedKatanaBeam>(), projectile.damage / 2, 0, projectile.owner);
+                    }
+                }
+            };
         }
 
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)

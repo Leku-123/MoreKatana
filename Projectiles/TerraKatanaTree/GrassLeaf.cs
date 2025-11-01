@@ -58,7 +58,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     Projectile.MKProj().Bool[0] = true;
 
                     SoundEngine.PlaySound(SoundID.Grass, Projectile.Center);
-                    MoreKatanaUtil.DrawRing(Projectile.Center, [DustID.GrassBlades], 24, 6f);
+                    MoreKatanaUtil.DrawRing(Projectile.Center, DustID.GrassBlades, 24, 6f);
 
                     // マウスの方向に加速させる
                     if (Projectile.owner == Main.myPlayer)
