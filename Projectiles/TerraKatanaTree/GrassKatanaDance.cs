@@ -41,8 +41,8 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         {
             Owner.direction = 1; // トレイルが崩れるのを防ぐためにプレイヤーの方向を固定する
             Owner.armorEffectDrawShadow = true; // プレイヤーの残像の効果
+            Owner.slowFall = true;
             Owner.SetDummyItemTime(2);
-            Owner.AddBuff(BuffID.Featherfall, 10);
             Owner.FlipEffect(Progress * 6f); // フリップエフェクト
 
             if (GetProgress(type) > 0.5f)

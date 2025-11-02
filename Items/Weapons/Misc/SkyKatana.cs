@@ -9,8 +9,6 @@ namespace MoreKatana.Items.Weapons.Misc
 {
     public class SkyKatana : KatanaItem
     {
-        public override KatanaID ID => KatanaID.Sky;
-
         public override void SetStaticDefaults()
         {
             Item.AddElement(RedemptionCompat.Wind, true);
@@ -28,7 +26,7 @@ namespace MoreKatana.Items.Weapons.Misc
 
             Item.damage = 25;
             Item.knockBack = 4f;
-            Item.MKItem().AltDamage = 1;
+            Item.MKItem().AltDamage = 25;
 
             Item.value = Item.sellPrice(gold: 1);
             Item.rare = ItemRarityID.Green;
@@ -46,8 +44,7 @@ namespace MoreKatana.Items.Weapons.Misc
         {
             // プレイヤーの向きをマウスの方向に向けて、その方向にスカイ刀の発射体をスポーンさせる
             player.ChangeDir(Main.MouseWorld.X - player.Center.X > 0 ? 1 : -1);
-            Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.MountedCenter, new Vector2(player.direction, 0), ModContent.ProjectileType<ChargingSkyKatana>(), Item.MKItem().AltDamage, Item.knockBack * 2f, player.whoAmI);
+            Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.MountedCenter, new Vector2(player.direction, 0), ModContent.ProjectileType<ChargingSkyKatana>(), Item.MKItem().AltDamage, 20f, player.whoAmI);
         }
-
     }
 }
