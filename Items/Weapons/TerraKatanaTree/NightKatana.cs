@@ -30,7 +30,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         public override void PassiveSkill(Player player, bool equipment)
         {
-            int useSpeedBoost = 25 - hitCount / 3;
+            int useSpeedBoost = 25 - hitCount / 2;
             Item.defense = 1 * hitCount;
             Item.useTime = useSpeedBoost;
             Item.useAnimation = useSpeedBoost;
