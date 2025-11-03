@@ -20,13 +20,16 @@ namespace MoreKatana.Items.Weapons.Misc
             Item.width = 48;
             Item.height = 58;
 
-            Item.useTime = 20;
-            Item.useAnimation = 20;
+            Item.useTime = 35;
+            Item.useAnimation = 35;
             Item.MKItem().UseSound = SoundID.Item1;
 
             Item.damage = 25;
             Item.knockBack = 4f;
             Item.MKItem().AltDamage = 25;
+
+            Item.shoot = ModContent.ProjectileType<SkyFeather>();
+            Item.shootSpeed = 10f;
 
             Item.value = Item.sellPrice(gold: 1);
             Item.rare = ItemRarityID.Green;

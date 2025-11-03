@@ -5,7 +5,6 @@ using MoreKatana.Items.Weapons.Misc;
 using MoreKatana.Items.Weapons.TerraKatanaTree;
 using MoreKatana.Projectiles.Misc;
 using MoreKatana.Projectiles.TerraKatanaTree;
-using MoreKatana.UI;
 using System;
 using System.IO;
 using Terraria;
@@ -21,6 +20,9 @@ namespace MoreKatana
 {
     public class MoreKatanaPlayer : ModPlayer
     {
+        // -------- Timer --------
+        public int ExtraJumpTimer;
+
         // -------- Cooldown --------
         public int ActiveSkillCD;
         public int ActiveSkillCDMax;
@@ -107,6 +109,7 @@ namespace MoreKatana
         public override void UpdateDead()
         {
             ResetEffects();
+            ExtraJumpTimer = 0;
             GeneralDash = false;
             Rolling = false;
             NoUsingItems = 0;
@@ -251,7 +254,6 @@ namespace MoreKatana
 
         public override void PostUpdate()
         {
-            ExtraJumpProjCreate();
             if (ActiveSkillCD == 1)
             {
                 SoundEngine.PlaySound(MoreKatanaSounds.DrawSword, Player.position);
@@ -295,29 +297,53 @@ namespace MoreKatana
             }
         }
 
-        public override void OnExtraJumpStarted(ExtraJump jump, ref bool playSound)
+        public override void ExtraJumpVisuals(ExtraJump jump)
         {
-            //jump.GetDurationMultiplier(Player);
+            if (ExtraJumpTimer >= 0)
+                ExtraJumpTimer++;
+
             if (skyKatanaJumpEffect)
             {
-                if (jump is not FlipperJump && !Player.controlMount)
-                    isExtraJumping = true;
+                if (jump is FlipperJump)
+                    return;
+
+                if (Player.mount.Active)
+                    return;
+
+                if (Player.whoAmI == Main.myPlayer)
+                {
+                    Vector2 velocity = Vector2.UnitY * 5.5f;
+                    int feather = ModContent.ProjectileType<SkyFeather>();
+                    int damage = 10;
+
+                    if (jump is SandstormInABottleJump)
+                    {
+                        if (ExtraJumpTimer % 5 == 0)
+                        {
+                            Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Bottom, velocity, feather, damage, 0f, Player.whoAmI, -1);
+                        }
+                    }
+                    else
+                    {
+                        if (ExtraJumpTimer != -1)
+                        {
+                            ExtraJumpTimer = -1;
+                            const int FeatherCount = 6;
+                            for (int i = 0; i < FeatherCount; i++)
+                            {
+                                Vector2 newVelocity = velocity.RotatedByRandom(MathHelper.ToRadians(60));
+                                newVelocity *= 1f - Main.rand.NextFloat(0.3f);
+                                Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Bottom, newVelocity, feather, damage, 0f, Player.whoAmI, -1);
+                            }
+                        }
+                    }
+                }
             }
         }
 
         public override void OnExtraJumpEnded(ExtraJump jump)
         {
-            isExtraJumping = false;
-        }
-
-        /// <summary>
-        /// ２段目以降のジャンプ時にダメージ判定を発生させる。
-        /// </summary>
-        public void ExtraJumpProjCreate()
-        {
-            if (!isExtraJumping) return;
-            if (Player.whoAmI != Main.myPlayer) return;
-            Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Bottom, new Vector2(0, 0.5f), ModContent.ProjectileType<SkyJumpDamageEffect>(), 10, 0f, Player.whoAmI);
+            ExtraJumpTimer = 0;
         }
 
         public override void ModifyHurt(ref Player.HurtModifiers modifiers)
@@ -520,8 +546,8 @@ namespace MoreKatana
         }
         public static void AddRenderUI(SpriteBatch spriteBatch, Player player)
         {
-            ForgottenAltarDisplay.Draw(spriteBatch, player);
-            ForgottenAltarCursor.Draw(spriteBatch, player);
+            //ForgottenAltarDisplay.Draw(spriteBatch, player);
+            //ForgottenAltarCursor.Draw(spriteBatch, player);
         }
 
         public static DrawData ManipulateDrawInfo(DrawData input, Player player)

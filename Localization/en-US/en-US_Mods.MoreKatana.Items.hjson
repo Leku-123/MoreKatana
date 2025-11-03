@@ -337,3 +337,9 @@ LightsSlasher: {
 		- 
 		'''
 }
+
+NightKatana: {
+	Tooltip: ""
+	DisplayName: Night Katana
+	FunctionText: Mods.MoreKatana.Items.NightKatana.FunctionText
+}

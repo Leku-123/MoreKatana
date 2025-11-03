@@ -12,7 +12,8 @@ namespace MoreKatana.Projectiles.Misc
     {
         private ref float Timer => ref Projectile.ai[1];
 
-        public const float FadeInTime = 15f;
+        private const float FadeInTime = 15f;
+        private const float FadeOutTime = 60f;
 
         private Player Owner => Main.player[Projectile.owner];
 
@@ -31,6 +32,8 @@ namespace MoreKatana.Projectiles.Misc
             Projectile.localNPCHitCooldown = 10;
         }
 
+        public override bool? CanDamage() => Timer > FadeInTime;
+
         public override void AI()
         {
             Projectile proj = MoreKatanaUtil.ProjectileExists(Projectile.ai[0], ModContent.ProjectileType<ChargingSkyKatana>());
@@ -47,7 +50,7 @@ namespace MoreKatana.Projectiles.Misc
                         Owner.ScreenShake(2, 5);
                     }
 
-                    if (Timer > FadeInTime + 60f)
+                    if (Timer > FadeInTime + FadeOutTime)
                         Projectile.Kill();
 
                     Timer++;
@@ -63,14 +66,16 @@ namespace MoreKatana.Projectiles.Misc
                 if (proj.ai[0] >= 5)
                 {
                     if (Timer < FadeInTime)
+                    {
                         Timer++;
+                    }
                     else
                     {
                         if (!Projectile.MKProj().Bool[0])
                         {
                             Projectile.MKProj().Bool[0] = true;
-                            SoundEngine.PlaySound(SoundID.MaxMana, Owner.Center);
                             Owner.ScreenShake(2, 5);
+                            SoundEngine.PlaySound(SoundID.MaxMana, Owner.Center);
                             MoreKatanaUtil.DrawRing(Owner.Center, DustID.Cloud, 48, 12f, dustScale: 1.5f);
                         }
                     }
@@ -78,6 +83,8 @@ namespace MoreKatana.Projectiles.Misc
 
                 Projectile.Bottom = Owner.Bottom;
             }
+
+            Projectile.timeLeft = 2;
 
             for (int i = 0; i < 1; i++)
             {
@@ -104,7 +111,7 @@ namespace MoreKatana.Projectiles.Misc
         {
             float trackerClamp = MathHelper.Clamp(Timer / FadeInTime, 0f, 1f);
             if (Timer > FadeInTime)
-                trackerClamp = MathHelper.Lerp(1f, 0f, (Timer - FadeInTime) / 60f);
+                trackerClamp = MathHelper.Lerp(1f, 0f, (Timer - FadeInTime) / FadeOutTime);
 
             float vectorMult = 0.2f;
             Vector2 TopVector = Projectile.Top;
@@ -119,7 +126,7 @@ namespace MoreKatana.Projectiles.Misc
             float increment = 5.1f;
             Color cloudColor = new Color(225, 225, 225);
 
-            for (float k = (int)BottomVector.Y; k > (int)TopVector.Y; k -= increment)
+            for (float i = (int)BottomVector.Y; i > (int)TopVector.Y; i -= increment)
             {
                 incrementStorage += increment;
                 float colorChanger = incrementStorage / Projectile.Size.Y;
@@ -138,7 +145,7 @@ namespace MoreKatana.Projectiles.Misc
                 spinArea *= colorChangeVector * 100f;
                 spinArea.Y = 0f;
                 spinArea.X = 0f;
-                spinArea += new Vector2(BottomVector.X, k) - Main.screenPosition;
+                spinArea += new Vector2(BottomVector.X, i) - Main.screenPosition;
                 Main.spriteBatch.Draw(texture, spinArea, drawRectangle, newCloudColor, aiTrackMult + incStorageMult, smallRect, 1f + lowerColorChanger, SpriteEffects.None, 0);
             }
             return false;

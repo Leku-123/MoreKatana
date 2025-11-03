@@ -39,9 +39,6 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             Item.value = Item.sellPrice(silver: 55);
             Item.rare = ItemRarityID.Orange;
 
-            Item.shoot = ModContent.ProjectileType<BallofVolcano>();
-            Item.shootSpeed = 10f;
-
             Item.MKItem().SetKatanaDefaults(Item, 60, true);
         }
 

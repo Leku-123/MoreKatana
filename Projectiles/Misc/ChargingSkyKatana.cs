@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace MoreKatana.Projectiles.Misc
 {
-    internal class ChargingSkyKatana : CustomSword
+    public class ChargingSkyKatana : CustomSword
     {
         public override void Initialize(int type)
         {
