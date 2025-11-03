@@ -66,7 +66,7 @@ namespace MoreKatana
 
         public bool muramasaCounterattack;
         public bool enchantedHurtEffect;
-        public bool skyKatanaJumpEffect;
+        public bool skyJumpEffect;
         public bool isExtraJumping;
         public bool holyShield;
         public int HolyShieldDurability;
@@ -99,6 +99,7 @@ namespace MoreKatana
             FullBright = false;
             muramasaCounterattack = false;
             enchantedHurtEffect = false;
+            skyJumpEffect = false;
             holyShield = false;
             trueHolyShield = false;
             terraShield = false;
@@ -299,10 +300,7 @@ namespace MoreKatana
 
         public override void ExtraJumpVisuals(ExtraJump jump)
         {
-            if (ExtraJumpTimer >= 0)
-                ExtraJumpTimer++;
-
-            if (skyKatanaJumpEffect)
+            if (skyJumpEffect)
             {
                 if (jump is FlipperJump)
                     return;
@@ -312,14 +310,19 @@ namespace MoreKatana
 
                 if (Player.whoAmI == Main.myPlayer)
                 {
-                    Vector2 velocity = Vector2.UnitY * 5.5f;
+                    Vector2 velocity = Vector2.UnitY * 10f;
                     int feather = ModContent.ProjectileType<SkyFeather>();
                     int damage = 10;
 
                     if (jump is SandstormInABottleJump)
                     {
-                        if (ExtraJumpTimer % 5 == 0)
+                        const int SandstormJumpTime = 60;
+                        if (ExtraJumpTimer > SandstormJumpTime / SkyKatana.FeatherCountInExtraJump)
+                            ExtraJumpTimer = 0;
+
+                        if (ExtraJumpTimer == 0)
                         {
+                            SoundEngine.PlaySound(SoundID.Item32, Player.position);
                             Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Bottom, velocity, feather, damage, 0f, Player.whoAmI, -1);
                         }
                     }
@@ -327,9 +330,10 @@ namespace MoreKatana
                     {
                         if (ExtraJumpTimer != -1)
                         {
+                            SoundEngine.PlaySound(SoundID.Item32, Player.position);
+
                             ExtraJumpTimer = -1;
-                            const int FeatherCount = 6;
-                            for (int i = 0; i < FeatherCount; i++)
+                            for (int i = 0; i < SkyKatana.FeatherCountInExtraJump; i++)
                             {
                                 Vector2 newVelocity = velocity.RotatedByRandom(MathHelper.ToRadians(60));
                                 newVelocity *= 1f - Main.rand.NextFloat(0.3f);
@@ -339,6 +343,9 @@ namespace MoreKatana
                     }
                 }
             }
+
+            if (ExtraJumpTimer >= 0)
+                ExtraJumpTimer++;
         }
 
         public override void OnExtraJumpEnded(ExtraJump jump)

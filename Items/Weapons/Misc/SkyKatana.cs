@@ -2,13 +2,19 @@
 using MoreKatana.Projectiles.Misc;
 using MoreKatana.Systems.CrossMod;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace MoreKatana.Items.Weapons.Misc
 {
     public class SkyKatana : KatanaItem
     {
+        public const int FeatherCountInExtraJump = 6;
+
+        public override LocalizedText FunctionText => base.FunctionText.WithFormatArgs(FeatherCountInExtraJump);
+
         public override void SetStaticDefaults()
         {
             Item.AddElement(RedemptionCompat.Wind, true);
@@ -39,7 +45,7 @@ namespace MoreKatana.Items.Weapons.Misc
 
         public override void PassiveSkill(Player player, bool equipment)
         {
-            player.MKPlayer().skyKatanaJumpEffect = true;
+            player.MKPlayer().skyJumpEffect = true;
             player.slowFall = true;
         }
 
@@ -49,5 +55,7 @@ namespace MoreKatana.Items.Weapons.Misc
             player.ChangeDir(Main.MouseWorld.X - player.Center.X > 0 ? 1 : -1);
             Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.MountedCenter, new Vector2(player.direction, 0), ModContent.ProjectileType<ChargingSkyKatana>(), Item.MKItem().AltDamage, 20f, player.whoAmI);
         }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => !player.IsUsingAlt();
     }
 }

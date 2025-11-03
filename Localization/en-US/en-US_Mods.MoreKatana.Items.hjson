@@ -323,7 +323,13 @@ EnchantedKatana: {
 SkyKatana: {
 	DisplayName: Sky Katana
 	Tooltip: ""
-	FunctionText: Mods.MoreKatana.Items.SkyKatana.FunctionText
+	FunctionText:
+		'''
+		{$Tooltips.KS} <>
+		- Fires a total of {0} feathers during a double jump.
+		{$Tooltips.KA} <>
+		- 
+		'''
 }
 
 LightsSlasher: {
