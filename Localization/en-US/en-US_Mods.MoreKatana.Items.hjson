@@ -339,7 +339,7 @@ LightsSlasher: {
 }
 
 NightKatana: {
+	FunctionText: Work is Progress...
+	DisplayName: Tsukuyomi
 	Tooltip: ""
-	DisplayName: Night Katana
-	FunctionText: Mods.MoreKatana.Items.NightKatana.FunctionText
 }

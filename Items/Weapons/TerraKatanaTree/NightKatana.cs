@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using System;
+using Terraria;
 using Terraria.ID;
 
 namespace MoreKatana.Items.Weapons.TerraKatanaTree
@@ -8,6 +9,8 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         private int hitNPCWhoAmI = -1;
         private int hitCount = 0;
+        private const int MaxBonusDefense = 100;
+        private const float FastestSpeedBonus = 4;
 
         public override void SetDefaultsItem()
         {
@@ -23,17 +26,20 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             Item.MKItem().AltDamage = 50;
 
             Item.value = Item.sellPrice(gold: 4);
-            Item.rare = ItemRarityID.Blue;
+            Item.rare = ItemRarityID.Orange;
 
             Item.MKItem().SetKatanaDefaults(Item, 60);
         }
 
         public override void PassiveSkill(Player player, bool equipment)
         {
-            int useSpeedBoost = 25 - hitCount / 2;
-            Item.defense = 1 * hitCount;
-            Item.useTime = useSpeedBoost;
-            Item.useAnimation = useSpeedBoost;
+
+            player.statDefense += Math.Min(hitCount, MaxBonusDefense);
+        }
+
+        public override float UseSpeedMultiplier(Player player)
+        {
+            return Math.Min(1 + (hitCount / 10f), FastestSpeedBonus);
         }
 
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
