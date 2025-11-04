@@ -86,7 +86,7 @@ namespace MoreKatana.Items.Weapons.Metal
         public override void ActiveSkill(Player player)
         {
             player.ChangeDir(Main.MouseWorld.X - player.Center.X > 0 ? 1 : -1);
-            Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.MountedCenter, new Vector2(player.direction, 0), ModContent.ProjectileType<ObsidianKatanaHoldUp>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI);
+            Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.MountedCenter, new Vector2(player.direction, 0), ModContent.ProjectileType<ObsidianKatanaHoldout>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI);
         }
 
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)

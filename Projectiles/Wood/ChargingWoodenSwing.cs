@@ -15,6 +15,7 @@ namespace MoreKatana.Projectiles.Wood
         private float animationStoppedPoint;
 
         public override void SafeSendExtraAI(BinaryWriter writer) => writer.Write(animationStoppedPoint);
+
         public override void SafeReceiveExtraAI(BinaryReader reader) => animationStoppedPoint = reader.ReadSingle();
 
         public override void Initialize(int type)
@@ -31,10 +32,10 @@ namespace MoreKatana.Projectiles.Wood
         }
 
         // 全てのスイングデータを設定する
-        // 設定したスイング以降は空にして発射体を消す
+        // 最後のスイングは空にして発射体を消す
         public SwingData Upward => new SwingData(60, -0.4f, 0.5f, delay: 5f); // 振り上げ
         public SwingData Down => new SwingData(40, 0.8f, 0.1f, delay: 30f); // 振り下げ
-        public override SwingData GetSwingData(int type) => type < 2 ? SwingData.SwingRegister(type, Upward, Down) : new SwingData();
+        public override SwingData GetSwingData(int type) => SwingData.SwingRegister(type, Upward, Down, new SwingData());
 
         // 振り上げのアニメーション
         public float UpwardAnimation => CircOutEasing(Progress, 1);
@@ -74,10 +75,13 @@ namespace MoreKatana.Projectiles.Wood
                     Projectile.friendly = true;
 
                     // サウンド
-                    if (GetProgress(type) > 0f && !Projectile.MKProj().Bool[0])
+                    if (GetProgress(type) > 0f)
                     {
-                        Projectile.MKProj().Bool[0] =true;
-                        SoundEngine.PlaySound(OwnerItem.MKItem().UseSound, Owner.Center);
+                        if (Projectile.soundDelay == 0)
+                        {
+                            Projectile.soundDelay = -1;
+                            SoundEngine.PlaySound(OwnerItem.MKItem().UseSound, Owner.Center);
+                        }
                     }
                 }
             }
@@ -86,9 +90,9 @@ namespace MoreKatana.Projectiles.Wood
                 // 振り上げ時
                 if (type == 0)
                 {
-                    if (!Projectile.MKProj().Bool[1])
+                    if (!Projectile.MKProj().Bool[0])
                     {
-                        Projectile.MKProj().Bool[1] = true;
+                        Projectile.MKProj().Bool[0] = true;
                         SoundEngine.PlaySound(SoundID.MaxMana, Owner.Center);
                         DrawRing(Projectile.Center, DustID.PlatinumCoin, 24, 4f);
                     }

@@ -17,8 +17,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.height = 16;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 1;
-            Projectile.friendly = false;
-            Projectile.hostile = false;
             Projectile.tileCollide = true;
             Projectile.hide = true;
         }
@@ -30,8 +28,13 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             teleportPos = Projectile.Center;
 
             Player player = Main.player[Projectile.owner];
-            player.Teleport(teleportPos, 1);
-            NetMessage.SendData(MessageID.TeleportEntity, -1, -1, null, 0, player.whoAmI, teleportPos.X, teleportPos.Y, 1);
+            player.immune = true;
+            player.immuneTime = 15;
+            player.Teleport(teleportPos, -1);
+            NetMessage.SendData(MessageID.TeleportEntity, -1, -1, null, 0, player.whoAmI, teleportPos.X, teleportPos.Y, -1);
+
+            if (Projectile.owner == Main.myPlayer)
+                Projectile.NewProjectile(player.GetSource_ItemUse(player.ActiveItem()), player.Center, Vector2.Normalize(Projectile.velocity), ModContent.ProjectileType<GeneralKatanaSwing>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
         }
     }
 }

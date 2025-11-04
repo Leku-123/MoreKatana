@@ -10,8 +10,6 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 {
     public class LightsSlasher : KatanaItem
     {
-        public override KatanaID ID => KatanaID.Lights;
-
         public const float MaxTeleportDistance = 300f;
 
         public override void SetStaticDefaults()
@@ -31,7 +29,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
             Item.damage = 25;
             Item.knockBack = 4.5f;
-            Item.MKItem().AltDamage = 0;
+            Item.MKItem().AltDamage = 25;
 
             Item.value = Item.sellPrice(silver: 66);
             Item.rare = ItemRarityID.Blue;

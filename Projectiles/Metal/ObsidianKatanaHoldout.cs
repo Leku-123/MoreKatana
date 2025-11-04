@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace MoreKatana.Projectiles.Metal
 {
-    public class ObsidianKatanaHoldUp : ModProjectile
+    public class ObsidianKatanaHoldout : ModProjectile
     {
         private ref float Timer => ref Projectile.ai[0];
 
