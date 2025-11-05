@@ -5,7 +5,7 @@ FunctionTextのKSに刀式、KAに秘剣を記載する。
 	FunctionText:
 		'''
 		{$Tooltips.KS} <>
-		- Fires a total of {0} feathers during a double jump.
+		- 
 		{$Tooltips.KA} <>
 		- 
 		'''
