@@ -313,7 +313,7 @@ ObsidianKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} <>
+		{$Tooltips.KS} <Obsidian Protection>
 		- 
 		{$Tooltips.KA} <>
 		- 
