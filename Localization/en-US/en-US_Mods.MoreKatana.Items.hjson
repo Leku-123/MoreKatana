@@ -282,7 +282,7 @@ TrueSacredNaginata: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/FFD700:<Guardian Angel++>]
+		{$Tooltips.KS} [c/FFD700:<Guardian Archangel>]
 		- Projects an holy shield that absorbs up to {0} damage. The shield grants {1} defense while active.
 		- After the shield is broken, it takes {2} seconds to charge back up.
 		- Using a healing potion fully restores the shield's durability and cooldown.
