@@ -311,13 +311,25 @@ ObsidianKatana: {
 	DisplayName: Obsidian Katana
 	AltName: Magma Katana
 	Tooltip: ""
-	FunctionText: Mods.MoreKatana.Items.ObsidianKatana.FunctionText
+	FunctionText:
+		'''
+		{$Tooltips.KS} <>
+		- 
+		{$Tooltips.KA} <>
+		- 
+		'''
 }
 
 EnchantedKatana: {
 	DisplayName: Enchanted Katana
 	Tooltip: ""
-	FunctionText: Mods.MoreKatana.Items.EnchantedKatana.FunctionText
+	FunctionText:
+		'''
+		{$Tooltips.KS} <>
+		- 
+		{$Tooltips.KA} <>
+		- 
+		'''
 }
 
 SkyKatana: {
@@ -345,7 +357,13 @@ LightsSlasher: {
 }
 
 NightKatana: {
-	FunctionText: Work is Progress...
 	DisplayName: Tsukuyomi
-	Tooltip: ""
+	Tooltip: "Work is Progress..."
+		FunctionText:
+		'''
+		{$Tooltips.KS} <>
+		- 
+		{$Tooltips.KA} <>
+		- 
+		'''
 }
