@@ -359,11 +359,11 @@ LightsSlasher: {
 NightKatana: {
 	DisplayName: Tsukuyomi
 	Tooltip: "Work is Progress..."
-		FunctionText:
-		'''
-		{$Tooltips.KS} <>
-		- 
-		{$Tooltips.KA} <>
-		- 
-		'''
+	FunctionText:
+	'''
+	{$Tooltips.KS} <>
+	- 
+	{$Tooltips.KA} <>
+	- 
+	'''
 }
