@@ -1,0 +1,24 @@
+﻿Tooltipに説明を入れ、
+FunctionTextのKSに刀式、KAに秘剣を記載する。
+
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.KS} <>
+		- Fires a total of {0} feathers during a double jump.
+		{$Tooltips.KA} <>
+		- 
+		'''
+
+例：錫の刀の場合
+TinKatana: {
+	DisplayName: Tin Katana
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.KS} [c/ADAC58:<Tin Protection>]
+		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
+		{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
+		- Dash and attack the enemy.
+		'''
+}
