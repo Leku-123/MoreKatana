@@ -13,6 +13,9 @@ KatanaSwing.DisplayName: Katana
 KatanaSlash.DisplayName: Katana Slash
 KatanaSlashHoldout.DisplayName: Katana Slash
 KatanaSlashEffect.DisplayName: Katana Slash
+SkyTornado.DisplayName: Sky Tornado
+SkyFeather.DisplayName: Sky Feather
+EnchantedKatanaBeam.DisplayName: Enchanted Beam
 # -------- TerraKatanaTree --------
 GrassLeaf.DisplayName: Grass Leaf
 GrassKatanaSwing.DisplayName: Kusanagi
@@ -47,22 +50,10 @@ Empty.DisplayName: Empty
 GeneralKatanaSwing.DisplayName: Katana
 GeneralDashSlash.DisplayName: Dash Slash
 ShockWaveEffect.DisplayName: Shockwave
-ImpactEffect.DisplayName: Impact
 # -------- Not yet --------
-CustomDashSlash.DisplayName: Dash Slash
-BallofVolcano.DisplayName: Ball of Volcano
 VolcanoKatanaHoldUp.DisplayName: Volcano Katana Hold Up
-MeteoBullet.DisplayName: Meteo Bullet
 VolcanicCinder.DisplayName: Volcanic Cinder
-EnchantedKatanaBeam.DisplayName: Enchanted Katana Beam
-EnchantedKatanaSwing.DisplayName: Enchanted Katana Swing
-EnchantedKatanaSwingActiveSkill.DisplayName: Enchanted Katana Swing Active Skill
 ObsidianSlash.DisplayName: Obsidian Slash
 ObsidianSwing2.DisplayName: Obsidian Swing2
-ObsidianKatanaHoldUp.DisplayName: Obsidian Katana Hold Up
-SkyJumpDamageEffect.DisplayName: Sky Jump Damage Effect
-ChargingSkyKatana.DisplayName: Charging Sky Katana
-SkyKatanaWindImpact.DisplayName: Sky Katana Wind Impact
-SkyTornado.DisplayName: Sky Tornado
-SkyFeather.DisplayName: Sky Feather
 ObsidianKatanaHoldout.DisplayName: Obsidian Katana Holdout
+ChargingSkyKatana.DisplayName: Charging Sky Katana

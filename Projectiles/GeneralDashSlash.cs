@@ -46,7 +46,7 @@ namespace MoreKatana.Projectiles
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.ownerHitCheck = true;
-            Projectile.alpha = 0;
+            Projectile.alpha = 255;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.noEnchantmentVisuals = true;
             Projectile.MKProj().SourceIsItemUse = true;
@@ -107,6 +107,8 @@ namespace MoreKatana.Projectiles
 
             if (Projectile.timeLeft > (int)DashTime)
             {
+                Projectile.alpha = 0;
+
                 if (Owner.velocity.Length() > 2f)
                 {
                     for (int i = 0; i < (int)(Owner.velocity.Length() / 7f); i++)

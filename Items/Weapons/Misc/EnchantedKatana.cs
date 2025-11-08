@@ -32,7 +32,7 @@ namespace MoreKatana.Items.Weapons.Misc
 
             Item.damage = 25;
             Item.knockBack = 4.25f;
-            Item.MKItem().AltDamage = 20;
+            Item.MKItem().AltDamage = 50;
 
             Item.value = Item.sellPrice(gold: 3);
             Item.rare = ItemRarityID.Green;
@@ -40,7 +40,7 @@ namespace MoreKatana.Items.Weapons.Misc
             Item.shoot = ModContent.ProjectileType<EnchantedKatanaBeam>();
             Item.shootSpeed = 9.5f;
 
-            Item.MKItem().SetKatanaDefaults(Item, 60, type: ModContent.ProjectileType<EnchantedKatanaSwing>());
+            Item.MKItem().SetKatanaDefaults(Item, 60, combo: 2);
         }
 
         public override void PassiveSkill(Player player, bool equipment)
@@ -58,45 +58,39 @@ namespace MoreKatana.Items.Weapons.Misc
 
             // ダッシュ切りの発射体
             // 挙動を追加します
-            int p = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, player.SafeDirectionTo(player.MKPlayer().MouseWorld), ModContent.ProjectileType<GeneralDashSlash>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI, 400, 16);
+            int dashTime = 16;
+            int p = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, player.SafeDirectionTo(player.MKPlayer().MouseWorld), ModContent.ProjectileType<GeneralDashSlash>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI, 400, dashTime);
             GeneralDashSlash dash = (GeneralDashSlash)Main.projectile[p].ModProjectile;
             dash.action = delegate (Projectile projectile)
             {
-                // 最寄りのNPC
-                NPC target = projectile.Center.ClosestNPCAt(500f, false);
+                projectile.alpha = 255;
 
-                // ダッシュ中に最寄りのターゲットが検出された場合、定期的に発射体を発射
-                if (dash.Timer % 4 == 0 && dash.Owner.velocity.Length() > 2f
-                && target != null && projectile.timeLeft > (int)dash.DashTime)
+                Player player = dash.Owner;
+                if (dash.Timer == 0)
                 {
-                    // サウンド
-                    SoundEngine.PlaySound(SoundID.Item4, player.Center);
+                    player.UpdateRotation(2, player.direction, dashTime);
 
-                    // ターゲットの方向に発射体を発射
                     if (projectile.owner == Main.myPlayer)
                     {
-                        Vector2 vel = projectile.SafeDirectionTo(target.Center, Vector2.UnitY) * Item.shootSpeed;
-                        Projectile.NewProjectile(projectile.GetSource_FromThis(), projectile.Center, vel, ModContent.ProjectileType<EnchantedKatanaBeam>(), projectile.damage / 2, 0, projectile.owner);
+                        for (int i = -2; i <= 2; i++)
+                        {
+                            float deg = 8;
+                            Vector2 velocity = projectile.velocity.Normalized() * Item.shootSpeed * 2f;
+                            Vector2 vector = velocity.RotatedBy(MathHelper.ToRadians(deg) * i);
+                            Projectile.NewProjectile(projectile.GetSource_FromThis(), projectile.Center, vector, Item.shoot, projectile.damage, 0, projectile.owner);
+                        }
                     }
+                }
+
+                if (projectile.timeLeft == dashTime)
+                {
+                    if (projectile.owner == Main.myPlayer)
+                        Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, projectile.velocity.Normalized(), ModContent.ProjectileType<GeneralKatanaSwing>(), projectile.damage, projectile.knockBack, projectile.owner);
                 }
             };
         }
 
-        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
-        {
-            player.ChangeDir(Main.MouseWorld.X - player.Center.X > 0 ? 1 : -1);
-            velocity = new Vector2(player.direction, 0) * Item.shootSpeed;
-        }
-
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-        {
-            if (!player.IsUsingAlt())
-            {
-                Projectile.NewProjectile(source, player.MountedCenter, velocity, type, damage / 2, 0f, player.whoAmI);
-                Projectile.NewProjectile(source, player.MountedCenter, -velocity, type, damage / 2, 0f, player.whoAmI);
-            }
-            return false;
-        }
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => Item.MKItem().AttackType == 0 && !player.IsUsingAlt();
 
         public override void MeleeEffects(Player player, Rectangle hitbox)
         {
