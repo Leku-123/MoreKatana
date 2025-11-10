@@ -1,6 +1,7 @@
 ﻿using System;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace MoreKatana.Items.Weapons.TerraKatanaTree
 {
@@ -52,6 +53,17 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             }
 
             hitCount++;
+        }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+                .AddIngredient(ModContent.ItemType<LightsSlasher>())
+                .AddIngredient(ItemID.Muramasa)
+                .AddIngredient(ModContent.ItemType<GrassKatana>())
+                .AddIngredient(ModContent.ItemType<VolcanoKatana>())
+                .AddTile(TileID.Anvils)
+                .Register();
         }
     }
 }

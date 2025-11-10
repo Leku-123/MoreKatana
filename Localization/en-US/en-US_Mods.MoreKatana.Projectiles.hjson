@@ -13,6 +13,7 @@ KatanaSwing.DisplayName: Katana
 KatanaSlash.DisplayName: Katana Slash
 KatanaSlashHoldout.DisplayName: Katana Slash
 KatanaSlashEffect.DisplayName: Katana Slash
+ChargingSkyKatana.DisplayName: Sky Katana
 SkyTornado.DisplayName: Sky Tornado
 SkyFeather.DisplayName: Sky Feather
 EnchantedKatanaBeam.DisplayName: Enchanted Beam
@@ -34,6 +35,7 @@ MuramasaSlash.DisplayName: Muramasa
 MuramasaCounterattack.DisplayName: Muramasa Counterattack
 MuramasaCounterattackSwing.DisplayName: Muramasa Counterattack
 LightsTeleport.DisplayName: Lights Teleport
+LightsTeleportSwing.DisplayName: Lights Teleport
 TerraKatanaSwing.DisplayName: Terra Katana
 TerraWave.DisplayName: Terra Wave
 TerraOrb.DisplayName: Terra Orb
@@ -43,6 +45,8 @@ TerraDestructionHoldout.DisplayName: Terra Destruction
 TerraDestructionBase.DisplayName: Terra Destruction
 TerraSlash.DisplayName: Terra Slash
 TerraLightning.DisplayName: Terra Lightning
+VolcanoKatanaHoldout.DisplayName: Kagutsuchi
+VolcanicEruptionRock.DisplayName: Volcanic Eruption Rock
 # -------- Wood --------
 ChargingWoodenSwing.DisplayName: Wooden Katana
 # -------- General --------
@@ -56,6 +60,3 @@ VolcanicCinder.DisplayName: Volcanic Cinder
 ObsidianSlash.DisplayName: Obsidian Slash
 ObsidianSwing2.DisplayName: Obsidian Swing2
 ObsidianKatanaHoldout.DisplayName: Obsidian Katana Holdout
-ChargingSkyKatana.DisplayName: Charging Sky Katana
-VolcanoKatanaHoldout.DisplayName: Volcano Katana Holdout
-VolcanicEruptionRock.DisplayName: Volcanic Eruption Rock

@@ -43,22 +43,24 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             player.runAcceleration += 0.1f;
             player.maxRunSpeed += 3f;
 
-            for (int i = 0; i < 50; i++)
+            if (player.MKPlayer().ActiveSkillCD == 0)
             {
-                Vector2 offset = new Vector2();
-                double angle = Main.rand.NextDouble() * 2d * Math.PI;
-                offset.X += (float)(Math.Sin(angle) * MaxTeleportDistance);
-                offset.Y += (float)(Math.Cos(angle) * MaxTeleportDistance);
-                int newDust = Dust.NewDust(player.Center + offset - new Vector2(4, 4), 0, 0, DustID.ManaRegeneration, 0, 0, 100, Color.DarkBlue, 1f);
-                Main.dust[newDust].scale = 0.5f;
-                Main.dust[newDust].noGravity = true;
-                Main.dust[newDust].velocity = player.velocity;
+                for (int i = 0; i < 50; i++)
+                {
+                    Vector2 offset = new Vector2();
+                    double angle = Main.rand.NextDouble() * 2d * Math.PI;
+                    offset.X += (float)(Math.Sin(angle) * MaxTeleportDistance);
+                    offset.Y += (float)(Math.Cos(angle) * MaxTeleportDistance);
+                    int newDust = Dust.NewDust(player.Center + offset - new Vector2(4, 4), 0, 0, DustID.ManaRegeneration, 0, 0, 100, Color.DarkBlue, 1f);
+                    Main.dust[newDust].scale = 0.5f;
+                    Main.dust[newDust].noGravity = true;
+                    Main.dust[newDust].velocity = player.velocity;
+                }
             }
         }
 
         public override void ActiveSkill(Player player)
         {
-            Item.UseSound = null;
             Item.MKItem().ActivateCooldown(player);
 
             player.AddBuff(BuffID.ParryDamageBuff, 60);
@@ -70,7 +72,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
         public override void MeleeEffects(Player player, Rectangle hitbox)
         {
             if (Main.rand.NextBool(3))
-                Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustID.WitherLightning);
+                Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustID.Demonite);
         }
 
         public override void AddRecipes()

@@ -229,13 +229,14 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             if (InitVelocity != Vector2.Zero)
             {
                 const int lineWidth = 10;
+                const int lineCacheLength = 80;
                 float fade = (Timer - 10 * ProjIndex) / 15;
                 fade = MathHelper.Clamp(fade, 0f, 1f);
 
                 Vector2 startPos = startingPos;
                 Vector2 endPos = Vector2.Zero;
 
-                for (int i = 0; i < 80; i++)
+                for (int i = 0; i < lineCacheLength; i++)
                 {
                     Vector2 nextVel = new Vector2(InitVelocity.X, InitVelocity.Y + Gravity * i);
                     startPos += nextVel;

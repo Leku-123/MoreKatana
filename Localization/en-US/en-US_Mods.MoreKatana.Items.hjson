@@ -256,9 +256,9 @@ VolcanoKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.PS} [c/fd3e03:<Ball of Volcano>]
-		- Fire a fireball as an attack.
-		{$Tooltips.AS} [c/fe7902:<Volcanic Cinder>]
+		{$Tooltips.PS} [c/fd3e03:<>]
+		- 
+		{$Tooltips.AS} [c/fe7902:<>]
 		- It fires volcanic projectiles whose number increases based on how long the sword is held aloft.
 		'''
 }

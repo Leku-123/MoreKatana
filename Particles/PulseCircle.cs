@@ -13,11 +13,12 @@ namespace MoreKatana.Particles
         private Vector2 ScaleMod;
         private int MaxTime;
         private bool FullBright;
+        private bool Inwards;
         public override bool UseCustomDraw => true;
 
         public override bool UseAdditiveBlend => true;
 
-        public PulseCircle(Vector2 position, Vector2 direction, Color color, Vector2 scale, int maxTime, EasingFunction mode = null, bool fullBright = false)
+        public PulseCircle(Vector2 position, Vector2 direction, Color color, Vector2 scale, int maxTime, EasingFunction mode = null, bool fullBright = false, bool inwards = false)
         {
             Position = position;
             Direction = direction;
@@ -26,6 +27,7 @@ namespace MoreKatana.Particles
             MaxTime = maxTime;
             easing = mode ?? LinearEasing;
             FullBright = fullBright;
+            Inwards = inwards;
         }
 
         public override void Update()
@@ -42,7 +44,13 @@ namespace MoreKatana.Particles
         public override void CustomDraw(SpriteBatch spriteBatch)
         {
             Texture2D texture = ParticleHandler.GetTexture(Type);
-            float progress = easing((float)TimeActive / MaxTime, 1);
+
+            float progress;
+            if (!Inwards)
+                progress = easing((float)TimeActive / MaxTime, 1);
+            else
+                progress = 1 - easing((float)TimeActive / MaxTime, 1);
+
             Vector2 scale = 0.1f * ScaleMod * progress;
             Color color = Color * (!FullBright ? (1f - progress * 0.8f) : 1f);
             spriteBatch.Draw(texture, Position - Main.screenPosition, null, color, Rotation, texture.Size() / 2, scale, SpriteEffects.None, 0);
