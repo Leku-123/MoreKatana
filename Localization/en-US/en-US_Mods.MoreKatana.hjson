@@ -6,8 +6,10 @@ Tooltips: {
 	Second: sec.
 	Life: Life
 	GetIt: Get it!
-	KS: Katana Spell
-	KA: Katana Arts
+	# Passive Skill
+	PS: Katana Spell
+	# Active Skill
+	AS: Katana Arts
 }
 
 Configs: {

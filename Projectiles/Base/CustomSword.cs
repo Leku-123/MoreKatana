@@ -13,6 +13,10 @@ using static MoreKatana.MoreKatanaUtil;
 
 namespace MoreKatana.Projectiles.Base
 {
+    /// <summary>
+    /// 拡張性つけすぎて分かりにくくなってるね
+    /// すまーーーーん
+    /// </summary>
     public abstract class CustomSword : ModProjectile
     {
         #region -------- Variables --------
@@ -675,13 +679,30 @@ namespace MoreKatana.Projectiles.Base
             return false;
         }
 
-        public void DrawBasicSword(Texture2D texture, Vector2 position, Color color)
+        /// <summary>
+        /// 基本的な剣の描画を行う
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="position"></param>
+        /// <param name="color"></param>
+        public void DrawBasicSword(Texture2D texture, Vector2 position, Color? color = null)
         {
+            Vector2 drawPosition = position - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
             Rectangle rectangle = new Rectangle(0, 0, texture.Width, texture.Height);
             Vector2 origin = rectangle.Size() / 2f;
+            Color drawColor = color ?? Color.White * Projectile.Opacity;
+            Main.EntitySpriteDraw(texture, drawPosition, rectangle, drawColor, Projectile.rotation, origin, Projectile.scale, SwingEffectsHV(), 0);
+        }
+
+        /// <summary>
+        /// スイングが水平方向と垂直方向にフリップするかどうかを処理する
+        /// </summary>
+        /// <returns>スイングの水平方向と垂直方向の<see cref="SpriteEffects"/></returns>
+        public SpriteEffects SwingEffectsHV()
+        {
             SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             SpriteEffects spriteEffects2 = SwingDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
-            Main.EntitySpriteDraw(texture, position, rectangle, color, Projectile.rotation, origin, Projectile.scale, spriteEffects | spriteEffects2, 0);
+            return spriteEffects | spriteEffects2;
         }
     }
 }

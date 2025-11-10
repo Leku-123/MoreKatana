@@ -377,9 +377,14 @@ namespace MoreKatana
         /// <param name="backglowArea"></param>
         /// <param name="scale"></param>
         /// <param name="spriteEffects"></param>
-        public static void DrawBackglow(Texture2D texture, Vector2 drawPosition, Rectangle frame, Color backglowColor, float rotation, float backglowArea, Vector2 scale, SpriteEffects spriteEffects)
+        public static void DrawBackglow(Texture2D texture, Vector2 drawPosition, Rectangle? frame, Color backglowColor, float rotation, float backglowArea, Vector2 scale, SpriteEffects spriteEffects)
         {
-            Vector2 origin = frame.Size() * 0.5f;
+            Vector2 origin;
+            if (frame == null)
+                origin = texture.Size() / 2f;
+            else
+                origin = ((Rectangle)frame).Size() / 2f;
+
             float backglowAmount = 12f;
             for (int i = 0; i < backglowAmount; i++)
             {
@@ -599,6 +604,37 @@ namespace MoreKatana
                 dist += fl / scanarray.Length;
 
             return point1 + point1.DirectionTo(point2) * dist;
+        }
+
+        public static Vector2 GetArcVel(Vector2 startingPos, Vector2 targetPos, float gravity, float? minArcHeight = null, float? maxArcHeight = null, float? maxXvel = null, float? heightabovetarget = null)
+        {
+            Vector2 DistanceToTravel = targetPos - startingPos;
+            float MaxHeight = DistanceToTravel.Y - (heightabovetarget ?? 0);
+
+            if (minArcHeight != null)
+                MaxHeight = Math.Min(MaxHeight, -(float)minArcHeight);
+
+            if (maxArcHeight != null)
+                MaxHeight = Math.Max(MaxHeight, -(float)maxArcHeight);
+
+            float TravelTime;
+            float neededYvel;
+
+            if (MaxHeight <= 0)
+            {
+                neededYvel = -(float)Math.Sqrt(-2 * gravity * MaxHeight);
+                TravelTime = (float)Math.Sqrt(-2 * MaxHeight / gravity) + (float)Math.Sqrt(2 * Math.Max(DistanceToTravel.Y - MaxHeight, 0) / gravity); //time up, then time down
+            }
+            else
+            {
+                neededYvel = 0;
+                TravelTime = (-neededYvel + (float)Math.Sqrt(Math.Pow(neededYvel, 2) - (4 * -DistanceToTravel.Y * gravity / 2))) / (gravity); //time down
+            }
+
+            if (maxXvel != null)
+                return new Vector2(MathHelper.Clamp(DistanceToTravel.X / TravelTime, -(float)maxXvel, (float)maxXvel), neededYvel);
+
+            return new Vector2(DistanceToTravel.X / TravelTime, neededYvel);
         }
 
         public static int ToDirection(this float dir)

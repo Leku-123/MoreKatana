@@ -8,9 +8,9 @@ THXForPlaying: {
 	Tooltip:
 		'''
 		The weapons in this mod have special abilities.
-		[c/CC0000:{$Tooltips.KS}] is a passive skill. Activates when holding an item.
+		[c/CC0000:{$Tooltips.PS}] is a passive skill. Activates when holding an item.
 		Some of them also function as accessories. (Equip in the katana accessory slot)
-		[c/CC0000:{$Tooltips.KA}] is a active skill. Activates when right-clicking.
+		[c/CC0000:{$Tooltips.AS}] is a active skill. Activates when right-clicking.
 		The cooldown is shared across all weapons.
 		Detailed skill information for each weapon is provided in the tooltip.
 		There's also some other content! (Still in development, maybe?) Check out the wiki too!
@@ -40,10 +40,10 @@ Katana: {
 	Tooltip: '''"This weapon requires skill to handle."'''
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/FFD700:<Technical Tactics>]
+		{$Tooltips.PS} [c/FFD700:<Technical Tactics>]
 		- Change normal attacks to charged attacks.
 		- A fully charged attack has the power to deflect enemy projectiles. But it has no effect on the boss.
-		{$Tooltips.KA} [c/FFFFFF:<Flash of Lightning>]
+		{$Tooltips.AS} [c/FFFFFF:<Flash of Lightning>]
 		- Perform a chained dash attack up to 6 times against enemies.
 		'''
 }
@@ -52,9 +52,9 @@ Muramasa: {
 	Tooltip: '''"Make the curse your ally!"'''
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/0000FA:<Revengeance>]
+		{$Tooltips.PS} [c/0000FA:<Revengeance>]
 		- When damaged, the ghost will counterattack.
-		{$Tooltips.KA} [c/0000CD:<Bloodthirsty Ghost>]
+		{$Tooltips.AS} [c/0000CD:<Bloodthirsty Ghost>]
 		- Summon a ghost for 10 seconds.
 		- When the player attacks, the ghost will perform an additional attack.
 		'''
@@ -65,8 +65,8 @@ WoodenKatana: {
 	Tooltip: '''"Hard and sturdy."'''
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/A3A3A3:<None>]
-		{$Tooltips.KA} [c/A6512B:<Charge Attack>]
+		{$Tooltips.PS} [c/A3A3A3:<None>]
+		{$Tooltips.AS} [c/A6512B:<Charge Attack>]
 		- Swing down heavily. 
 		'''
 }
@@ -76,9 +76,9 @@ CopperKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/C56A2B:<Copper Protection>]
+		{$Tooltips.PS} [c/C56A2B:<Copper Protection>]
 		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
-		{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
+		{$Tooltips.AS} [c/FFFFFF:<Flash Attack>]
 		- Dash and attack the enemy.
 		'''
 }
@@ -88,9 +88,9 @@ TinKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/ADAC58:<Tin Protection>]
+		{$Tooltips.PS} [c/ADAC58:<Tin Protection>]
 		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
-		{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
+		{$Tooltips.AS} [c/FFFFFF:<Flash Attack>]
 		- Dash and attack the enemy.
 		'''
 }
@@ -100,9 +100,9 @@ IronKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/A79862:<Iron Protection>]
+		{$Tooltips.PS} [c/A79862:<Iron Protection>]
 		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
-		{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
+		{$Tooltips.AS} [c/FFFFFF:<Flash Attack>]
 		- Dash and attack the enemy.
 		'''
 }
@@ -112,9 +112,9 @@ LeadKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/6B8C9E:<Lead Protection>]
+		{$Tooltips.PS} [c/6B8C9E:<Lead Protection>]
 		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
-		{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
+		{$Tooltips.AS} [c/FFFFFF:<Flash Attack>]
 		- Dash and attack the enemy.
 		'''
 }
@@ -124,9 +124,9 @@ SilverKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/B5BCBF:<Silver Protection>]
+		{$Tooltips.PS} [c/B5BCBF:<Silver Protection>]
 		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
-		{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
+		{$Tooltips.AS} [c/FFFFFF:<Flash Attack>]
 		- Dash and attack the enemy.
 		'''
 }
@@ -136,9 +136,9 @@ TungstenKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/C4E5C2:<Tungsten Protection>]
+		{$Tooltips.PS} [c/C4E5C2:<Tungsten Protection>]
 		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
-		{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
+		{$Tooltips.AS} [c/FFFFFF:<Flash Attack>]
 		- Dash and attack the enemy.
 		'''
 }
@@ -148,9 +148,9 @@ GoldKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/D5DA5D:<Gold Protection>]
+		{$Tooltips.PS} [c/D5DA5D:<Gold Protection>]
 		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
-		{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
+		{$Tooltips.AS} [c/FFFFFF:<Flash Attack>]
 		- Dash and attack the enemy.
 		'''
 }
@@ -160,9 +160,9 @@ PlatinumKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/E6E6E6:<Platinum Protection>]
+		{$Tooltips.PS} [c/E6E6E6:<Platinum Protection>]
 		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
-		{$Tooltips.KA} [c/FFFFFF:<Flash Attack>]
+		{$Tooltips.AS} [c/FFFFFF:<Flash Attack>]
 		- Dash and attack the enemy.
 		'''
 }
@@ -172,9 +172,9 @@ AmethystKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/DB61FF:<Gem Shards>]
+		{$Tooltips.PS} [c/DB61FF:<Gem Shards>]
 		- Spawn gems that revolve around the player.
-		{$Tooltips.KA} [c/C030F5:<Gem Crusher>]
+		{$Tooltips.AS} [c/C030F5:<Gem Crusher>]
 		- Shoot compressed gems.
 		'''
 }
@@ -184,9 +184,9 @@ TopazKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/FFC600:<Gem Shards>]
+		{$Tooltips.PS} [c/FFC600:<Gem Shards>]
 		- Spawn gems that revolve around the player.
-		{$Tooltips.KA} [c/D9891A:<Gem Crusher>]
+		{$Tooltips.AS} [c/D9891A:<Gem Crusher>]
 		- Shoot compressed gems.
 		'''
 }
@@ -196,9 +196,9 @@ SapphireKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/0F94EB:<Gem Shards>]
+		{$Tooltips.PS} [c/0F94EB:<Gem Shards>]
 		- Spawn gems that revolve around the player.
-		{$Tooltips.KA} [c/056BD9:<Gem Crusher>]
+		{$Tooltips.AS} [c/056BD9:<Gem Crusher>]
 		- Shoot compressed gems.
 		'''
 }
@@ -208,9 +208,9 @@ EmeraldKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/1CBA73:<Gem Shards>]
+		{$Tooltips.PS} [c/1CBA73:<Gem Shards>]
 		- Spawn gems that revolve around the player.
-		{$Tooltips.KA} [c/03905C:<Gem Crusher>]
+		{$Tooltips.AS} [c/03905C:<Gem Crusher>]
 		- Shoot compressed gems.
 		'''
 }
@@ -220,9 +220,9 @@ RubyKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/EF3032:<Gem Shards>]
+		{$Tooltips.PS} [c/EF3032:<Gem Shards>]
 		- Spawn gems that revolve around the player.
-		{$Tooltips.KA} [c/C52528:<Gem Crusher>]
+		{$Tooltips.AS} [c/C52528:<Gem Crusher>]
 		- Shoot compressed gems.
 		'''
 }
@@ -232,9 +232,9 @@ DiamondKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/8A7FBD:<Gem Shards>]
+		{$Tooltips.PS} [c/8A7FBD:<Gem Shards>]
 		- Spawn gems that revolve around the player.
-		{$Tooltips.KA} [c/6170AE:<Gem Crusher>]
+		{$Tooltips.AS} [c/6170AE:<Gem Crusher>]
 		- Shoot compressed gems.
 		'''
 }
@@ -244,21 +244,21 @@ GrassKatana: {
 	Tooltip: '''"This legendary Japanese sword is made of grass...?"'''
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/00FF00:<Photosynthesis>]
+		{$Tooltips.PS} [c/00FF00:<Photosynthesis>]
 		- Applies the Photosynthesis Buff.
-		{$Tooltips.KA} [c/ADFF2F:<Grass Dance>]
+		{$Tooltips.AS} [c/ADFF2F:<Grass Dance>]
 		- Swinging the katana in all directions and firing leaves.
 		'''
 }
 
 VolcanoKatana: {
-	DisplayName: Volcano Katana
+	DisplayName: Kagutsuchi
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/fd3e03:<Ball of Volcano>]
+		{$Tooltips.PS} [c/fd3e03:<Ball of Volcano>]
 		- Fire a fireball as an attack.
-		{$Tooltips.KA} [c/fe7902:<Volcanic Cinder>]
+		{$Tooltips.AS} [c/fe7902:<Volcanic Cinder>]
 		- It fires volcanic projectiles whose number increases based on how long the sword is held aloft.
 		'''
 }
@@ -268,11 +268,11 @@ SacredNaginata: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/FFD700:<Guardian Angel>]
+		{$Tooltips.PS} [c/FFD700:<Guardian Angel>]
 		- Projects an holy shield that absorbs up to {0} damage. The shield grants {1} defense while active.
 		- After the shield is broken, it takes {2} seconds to charge back up.
 		- Using a healing potion fully restores the shield's durability and cooldown.
-		{$Tooltips.KA} [c/FFD700:<The Judgment>]
+		{$Tooltips.AS} [c/FFD700:<The Judgment>]
 		- Summon a sacred magic circle and shoot a bunch of blades.
 		'''
 }
@@ -282,11 +282,11 @@ TrueSacredNaginata: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/FFD700:<Guardian Archangel>]
+		{$Tooltips.PS} [c/FFD700:<Guardian Archangel>]
 		- Projects an holy shield that absorbs up to {0} damage. The shield grants {1} defense while active.
 		- After the shield is broken, it takes {2} seconds to charge back up.
 		- Using a healing potion fully restores the shield's durability and cooldown.
-		{$Tooltips.KA} [c/FFD700:<The Judgment of Trinity>]
+		{$Tooltips.AS} [c/FFD700:<The Judgment of Trinity>]
 		- Summon three magic circles and shoot beams and blades.
 		'''
 }
@@ -296,11 +296,11 @@ TerraKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} [c/00FF00:<Guardian of Terra>]
+		{$Tooltips.PS} [c/00FF00:<Guardian of Terra>]
 		- Projects an terra shield that absorbs up to {0} damage. The shield grants {1} defense while active.
 		- After the shield is broken, it takes {2} seconds to charge back up.
 		- Using a healing potion fully restores the shield's durability and cooldown.
-		{$Tooltips.KA} [c/60F860:<Terra Destruction>]
+		{$Tooltips.AS} [c/60F860:<Terra Destruction>]
 		- Press and hold the Right-click to aim. And press the Left-click to disable auto-aiming on enemies.
 		- When released, it teleports and unleashes a continuous barrage of slashes.
 		- During the slash, the player takes no damage, and the final slash brings down a bolt of lightning.
@@ -313,9 +313,9 @@ ObsidianKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} <Obsidian Protection>
+		{$Tooltips.PS} <Obsidian Protection>
 		- 
-		{$Tooltips.KA} <>
+		{$Tooltips.AS} <>
 		- 
 		'''
 }
@@ -325,9 +325,9 @@ EnchantedKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} <>
+		{$Tooltips.PS} <>
 		- 
-		{$Tooltips.KA} <>
+		{$Tooltips.AS} <>
 		- 
 		'''
 }
@@ -337,9 +337,9 @@ SkyKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} <>
+		{$Tooltips.PS} <>
 		- Fires a total of {0} feathers during a double jump.
-		{$Tooltips.KA} <>
+		{$Tooltips.AS} <>
 		- 
 		'''
 }
@@ -349,9 +349,9 @@ LightsSlasher: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.KS} <Oboro Style>
+		{$Tooltips.PS} <Oboro Style>
 		- 
-		{$Tooltips.KA} <Haze Step>
+		{$Tooltips.AS} <Haze Step>
 		- 
 		'''
 }
@@ -361,9 +361,9 @@ NightKatana: {
 	Tooltip: Work is Progress...
 	FunctionText:
 		'''
-		{$Tooltips.KS} <>
+		{$Tooltips.PS} <>
 		- 
-		{$Tooltips.KA} <>
+		{$Tooltips.AS} <>
 		- 
 		'''
 }

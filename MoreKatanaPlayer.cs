@@ -25,7 +25,7 @@ namespace MoreKatana
 
         // -------- Cooldown --------
         public int ActiveSkillCD;
-        public int ActiveSkillCDMax;
+        public int ActiveSkillCDMax = 1;
         public int CounterattackCD;
         public int ShieldCD;
 
