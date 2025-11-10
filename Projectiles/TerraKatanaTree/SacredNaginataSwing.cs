@@ -125,22 +125,16 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
         public override bool PreDraw(ref Color lightColor)
         {
             Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
-
             Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-            Rectangle rectangle = new Rectangle(0, 0, texture.Width, texture.Height);
-            Vector2 origin = rectangle.Size() / 2f;
-
-            Color color = Projectile.GetAlpha(lightColor);
             Color glowColor = Color.White * Projectile.Opacity;
             Color trailColor = TrailColor * Projectile.Opacity;
 
-            SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            SpriteEffects spriteEffects2 = SwingDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
-
+            // バックグローの描画
             if (Progress != 1f)
-                DrawBackglow(texture, position, rectangle, glowColor with { A = 0 }, Projectile.rotation, 4f * (1 - Progress), new Vector2(Projectile.scale), spriteEffects | spriteEffects2);
+                DrawBackglow(texture, position, null, glowColor with { A = 0 }, Projectile.rotation, 4f * (1 - Progress), new Vector2(Projectile.scale), SwingEffectsHV());
 
-            Main.EntitySpriteDraw(texture, position, rectangle, color, Projectile.rotation, origin, Projectile.scale, spriteEffects | spriteEffects2, 0);
+            // 武器本体の描画
+            DrawBasicSword(texture, Projectile.Center);
 
             // 剣先にスパークルを描画する
             Vector2 offset = DirectionToProj * 80f;

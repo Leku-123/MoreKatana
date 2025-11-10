@@ -60,11 +60,8 @@ namespace MoreKatana.Projectiles.Metal
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
-            Texture2D glowTex = ModContent.Request<Texture2D>(GlowTexture).Value;
-            Vector2 position = Projectile.Center - Main.screenPosition;
-            DrawBasicSword(texture, position, Projectile.GetAlpha(lightColor));
-            DrawBasicSword(glowTex, position, Color.White * Projectile.Opacity);
+            DrawBasicSword(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center, Projectile.GetAlpha(lightColor));
+            DrawBasicSword(ModContent.Request<Texture2D>(GlowTexture).Value, Projectile.Center);
             return false;
         }
     }
