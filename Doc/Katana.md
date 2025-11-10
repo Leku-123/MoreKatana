@@ -1,52 +1,54 @@
 ﻿# 刀一覧
 
 ## -------- Vanilla --------
-| クラス(ローカライズ) | 実装状況 | 管轄 | 備考 |
-| :-------------:| :------------:| :-------------: | :-------------|
-| Katana   | **Done** | もりりん | 発射体跳ね返しの同期が不安定です |
-| Muramasa | **Done** | もりりん | 自クライアントのクローンが行うスイングが他クライアントでスポーンしませんが、ゲームプレイ上では致命的な不具合ではありません |
+| クラス(ローカライズ) | 実装状況 | 備考 |
+| :-------------:| :------------: | :-------------: |
+| Katana   | **Done** | 発射体跳ね返しの同期が不安定です -もりりん |
+| Muramasa | **Done** | 自クライアントのクローンが行うスイングが他クライアントでスポーンしませんが、ゲームプレイ上では致命的な不具合ではありません -もりりん |
 
 ## -------- Gem --------
-| クラス(ローカライズ) | 実装状況 | 管轄 | 備考 |
-| :-------------:| :------------:| :-------------: | :-------------|
-| Amethyst Katana     | **Done** | もりりん ||
-| Ruby Katana         | **Done** | もりりん ||
-| Emerald Katana      | **Done** | もりりん ||
-| Sapphire Katana     | **Done** | もりりん ||
-| Topaz Katana        | **Done** | もりりん ||
-| Diamond Katana      | **Done** | もりりん ||
-| Katana of Ornaments | 未実装 | もりりん ||
+| クラス(ローカライズ) | 実装状況 | 備考 |
+| :-------------:| :------------: | :-------------: |
+| Amethyst Katana     | **Done** ||
+| Ruby Katana         | **Done** ||
+| Emerald Katana      | **Done** ||
+| Sapphire Katana     | **Done** ||
+| Topaz Katana        | **Done** ||
+| Diamond Katana      | **Done** ||
+| Katana of Ornaments | 未実装 | 余裕ができたら追加予定 -もりりん ||
 
 ## -------- Metal --------
-| クラス(ローカライズ) | 実装状況 | 管轄 | 備考 |
-| :-------------:| :------------:| :-------------: | :-------------|
-| Tin Katana      | **Done** | もりりん ||
-| Copper Katana   | **Done** | もりりん ||
-| Iron Katana     | **Done** | もりりん ||
-| Lead Katana     | **Done** | もりりん ||
-| Silver Katana   | **Done** | もりりん ||
-| Tungsten Katana | **Done** | もりりん ||
-| Gold Katana     | **Done** | もりりん ||
-| Platinum Katana | **Done** | もりりん ||
-| Obsidian Katana | **Done** | かつ丼 | マルチ検証したけど不十分かもだからチェックしてね -もりりん |
+| クラス(ローカライズ) | 実装状況 |備考 |
+| :-------------:| :------------: | :-------------: |
+| Tin Katana      | **Done** ||
+| Copper Katana   | **Done** ||
+| Iron Katana     | **Done** ||
+| Lead Katana     | **Done** ||
+| Silver Katana   | **Done** ||
+| Tungsten Katana | **Done** ||
+| Gold Katana     | **Done** ||
+| Platinum Katana | **Done** ||
+| Obsidian Katana | **Done** ||
 
 ## -------- Misc --------
-| クラス(ローカライズ) | 実装状況 | 管轄 | 備考 |
-| :-------------:| :------------:| :-------------: | :-------------|
-| Enchanted Katana | **WIP** | かつ丼 | 要マルチ確認 |
-| Sky Katana       | **WIP** | かつ丼 | 発射体制作、要マルチ確認 |
+| クラス(ローカライズ) | 実装状況 | 備考 |
+| :-------------:| :------------: | :-------------: |
+| Enchanted Katana | **WIP** | 要マルチ確認 -もりりん |
+| Sky Katana       | **WIP** | 要マルチ確認 -もりりん |
 
 ## -------- TerraKatanaTree --------
-| クラス(ローカライズ) | 実装状況 | 管轄 | 備考 |
-| :-------------:| :------------:| :-------------: | :-------------|
-| Grass Katana (Kusanagi)            | **Done** | もりりん ||
-| Volcano Katana (Kagutsuchi)        | **WIP** | かつ丼 | 発射体制作、要マルチ確認 |
-| Lights Slasher (Murasame)          | **WIP** | mga | 要マルチ確認 |
-| Sacred Naginata (Gaeborg)          | **Done** | もりりん ||
-| TrueSacred Naginata (True Gaeborg) | **Done** | もりりん ||
-| Terra Katana                       | **Done** | もりりん ||
+| クラス(ローカライズ) | 実装状況 | 備考 |
+| :-------------:| :------------: | :-------------: |
+| Grass Katana (Kusanagi)            | **Done** ||
+| Volcano Katana (Kagutsuchi)        | **WIP** | 要マルチ確認 -もりりん |
+| Lights Slasher (Murasame)          | **WIP** | もりりんとmgaが相談しながら演出制作 |
+| NightKatana (Tsukuyomi)            | **WIP** | 製作中 -かつ丼 |
+| TrueNightKatana (True Tsukuyomi)   | 未実装 ||
+| Sacred Naginata (Gaeborg)          | **Done** ||
+| TrueSacred Naginata (True Gaeborg) | **Done** ||
+| Terra Katana                       | **Done** ||
 
 ## -------- Wood --------
-| クラス(ローカライズ) | 実装状況 | 管轄 | 備考 |
-| :-------------:| :------------:| :-------------: | :-------------|
-| Wooden Katana | **Done** | もりりん ||
+| クラス(ローカライズ) | 実装状況 | 備考 |
+| :-------------:| :------------: | :-------------: |
+| Wooden Katana | **Done** ||
