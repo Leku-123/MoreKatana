@@ -1,0 +1,97 @@
+KatanaSlot.Katana: Katana
+
+Tooltips: {
+	DefaultText: - Shiftで詳細表示 -
+	ActiveSkillCD: クールダウン
+	Second: 秒
+	Life: ライフ
+	GetIt: 手に入れる
+	# Passive Skill
+	PS: 刀式
+	# Active Skill
+	AS: 秘剣
+}
+
+Configs: {
+	MoreKatanaConfig: {
+		DisplayName: More Katana 設定
+
+		Headers: {
+			UI: UI
+			Miscellaneous: その他
+			VanillaRework: バニラコンテンツ変更 (変更後は再読み込みが必要)
+			WorldGen: ワールド生成
+			Particle: エフェクト設定
+		}
+
+		KatanaRework: {
+			Label: "[i:2273]カタナのリワーク"
+			Tooltip: 変更後は再読み込みが必要です
+		}
+
+		MuramasaRework: {
+			Label: "[i:155]ムラサメのリワーク"
+			Tooltip: 変更後は再読み込みが必要です
+		}
+
+		UIPosLock: {
+			Label: UI位置を固定
+			Tooltip: ""
+		}
+
+		CustomAccSlotPosX: {
+			Label: カタナスロット (X方向)
+			Tooltip: ""
+		}
+
+		CustomAccSlotPosY: {
+			Label: カタナスロット (Y方向)
+			Tooltip: ""
+		}
+
+		ScreenShakePower: {
+			Label: 画面揺れ強度
+			Tooltip: ""
+		}
+
+		ForgottenAltar: {
+			Label: 忘れられた祭壇を有効化
+			Tooltip: ""
+		}
+
+		CustomActiveSkillCDPosX: {
+			Label: 秘剣　クールダウンゲージ (X方向)
+			Tooltip: ""
+		}
+
+		CustomActiveSkillCDPosY: {
+			Label: 秘剣　クールダウンゲージ (Y方向)
+			Tooltip: ""
+		}
+
+		MaxParticles: {
+			Label: 最大パーティクル数
+			Tooltip: ""
+		}
+
+		ForegroundParticles: {
+			Label: 前景パーティクル
+			Tooltip: ""
+		}
+	}
+}
+
+WorldGen.ForgottenAltarMessage: 忘れられた祭壇がより風化して行く...
+
+Tiles: {
+	SamuraiStatue.MapEntry: 侍の石像
+	SamuraiStatueGift.MapEntry: 侍の石像のギフト
+	SamuraiStatueGiftDecorative.MapEntry: 侍の石像のギフト
+}
+
+Biomes: {
+	ForgottenAltarBiome: {
+		DisplayName: 忘れられた祭壇
+		TownNPCDialogueName: 忘れられた祭壇
+	}
+}
