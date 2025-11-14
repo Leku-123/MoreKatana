@@ -1,0 +1,62 @@
+# -------- Gem --------
+GemShards_Topaz.DisplayName: Topaz Shard
+GemShards_Sapphire.DisplayName: Sapphire Shard
+GemShards_Ruby.DisplayName: Ruby Shard
+GemShards_Emerald.DisplayName: Emerald Shard
+GemShards_Diamond.DisplayName: Diamond Shard
+GemShards_Amethyst.DisplayName: Amethyst Shard
+# -------- Metal --------
+ObsidianSwing.DisplayName: Obsidian Swing
+# -------- Misc --------
+KatanaHoldout.DisplayName: Katana
+KatanaSwing.DisplayName: Katana
+KatanaSlash.DisplayName: Katana Slash
+KatanaSlashHoldout.DisplayName: Katana Slash
+KatanaSlashEffect.DisplayName: Katana Slash
+ChargingSkyKatana.DisplayName: Sky Katana
+SkyTornado.DisplayName: Sky Tornado
+SkyFeather.DisplayName: Sky Feather
+EnchantedKatanaBeam.DisplayName: Enchanted Beam
+# -------- TerraKatanaTree --------
+GrassLeaf.DisplayName: Grass Leaf
+GrassKatanaSwing.DisplayName: Kusanagi
+GrassKatanaDance2.DisplayName: Kusanagi
+GrassKatanaDance.DisplayName: Kusanagi
+SacredNaginataSwing.DisplayName: Gaeborg
+SacredNaginataHoldout.DisplayName: Gaeborg
+SacredEdge.DisplayName: Sacred Edge
+TrueSacredNaginataSwing.DisplayName: True Gaeborg
+TrueSacredNaginataHoldout.DisplayName: True Gaeborg
+TrueSacredBeam.DisplayName: Sacred Beam
+TrueSacredSecondaryMagicCircle.DisplayName: Sacred Magic Circle
+MuramasaGhost.DisplayName: Muramasa Ghost
+MuramasaGhostSwing.DisplayName: Muramasa
+MuramasaSlash.DisplayName: Muramasa
+MuramasaCounterattack.DisplayName: Muramasa Counterattack
+MuramasaCounterattackSwing.DisplayName: Muramasa Counterattack
+LightsTeleport.DisplayName: Lights Teleport
+LightsTeleportSwing.DisplayName: Lights Teleport
+TerraKatanaSwing.DisplayName: Terra Katana
+TerraWave.DisplayName: Terra Wave
+TerraOrb.DisplayName: Terra Orb
+TerraEdge.DisplayName: Terra Edge
+TerraBeam.DisplayName: Terra Beam
+TerraDestructionHoldout.DisplayName: Terra Destruction
+TerraDestructionBase.DisplayName: Terra Destruction
+TerraSlash.DisplayName: Terra Slash
+TerraLightning.DisplayName: Terra Lightning
+VolcanoKatanaHoldout.DisplayName: Kagutsuchi
+VolcanicEruptionRock.DisplayName: Volcanic Eruption Rock
+# -------- Wood --------
+ChargingWoodenSwing.DisplayName: Wooden Katana
+# -------- General --------
+Empty.DisplayName: Empty
+GeneralKatanaSwing.DisplayName: Katana
+GeneralDashSlash.DisplayName: Dash Slash
+ShockWaveEffect.DisplayName: Shockwave
+# -------- Not yet --------
+VolcanoKatanaHoldUp.DisplayName: Volcano Katana Hold Up
+VolcanicCinder.DisplayName: Volcanic Cinder
+ObsidianSlash.DisplayName: Obsidian Slash
+ObsidianSwing2.DisplayName: Obsidian Swing2
+ObsidianKatanaHoldout.DisplayName: Obsidian Katana Holdout
