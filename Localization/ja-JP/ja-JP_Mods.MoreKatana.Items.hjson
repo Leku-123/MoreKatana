@@ -1,0 +1,375 @@
+DebugItem: デバッグアイテム
+SetupFirstStatue.DisplayName: 像の初期セットアップ
+ResetSeenBiomeFlag.DisplayName: 初回バイオーム検知のリセット
+ResetCD.DisplayName: クールダウンをリセット
+
+THXForPlaying: {
+	DisplayName: More Katana を遊んでくれてありがとう！
+	Tooltip:
+		'''
+		このMODの武器には特別なスキルがあります。
+		[c/CC0000:{$Tooltips.PS}] はパッシブスキルです。
+		武器を持っている間、自動的に発動します。
+		一部武器はアクセサリーとしても機能します。（刀用スロットに装備）
+
+		[c/CC0000:{$Tooltips.AS}] はアクティブスキルです。
+		右クリックで発動し、クールダウンは全武器で共有されます。
+
+		各武器の詳しいスキル説明は、それぞれのツールチップに記載しています。
+		この他にもいくつか追加要素がありますよ！（まだ未完成...かもだけど！）
+		良かったらWikiも見てね！
+
+		このアイテムを使うと Wiki が開かれるから！ ;)
+		'''
+}
+
+# -------- Materials --------
+BrokenHeroKatana: {
+	DisplayName: 壊れた英雄のカタナ
+	Tooltip: ""
+}
+
+# -------- Placeables --------
+SamuraiStatue: {
+	DisplayName: 侍の石像
+	Tooltip: ""
+}
+
+SamuraiStatueGift: {
+	DisplayName: 侍の石像 (ギフト)
+	Tooltip: ""
+}
+
+# -------- Weapons --------
+Katana: {
+	Tooltip: '''「実に使用者の技量を問われるカタナだ」'''
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/FFD700:<テクニカル戦法>]
+		- 通常攻撃が溜め攻撃に変化する
+		- 最大まで溜めた攻撃は、敵の飛び道具を弾き返す (ボスには無効)
+		{$Tooltips.AS} [c/FFFFFF:<閃光の如し>]
+		- 敵に対して、最大6回の連続ダッシュ攻撃を与える
+		'''
+}
+
+Muramasa: {
+	Tooltip: '''「呪いさえも味方につけろ！」'''
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/0000FA:<怨念返し>]
+		- 被弾時、カタナに宿る霊が反撃する
+		{$Tooltips.AS} [c/0000CD:<血に飢えた亡霊>]
+		- 10秒間亡霊を召喚する
+		- 亡霊はプレイヤーの攻撃に合わせ追撃を加える
+		'''
+}
+
+WoodenKatana: {
+	DisplayName: 木のカタナ
+	Tooltip: '''「硬くて頑丈」'''
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/A3A3A3:<なし>]
+		{$Tooltips.AS} [c/A6512B:<チャージ攻撃>]
+		- 力強く振り下ろす
+		'''
+}
+
+CopperKatana: {
+	DisplayName: 銅のカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/C56A2B:<銅の守護>]
+		- 防御が{0}増加。装備している防具と鉱石が一致すると、さらに{1}ボーナス
+		{$Tooltips.AS} [c/FFFFFF:<電光斬>]
+		- 素早くダッシュし斬りかかる
+		'''
+}
+
+TinKatana: {
+	DisplayName: 錫のカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/ADAC58:<錫の守護>]
+		- 防御が{0}増加。装備している防具と鉱石が一致すると、さらに{1}ボーナス
+		{$Tooltips.AS} [c/FFFFFF:<電光斬>]
+		- 素早くダッシュし斬りかかる
+		'''
+}
+
+IronKatana: {
+	DisplayName: 鉄のカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/A79862:<鉄の守護>]
+		- 防御が{0}増加。装備している防具と鉱石が一致すると、さらに{1}ボーナス
+		{$Tooltips.AS} [c/FFFFFF:<電光斬>]
+		- 素早くダッシュし斬りかかる
+		'''
+}
+
+LeadKatana: {
+	DisplayName: 鉛のカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/6B8C9E:<鉛の守護>]
+		- 防御が{0}増加。装備している防具と鉱石が一致すると、さらに{1}ボーナス
+		{$Tooltips.AS} [c/FFFFFF:<電光斬>]
+		- 素早くダッシュし斬りかかる
+		'''
+}
+
+SilverKatana: {
+	DisplayName: 銀のカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/B5BCBF:<銀の守護>]
+		- 防御が{0}増加。装備している防具と鉱石が一致すると、さらに{1}ボーナス
+		{$Tooltips.AS} [c/FFFFFF:<電光斬>]
+		- 素早くダッシュし斬りかかる
+		'''
+}
+
+TungstenKatana: {
+	DisplayName: タングステンのカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/C4E5C2:<タングステンの守護>]
+		- 防御が{0}増加。装備している防具と鉱石が一致すると、さらに{1}ボーナス
+		{$Tooltips.AS} [c/FFFFFF:<電光斬>]
+		- 素早くダッシュし斬りかかる
+		'''
+}
+
+GoldKatana: {
+	DisplayName: 金のカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/D5DA5D:<金の守護>]
+		- 防御が{0}増加。装備している防具と鉱石が一致すると、さらに{1}ボーナス
+		{$Tooltips.AS} [c/FFFFFF:<電光斬>]
+		- 素早くダッシュし斬りかかる
+		'''
+}
+
+PlatinumKatana: {
+	DisplayName: プラチナのカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/E6E6E6:<プラチナの守護>]
+		- 防御が{0}増加。装備している防具と鉱石が一致すると、さらに{1}ボーナス
+		{$Tooltips.AS} [c/FFFFFF:<電光斬>]
+		- 素早くダッシュし斬りかかる
+		'''
+}
+
+AmethystKatana: {
+	DisplayName: アメジストのカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/DB61FF:<宝石の欠片>]
+		- 自身の周囲に宝石を回転させる
+		{$Tooltips.AS} [c/C030F5:<宝石砲撃>]
+		- 宝石を圧縮して射出する
+		'''
+}
+
+TopazKatana: {
+	DisplayName: トパーズのカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/FFC600:<宝石の欠片>]
+		- 自身の周囲に宝石を回転させる
+		{$Tooltips.AS} [c/D9891A:<宝石砲撃>]
+		- 宝石を圧縮して射出する
+		'''
+}
+
+SapphireKatana: {
+	DisplayName: サファイアのカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/0F94EB:<宝石の欠片>]
+		- 自身の周囲に宝石を回転させる
+		{$Tooltips.AS} [c/056BD9:<宝石砲撃>]
+		- 宝石を圧縮して射出する
+		'''
+}
+
+EmeraldKatana: {
+	DisplayName: エメラルドのカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/1CBA73:<宝石の欠片>]
+		- 自身の周囲に宝石を回転させる
+		{$Tooltips.AS} [c/03905C:<宝石砲撃>]
+		- 宝石を圧縮して射出する
+		'''
+}
+
+RubyKatana: {
+	DisplayName: ルビーのカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/EF3032:<宝石の欠片>]
+		- 自身の周囲に宝石を回転させる
+		{$Tooltips.AS} [c/C52528:<宝石砲撃>]
+		- 宝石を圧縮して射出する
+		'''
+}
+
+DiamondKatana: {
+	DisplayName: ダイヤモンドのカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/8A7FBD:<宝石の欠片>]
+		- 自身の周囲に宝石を回転させる
+		{$Tooltips.AS} [c/6170AE:<宝石砲撃>]
+		- 宝石を圧縮して射出する
+		'''
+}
+
+GrassKatana: {
+	DisplayName: クサナギ
+	Tooltip: '''「『伝説のカタナ』...植物製？」'''
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/00FF00:<光合成>]
+		- 光合成の力を得る
+		{$Tooltips.AS} [c/ADFF2F:<草舞の太刀>]
+		- 周囲を斬り払いながら、葉をまき散らす
+		'''
+}
+
+VolcanoKatana: {
+	DisplayName: カグツチ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/fd3e03:<>]
+		- 
+		{$Tooltips.AS} [c/fe7902:<>]
+		- カタナを掲げた時間に応じて、複数の火山球を発射する
+		'''
+}
+
+SacredNaginata: {
+	DisplayName: ゲイボルグ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/FFD700:<守護天使>]
+		- 最大 {0} ダメージを吸収する聖なる盾を展開
+		- 盾がある間、防御力が{1}増加
+		- 盾が壊れた後、{2} 秒で再展開
+		- 回復ポーション使用時、盾が完全回復する
+		{$Tooltips.AS} [c/FFD700:<審判の光>]
+		- 魔法陣を展開し、聖なる刃を連射する
+		'''
+}
+
+TrueSacredNaginata: {
+	DisplayName: トゥルー・ゲイボルグ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/FFD700:<大いなる守護天使>]
+		- 最大 {0} ダメージを吸収する聖なる盾を展開
+		- 盾がある間、防御力が{1}増加
+		- 盾が壊れた後、{2} 秒で再展開
+		- 回復ポーション使用時、盾が完全回復する
+		{$Tooltips.AS} [c/FFD700:<三位一体の裁き>]
+		- 3つの魔法陣を展開し、光線と刃を放つ
+		'''
+}
+
+TerraKatana: {
+	DisplayName: テラカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/00FF00:<テラ・ガーディアン>]
+		- 最大 {0} ダメージを吸収するテラ・シールドを展開
+		- 盾がある間、防御力が{1}増加
+		- 回復ポーション使用時、盾が完全回復する
+		{$Tooltips.AS} [c/60F860:<テラ・デストラクション>]
+		- 右クリック長押しで狙いを定め、離して連撃を放つ
+		- 斬撃中はダメージを受けず、最後の斬撃で雷撃が降り注ぐ
+		'''
+}
+
+ObsidianKatana: {
+	DisplayName: 黒曜石のカタナ
+	AltName: 溶岩のカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} <黒曜石の守護>
+		- 
+		{$Tooltips.AS} <>
+		- 
+		'''
+}
+
+EnchantedKatana: {
+	DisplayName: エンチャントカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} <>
+		- 
+		{$Tooltips.AS} <>
+		- 
+		'''
+}
+
+SkyKatana: {
+	DisplayName: 天空のカタナ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} <>
+		- 二段ジャンプ時、合計 {0} 本の羽を放つ
+		{$Tooltips.AS} <>
+		- 
+		'''
+}
+
+LightsSlasher: {
+	DisplayName: ムラサメ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} <朧の型>
+		- 
+		{$Tooltips.AS} <霞歩き>
+		- 
+		'''
+}
+
+NightKatana: {
+	DisplayName: ツクヨミ
+	Tooltip: 作業中...
+	FunctionText:
+		'''
+		{$Tooltips.PS} <>
+		- 
+		{$Tooltips.AS} <>
+		- 
+		'''
+}
