@@ -30,7 +30,7 @@ Configs: {
 		}
 
 		MuramasaRework: {
-			Label: "[i:155]ムラサメのリワーク"
+			Label: "[i:155]ムラマサのリワーク"
 			Tooltip: 変更後は再読み込みが必要です
 		}
 
