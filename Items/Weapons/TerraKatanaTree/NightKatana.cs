@@ -1,58 +1,63 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using MoreKatana.Projectiles.TerraKatanaTree;
+using MoreKatana.Systems.CrossMod;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace MoreKatana.Items.Weapons.TerraKatanaTree
 {
-    public class NightKatana : KatanaItem
+    public class NightKatana : KatanaItem, IAddDrawLayer
     {
+        public const int MaxComboTime = 120;
 
-        private int hitNPCWhoAmI = -1;
-        private int hitCount = 0;
-        private const int MaxBonusDefense = 100;
-        private const float FastestSpeedBonus = 4;
+        public override void SetStaticDefaults()
+        {
+            Item.AddElement(RedemptionCompat.Shadow, true);
+            Item.SetSlashBonus();
+        }
 
         public override void SetDefaultsItem()
         {
             Item.width = 60;
             Item.height = 70;
 
-            Item.useTime = 25;
-            Item.useAnimation = 25;
-            Item.MKItem().UseSound = SoundID.Item1;
+            Item.useTime = 20;
+            Item.useAnimation = 20;
+            Item.MKItem().UseSound = MoreKatanaSounds.SwordSlash;
 
-            Item.damage = 40;
+            Item.damage = 34;
             Item.knockBack = 4.5f;
             Item.MKItem().AltDamage = 50;
 
             Item.value = Item.sellPrice(gold: 4);
             Item.rare = ItemRarityID.Orange;
 
-            Item.MKItem().SetKatanaDefaults(Item, 60);
+            Item.MKItem().SetKatanaDefaults(Item, 60, type: ModContent.ProjectileType<NightKatanaSwing>());
         }
 
         public override void PassiveSkill(Player player, bool equipment)
         {
-
-            player.statDefense += Math.Min(hitCount, MaxBonusDefense);
+            if (player.MKPlayer().NightComboTimer <= 0)
+                Item.MKItem().AttackType = 0;
         }
 
-        public override float UseSpeedMultiplier(Player player)
+        public override void ActiveSkill(Player player)
         {
-            return Math.Min(1 + (hitCount / 10f), FastestSpeedBonus);
+
         }
 
-        public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
-            if (target.whoAmI != hitNPCWhoAmI)
-            {
-                hitNPCWhoAmI = target.whoAmI;
-                hitCount = 1;
-                return;
-            }
+            if (Item.MKItem().AttackType == 6)
+                velocity = new Vector2(player.direction, 0);
+        }
 
-            hitCount++;
+        public override void MeleeEffects(Player player, Rectangle hitbox)
+        {
+            if (Main.rand.NextBool(3))
+                Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, Utils.SelectRandom(Main.rand, DustID.Demonite, DustID.Shadowflame));
         }
 
         public override void AddRecipes()
@@ -62,8 +67,29 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
                 .AddIngredient(ItemID.Muramasa)
                 .AddIngredient(ModContent.ItemType<GrassKatana>())
                 .AddIngredient(ModContent.ItemType<VolcanoKatana>())
-                .AddTile(TileID.Anvils)
+                .AddTile(TileID.DemonAltar)
                 .Register();
+        }
+
+        public void AdditiveDrawLayer(ref PlayerDrawSet drawinfo)
+        {
+            Player drawPlayer = drawinfo.drawPlayer;
+
+            if (drawPlayer.dead || drawPlayer.ghost || !drawPlayer.active)
+                return;
+
+            if (drawinfo.shadow != 0f)
+                return;
+
+            if (drawPlayer.ActiveItem().type != ModContent.ItemType<NightKatana>())
+                return;
+
+            if (Main.myPlayer == drawPlayer.whoAmI)
+            {
+                Vector2 gaugePos = new Vector2(drawinfo.Center.X, drawinfo.Center.Y) + new Vector2(0, 35);
+                float ratio = (float)drawPlayer.MKPlayer().NightComboTimer / MaxComboTime;
+                MoreKatanaUtil.DrawGauge(gaugePos, ratio, Color.Violet);
+            }
         }
     }
 }

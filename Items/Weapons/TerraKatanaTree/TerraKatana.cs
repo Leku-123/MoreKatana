@@ -49,7 +49,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             Item.value = Item.sellPrice(gold: 20);
             Item.rare = ItemRarityID.Yellow;
 
-            Item.MKItem().SetKatanaDefaults(Item, 10 * 60, true, ModContent.ProjectileType<TerraKatanaSwing>(), 5);
+            Item.MKItem().SetKatanaDefaults(Item, 10 * 60, false, ModContent.ProjectileType<TerraKatanaSwing>(), 5);
         }
 
         public override void PassiveSkill(Player player, bool equipment)

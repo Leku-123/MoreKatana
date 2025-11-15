@@ -22,6 +22,7 @@ namespace MoreKatana
     {
         // -------- Timer --------
         public int ExtraJumpTimer;
+        public int NightComboTimer;
 
         // -------- Cooldown --------
         public int ActiveSkillCD;
@@ -29,7 +30,7 @@ namespace MoreKatana
         public int CounterattackCD;
         public int ShieldCD;
 
-        // -------- Dash --------
+        // -------- Player Effect --------
         public bool DashState;
         public bool GeneralDash;
         public bool SuddenStop;
@@ -38,12 +39,13 @@ namespace MoreKatana
         public float DashTimerMax;
         public Vector2 DashDirection, DashStartPos, DashEndPos;
 
-        // -------- Backflip --------
         public bool Rolling;
         public int RollingCount;
         public int RollingDirection;
         public float RollingTimer;
         public float RollingTimerMax;
+
+        public int slowFallEffect;
 
         // -------- Screen Shake --------
         public int ScreenShakeTimer;
@@ -113,6 +115,7 @@ namespace MoreKatana
             ExtraJumpTimer = 0;
             GeneralDash = false;
             Rolling = false;
+            slowFallEffect = 0;
             NoUsingItems = 0;
             ShieldCD = 0;
             HolyShieldDurability = 0;
@@ -181,6 +184,9 @@ namespace MoreKatana
 
         public override void PostUpdateMiscEffects()
         {
+            if (NightComboTimer > 0)
+                NightComboTimer--;
+
             // クールダウン
             if (ActiveSkillCD > 0)
                 ActiveSkillCD--;
@@ -188,6 +194,11 @@ namespace MoreKatana
                 CounterattackCD--;
             if (ShieldCD > 0)
                 ShieldCD--;
+
+            if (slowFallEffect > 0)
+                Player.slowFall = true;
+            if (slowFallEffect > 0)
+                slowFallEffect--;
 
             // ForgottenAltarのシーン効果
             if (ForgottenAltarEffect > 0)
