@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Items;
 using MoreKatana.Particles;
 using MoreKatana.Projectiles.PrimTrails;
 using Terraria;
@@ -38,6 +39,8 @@ namespace MoreKatana.Utilities
         {
             orig.Invoke(ref drawinfo);
             MoreKatanaPlayer.AddRenderDrawLayers(ref drawinfo);
+
+            AddDrawLayerManager.DrawAdditiveLayers(ref drawinfo);
         }
 
         private static void DrawPlayer_TransformDrawData(On_PlayerDrawLayers.orig_DrawPlayer_TransformDrawData orig, ref PlayerDrawSet drawinfo)
