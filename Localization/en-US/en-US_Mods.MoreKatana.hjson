@@ -6,6 +6,7 @@ Tooltips: {
 	Second: sec.
 	Life: Life
 	GetIt: Get it!
+	CooldownOver: Cooldown over!
 	# Passive Skill
 	PS: Katana Spell
 	# Active Skill

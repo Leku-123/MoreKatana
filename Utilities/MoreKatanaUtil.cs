@@ -422,7 +422,7 @@ namespace MoreKatana
             {
                 for (int i = 0; i < 2; i++)
                 {
-                    int newDust = Dust.NewDust(new Vector2(frontPos.X + (frontSize.X * ratio) - 3f, frontPos.Y - 3f), 1, (int)frontSize.Y * 2, dustType, Main.rand.Next(2, 3), 0, 150, default, 0.5f);
+                    int newDust = Dust.NewDust(new Vector2(frontPos.X + (frontSize.X * ratio) - 3f, frontPos.Y - 3f) + Main.screenPosition, 1, (int)frontSize.Y * 2, dustType, Main.rand.Next(2, 3), 0, 150, default, 0.5f);
                     Main.dust[newDust].fadeIn = 0;
                     Main.dust[newDust].noGravity = true;
                 }

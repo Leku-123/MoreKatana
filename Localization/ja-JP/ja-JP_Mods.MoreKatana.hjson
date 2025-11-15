@@ -1,4 +1,4 @@
-KatanaSlot.Katana: Katana
+KatanaSlot.Katana: カタナ
 
 Tooltips: {
 	DefaultText: - Shiftで詳細表示 -
@@ -6,6 +6,7 @@ Tooltips: {
 	Second: 秒
 	Life: ライフ
 	GetIt: 手に入れる
+	CooldownOver: 秘剣準備完了！
 	# Passive Skill
 	PS: 刀式
 	# Active Skill

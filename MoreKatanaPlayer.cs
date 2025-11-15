@@ -259,7 +259,7 @@ namespace MoreKatana
             {
                 SoundEngine.PlaySound(MoreKatanaSounds.DrawSword, Player.position);
                 Rectangle textPos = new Rectangle((int)Player.position.X, (int)Player.position.Y - 20, Player.width, Player.height);
-                CombatText.NewText(textPos, Color.OrangeRed, "Cooldown over!");
+                CombatText.NewText(textPos, Color.OrangeRed, MoreKatanaUtil.GetTextValue("Tooltips.CooldownOver"));
             }
 
             if (ShieldCD == 1)

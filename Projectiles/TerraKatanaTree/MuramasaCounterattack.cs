@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MoreKatana.Projectiles.Base;
+using MoreKatana.Projectiles.PrimTrails;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -177,6 +178,23 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f);
             public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f);
             public override float GetProgress(int type) => PiecewiseAnimation(Progress, execute, unwind);
+
+            public override void DrawTrail(int type)
+            {
+                if (Timer > 1f)
+                {
+                    // トレイルを描画する
+                    if (!PrimsCreated)
+                    {
+                        PrimsCreated = true;
+                        SwordTrail = new CustomSwordPrimTrail(Projectile, TrailColor, SwordLength, (int)(SwingTime * 1.5f));
+                        MoreKatana.primitives.CreateTrail(SwordTrail);
+                    }
+
+                    // トレイルの情報を更新する
+                    UpdateTrail(SwordTrail, GetProgress(type) >= 0.95f, center: HostProj.Center, width: SwordLength);
+                }
+            }
         }
     }
 }
