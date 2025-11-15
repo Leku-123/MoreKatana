@@ -2,7 +2,7 @@ PhotosynthesisBuff: {
 	DisplayName: 光合成の力
 	Description:
 		'''
-		昼間：防御力が3増加し、ライフ自然回復を5増進
+		昼間：防御力が3増加し、ライフ自然回復を増進
 		夜間：緑色に発光する
 		'''
 }

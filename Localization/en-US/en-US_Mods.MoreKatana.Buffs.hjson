@@ -2,7 +2,7 @@ PhotosynthesisBuff: {
 	DisplayName: Photosynthesis Buff
 	Description:
 		'''
-		Daytime : +3 defense, +5 life regeneration.
+		Daytime : +3 defense, Provides life regeneration.
 		Nighttime : Provide green light.
 		'''
 }
