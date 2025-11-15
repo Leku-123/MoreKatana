@@ -556,12 +556,6 @@ namespace MoreKatana
         }
 
         // ここらへんはもうちょっと良い方法を考える
-        public static void AddRenderDrawLayers(ref PlayerDrawSet drawinfo)
-        {
-            SacredNaginata.DrawHolyShield(ref drawinfo);
-            TrueSacredNaginata.DrawTrueHolyShield(ref drawinfo);
-            TerraKatana.DrawTerraShield(ref drawinfo);
-        }
         public static void AddRenderUI(SpriteBatch spriteBatch, Player player)
         {
             //ForgottenAltarDisplay.Draw(spriteBatch, player);

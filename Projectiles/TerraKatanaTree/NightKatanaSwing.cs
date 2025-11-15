@@ -156,7 +156,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     Projectile.MKProj().Bool[0] = true;
                     SoundEngine.PlaySound(SoundID.Tink, Owner.position);
                     Rectangle textPos = new Rectangle((int)Owner.position.X, (int)Owner.position.Y - 20, Owner.width, Owner.height);
-                    CombatText.NewText(textPos, Color.Violet, "Max Combo!", true, true);
+                    CombatText.NewText(textPos, Color.Purple, GetTextValue("Tooltips.MaxCombo"), true, true);
                 }
             }
             else if (SwingType != 7)
@@ -168,7 +168,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     Projectile.MKProj().Bool[0] = true;
                     SoundEngine.PlaySound(SoundID.Tink, Owner.position);
                     Rectangle textPos = new Rectangle((int)Owner.position.X, (int)Owner.position.Y - 20, Owner.width, Owner.height);
-                    CombatText.NewText(textPos, Color.Violet, SwingType + 1 + "Combo!", true, true);
+                    CombatText.NewText(textPos, Color.Purple, SwingType + 1 + GetTextValue("Tooltips.Combo"), true, true);
                 }
             }
         }

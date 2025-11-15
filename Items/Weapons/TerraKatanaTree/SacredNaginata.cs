@@ -15,7 +15,7 @@ using Terraria.UI.Chat;
 
 namespace MoreKatana.Items.Weapons.TerraKatanaTree
 {
-    public class SacredNaginata : KatanaItem
+    public class SacredNaginata : KatanaItem, IAddDrawLayer
     {
         public static int ShieldRechargeTime = 30 * 60;
         public static int ShieldDurabilityMax = 50;
@@ -88,16 +88,15 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
                 .Register();
         }
 
-        private static Vector2 ShieldCenter;
-
-        public static void DrawHolyShield(ref PlayerDrawSet drawInfo)
+        private Vector2 ShieldCenter;
+        public void AdditiveDrawLayer(ref PlayerDrawSet drawinfo)
         {
-            Player drawPlayer = drawInfo.drawPlayer;
+            Player drawPlayer = drawinfo.drawPlayer;
 
             if (drawPlayer.dead || drawPlayer.ghost || !drawPlayer.active)
                 return;
 
-            if (drawInfo.shadow != 0f)
+            if (drawinfo.shadow != 0f)
                 return;
 
             if (!drawPlayer.MKPlayer().holyShield)
@@ -134,7 +133,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
                 // クールダウンがない場合はシールドを描画する
                 if (drawPlayer.MKPlayer().ShieldCD <= 0)
-                    Main.spriteBatch.Draw(texture, ShieldCenter - Main.screenPosition, rectangle, shieldColor with { A = 0 }, 0f, origin, shieldScale, SpriteEffects.None, 0);
+                    Main.spriteBatch.Draw(texture, ShieldCenter + new Vector2(0, drawPlayer.gfxOffY) - Main.screenPosition, rectangle, shieldColor with { A = 0 }, 0f, origin, shieldScale, SpriteEffects.None, 0);
             }
 
             if (Main.myPlayer == drawPlayer.whoAmI)
@@ -144,7 +143,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
                 float cooldownRatio = (float)drawPlayer.MKPlayer().ShieldCD / ShieldRechargeTime;
 
                 // ゲージの位置
-                Vector2 gaugePos = new Vector2(drawInfo.Center.X, drawInfo.Center.Y) + new Vector2(0, 35);
+                Vector2 gaugePos = new Vector2(drawinfo.Center.X, drawinfo.Center.Y) + new Vector2(0, 35);
 
                 // ゲージとテキストの色
                 Color c1 = Color.Gold;

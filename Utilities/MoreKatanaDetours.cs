@@ -38,8 +38,6 @@ namespace MoreKatana.Utilities
         private static void DrawPlayer_RenderAllLayers(On_PlayerDrawLayers.orig_DrawPlayer_RenderAllLayers orig, ref PlayerDrawSet drawinfo)
         {
             orig.Invoke(ref drawinfo);
-            MoreKatanaPlayer.AddRenderDrawLayers(ref drawinfo);
-
             AddDrawLayerManager.DrawAdditiveLayers(ref drawinfo);
         }
 
