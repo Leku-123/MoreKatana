@@ -358,11 +358,13 @@ LightsSlasher: {
 
 NightKatana: {
 	DisplayName: Tsukuyomi
-	Tooltip: Work is Progress...
+	Tooltip: ""
 	FunctionText:
 		'''
 		{$Tooltips.PS} <>
-		- 
+		- Combos are now possible, and damage increases based on the number of combos. (Up to 2x)
+		- When your attack hits an enemy, the combo meter fills up, allowing you to chain combos.
+		- For Max Combo, performing an additional left-click will execute a special attack.
 		{$Tooltips.AS} <>
 		- 
 		'''

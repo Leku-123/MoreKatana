@@ -3,6 +3,7 @@ using MoreKatana.Projectiles.TerraKatanaTree;
 using MoreKatana.Systems.CrossMod;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -10,7 +11,8 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 {
     public class NightKatana : KatanaItem, IAddDrawLayer
     {
-        public const int MaxComboTime = 120;
+        public const int MaxComboCount = 10;
+        public const int MaxComboTime = 60;
 
         public override void SetStaticDefaults()
         {
@@ -39,6 +41,8 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         public override void PassiveSkill(Player player, bool equipment)
         {
+            player.GetDamage(DamageClass.Melee) += (float)Item.MKItem().AttackType / MaxComboCount;
+
             if (player.MKPlayer().NightComboTimer <= 0)
                 Item.MKItem().AttackType = 0;
         }
@@ -48,16 +52,17 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         }
 
-        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
-        {
-            if (Item.MKItem().AttackType == 6)
-                velocity = new Vector2(player.direction, 0);
-        }
-
         public override void MeleeEffects(Player player, Rectangle hitbox)
         {
             if (Main.rand.NextBool(3))
                 Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, Utils.SelectRandom(Main.rand, DustID.Demonite, DustID.Shadowflame));
+        }
+
+        public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            ParticleOrchestraSettings particleOrchestraSettings = default;
+            particleOrchestraSettings.PositionInWorld = Main.rand.NextVector2FromRectangle(target.Hitbox);
+            ParticleOrchestrator.RequestParticleSpawn(false, ParticleOrchestraType.NightsEdge, particleOrchestraSettings, player.whoAmI);
         }
 
         public override void AddRecipes()

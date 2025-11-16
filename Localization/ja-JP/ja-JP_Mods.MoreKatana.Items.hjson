@@ -364,7 +364,7 @@ LightsSlasher: {
 
 NightKatana: {
 	DisplayName: ツクヨミ
-	Tooltip: 作業中...
+	Tooltip:
 	FunctionText:
 		'''
 		{$Tooltips.PS} <>

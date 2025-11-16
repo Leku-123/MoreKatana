@@ -33,7 +33,7 @@ namespace MoreKatana.Projectiles
 
         /// <summary> 
         /// 振りのアニメーションの設定 
-        /// <see cref="GeneralSwingAnimation(float)"/> は基本的な振りと振りの減衰のみのアニメーション。困ったときはこれを使えばよい
+        /// <see cref="CustomSword.GeneralSwingAnimation(float)"/> は基本的な振りと振りの減衰のみのアニメーション。困ったときはこれを使えばよい
         /// </summary>
         public override float GetProgress(int type) => GeneralSwingAnimation(Progress);
 
