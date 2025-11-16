@@ -96,6 +96,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Owner.controlMount = false;
             Owner.canRocket = false; // ロケットブーツなどでの飛行をさせない
 
+            // うーん...？
+            Owner.outOfRange = true;
+
             // フックとマウントの解除
             Owner.RemoveAllGrapplingHooks();
             if (Owner.mount.Active)

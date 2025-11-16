@@ -10,8 +10,6 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 {
     public class GrassKatana : KatanaItem
     {
-        public override KatanaID ID => KatanaID.Grass;
-
         public override void SetStaticDefaults()
         {
             Item.AddElement(RedemptionCompat.Nature, true);

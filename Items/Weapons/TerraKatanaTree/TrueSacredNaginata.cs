@@ -23,8 +23,6 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         public override LocalizedText FunctionText => base.FunctionText.WithFormatArgs(ShieldDurabilityMax, ShieldDefenseBoost, ShieldRechargeTime / 60);
 
-        public override KatanaID ID => KatanaID.TrueHallowed;
-
         public override void SetStaticDefaults()
         {
             Item.AddElement(RedemptionCompat.Holy, true);

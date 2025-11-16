@@ -123,9 +123,6 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             if (!drawPlayer.MKPlayer().terraShield)
                 return;
 
-            if (drawPlayer.ownedProjectileCounts[ModContent.ProjectileType<TerraDestructionBase>()] != 0)
-                return;
-
             // シールド
             Texture2D texture = MoreKatanaTextures.ShieldTexture.Value;
             Rectangle rectangle = new Rectangle(0, 0, texture.Width, texture.Height);

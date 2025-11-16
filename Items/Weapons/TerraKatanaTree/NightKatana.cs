@@ -41,7 +41,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         public override void PassiveSkill(Player player, bool equipment)
         {
-            player.GetDamage(DamageClass.Melee) += (float)Item.MKItem().AttackType / MaxComboCount;
+            player.GetDamage(DamageClass.Melee) += 0.5f * (Item.MKItem().AttackType / MaxComboCount);
 
             if (player.MKPlayer().NightComboTimer <= 0)
                 Item.MKItem().AttackType = 0;
