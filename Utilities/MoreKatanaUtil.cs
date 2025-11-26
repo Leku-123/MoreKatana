@@ -42,17 +42,41 @@ namespace MoreKatana
         /// <returns></returns>
         public static bool CantUseHoldout(this Player player, bool needsToHold = true) => player == null || !player.active || player.dead || (!player.channel && needsToHold) || player.CCed || player.noItems;
 
+        public static void ReplaceItem(this Player player, Item itemToReplace, int itemIDtoReplaceWith)
+        {
+            bool foundSlot = false;
+            for (int i = 0; i < player.inventory.Length; i++)
+            {
+                if (player.inventory[i] == itemToReplace)
+                {
+                    Item newItem = new(itemIDtoReplaceWith, itemToReplace.stack, itemToReplace.prefix);
+                    newItem.active = true;
+                    newItem.favorited = itemToReplace.favorited;
+                    player.inventory[i] = newItem;
+                    itemToReplace.active = false;
+                    foundSlot = true;
+                    break;
+                }
+            }
+            if (!foundSlot) // インベントリスロットが見つからなかった場合アイテムをドロップする
+            {
+                Item.NewItem(player.GetSource_ItemUse(itemToReplace), player.Center, itemIDtoReplaceWith, prefixGiven: itemToReplace.prefix);
+            }
+        }
+
         /// <summary>
         /// スクリーンシェイク
         /// </summary>
         /// <param name="player"></param>
         /// <param name="timer"> 揺らす時間 </param>
         /// <param name="strength"> 揺らす強度 </param>
-        public static void ScreenShake(this Player player, int timer, int strength)
+        public static void ScreenShake(this Player player, int timer, int strength, bool x = true, bool y = true)
         {
             MoreKatanaPlayer mk = player.MKPlayer();
             mk.ScreenShakeTimer = timer;
             mk.ScreenShakeStrength = strength;
+            mk.ScreenShakeX = x;
+            mk.ScreenShakeY = y;
         }
 
         /// <summary>
@@ -557,6 +581,10 @@ namespace MoreKatana
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
+        public static LocalizedText GetText(string key)
+        {
+            return Language.GetText("Mods.MoreKatana." + key);
+        }
         public static string GetTextValue(string key)
         {
             return Language.GetTextValue("Mods.MoreKatana." + key);
@@ -646,12 +674,12 @@ namespace MoreKatana
         }
 
         /// <summary>
-        /// オブジェクトの名前空間と名前からTextureを手動で取得します
+        /// 名前空間と名前からTextureを取得します
         /// </summary>
         /// <param name="type"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static string GetTexture(this object type, string name) => (type.GetType().Namespace + "." + name).Replace('.', '/');
+        public static string GetTexture(this ModType type, string name = null) => (type.GetType().Namespace + "." + (name ?? type.Name)).Replace('.', '/');
 
         /// <summary>
         /// CameraModifierを追加します

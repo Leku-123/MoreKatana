@@ -40,7 +40,7 @@ namespace MoreKatana.Items.Weapons.Metal
             Item.rare = ItemRarityID.White;
             Item.MKItem().AltDamage = Item.damage * 2;
             Item.MKItem().UseSound = SoundID.Item1;
-            Item.MKItem().SetKatanaDefaults(Item, 60, true);
+            Item.MKItem().SetKatanaDefaults(Item, 15 * 60);
         }
 
         public override void PassiveSkill(Player player, bool equipment)
@@ -53,17 +53,17 @@ namespace MoreKatana.Items.Weapons.Metal
                 && (BodyID == player.armor[1].type || AltBodyIDs.Contains(player.armor[1].type))
                 && (LegID == player.armor[2].type || AltLegIDs.Contains(player.armor[2].type)))
             {
-                player.statDefense += 2;
+                player.statDefense += ArmorSetDefenseBonus;
             }
         }
 
         public override void ActiveSkill(Player player)
         {
-            // サウンド
-            SoundEngine.PlaySound(MoreKatanaSounds.SwordSlash_2, player.Center);
-
             // クールダウンを有効化
             Item.MKItem().ActivateCooldown(player);
+
+            // サウンド
+            SoundEngine.PlaySound(MoreKatanaSounds.SwordSlash_2, player.Center);
 
             // ダッシュ切りの発射体
             Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, player.SafeDirectionTo(player.MKPlayer().MouseWorld), ModContent.ProjectileType<GeneralDashSlash>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI, DashSlashDistance, DashSlashTime);

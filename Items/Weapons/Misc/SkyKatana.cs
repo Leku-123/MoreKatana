@@ -46,12 +46,11 @@ namespace MoreKatana.Items.Weapons.Misc
         public override void PassiveSkill(Player player, bool equipment)
         {
             player.MKPlayer().skyJumpEffect = true;
-            player.slowFall = true;
+            player.MKPlayer().slowFallEffect = 2;
         }
 
         public override void ActiveSkill(Player player)
         {
-            // プレイヤーの向きをマウスの方向に向けて、その方向にスカイ刀の発射体をスポーンさせる
             player.ChangeDir(Main.MouseWorld.X - player.Center.X > 0 ? 1 : -1);
             Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.MountedCenter, new Vector2(player.direction, 0), ModContent.ProjectileType<ChargingSkyKatana>(), Item.MKItem().AltDamage, 20f, player.whoAmI);
         }

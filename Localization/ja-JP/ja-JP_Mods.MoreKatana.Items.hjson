@@ -8,17 +8,11 @@ THXForPlaying: {
 	Tooltip:
 		'''
 		このMODの武器には特別なスキルがあります。
-		[c/CC0000:{$Tooltips.PS}] はパッシブスキルです。
-		武器を持っている間、自動的に発動します。
-		一部武器はアクセサリーとしても機能します。（刀用スロットに装備）
-
-		[c/CC0000:{$Tooltips.AS}] はアクティブスキルです。
-		右クリックで発動し、クールダウンは全武器で共有されます。
-
+		[c/CC0000:{$Tooltips.PS}] - 武器を持っている間、自動的に発動します。
+		[c/CC0000:{$Tooltips.AS}] - 右クリックで発動し、クールダウンは全武器で共有されます。
 		各武器の詳しいスキル説明は、それぞれのツールチップに記載しています。
 		この他にもいくつか追加要素がありますよ！（まだ未完成...かもだけど！）
 		良かったらWikiも見てね！
-
 		このアイテムを使うと Wiki が開かれるから！ ;)
 		'''
 }
@@ -42,19 +36,19 @@ SamuraiStatueGift: {
 
 # -------- Weapons --------
 Katana: {
-	Tooltip: '''「実に使用者の技量を問われるカタナだ」'''
+	Tooltip: 「実に使用者の技量を問われるカタナだ」
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/FFD700:<テクニカル戦法>]
 		- 通常攻撃が溜め攻撃に変化する
-		- 最大まで溜めた攻撃は、敵の飛び道具を弾き返す (ボスには無効)
-		{$Tooltips.AS} [c/FFFFFF:<閃光の如し>]
-		- 敵に対して、最大6回の連続ダッシュ攻撃を与える
+		- 最大まで溜めた攻撃は、敵の発射物を弾き返す (ボスには無効)
+		{$Tooltips.AS} [c/FFFFFF:<一閃>]
+		- 最大6体の敵に連鎖するダッシュ斬りを行う
 		'''
 }
 
 Muramasa: {
-	Tooltip: '''「呪いさえも味方につけろ！」'''
+	Tooltip: 「呪いさえも味方につけろ！」
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/0000FA:<怨念返し>]
@@ -66,8 +60,8 @@ Muramasa: {
 }
 
 WoodenKatana: {
-	DisplayName: 木のカタナ
-	Tooltip: '''「硬くて頑丈」'''
+	DisplayName: 木刀
+	Tooltip: 「硬くて頑丈」
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/A3A3A3:<なし>]
@@ -246,7 +240,7 @@ DiamondKatana: {
 
 GrassKatana: {
 	DisplayName: クサナギ
-	Tooltip: '''「『伝説のカタナ』...植物製？」'''
+	Tooltip: 「『伝説のカタナ』...植物製？」
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/00FF00:<光合成>]
@@ -258,13 +252,49 @@ GrassKatana: {
 
 VolcanoKatana: {
 	DisplayName: カグツチ
+	Tooltip: 「心を燃やせ」
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/FD3E03:<Heat Heart>]
+		- Provides immunity to chill, freezing and frostburn effects
+		{$Tooltips.AS} [c/FE7902:<Volcanic Eruption>]
+		- Fire up to 5 volcanic projectiles
+		'''
+}
+
+LightsSlasher: {
+	DisplayName: ムラサメ
+	Tooltip: 「影から生まれた妖刀...なのじゃ！」
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/3D176D:<朧の型>]
+		- Increased movement speed and acceleration through the power of shadows
+		{$Tooltips.AS} [c/3A1D87:<霞歩き>]
+		- Teleport and perform a powerful slash to the enemy.
+		'''
+}
+
+NightKatana: {
+	DisplayName: ツクヨミ
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.PS} [c/fd3e03:<>]
+		{$Tooltips.PS} <>
 		- 
-		{$Tooltips.AS} [c/fe7902:<>]
-		- カタナを掲げた時間に応じて、複数の火山球を発射する
+		{$Tooltips.AS} <>
+		- 
+		'''
+}
+
+TrueNightKatana: {
+	DisplayName: 真・ツクヨミ
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} <>
+		- 
+		{$Tooltips.AS} <>
+		- 
 		'''
 }
 
@@ -306,6 +336,7 @@ TerraKatana: {
 		{$Tooltips.PS} [c/00FF00:<テラ・ガーディアン>]
 		- 最大 {0} ダメージを吸収するテラ・シールドを展開
 		- 盾がある間、防御力が{1}増加
+		- 盾が壊れた後、{2} 秒で再展開
 		- 回復ポーション使用時、盾が完全回復する
 		{$Tooltips.AS} [c/60F860:<テラ・デストラクション>]
 		- 右クリック長押しで狙いを定め、離して連撃を放つ
@@ -315,25 +346,27 @@ TerraKatana: {
 
 ObsidianKatana: {
 	DisplayName: 黒曜石のカタナ
-	AltName: 溶岩のカタナ
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.PS} <黒曜石の守護>
-		- 
-		{$Tooltips.AS} <>
+		{$Tooltips.PS} [c/35194D:<黒曜石の守護>]
+		- 防御が{0}増加。燃えるブロックのダメージを無効化
+		{$Tooltips.AS} [c/A93128:<Ignition>]
 		- 
 		'''
 }
+
+ObsidianKatana_Fire.DisplayName: 溶岩のカタナ
 
 EnchantedKatana: {
 	DisplayName: エンチャントカタナ
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.PS} <>
-		- 
-		{$Tooltips.AS} <>
+		{$Tooltips.PS} [c/3232A4:<Mana Manipulation>]
+		- Absorbs up to half damage taken using mana.
+		- The cooldown lasts 5 seconds, during which mana regeneration stops.
+		{$Tooltips.AS} [c/3795C8:<Enchant Slash>]
 		- 
 		'''
 }
@@ -345,30 +378,6 @@ SkyKatana: {
 		'''
 		{$Tooltips.PS} <>
 		- 二段ジャンプ時、合計 {0} 本の羽を放つ
-		{$Tooltips.AS} <>
-		- 
-		'''
-}
-
-LightsSlasher: {
-	DisplayName: ムラサメ
-	Tooltip: ""
-	FunctionText:
-		'''
-		{$Tooltips.PS} <朧の型>
-		- 
-		{$Tooltips.AS} <霞歩き>
-		- 
-		'''
-}
-
-NightKatana: {
-	DisplayName: ツクヨミ
-	Tooltip:
-	FunctionText:
-		'''
-		{$Tooltips.PS} <>
-		- 
 		{$Tooltips.AS} <>
 		- 
 		'''

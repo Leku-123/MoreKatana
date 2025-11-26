@@ -1,45 +1,47 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Prim;
 using System;
 using Terraria;
 
 namespace MoreKatana.Projectiles.PrimTrails
 {
-    public class TextureMapPrimTrail : PrimTrail
+    public class SacredBeamPrimTrail : PrimTrail
     {
-        private Texture2D Texture = null;
-        private float Scroll;
+        public float Scale = 1;
 
-        public TextureMapPrimTrail(Projectile projectile, Color color, Texture2D texture, int width = 8, int cap = 15, float scroll = 0.05f, float alpha = 0.5f)
+        public SacredBeamPrimTrail(Projectile projectile, Color color, int width = 200)
         {
             Entity = projectile;
             EntityType = projectile.type;
             DrawType = PrimTrailManager.DrawProjectile;
-            Texture = texture;
             Color = color;
             Width = width;
-            Cap = cap;
-            Scroll = scroll;
-            AlphaValue = alpha;
+        }
+
+        public override void SetDefaults()
+        {
+            Cap = 100;
+            AlphaValue = 0.9f;
         }
 
         public override void PrimStructure(SpriteBatch spriteBatch)
         {
-            if (PointCount <= 6)
+            if (PointCount <= 10)
                 return;
 
-            DrawBasicTrail(Color, Width);
+            DrawBasicTrail(Color, Width * Scale);
         }
 
         public override void SetShaders()
         {
             Effect effect = MoreKatana.PrimitiveTextureMap;
-            effect.Parameters["uTexture"].SetValue(Texture);
+            effect.Parameters["uTexture"].SetValue(MoreKatanaTextures.BeamTrailTexture.Value);
             effect.Parameters["additive"].SetValue(true);
             effect.Parameters["repeats"].SetValue(1);
             effect.Parameters["intensify"].SetValue(true);
-            effect.Parameters["scroll"].SetValue(Counter * Scroll);
+            effect.Parameters["scroll"].SetValue(Counter * -0.05f);
             PrepareShader(effect, "MainPS", Counter);
         }
 
@@ -49,21 +51,10 @@ namespace MoreKatana.Projectiles.PrimTrails
                 return;
 
             Counter++;
-            PointCount = Points.Count * 6;
-
-            if (Cap < PointCount / 6)
-                Points.RemoveAt(0);
+            PointCount = Points.Count * 10;
 
             if (!projectile.active || Destroyed)
                 OnDestroy();
-            else
-                Points.Add(projectile.Center);
-
-            if (projectile.ModProjectile is ITrailProjectile)
-            {
-                if ((projectile.ModProjectile as ITrailProjectile).DoTrailDeletion())
-                    OnDestroy();
-            }
         }
 
         public override void OnDestroy()

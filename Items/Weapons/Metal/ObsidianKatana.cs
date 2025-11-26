@@ -1,30 +1,25 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MoreKatana.Buffs;
 using MoreKatana.Projectiles.Metal;
 using MoreKatana.Systems.CrossMod;
-using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace MoreKatana.Items.Weapons.Metal
 {
     public class ObsidianKatana : KatanaItem
     {
-        public const int FireBuffTime = 60 * 5;
+        public readonly int DefenseBonus = 5;
 
-        private int SwingType = ProjectileID.None;
-        private int Combo = 1;
-        private bool FireTrigger = false;
+        public const int FireBuffTime = 10 * 60;
 
-        public static Asset<Texture2D> FireTexture;
+        public override LocalizedText FunctionText => base.FunctionText.WithFormatArgs(DefenseBonus);
 
         public override void SetStaticDefaults()
         {
-            FireTexture = ModContent.Request<Texture2D>(Texture + "_Fire");
             Item.AddElement(RedemptionCompat.Fire, true);
             Item.SetSlashBonus();
         }
@@ -34,8 +29,8 @@ namespace MoreKatana.Items.Weapons.Metal
             Item.width = 58;
             Item.height = 58;
 
-            Item.useTime = 25;
-            Item.useAnimation = 25;
+            Item.useTime = 30;
+            Item.useAnimation = 30;
             Item.MKItem().UseSound = SoundID.Item1;
 
             Item.damage = 20;
@@ -45,65 +40,74 @@ namespace MoreKatana.Items.Weapons.Metal
             Item.value = Item.sellPrice(silver: 55);
             Item.rare = ItemRarityID.Orange;
 
-            Item.MKItem().SetKatanaDefaults(Item, 120, true, SwingType, Combo);
+            Item.MKItem().SetKatanaDefaults(Item, 120, true, ModContent.ProjectileType<ObsidianSwing>());
         }
-
-        /// <summary>
-        /// プレイヤーに Obsidian Burn が付与されているかどうか
-        /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
-        private bool Fire(Player player) => player.HasBuff<ObsidianBurnBuff>();
-
-        public override bool AltFunctionUseItem(Player player) => !Fire(player);
 
         public override void PassiveSkill(Player player, bool equipment)
         {
+            // 防御力のボーナス
             player.statDefense += 5;
 
-            if (!equipment)
-            {
-                if (!Fire(player))
-                {
-                    Item.useTime = 30;
-                    Item.useAnimation = 30;
-                    Item.SetNameOverride(MoreKatanaUtil.GetTextValue("Items.ObsidianKatana.DisplayName"));
-                    SwingType = ModContent.ProjectileType<ObsidianSwing>();
-                    Combo = 1;
-                }
-                else
-                {
-                    Item.useTime = 25;
-                    Item.useAnimation = 25;
-                    Item.SetNameOverride(MoreKatanaUtil.GetTextValue("Items.ObsidianKatana.AltName"));
-                    SwingType = ModContent.ProjectileType<ObsidianSwing2>();
-                    Combo = 2;
-                    FireTrigger = true;
-                }
-            }
+            // 燃えるブロックへの耐性
+            player.fireWalk = true;
         }
 
         public override void ActiveSkill(Player player)
         {
+            // プレイヤーの向きをマウスの方向に向けて、発射体をスポーンさせる
             player.ChangeDir(Main.MouseWorld.X - player.Center.X > 0 ? 1 : -1);
-            Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.MountedCenter, new Vector2(player.direction, 0), ModContent.ProjectileType<ObsidianKatanaHoldout>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI);
+            Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, new Vector2(player.direction, 0), ModContent.ProjectileType<ObsidianKatanaHoldout>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI);
         }
 
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
-            if (!Fire(player))
-                velocity = new Vector2(player.direction, 0);
-            else
-                damage = Item.MKItem().AltDamage;
+            // ベロシティをプレイヤーのX軸の向きにする
+            velocity = new Vector2(player.direction, 0);
+        }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+                .AddIngredient(ItemID.Obsidian, 15)
+                .AddIngredient(ItemID.LavaBucket, 5)
+                .AddTile(TileID.Anvils)
+                .Register();
+        }
+    }
+
+    public class ObsidianKatana_Fire : ObsidianKatana
+    {
+        public override LocalizedText Tooltip => MoreKatanaUtil.GetText("Items.ObsidianKatana.Tooltip");
+        public override LocalizedText FunctionText => MoreKatanaUtil.GetText("Items.ObsidianKatana.FunctionText").WithFormatArgs(DefenseBonus);
+
+        public override void SetDefaultsItem()
+        {
+            base.SetDefaultsItem();
+            Item.useTime = 25;
+            Item.useAnimation = 25;
+            Item.MKItem().SetKatanaDefaults(Item, 120, true, ModContent.ProjectileType<ObsidianSwing2>(), 2);
+        }
+
+        public override bool AltFunctionUseItem(Player player) => false;
+
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+        {
+            // アクティブスキル中のなためダメージはAltDamageにする
+            damage = Item.MKItem().AltDamage;
         }
 
         public override void UpdateInventory(Player player)
         {
-            if (!Fire(player) && FireTrigger)
+            // アクティブスキルのバフが無くなった場合
+            if (!player.HasBuff<ObsidianBurnBuff>())
             {
+                // クールダウンを有効化
                 Item.MKItem().ActivateCooldown(player);
+
+                // サウンド
                 SoundEngine.PlaySound(MoreKatanaSounds.LiquidsWaterLava, player.Center);
 
+                // ダスト
                 for (int i = 0; i < 5; i++)
                 {
                     int newDust = Dust.NewDust(player.position, player.width, player.height, DustID.Torch);
@@ -113,7 +117,6 @@ namespace MoreKatana.Items.Weapons.Metal
                     Main.dust[newDust].velocity = Main.dust[newDust].velocity.RotatedByRandom(MathHelper.ToRadians(10));
                     Main.dust[newDust].velocity *= Main.rand.NextFloat(1f, 3f);
                 }
-
                 for (int i = 0; i < 18; i++)
                 {
                     int newDust = Dust.NewDust(player.position, player.width, player.height, DustID.Smoke, 0.0f, 0f, 150, default, 0.5f);
@@ -124,33 +127,14 @@ namespace MoreKatana.Items.Weapons.Metal
                     Main.dust[newDust].velocity *= Main.rand.NextFloat(0.5f, 2f);
                 }
 
-                FireTrigger = false;
+                // アイテムを再設置する
+                player.ReplaceItem(Item, ModContent.ItemType<ObsidianKatana>());
             }
-        }
-
-        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
-        {
-            Texture2D texture = !Fire(Main.LocalPlayer) ? TextureAssets.Item[Type].Value : FireTexture.Value;
-            spriteBatch.Draw(texture, position, frame, drawColor, 0f, origin, scale, SpriteEffects.None, 0);
-            return false;
-        }
-
-        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
-        {
-            Texture2D texture = !Fire(Main.LocalPlayer) ? TextureAssets.Item[Type].Value : FireTexture.Value;
-            Vector2 position = Item.Center - Main.screenPosition;
-            Vector2 origin = texture.Size() / 2f;
-            spriteBatch.Draw(texture, position, null, lightColor, rotation, origin, scale, SpriteEffects.None, 0);
-            return false;
         }
 
         public override void AddRecipes()
         {
-            CreateRecipe()
-                .AddIngredient(ItemID.Obsidian, 15)
-                .AddIngredient(ItemID.LavaBucket, 5)
-                .AddTile(TileID.Anvils)
-                .Register();
+            // 何もしない
         }
     }
 }

@@ -6,9 +6,9 @@ namespace MoreKatana.Projectiles.PrimTrails
 {
     public class TrailManager
     {
-        public void CreateTrail(Projectile projectile, Color trailColor, Texture2D trailTex, int trailWidth, int trailCap)
+        public void CreateTrail(Projectile projectile, Color trailColor, Texture2D trailTex, int trailWidth = 8, int trailCap = 15, float trailScroll = 0.05f, float trailAlpha = 0.5f)
         {
-            TextureMapPrimTrail trail = new(projectile, trailColor, trailTex, trailWidth, trailCap);
+            TextureMapPrimTrail trail = new(projectile, trailColor, trailTex, trailWidth, trailCap, trailScroll, trailAlpha);
             MoreKatana.primitives.CreateTrail(trail);
         }
     }

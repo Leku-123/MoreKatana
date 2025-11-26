@@ -48,8 +48,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public void DoTrailCreation(TrailManager tManager)
         {
-            tManager.CreateTrail(Projectile, TerraKatana.TerraColor[0], MoreKatanaTextures.EnergyTrailTexture.Value, 42, 15);
-            tManager.CreateTrail(Projectile, TerraKatana.TerraColor[1] * 0.2f, MoreKatanaTextures.StraightlineTrailTexture.Value, 42, 18);
+            int width = 42;
+            tManager.CreateTrail(Projectile, TerraKatana.TerraColor[0], MoreKatanaTextures.EnergyTrailTexture.Value, width, 15);
+            tManager.CreateTrail(Projectile, TerraKatana.TerraColor[1] * 0.2f, MoreKatanaTextures.StraightlineTrailTexture.Value, width, 18);
         }
 
         public override void AI()

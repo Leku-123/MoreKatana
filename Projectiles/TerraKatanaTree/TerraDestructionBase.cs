@@ -6,7 +6,6 @@ using MoreKatana.Particles;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent.Events;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -227,7 +226,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             SoundEngine.PlaySound(SoundID.DD2_DefenseTowerSpawn with { Volume = 0.7f }, Owner.Center);
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 0.7f }, Owner.Center);
 
-            Owner.ScreenShake(20, 25);
+            Owner.ScreenShake(20, 50, false);
 
             // ダスト盛り盛り
             ProduceDust(TerraKatana.DustType);

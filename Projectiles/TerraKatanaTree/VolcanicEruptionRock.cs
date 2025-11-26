@@ -132,7 +132,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                     Projectile.scale = 1f;
 
                     startingPos = Projectile.Center;
-                    InitVelocity = MoreKatanaUtil.GetArcVel(startingPos, Main.MouseWorld + Main.rand.NextVector2Unit() * 50, Gravity, 50, maxXvel: 15f);
+                    InitVelocity = MoreKatanaUtil.GetArcVel(startingPos, Owner.MKPlayer().MouseWorld + Main.rand.NextVector2Unit() * 50, Gravity, 50, maxXvel: 15f);
 
                     Projectile.velocity = InitVelocity;
 
@@ -257,7 +257,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                 // 予告線の位置がタイルに接触した場合、その位置にマークを描画する
                 if (endPos != Vector2.Zero)
                 {
-                    Texture2D mark = ModContent.Request<Texture2D>(this.GetTexture("VolcanicEruptionMark")).Value;
+                    Texture2D mark = ModContent.Request<Texture2D>(Texture + "_Mark").Value;
                     float rot = -0.06283186f * Owner.miscCounter;
                     Main.spriteBatch.Draw(bloomTex, endPos - Main.screenPosition, null, VolcanoKatana.FireColor(0) * fade, 0f, bloomTex.Size() / 2f, Projectile.scale * 0.5f, SpriteEffects.None, 0);
                     Main.spriteBatch.Draw(mark, endPos - Main.screenPosition, null, Color.White * 0.5f * fade, rot, mark.Size() / 2f, Projectile.scale + (2f * (1 - fade)), SpriteEffects.None, 0);

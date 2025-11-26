@@ -6,13 +6,12 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static MoreKatana.MoreKatanaUtil;
 
 namespace MoreKatana.Projectiles.Metal
 {
     public class ObsidianSwing2 : CustomSword
     {
-        public override string Texture => this.GetTexture(Name);
+        public override string Texture => this.GetTexture();
 
         public override void Initialize(int type)
         {
@@ -23,25 +22,21 @@ namespace MoreKatana.Projectiles.Metal
             SwingEllipse = new(x, y);
 
             GetTextureValues();
-            TrailColor = new Color(83, 5, 1);
+
+            Owner.ScreenShake(4, 8);
         }
 
-        public SwingData Down => new SwingData(OwnerItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f));
-        public SwingData Up => new SwingData(OwnerItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f), backspin: true);
-        public override SwingData GetSwingData(int type) => SwingData.SwingRegister(type, Down, Up);
+        public override SwingData GetSwingData(int type) => new SwingData(OwnerItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f), backspin: type == 1);
 
-        public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f);
-        public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f);
-        public override float GetProgress(int type) => PiecewiseAnimation(Progress, execute, unwind);
+        public override float GetProgress(int type) => GeneralSwingAnimation(Progress);
 
         public override void AdditionalAI(int type, bool onDelay)
         {
             Owner.SetDummyItemTime(2);
 
-            if (type == 1 && Projectile.localAI[0] == 0)
+            if (type == 1 && !Projectile.MKProj().Bool[0])
             {
-                Projectile.localAI[0] = 1;
-                Owner.ScreenShake(2, 4);
+                Projectile.MKProj().Bool[0] = true;
                 SoundEngine.PlaySound(SoundID.DD2_BetsysWrathShot, Owner.Center);
 
                 if (Projectile.owner == Main.myPlayer)
@@ -60,6 +55,8 @@ namespace MoreKatana.Projectiles.Metal
 
         public override bool PreDraw(ref Color lightColor)
         {
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+            MoreKatanaUtil.DrawBackglow(texture, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY), null, Projectile.GetAlpha(lightColor) with { A = 0 }, Projectile.rotation, 4f * (1 - Progress), new Vector2(Projectile.scale), SwingEffectsHV());
             DrawBasicSword(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center, Projectile.GetAlpha(lightColor));
             DrawBasicSword(ModContent.Request<Texture2D>(GlowTexture).Value, Projectile.Center);
             return false;

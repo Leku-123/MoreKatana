@@ -58,7 +58,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         public void DoTrailCreation(TrailManager tManager)
         {
-            tManager.CreateTrail(Projectile, TerraKatana.TerraColor[0], MoreKatanaTextures.FlameTrailTexture.Value, 16, 15);
+            tManager.CreateTrail(Projectile, TerraKatana.TerraColor[0], MoreKatanaTextures.FlameTrailTexture.Value, 16);
         }
 
         public override void SendExtraAI(BinaryWriter writer) => writer.WriteVector2(swingVel);

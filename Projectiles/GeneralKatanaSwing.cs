@@ -26,10 +26,8 @@ namespace MoreKatana.Projectiles
             Owner.ScreenShake(2, 3);
         }
 
-        /// <summary> 全ての振りの設定 </summary>
-        public SwingData Down => new SwingData(OwnerItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f)); // 1振り目
-        public SwingData Up => new SwingData(OwnerItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f), backspin: true); // 2振り目
-        public override SwingData GetSwingData(int type) => SwingData.SwingRegister(type, Down, Up);
+        /// <summary> 振りの設定 </summary>
+        public override SwingData GetSwingData(int type) => new SwingData(OwnerItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f), backspin: type == 1);
 
         /// <summary> 
         /// 振りのアニメーションの設定 

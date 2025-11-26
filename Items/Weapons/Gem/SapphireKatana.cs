@@ -25,13 +25,13 @@ namespace MoreKatana.Items.Weapons.Gem
         public override void AddRecipes()
         {
             CreateRecipe()
-                .AddIngredient(ModContent.ItemType<IronKatana>())
+                .AddIngredient<IronKatana>()
                 .AddIngredient(ItemID.Sapphire, 8)
                 .AddTile(TileID.Anvils)
                 .Register();
 
             CreateRecipe()
-                .AddIngredient(ModContent.ItemType<LeadKatana>())
+                .AddIngredient<LeadKatana>()
                 .AddIngredient(ItemID.Sapphire, 8)
                 .AddTile(TileID.Anvils)
                 .Register();

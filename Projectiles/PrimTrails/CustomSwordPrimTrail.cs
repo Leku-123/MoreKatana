@@ -37,12 +37,10 @@ namespace MoreKatana.Projectiles.PrimTrails
             {
                 if (i == 0)
                 {
-                    /*
-                    widthVar = (float)Math.Sqrt(Points.Count) * Width;
-                    Vector2 normalAhead = CurveNormal(Points, i + 1);
-                    Vector2 secondUp = Points[i + 1] - normalAhead * widthVar;
-                    Vector2 secondDown = Points[i + 1] + normalAhead * widthVar;
-                    */
+                    //widthVar = (float)Math.Sqrt(Points.Count) * Width;
+                    //Vector2 normalAhead = CurveNormal(Points, i + 1);
+                    //Vector2 secondUp = Points[i + 1] - normalAhead * widthVar;
+                    //Vector2 secondDown = Points[i + 1] + normalAhead * widthVar;
                 }
                 else
                 {

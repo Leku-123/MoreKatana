@@ -8,9 +8,8 @@ THXForPlaying: {
 	Tooltip:
 		'''
 		The weapons in this mod have special abilities.
-		[c/CC0000:{$Tooltips.PS}] is a passive skill. Activates when holding an item.
-		Some of them also function as accessories. (Equip in the katana accessory slot)
-		[c/CC0000:{$Tooltips.AS}] is a active skill. Activates when right-clicking.
+		[c/CC0000:{$Tooltips.PS}] - Activates when holding an item.
+		[c/CC0000:{$Tooltips.AS}] - Activates when right-clicking.
 		The cooldown is shared across all weapons.
 		Detailed skill information for each weapon is provided in the tooltip.
 		There's also some other content! (Still in development, maybe?) Check out the wiki too!
@@ -44,7 +43,7 @@ Katana: {
 		- Change normal attacks to charged attacks.
 		- A fully charged attack has the power to deflect enemy projectiles. But it has no effect on the boss.
 		{$Tooltips.AS} [c/FFFFFF:<Flash of Lightning>]
-		- Perform a chained dash attack up to 6 times against enemies.
+		- Perform a dash slash. It chains to up to 6 enemies.
 		'''
 }
 
@@ -253,13 +252,49 @@ GrassKatana: {
 
 VolcanoKatana: {
 	DisplayName: Kagutsuchi
+	Tooltip: '''"Set your heart ablaze"'''
+	FunctionText:
+		'''
+		{$Tooltips.PS} [c/FD3E03:<Heat Heart>]
+		- Provides immunity to chill, freezing and frostburn effects
+		{$Tooltips.AS} [c/FE7902:<Volcanic Eruption>]
+		- Fire up to 5 volcanic projectiles
+		'''
+}
+
+LightsSlasher: {
+	DisplayName: Murasame
+	Tooltip: '''"I am a demon sword born from the shadows... Nanojya-!"'''
+	FunctionText:
+		'''
+		{$Tooltips.PS} <Oboro Style>
+		- Increased movement speed and acceleration through the power of shadows
+		{$Tooltips.AS} <Haze Step>
+		- Teleport and perform a powerful slash to the enemy.
+		'''
+}
+
+NightKatana: {
+	DisplayName: Tsukuyomi
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.PS} [c/fd3e03:<>]
+		{$Tooltips.PS} <>
+		-
+		{$Tooltips.AS} <>
 		- 
-		{$Tooltips.AS} [c/fe7902:<>]
-		- It fires volcanic projectiles whose number increases based on how long the sword is held aloft.
+		'''
+}
+
+TrueNightKatana: {
+	DisplayName: True Tsukuyomi
+	Tooltip: ""
+	FunctionText:
+		'''
+		{$Tooltips.PS} <>
+		- 
+		{$Tooltips.AS} <>
+		- 
 		'''
 }
 
@@ -309,25 +344,27 @@ TerraKatana: {
 
 ObsidianKatana: {
 	DisplayName: Obsidian Katana
-	AltName: Magma Katana
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.PS} <Obsidian Protection>
-		- 
-		{$Tooltips.AS} <>
+		{$Tooltips.PS} [c/35194D:<Obsidian Protection>]
+		- +{0} defense. Grants immunity to fire blocks
+		{$Tooltips.AS} [c/A93128:<Awake>]
 		- 
 		'''
 }
+
+ObsidianKatana_Fire.DisplayName: Lava Katana
 
 EnchantedKatana: {
 	DisplayName: Enchanted Katana
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.PS} <>
-		- 
-		{$Tooltips.AS} <>
+		{$Tooltips.PS} [c/3232A4:<Mana Manipulation>]
+		- Absorbs up to half damage taken using mana.
+		- The cooldown lasts 5 seconds, during which mana regeneration stops.
+		{$Tooltips.AS} [c/3795C8:<Enchant Slash>]
 		- 
 		'''
 }
@@ -337,34 +374,8 @@ SkyKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.PS} <>
+		{$Tooltips.PS} <Feather Jump>
 		- Fires a total of {0} feathers during a double jump.
-		{$Tooltips.AS} <>
-		- 
-		'''
-}
-
-LightsSlasher: {
-	DisplayName: Murasame
-	Tooltip: ""
-	FunctionText:
-		'''
-		{$Tooltips.PS} <Oboro Style>
-		- 
-		{$Tooltips.AS} <Haze Step>
-		- 
-		'''
-}
-
-NightKatana: {
-	DisplayName: Tsukuyomi
-	Tooltip: ""
-	FunctionText:
-		'''
-		{$Tooltips.PS} <>
-		- Normal attacks can be chained into combos, and damage increases based on the number of combos.(Up to 1.5x)
-		- When your attack hits an enemy, the combo meter fills up, allowing you to chain combos.
-		- For Max Combo, performing an additional left-click will execute a special attack.
 		{$Tooltips.AS} <>
 		- 
 		'''

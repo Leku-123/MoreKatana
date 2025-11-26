@@ -7,12 +7,8 @@ Tooltips: {
 	Life: ライフ
 	GetIt: 手に入れる
 	CooldownOver: 秘剣準備完了！
-	Combo: コンボ！
-	MaxCombo: コンボ Max！
-	# Passive Skill
-	PS: 刀式
-	# Active Skill
-	AS: 秘剣
+	PS: パッシブスキル
+	AS: アクティブスキル
 }
 
 Configs: {

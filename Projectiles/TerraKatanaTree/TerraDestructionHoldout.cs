@@ -206,14 +206,14 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Main.spriteBatch.Draw(starTex, armPosition - new Vector2(50 * Owner.direction, -23), null, color with { A = 0 }, rot, starTex.Size() / 2f, Projectile.scale * 0.15f, SpriteEffects.None, 0f);
             Main.spriteBatch.Draw(starTex, armPosition - new Vector2(50 * Owner.direction, -23), null, color with { A = 0 }, -rot, starTex.Size() / 2f, Projectile.scale * 0.25f, SpriteEffects.None, 0f);
 
-            // テレポート位置の描画
-            Texture2D hitMark = ModContent.Request<Texture2D>(this.GetTexture("TerraHitMark")).Value;
+            // テレポート位置のマークの描画
+            Texture2D mark = ModContent.Request<Texture2D>(this.GetTexture("TerraMark")).Value;
             float num11 = (float)(Main.GlobalTimeWrappedHourly % 0.5 / 0.5);
             float num12 = num11;
             if (num12 > 0.5) num12 = 1f - num11;
             if (num12 < 0.0) num12 = 0.0f;
             float num15 = 1f + num11 * 0.75f;
-            Main.spriteBatch.Draw(hitMark, teleportPos - Main.screenPosition, null, Color.White * num12, 0f, hitMark.Size() / 2, Projectile.scale * num15, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(mark, teleportPos - Main.screenPosition, null, Color.White * num12, 0f, mark.Size() / 2, Projectile.scale * num15, SpriteEffects.None, 0f);
 
             return false;
         }

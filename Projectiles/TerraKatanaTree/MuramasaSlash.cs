@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Projectiles.PrimTrails;
 using System.Collections.Generic;
 using Terraria;
@@ -8,10 +9,9 @@ using Terraria.ModLoader;
 
 namespace MoreKatana.Projectiles.TerraKatanaTree
 {
-    public class MuramasaSlash : ModProjectile
+    public class MuramasaSlash : ModProjectile, ITrailProjectile
     {
         public List<Vector2> points = new List<Vector2>();
-        private SlashEffectPrimTrail trail;
 
         public override string Texture => MoreKatana.EmptyTexture;
 
@@ -35,16 +35,15 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Projectile.ArmorPenetration = 5;
         }
 
+        public void DoTrailCreation(TrailManager tManager)
+        {
+            tManager.CreateTrail(Projectile, Color.Blue, MoreKatanaTextures.CutlineTrailTexture.Value, 80, 50, 0);
+            tManager.CreateTrail(Projectile, Color.White, MoreKatanaTextures.CutlineTrailTexture.Value, 20, 50, 0);
+        }
+
         public override void AI()
         {
-            if (Projectile.ai[0] == 0)
-            {
-                Projectile.ai[0] = 1;
-                trail = new SlashEffectPrimTrail(Projectile, Color.MidnightBlue);
-                MoreKatana.primitives.CreateTrail(trail);
-            }
-
-            for (int i = 0; i < 3; ++i)
+            for (int i = 0; i < 2; ++i)
             {
                 int newDust = Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, DustID.DungeonWater, 0f, 0f, 100, default, 0.7f);
                 Main.dust[newDust].noGravity = true;

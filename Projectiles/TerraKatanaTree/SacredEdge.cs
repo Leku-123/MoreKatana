@@ -12,7 +12,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
     {
         private ref float Timer => ref Projectile.ai[0];
 
-        public const int FadeOutLength = 10;
+        public const int FadeOutLength = 15;
 
         private bool fadeOut;
 

@@ -10,7 +10,7 @@ namespace MoreKatana.Projectiles.Metal
 {
     public class ObsidianSlash : ModProjectile
     {
-        private const float FadeTime = 30f;
+        private const float LifeTime = 30f;
 
         public override void SetStaticDefaults()
         {
@@ -25,7 +25,7 @@ namespace MoreKatana.Projectiles.Metal
             Projectile.aiStyle = -1;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 3;
-            Projectile.timeLeft = (int)FadeTime;
+            Projectile.timeLeft = (int)LifeTime;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.tileCollide = false;
@@ -40,7 +40,7 @@ namespace MoreKatana.Projectiles.Metal
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             Projectile.spriteDirection = Projectile.direction;
             Projectile.velocity *= 0.99f;
-            Projectile.Opacity = Projectile.timeLeft / FadeTime;
+            Projectile.Opacity = Projectile.timeLeft / LifeTime;
 
             if (Main.rand.NextBool())
             {
@@ -53,8 +53,8 @@ namespace MoreKatana.Projectiles.Metal
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            Projectile.velocity *= 0.5f;
             target.AddBuff(BuffID.OnFire, 120);
+            Projectile.velocity *= 0.5f;
             Projectile.netUpdate = true;
         }
 
@@ -65,20 +65,19 @@ namespace MoreKatana.Projectiles.Metal
             Vector2 origin = rectangle.Size() / 2f;
             Vector2 position = Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
             SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            float opacity = Projectile.Opacity;
 
             for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Projectile.type]; i++)
             {
                 float fade = (float)(ProjectileID.Sets.TrailCacheLength[Projectile.type] - i) / ProjectileID.Sets.TrailCacheLength[Projectile.type];
                 Color color = Color.DarkOrange;
                 color.A = 50;
-                color *= fade * opacity;
+                color *= fade * Projectile.Opacity;
                 int max0 = Math.Max(i - 2, 0);
                 Vector2 center = Vector2.Lerp(Projectile.oldPos[i], Projectile.oldPos[max0], 1 - i % 1);
                 Main.EntitySpriteDraw(texture, center + Projectile.Size / 2f - position, rectangle, color, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
             }
 
-            Main.EntitySpriteDraw(texture, Projectile.Center - position, rectangle, Projectile.GetAlpha(lightColor) * opacity, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
+            Main.EntitySpriteDraw(texture, Projectile.Center - position, rectangle, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
             return false;
         }
     }

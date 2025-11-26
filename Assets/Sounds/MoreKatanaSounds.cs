@@ -18,5 +18,6 @@ namespace MoreKatana
         public static readonly SoundStyle Parry = new SoundStyle(SoundPath + "Parry");
         public static readonly SoundStyle DrawSword = new SoundStyle(SoundPath + "DrawSword");
         public static readonly SoundStyle Thunder = new SoundStyle(SoundPath + "Thunder");
+        public static readonly SoundStyle SacredRay = new SoundStyle(SoundPath + "SacredRay");
     }
 }

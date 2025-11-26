@@ -8,12 +8,6 @@ namespace MoreKatana.Items.Weapons
     {
         public virtual LocalizedText FunctionText => this.GetLocalization(nameof(FunctionText));
 
-        public override void AutoStaticDefaults()
-        {
-            base.AutoStaticDefaults();
-            _ = FunctionText;
-        }
-
         public sealed override void SetDefaults()
         {
             SetDefaultsItem();

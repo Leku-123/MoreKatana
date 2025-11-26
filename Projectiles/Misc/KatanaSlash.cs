@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Projectiles.PrimTrails;
 using Terraria;
 using Terraria.ID;
@@ -17,7 +18,7 @@ namespace MoreKatana.Projectiles.Misc
 
         private bool primsCreated;
 
-        private KatanaSlashPrimTrail trail;
+        private TextureMapPrimTrail trail;
 
         private Player Owner => Main.player[Projectile.owner];
 
@@ -49,7 +50,7 @@ namespace MoreKatana.Projectiles.Misc
                 primsCreated = true;
                 if (Main.netMode != NetmodeID.Server)
                 {
-                    trail = new KatanaSlashPrimTrail(Projectile, Color.White);
+                    trail = new TextureMapPrimTrail(Projectile, Color.White, MoreKatanaTextures.CutlineTrailTexture.Value, 40, 80, 0, 0.9f);
                     MoreKatana.primitives.CreateTrail(trail);
                 }
             }
@@ -62,6 +63,7 @@ namespace MoreKatana.Projectiles.Misc
             Owner.immuneTime = 120;
             Owner.immuneAlpha = 255;
             Owner.AddBuff(BuffID.Swiftness, 120);
+            Owner.outOfRange = true;
 
             Timer++;
         }

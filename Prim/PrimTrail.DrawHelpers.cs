@@ -76,29 +76,40 @@ namespace MoreKatana.Prim
                 Vertices[CurrentIndex++] = new VertexPositionColorTexture(new Vector3(position - Main.screenPosition, 0f), color, uv);
         }
 
-        protected void DrawBasicTrail(Color color)
+        protected void DrawBasicTrail(Color color, float widthVar)
         {
             for (int i = 0; i < Points.Count; i++)
             {
-                float widthVar = (float)Math.Sqrt(i) * Width;
-                Color c = Color;
-                Color CBT = Color;
-                Vector2 normal = CurveNormal(Points, i);
-                Vector2 normalAhead = CurveNormal(Points, i + 1);
-                float j = (Cap + (float)Math.Sin(Counter / 10f) * 1 - i * 0.1f) / Cap;
-                widthVar *= j;
-                Vector2 firstUp = Points[i] - normal * widthVar;
-                Vector2 firstDown = Points[i] + normal * widthVar;
-                Vector2 secondUp = Points[i + 1] - normalAhead * widthVar;
-                Vector2 secondDown = Points[i + 1] + normalAhead * widthVar;
+                if (i == 0)
+                {
+                    Vector2 normalAhead = CurveNormal(Points, i + 1);
+                    Vector2 secondUp = Points[i + 1] - normalAhead * widthVar;
+                    //Vector2 secondDown = Points[i + 1] + normalAhead * widthVar;
 
-                AddVertex(firstDown, c * AlphaValue, new Vector2(i / Cap, 1));
-                AddVertex(firstUp, c * AlphaValue, new Vector2(i / Cap, 0));
-                AddVertex(secondDown, CBT * AlphaValue, new Vector2((i + 1) / Cap, 1));
+                    AddVertex(Points[i], color * AlphaValue, new Vector2(0, 0.5f));
+                    AddVertex(secondUp, color * AlphaValue * ((i + 1) / (float)Points.Count), new Vector2((i + 1) / (float)Points.Count, 0));
+                    AddVertex(secondUp, color * AlphaValue * ((i + 1) / (float)Points.Count), new Vector2((i + 1) / (float)Points.Count, 1));
+                }
+                else
+                {
+                    if (i == Points.Count - 1)
+                        continue;
 
-                AddVertex(secondUp, CBT * AlphaValue, new Vector2((i + 1) / Cap, 0));
-                AddVertex(secondDown, CBT * AlphaValue, new Vector2((i + 1) / Cap, 1));
-                AddVertex(firstUp, c * AlphaValue, new Vector2(i / Cap, 0));
+                    Vector2 normal = CurveNormal(Points, i);
+                    Vector2 normalAhead = CurveNormal(Points, i + 1);
+                    Vector2 firstUp = Points[i] - normal * widthVar;
+                    Vector2 firstDown = Points[i] + normal * widthVar;
+                    Vector2 secondUp = Points[i + 1] - normalAhead * widthVar;
+                    Vector2 secondDown = Points[i + 1] + normalAhead * widthVar;
+
+                    AddVertex(firstDown, color * AlphaValue * (i / (float)Points.Count), new Vector2(i / (float)Points.Count, 1));
+                    AddVertex(firstUp, color * AlphaValue * (i / (float)Points.Count), new Vector2(i / (float)Points.Count, 0));
+                    AddVertex(secondDown, color * AlphaValue * ((i + 1) / (float)Points.Count), new Vector2((i + 1) / (float)Points.Count, 1));
+
+                    AddVertex(secondUp, color * AlphaValue * ((i + 1) / (float)Points.Count), new Vector2((i + 1) / (float)Points.Count, 0));
+                    AddVertex(secondDown, color * AlphaValue * ((i + 1) / (float)Points.Count), new Vector2((i + 1) / (float)Points.Count, 1));
+                    AddVertex(firstUp, color * AlphaValue * (i / (float)Points.Count), new Vector2(i / (float)Points.Count, 0));
+                }
             }
         }
     }

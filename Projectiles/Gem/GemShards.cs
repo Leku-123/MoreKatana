@@ -79,7 +79,7 @@ namespace MoreKatana.Projectiles.Gem
                 Projectile.rotation = Main.rand.NextFloat() * ((float)Math.PI * 2f);
             }
 
-            AI_GetMyGroupIndexAndFillBlackList(null, out var index, out var totalIndexesInGroup);
+            GetMyGroupIndex(out var index, out var totalIndexesInGroup);
 
             if (player.IsUsingAlt())
             {
@@ -194,14 +194,14 @@ namespace MoreKatana.Projectiles.Gem
             }
         }
 
-        private void AI_GetMyGroupIndexAndFillBlackList(List<int> blackListedTargets, out int index, out int totalIndexesInGroup)
+        private void GetMyGroupIndex(out int index, out int totalIndexesInGroup)
         {
             index = 0;
             totalIndexesInGroup = 0;
             for (int i = 0; i < 1000; i++)
             {
                 Projectile projectile = Main.projectile[i];
-                if (projectile.active && projectile.owner == Projectile.owner && projectile.type == Projectile.type && (projectile.type != 759 || projectile.frame == Main.projFrames[projectile.type] - 1))
+                if (projectile.active && projectile.owner == Projectile.owner && projectile.type == Projectile.type)
                 {
                     if (Projectile.whoAmI > i)
                         index++;

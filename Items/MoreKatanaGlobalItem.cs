@@ -145,6 +145,9 @@ namespace MoreKatana.Items
 
             if (Katana)
             {
+                if (!Main.mouseItem.IsAir)
+                    return false;
+
                 if (player.IsUsingAlt())
                 {
                     if (item.type is ItemID.Katana or ItemID.Muramasa)
@@ -371,7 +374,7 @@ namespace MoreKatana.Items
 
                             Texture2D bloom = MoreKatanaTextures.BloomTexture.Value;
                             Vector2 nameSize = ChatManager.GetStringSize(FontAssets.MouseText.Value, matchedObject.ToString(), Vector2.One);
-                            Main.spriteBatch.Draw(bloom, lineposition + nameSize / 2, null, lineColor with { A = 0 } * 0.3f, 0f, bloom.Size() / 2f, new Vector2(nameSize.X / 150, nameSize.Y / 150), SpriteEffects.None, 0);
+                            Main.spriteBatch.Draw(bloom, lineposition + nameSize / 2, null, lineColor with { A = 0 } * 0.4f, 0f, bloom.Size() / 2f, new Vector2(nameSize.X / 150, nameSize.Y / 150), SpriteEffects.None, 0);
 
                             Main.spriteBatch.SetEndBegin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null, null, Main.UIScaleMatrix);
                             for (int j = 0; j < 4; j++)

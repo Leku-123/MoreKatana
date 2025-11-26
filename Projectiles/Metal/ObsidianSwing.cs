@@ -6,7 +6,6 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static MoreKatana.MoreKatanaUtil;
 
 namespace MoreKatana.Projectiles.Metal
 {
@@ -14,7 +13,7 @@ namespace MoreKatana.Projectiles.Metal
     {
         private float animationStoppedPoint;
 
-        public override string Texture => this.GetTexture(Name);
+        public override string Texture => this.GetTexture();
 
         public override void Initialize(int type)
         {
@@ -23,14 +22,12 @@ namespace MoreKatana.Projectiles.Metal
             GetTextureValues();
         }
 
-        public override SwingData GetSwingData(int type) => SwingData.SwingRegister(type, new SwingData(Owner.itemAnimationMax, 0.8f));
+        public override SwingData GetSwingData(int type) => new SwingData(Owner.itemAnimationMax, 0.8f);
 
-        public CurveSegment execute = new CurveSegment(SineOutEasing, 0f, 0f, 0.95f);
-        public CurveSegment unwind = new CurveSegment(LinearEasing, 0.5f, 0.95f, 0.05f);
         public override float GetProgress(int type)
         {
             if (!SwingStop) // 振り下げ
-                return PiecewiseAnimation(Progress, execute, unwind);
+                return GeneralSwingAnimation(Progress);
 
             else // タイルに衝突した場合の反動
                 return MathHelper.SmoothStep(animationStoppedPoint, animationStoppedPoint - 0.05f, DelayProgress);
@@ -49,7 +46,7 @@ namespace MoreKatana.Projectiles.Metal
                 {
                     SwingStop = true;
                     KillPrims = true;
-                    Owner.ScreenShake(2, 2);
+                    Owner.ScreenShake(3, 4);
                     SoundEngine.PlaySound(SoundID.Tink, Owner.Center);
 
                     for (int i = 0; i <= 12; i++)

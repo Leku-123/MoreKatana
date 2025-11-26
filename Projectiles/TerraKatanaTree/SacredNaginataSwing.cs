@@ -13,7 +13,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 {
     public class SacredNaginataSwing : CustomSword
     {
-        public override string Texture => this.GetTexture(Name);
+        public override string Texture => this.GetTexture();
 
         public override void Initialize(int type)
         {

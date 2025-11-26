@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MoreKatana.Items.Weapons.Metal;
+using MoreKatana.Particles;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -15,15 +16,24 @@ namespace MoreKatana.Buffs
 
         public override void Update(Player player, ref int buffIndex)
         {
-            player.DrawColorEffect(Color.Red.ToVector3());
-
-            if (player.HeldItem.type != ModContent.ItemType<ObsidianKatana>())
+            if (player.HeldItem.type != ModContent.ItemType<ObsidianKatana_Fire>())
             {
                 player.DelBuff(buffIndex);
                 buffIndex--;
             }
 
-            if (!player.mount.Active)
+            if (player.wet && !player.lavaWet)
+            {
+                Rectangle textPos = new Rectangle((int)player.position.X, (int)player.position.Y - 20, player.width, player.height);
+                CombatText.NewText(textPos, Color.Crimson, "Oops!");
+
+                player.DelBuff(buffIndex);
+                buffIndex--;
+            }
+
+            player.DrawColorEffect(Color.Crimson.ToVector3());
+
+            if (player.velocity.Y == 0 && !player.mount.Active)
             {
                 for (int i = 0; i < 3; i++)
                 {
@@ -34,6 +44,13 @@ namespace MoreKatana.Buffs
                     Main.dust[newDust].fadeIn = 0.3f;
                     Main.dust[newDust].noGravity = true;
                 }
+            }
+
+            if (Main.rand.NextBool(4))
+            {
+                Vector2 position = Main.rand.NextVector2FromRectangle(player.Hitbox);
+                Vector2 velocity = Vector2.UnitY.RotatedBy(MathHelper.Pi) * 10f * Main.rand.NextFloat(0.3f);
+                ParticleHandler.SpawnParticle(new GlowParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.3f, 0.5f), 25));
             }
         }
 

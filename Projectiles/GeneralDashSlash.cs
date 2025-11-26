@@ -56,7 +56,8 @@ namespace MoreKatana.Projectiles
         public void DoTrailCreation(TrailManager tManager)
         {
             TrailColor = GetTrailColor();
-            tManager.CreateTrail(Projectile, TrailColor, MoreKatanaTextures.StraightlineTrailTexture.Value, 42, 100);
+            tManager.CreateTrail(Projectile, TrailColor, MoreKatanaTextures.CutlineTrailTexture.Value, 42, 100, 0);
+            tManager.CreateTrail(Projectile, TrailColor, MoreKatanaTextures.CutlineTrailTexture.Value, 10, 100, 0);
         }
 
         public bool DoTrailDeletion() => Projectile.timeLeft <= (int)DashTime;
@@ -111,7 +112,7 @@ namespace MoreKatana.Projectiles
 
                 if (Owner.velocity.Length() > 2f)
                 {
-                    for (int i = 0; i < (int)(Owner.velocity.Length() / 7f); i++)
+                    for (int i = 0; i < (int)(Owner.velocity.Length() / 10f); i++)
                     {
                         Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(10, 10) - Owner.velocity.Normalized() * 50f;
                         Vector2 vel = Owner.velocity.Normalized() * 0.5f;

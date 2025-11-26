@@ -19,9 +19,11 @@ namespace MoreKatana.Projectiles.Metal
         private float fadeInVal = 0.05f;
         private float rotX;
 
+        private Player Owner => Main.player[Projectile.owner];
+
         public override string Texture => MoreKatana.EmptyTexture;
 
-        private Player Owner => Main.player[Projectile.owner];
+        public override void SetStaticDefaults() => ProjectileID.Sets.HeldProjDoesNotUsePlayerGfxOffY[Type] = true;
 
         public override void SetDefaults()
         {
@@ -79,6 +81,7 @@ namespace MoreKatana.Projectiles.Metal
                 if (Projectile.ai[1] == 0f)
                 {
                     Projectile.ai[1] = 1f;
+                    Owner.ReplaceItem(Owner.ActiveItem(), ModContent.ItemType<ObsidianKatana_Fire>());
                     Owner.ScreenShake(10, 7);
                     SoundEngine.PlaySound(SoundID.DD2_BetsysWrathShot, Owner.Center);
                     MoreKatanaUtil.DrawRing(Owner.Center, DustID.Torch, 30, 5f);

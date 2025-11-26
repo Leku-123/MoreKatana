@@ -4,6 +4,7 @@ using MoreKatana.Systems.CrossMod;
 using System;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace MoreKatana.Items.Weapons.TerraKatanaTree
@@ -11,6 +12,9 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
     public class LightsSlasher : KatanaItem
     {
         public const float MaxTeleportDistance = 300f;
+        public const int MoveSpeedBonus = 8;
+        public const int RunAccelerationBonus = 75;
+        public const float MaxRunSpeedBonus = 1.15f;
 
         public override void SetStaticDefaults()
         {
@@ -39,9 +43,9 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         public override void PassiveSkill(Player player, bool equipment)
         {
-            player.moveSpeed += 0.35f;
-            player.runAcceleration += 0.1f;
-            player.maxRunSpeed += 3f;
+            player.moveSpeed += MoveSpeedBonus / 100f;
+            player.runAcceleration *= 1 + (RunAccelerationBonus / 100f);
+            player.maxRunSpeed *= MaxRunSpeedBonus;
 
             if (player.MKPlayer().ActiveSkillCD == 0)
             {

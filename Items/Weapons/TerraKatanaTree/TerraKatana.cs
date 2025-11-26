@@ -92,9 +92,9 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             {
                 CreateRecipe()
                     .AddIngredient(ItemID.TrueNightsEdge)
-                    .AddIngredient(ModContent.ItemType<TrueSacredNaginata>())
-                    .AddIngredient(ModContent.ItemType<BrokenHeroKatana>())
-                    .AddIngredient(calamity.Find<ModItem>("LivingShard").Type, 12)
+                    .AddIngredient<TrueSacredNaginata>()
+                    .AddIngredient<BrokenHeroKatana>()
+                    .AddIngredient(calamity, "LivingShard", 12)
                     .AddTile(TileID.MythrilAnvil)
                     .Register();
             }
@@ -102,8 +102,8 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             {
                 CreateRecipe()
                     .AddIngredient(ItemID.TrueNightsEdge)
-                    .AddIngredient(ModContent.ItemType<TrueSacredNaginata>())
-                    .AddIngredient(ModContent.ItemType<BrokenHeroKatana>())
+                    .AddIngredient<TrueSacredNaginata>()
+                    .AddIngredient<BrokenHeroKatana>()
                     .AddTile(TileID.MythrilAnvil)
                     .Register();
             }

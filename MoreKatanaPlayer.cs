@@ -12,7 +12,6 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 using static MoreKatana.MoreKatana;
 
@@ -22,7 +21,6 @@ namespace MoreKatana
     {
         // -------- Timer --------
         public int ExtraJumpTimer;
-        public int NightComboTimer;
 
         // -------- Cooldown --------
         public int ActiveSkillCD;
@@ -50,6 +48,8 @@ namespace MoreKatana
         // -------- Screen Shake --------
         public int ScreenShakeTimer;
         public int ScreenShakeStrength;
+        public bool ScreenShakeX;
+        public bool ScreenShakeY;
 
         // -------- Player Draw --------
         public float Flipping;
@@ -69,7 +69,8 @@ namespace MoreKatana
         public bool muramasaCounterattack;
         public bool enchantedHurtEffect;
         public bool skyJumpEffect;
-        public bool isExtraJumping;
+        public bool nightAuraEffect;
+        public int nightHitCount;
         public bool holyShield;
         public int HolyShieldDurability;
         public bool trueHolyShield;
@@ -79,6 +80,9 @@ namespace MoreKatana
 
         // -------- Sync --------
         public Vector2 MouseWorld;
+
+        // -------- Misc --------
+        public const int ShieldRechargeTime = 30 * 60;
 
         public override void OnEnterWorld()
         {
@@ -102,11 +106,12 @@ namespace MoreKatana
             muramasaCounterattack = false;
             enchantedHurtEffect = false;
             skyJumpEffect = false;
+            if (!nightAuraEffect)
+                nightHitCount = 0;
+            nightAuraEffect = false;
             holyShield = false;
             trueHolyShield = false;
             terraShield = false;
-            if (Player.velocity.Y == 0)
-                isExtraJumping = false;
         }
 
         public override void UpdateDead()
@@ -118,10 +123,10 @@ namespace MoreKatana
             slowFallEffect = 0;
             NoUsingItems = 0;
             ShieldCD = 0;
+            nightHitCount = 0;
             HolyShieldDurability = 0;
             TrueHolyShieldDurability = 0;
             TerraShieldDurability = 0;
-            isExtraJumping = false;
         }
 
         public override void ModifyScreenPosition()
@@ -129,8 +134,10 @@ namespace MoreKatana
             // スクリーンを揺らす
             if (ScreenShakeTimer > 0)
             {
-                Main.screenPosition.Y += Main.rand.Next(-ScreenShakeStrength, ScreenShakeStrength) * MoreKatanaConfig.Instance.ScreenShakePower;
-                Main.screenPosition.X += Main.rand.Next(-ScreenShakeStrength, ScreenShakeStrength) * MoreKatanaConfig.Instance.ScreenShakePower;
+                if (ScreenShakeX)
+                    Main.screenPosition.X += Main.rand.Next(-ScreenShakeStrength, ScreenShakeStrength) * MoreKatanaConfig.Instance.ScreenShakePower;
+                if (ScreenShakeY)
+                    Main.screenPosition.Y += Main.rand.Next(-ScreenShakeStrength, ScreenShakeStrength) * MoreKatanaConfig.Instance.ScreenShakePower;
             }
         }
 
@@ -184,9 +191,6 @@ namespace MoreKatana
 
         public override void PostUpdateMiscEffects()
         {
-            if (NightComboTimer > 0)
-                NightComboTimer--;
-
             // クールダウン
             if (ActiveSkillCD > 0)
                 ActiveSkillCD--;
@@ -203,7 +207,11 @@ namespace MoreKatana
             // ForgottenAltarのシーン効果
             if (ForgottenAltarEffect > 0)
             {
-                Player.dontStarveShader = true; // TO-DO できればシェーダーを自作する
+                // TO-DO
+                // できればシェーダーを自作する
+                // スクリーンパーティクルを追加
+
+                Player.dontStarveShader = true;
                 Vector2 screenCenter = Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
                 Vector2 startingPosition = new Vector2(Main.rand.NextFloat(screenCenter.X - Main.screenWidth / 2, screenCenter.X + Main.screenWidth / 2), screenCenter.Y - Main.screenHeight / 2);
 
@@ -215,9 +223,29 @@ namespace MoreKatana
             }
             if (ForgottenAltarMusicOverride > 0)
                 ForgottenAltarMusicOverride--;
+
+            if (enchantedHurtEffect)
+            {
+                if (Player.manaRegenDelay > 5)
+                {
+                    int mana = Dust.NewDust(Player.Center, 0, 0, DustID.ManaRegeneration, 0, 0, 100, default, 0.8f);
+                    Main.dust[mana].noGravity = true;
+                    Main.dust[mana].fadeIn = 1f;
+                    Vector2 offsetVector = Utils.NextVector2CircularEdge(Main.rand, 80f, 80f);
+                    Main.dust[mana].position = Player.Center - offsetVector;
+                    Vector2 newVelocity = Player.Center - Main.dust[mana].position;
+                    Main.dust[mana].velocity = newVelocity * 0.1f;
+                    Main.dust[mana].velocity += Player.velocity;
+                }
+                if (Player.manaRegenDelay == 1)
+                {
+                    SoundEngine.PlaySound(SoundID.Item4, Player.position);
+                    MoreKatanaUtil.DrawRing(Player.Center, DustID.ManaRegeneration, 36, 10);
+                }
+            }
         }
 
-        public override void PostUpdateRunSpeeds()
+        public override void PreUpdateMovement()
         {
             // 汎用の簡単なダッシュ
             if (GeneralDash && DashTimerMax != 0)
@@ -260,7 +288,7 @@ namespace MoreKatana
                 DashTimer++;
 
                 // マルチプレイヤーでの動きを同期する
-                NetMessage.SendData(MessageID.PlayerControls, number: Player.whoAmI);
+                //NetMessage.SendData(MessageID.PlayerControls, number: Player.whoAmI);
             }
         }
 
@@ -366,13 +394,16 @@ namespace MoreKatana
 
         public override void ModifyHurt(ref Player.HurtModifiers modifiers)
         {
+            // シールドに対応するにはこれしかなかった
+            modifiers.ModifyHurtInfo += ModifyHurtInfo;
+
             // シールドの効果
             void ShieldHurtEffect(ref Player.HurtModifiers modifiers, ParticleOrchestraType type)
             {
                 // ヒットした際に音を鳴らす。デフォルトのヒット音は消す
-                modifiers.DisableSound();
                 SoundEngine.PlaySound(SoundID.NPCHit42 with { Pitch = +0.3f }, Player.position);
                 SoundEngine.PlaySound(SoundID.NPCHit4, Player.position);
+                modifiers.DisableSound();
 
                 // パーティクル
                 ParticleOrchestraSettings particleOrchestraSettings = default;
@@ -382,65 +413,79 @@ namespace MoreKatana
 
             if (holyShield && HolyShieldDurability > 0)
                 ShieldHurtEffect(ref modifiers, ParticleOrchestraType.Excalibur);
+
             if (trueHolyShield && TrueHolyShieldDurability > 0)
                 ShieldHurtEffect(ref modifiers, ParticleOrchestraType.TrueExcalibur);
+
             if (terraShield && TerraShieldDurability > 0)
                 ShieldHurtEffect(ref modifiers, ParticleOrchestraType.TerraBlade);
         }
 
-        public override void OnHurt(Player.HurtInfo info)
+        private void ModifyHurtInfo(ref Player.HurtInfo info)
         {
+            if (enchantedHurtEffect)
+            {
+                if (Player.statMana == 0 || Player.manaRegenDelay > 0)
+                    return;
+
+                // マナでどれだけダメージを防いだか計算する
+                // 最大で被ダメの半分まで防ぐことができる
+                int manaDamageBlocked = Math.Min(info.Damage / 2, Player.statMana);
+
+                // 防いだダメージを表示する
+                Rectangle location = new Rectangle((int)Player.position.X, (int)Player.position.Y - 16, Player.width, Player.height);
+                CombatText.NewText(location, EnchantedKatana.EnchantedDamageColor, -manaDamageBlocked);
+
+                // マナを消費する
+                Player.CheckMana(manaDamageBlocked, true, true);
+                Player.manaRegenDelay = 5 * 60;
+
+                // 実際の被弾のダメージを軽減する
+                info.Damage -= manaDamageBlocked;
+            }
+
             if (ShieldCD <= 0)
             {
+                void ShieldEffect(ref Player.HurtInfo info, int durabilityMax, int durability, Color dustColor, Color dustColor2)
+                {
+                    // すべてのシールドにダメージを与える
+                    HolyShieldDurability -= (int)(info.Damage * ((float)SacredNaginata.ShieldDurabilityMax / durabilityMax));
+                    TrueHolyShieldDurability -= (int)(info.Damage * ((float)TrueSacredNaginata.ShieldDurabilityMax / durabilityMax));
+                    TerraShieldDurability -= (int)(info.Damage * ((float)TerraKatana.ShieldDurabilityMax / durabilityMax));
+
+                    // シールドでどれだけダメージを防いだか計算する
+                    int shieldDamageBlocked = Math.Min(durability, info.Damage);
+
+                    // 防いだダメージを表示する
+                    Rectangle location = new Rectangle((int)Player.position.X, (int)Player.position.Y - 16, Player.width, Player.height);
+                    CombatText.NewText(location, Color.LightYellow, -shieldDamageBlocked);
+
+                    // 実際の被弾のダメージを軽減する
+                    info.Damage -= shieldDamageBlocked;
+                }
+
                 if (holyShield && HolyShieldDurability > 0)
-                {
-                    // すべてのシールドにダメージを与える。
-                    ShieldDamage(SacredNaginata.ShieldDurabilityMax);
+                    ShieldEffect(ref info, SacredNaginata.ShieldDurabilityMax, HolyShieldDurability, Color.Gold, Color.Gold);
 
-                    // シールドが破壊された時の処理
-                    if (HolyShieldDurability <= 0)
-                        CrashEffect(SacredNaginata.ShieldRechargeTime, Color.Gold, Color.Gold);
-
-                    // ダメージの処理
-                    OnDamage(ref info, HolyShieldDurability);
-                }
                 if (trueHolyShield && TrueHolyShieldDurability > 0)
-                {
-                    // すべてのシールドにダメージを与える。
-                    ShieldDamage(TrueSacredNaginata.ShieldDurabilityMax);
+                    ShieldEffect(ref info, TrueSacredNaginata.ShieldDurabilityMax, TrueHolyShieldDurability, Color.Gold, Color.Crimson);
 
-                    // シールドが破壊された時の処理
-                    if (TrueHolyShieldDurability <= 0)
-                        CrashEffect(TrueSacredNaginata.ShieldRechargeTime, Color.Gold, Color.Crimson);
-
-                    // ダメージの処理
-                    OnDamage(ref info, TrueHolyShieldDurability);
-                }
                 if (terraShield && TerraShieldDurability > 0)
-                {
-                    // すべてのシールドにダメージを与える。
-                    ShieldDamage(TerraKatana.ShieldDurabilityMax);
+                    ShieldEffect(ref info, TerraKatana.ShieldDurabilityMax, TerraShieldDurability, TerraKatana.TerraColor[0], TerraKatana.TerraColor[1]);
+            }
+        }
 
-                    // シールドが破壊された時の処理
-                    if (TerraShieldDurability <= 0)
-                        CrashEffect(TerraKatana.ShieldRechargeTime, TerraKatana.TerraColor[0], TerraKatana.TerraColor[1]);
+        public override void OnHurt(Player.HurtInfo info)
+        {
+            if (nightAuraEffect)
+                nightHitCount -= Math.Min(2, nightHitCount);
 
-                    // ダメージの処理
-                    OnDamage(ref info, TerraShieldDurability);
-                }
-
-                void ShieldDamage(int shieldDurability)
-                {
-                    // すべてのシールドにダメージを与える。
-                    HolyShieldDurability -= (int)(info.Damage * ((float)SacredNaginata.ShieldDurabilityMax / shieldDurability));
-                    TrueHolyShieldDurability -= (int)(info.Damage * ((float)TrueSacredNaginata.ShieldDurabilityMax / shieldDurability));
-                    TerraShieldDurability -= (int)(info.Damage * ((float)TerraKatana.ShieldDurabilityMax / shieldDurability));
-                }
-
-                void CrashEffect(int cd, Color dustColor, Color dustColor2)
+            if (ShieldCD <= 0)
+            {
+                void CrashEffect(Color dustColor, Color dustColor2)
                 {
                     // クールダウンを設ける
-                    ShieldCD = cd;
+                    ShieldCD = ShieldRechargeTime;
 
                     // シールドの耐久値を0にする
                     HolyShieldDurability = 0;
@@ -462,42 +507,14 @@ namespace MoreKatana
                     }
                 }
 
-                void OnDamage(ref Player.HurtInfo info, int durability)
-                {
-                    // シールドでどれだけダメージを防いだか計算する
-                    int shieldDamageBlocked = Math.Min(durability, info.Damage);
+                if (holyShield && HolyShieldDurability <= 0)
+                    CrashEffect(Color.Gold, Color.Gold);
 
-                    // 防いだダメージを表示する
-                    string trueHolyShieldDamageText = (-shieldDamageBlocked).ToString();
-                    Rectangle location = new Rectangle((int)Player.position.X, (int)Player.position.Y - 16, Player.width, Player.height);
-                    CombatText.NewText(location, Color.LightYellow, Language.GetTextValue(trueHolyShieldDamageText));
+                if (trueHolyShield && TrueHolyShieldDurability <= 0)
+                    CrashEffect(Color.Gold, Color.Crimson);
 
-                    // 実際に被弾のダメージを除去し、後のシールドの被弾を少なくする
-                    info.Damage -= shieldDamageBlocked;
-                }
-            }
-
-            if (enchantedHurtEffect)
-            {
-                // マナが0なら発動前に中止する
-                if (Player.statMana == 0)
-                    return;
-
-                // マナでどれだけダメージを肩代わりしたか計算する
-                int manaDamageBlocked = int.Max(1, info.Damage / 10);
-
-                // マナが不足している場合はマナの値まで軽減値を減らす
-                manaDamageBlocked = int.Min(manaDamageBlocked, Player.statMana);
-
-                // 消費したマナを画面に表示する
-                Rectangle location = new Rectangle((int)Player.position.X, (int)Player.position.Y - 16, Player.width, Player.height);
-                CombatText.NewText(location, EnchantedKatana.EnchantedDamageColor, -manaDamageBlocked);
-
-                // 肩代わりした分、マナを除去する（ダメージの量にかかわらず、最低1マナを消費する）
-                Player.statMana -= manaDamageBlocked;
-
-                // 肩代わりした分をダメージから減算（１ダメージの場合は軽減できない）
-                info.Damage -= manaDamageBlocked;
+                if (terraShield && TerraShieldDurability <= 0)
+                    CrashEffect(TerraKatana.TerraColor[0], TerraKatana.TerraColor[1]);
             }
         }
 

@@ -42,7 +42,6 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         public override void ActiveSkill(Player player)
         {
-            Item.UseSound = null;
             Vector2 randomVel = Vector2.UnitY.RotatedByRandom(MathHelper.TwoPi);
             Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, randomVel, ModContent.ProjectileType<GrassKatanaDance>(), Item.MKItem().AltDamage, Item.knockBack, player.whoAmI);
         }

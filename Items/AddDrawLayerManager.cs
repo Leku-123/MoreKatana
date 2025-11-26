@@ -47,7 +47,7 @@ namespace MoreKatana.Items
                     return i;
                 }
             }
-            throw new NullReferenceException("Max Calls Reached. Calm the fuck down");
+            throw new NullReferenceException("Max Calls Reached.");
         }
 
         public static void Remove(int Index) => AddDrawLayers[Index] = null;

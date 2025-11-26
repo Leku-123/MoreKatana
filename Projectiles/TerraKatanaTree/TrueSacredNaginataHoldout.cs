@@ -119,21 +119,16 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             // 発射位置を剣先に調節する
             float fireOffset = 100f;
-            Vector2 firePos = Projectile.position + (Vector2.Normalize(Projectile.velocity) * fireOffset);
+            Vector2 firePos = Projectile.position + (Projectile.velocity * fireOffset);
 
             // 最初のフレームで魔法陣の発射体を2つスポーンさせる
             if (Timer == 0 && Projectile.owner == Main.myPlayer)
             {
-                // iで魔法陣の配置向きを決める
-                // 0ならばスポーンしない
-                for (int i = -1; i <= 1; i++)
-                {
-                    if (i != 0)
-                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), firePos, Vector2.Normalize(Projectile.velocity), ModContent.ProjectileType<TrueSacredSecondaryMagicCircle>(), Projectile.damage, Projectile.knockBack, Projectile.owner, Projectile.whoAmI, i);
-                }
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), firePos, Projectile.velocity, ModContent.ProjectileType<TrueSacredSecondaryMagicCircle>(), Projectile.damage, Projectile.knockBack, Projectile.owner, Projectile.whoAmI, 1);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), firePos, Projectile.velocity, ModContent.ProjectileType<TrueSacredSecondaryMagicCircle>(), Projectile.damage, Projectile.knockBack, Projectile.owner, Projectile.whoAmI, -1);
             }
 
-            if (PrepareCompletion < 0.8f) // 準備
+            if (PrepareCompletion < 0.8f) // 発射準備
             {
                 int newDust = Dust.NewDust(firePos - new Vector2(4), 32, 32, DustID.HallowedWeapons, Projectile.oldVelocity.X, Projectile.oldVelocity.Y, 100, default);
                 Main.dust[newDust].noGravity = true;
@@ -142,16 +137,17 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             }
             else if (PrepareCompletion == 1f && FireCompletion < 1f) // 発射
             {
-                Owner.ScreenShake(5, 2); // スクリーンシェイク
+                Owner.ScreenShake(4, 6); // スクリーンシェイク
                 Projectile.MKProj().ActivateCD = true; // この発射体消滅後にクールダウンを有効化する
 
                 if (Timer % 10 == 0)
                 {
                     // 最初のフレームでサウンドとビーム発射
-                    if (Projectile.ai[1] == 0)
+                    if (!Projectile.MKProj().Bool[0])
                     {
-                        Projectile.ai[1] = 1;
+                        Projectile.MKProj().Bool[0] = true;
                         SoundEngine.PlaySound(SoundID.Zombie104, Owner.position);
+                        SoundEngine.PlaySound(MoreKatanaSounds.SacredRay, Owner.position);
 
                         if (Projectile.owner == Main.myPlayer)
                         {
@@ -166,6 +162,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                         }
                     }
 
+                    // ダスト
                     for (int i = 0; i < 8; i++)
                     {
                         int newDust = Dust.NewDust(firePos, 32, 32, DustID.HallowedWeapons, 0f, 0f, 100, default, 1.5f);
@@ -182,6 +179,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                         Main.dust[newDust].velocity += Owner.velocity / 2;
                     }
 
+                    // パーティクル
                     for (int i = 0; i < 2; i++)
                     {
                         Vector2 vector = Main.rand.NextVector2Unit() * 40;
@@ -207,7 +205,6 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
             Rectangle rectangle = new Rectangle(0, 0, texture.Width, texture.Height);
             Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-            Color color = Projectile.GetAlpha(lightColor);
             Color glowColor = Color.White * Projectile.Opacity;
             Color circleColor = Color.Gold * Projectile.Opacity;
             SpriteEffects spriteEffects = (Projectile.spriteDirection == -1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
@@ -216,10 +213,10 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             MoreKatanaUtil.DrawBackglow(texture, position, rectangle, glowColor with { A = 0 }, Projectile.rotation, 3f * ((float)Math.Sin(Main.GameUpdateCount / 30f) + 0.3f), new Vector2(Projectile.scale), spriteEffects);
 
             // 本体の描画
-            Main.EntitySpriteDraw(texture, position, rectangle, color, Projectile.rotation, texture.Size() / 2, Projectile.scale, spriteEffects, 0);
+            Main.EntitySpriteDraw(texture, position, rectangle, Projectile.GetAlpha(lightColor), Projectile.rotation, texture.Size() / 2, Projectile.scale, spriteEffects, 0);
 
-            // チェインの描画
-            DrawChain(glowColor);
+            // ひらひらリボン
+            DrawChain(Projectile.GetAlpha(lightColor));
 
             // 魔法陣の描画
             Texture2D bloom = MoreKatanaTextures.BloomTexture.Value;
@@ -238,9 +235,9 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
             Main.spriteBatch.SetEndBegin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
+            // ゲージの描画
             if (Projectile.owner == Main.myPlayer)
             {
-                // ゲージの描画
                 if (PrepareCompletion == 1f && FireCompletion != 1f)
                 {
                     Vector2 gaugePos = Owner.Center - new Vector2(0, 50);
@@ -253,8 +250,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
 
         private Vector2[] chainVels;
         private Vector2[] chainPoints;
-
-        public void ChainPhysics()
+        private void ChainPhysics()
         {
             int length = 16;
             if (chainVels != null)
@@ -298,6 +294,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
                         style = 1;
                     if (i > chainPoints.Length - 3)
                         style = 2;
+
                     Rectangle frame = chainTex.Frame(1, 3, 0, style);
                     float rotation = chainPoints[i].AngleTo(chainPoints[i + 1]);
                     Vector2 stretch = new Vector2(0.3f + Utils.GetLerpValue(0, chainPoints.Length - 2, i, true) * 0.2f, chainPoints[i].Distance(chainPoints[i + 1]) / (frame.Height - 5));

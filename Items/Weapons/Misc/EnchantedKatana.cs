@@ -90,7 +90,7 @@ namespace MoreKatana.Items.Weapons.Misc
             };
         }
 
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => Item.MKItem().AttackType == 0 && !player.IsUsingAlt();
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => Item.MKItem().AttackType == 0 && !player.IsUsingAlt() && player.CheckMana(10, false, true);
 
         public override void MeleeEffects(Player player, Rectangle hitbox)
         {

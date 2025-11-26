@@ -6,7 +6,10 @@ GemShards_Emerald.DisplayName: Emerald Shard
 GemShards_Diamond.DisplayName: Diamond Shard
 GemShards_Amethyst.DisplayName: Amethyst Shard
 # -------- Metal --------
-ObsidianSwing.DisplayName: Obsidian Swing
+ObsidianSwing.DisplayName: Obsidian Katana
+ObsidianSwing2.DisplayName: Obsidian Katana
+ObsidianSlash.DisplayName: Obsidian Slash
+ObsidianKatanaHoldout.DisplayName: Obsidian Katana
 # -------- Misc --------
 KatanaHoldout.DisplayName: Katana
 KatanaSwing.DisplayName: Katana
@@ -55,10 +58,5 @@ GeneralKatanaSwing.DisplayName: Katana
 GeneralDashSlash.DisplayName: Dash Slash
 ShockWaveEffect.DisplayName: Shockwave
 # -------- Not yet --------
-VolcanoKatanaHoldUp.DisplayName: Volcano Katana Hold Up
-VolcanicCinder.DisplayName: Volcanic Cinder
-ObsidianSlash.DisplayName: Obsidian Slash
-ObsidianSwing2.DisplayName: Obsidian Swing2
-ObsidianKatanaHoldout.DisplayName: Obsidian Katana Holdout
 NightKatanaSwing.DisplayName: Night Katana Swing
 NightCycloneSlash.DisplayName: Night Cyclone Slash
