@@ -12,11 +12,10 @@ namespace MoreKatana.Items.Weapons.Metal
 {
     public class ObsidianKatana : KatanaItem
     {
-        public readonly int DefenseBonus = 5;
-
+        public const int DefenseBonus = 5;
         public const int FireBuffTime = 10 * 60;
 
-        public override LocalizedText FunctionText => base.FunctionText.WithFormatArgs(DefenseBonus);
+        public override LocalizedText FunctionText => base.FunctionText.WithFormatArgs(DefenseBonus, FireBuffTime / 60);
 
         public override void SetStaticDefaults()
         {
@@ -40,7 +39,7 @@ namespace MoreKatana.Items.Weapons.Metal
             Item.value = Item.sellPrice(silver: 55);
             Item.rare = ItemRarityID.Orange;
 
-            Item.MKItem().SetKatanaDefaults(Item, 120, true, ModContent.ProjectileType<ObsidianSwing>());
+            Item.MKItem().SetKatanaDefaults(Item, 120, ModContent.ProjectileType<ObsidianSwing>());
         }
 
         public override void PassiveSkill(Player player, bool equipment)
@@ -78,14 +77,14 @@ namespace MoreKatana.Items.Weapons.Metal
     public class ObsidianKatana_Fire : ObsidianKatana
     {
         public override LocalizedText Tooltip => MoreKatanaUtil.GetText("Items.ObsidianKatana.Tooltip");
-        public override LocalizedText FunctionText => MoreKatanaUtil.GetText("Items.ObsidianKatana.FunctionText").WithFormatArgs(DefenseBonus);
+        public override LocalizedText FunctionText => MoreKatanaUtil.GetText("Items.ObsidianKatana.FunctionText").WithFormatArgs(DefenseBonus, FireBuffTime / 60);
 
         public override void SetDefaultsItem()
         {
             base.SetDefaultsItem();
             Item.useTime = 25;
             Item.useAnimation = 25;
-            Item.MKItem().SetKatanaDefaults(Item, 120, true, ModContent.ProjectileType<ObsidianSwing2>(), 2);
+            Item.MKItem().SetKatanaDefaults(Item, 120, ModContent.ProjectileType<ObsidianSwing2>(), 2);
         }
 
         public override bool AltFunctionUseItem(Player player) => false;

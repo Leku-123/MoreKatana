@@ -24,9 +24,7 @@ namespace MoreKatana.Projectiles.TerraKatanaTree
             GetTextureValues();
         }
 
-        public SwingData Down => new SwingData(OwnerItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f)); // 1振り目
-        public SwingData Up => new SwingData(OwnerItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f), backspin: true); // 2振り目
-        public override SwingData GetSwingData(int type) => SwingData.SwingRegister(type, Down, Up);
+        public override SwingData GetSwingData(int type) => new SwingData(OwnerItem.useAnimation, Main.rand.NextFloat(0.7f, 0.8f), backspin: type == 1);
 
         public override float GetProgress(int type) => GeneralSwingAnimation(Progress);
 

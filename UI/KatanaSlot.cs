@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MoreKatana.Items.Accessories;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.Localization;
@@ -28,7 +29,7 @@ namespace MoreKatana.UI
         public override void SetupContent()
         {
             AccessorySystem.KatanaSlots = Type;
-          
+
             // マウスをホバーしたときのテキスト
             KatanasText = Mod.GetLocalization($"{nameof(KatanaSlot)}.Katana");
         }
@@ -40,12 +41,11 @@ namespace MoreKatana.UI
                 if (!Config.UIPosLock)
                     return Location;
 
-                // カスタム位置がロックされている場合nullを返す
-                return null;
+                return new Vector2(Main.screenWidth - 240, 430 / Main.UIScale);
             }
         }
 
-        public override string FunctionalTexture => "MoreKatana/UI/KatanaSlot_Icon";
+        //public override string FunctionalTexture => "MoreKatana/UI/KatanaSlot_Icon";
         public override string FunctionalBackgroundTexture => "MoreKatana/UI/KatanaSlot_Back";
 
         public override bool DrawFunctionalSlot => Main.EquipPage != 1 && (!UILinkPointNavigator.Shortcuts.NPCS_IconsDisplay || !PlayerInput.UsingGamepad);
@@ -59,7 +59,7 @@ namespace MoreKatana.UI
             if (AccessorySystem.KatanaSlots != Type)
                 AccessorySystem.KatanaSlots = Type;
 
-            return checkItem.MKItem().Katana; // Katanaならスロットに入れられる
+            return checkItem.ModItem is ArtifactItem;
         }
 
         public override bool PreDraw(AccessorySlotType context, Item item, Vector2 position, bool isHovered)

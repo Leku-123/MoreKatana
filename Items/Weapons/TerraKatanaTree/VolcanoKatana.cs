@@ -38,7 +38,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             Item.value = Item.sellPrice(silver: 55);
             Item.rare = ItemRarityID.Orange;
 
-            Item.MKItem().SetKatanaDefaults(Item, 60, true);
+            Item.MKItem().SetKatanaDefaults(Item, 60);
         }
 
         public override void PassiveSkill(Player player, bool equipment)

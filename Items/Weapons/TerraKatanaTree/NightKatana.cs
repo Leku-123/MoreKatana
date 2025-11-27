@@ -4,6 +4,7 @@ using MoreKatana.Projectiles.TerraKatanaTree;
 using MoreKatana.Systems.CrossMod;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using Terraria.ID;
@@ -37,7 +38,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             Item.value = Item.sellPrice(gold: 4);
             Item.rare = ItemRarityID.Orange;
 
-            Item.MKItem().SetKatanaDefaults(Item, 60, false, ModContent.ProjectileType<NightKatanaSwing>(), 2);
+            Item.MKItem().SetKatanaDefaults(Item, 60, ModContent.ProjectileType<NightKatanaSwing>(), 2);
         }
 
         public override void PassiveSkill(Player player, bool equipment)
@@ -56,13 +57,39 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
                 if (player.yoraiz0rEye < 2)
                     player.yoraiz0rEye = 2;
+
+                int[] triggers = [MoreKatanaPlayer.Right, MoreKatanaPlayer.Left];
+                for (int i = 0; i < triggers.Length; i++)
+                {
+                    int dashDirection = triggers[i] == MoreKatanaPlayer.Right ? 1 : -1;
+                    float dashVelocity = 10f;
+
+                    if (player.MKPlayer().DoubleTap[triggers[i]] && player.MKPlayer().DoubleTapDelay == 0 && !player.mount.Active)
+                    {
+                        player.immune = true;
+                        player.immuneTime = 30;
+                        player.UpdateRotation(1, dashDirection, 15);
+                        player.MKPlayer().DoubleTapDelay = 120;
+
+                        Vector2 newVelocity = player.velocity;
+                        newVelocity.X = dashVelocity * dashDirection;
+                        player.velocity = newVelocity;
+                        NetMessage.SendData(MessageID.PlayerControls, number: player.whoAmI);
+                    }
+                }
+
+                if (player.MKPlayer().DoubleTapDelay == 1)
+                {
+                    SoundEngine.PlaySound(SoundID.MaxMana, player.Center);
+                    MoreKatanaUtil.DrawRing(player.Center, DustID.Shadowflame, 24, 10, dustScale: 1.5f);
+                }
             }
 
             if (player.velocity.Y == 0 && !player.mount.Active)
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    int newDust = Dust.NewDust(new Vector2(player.Center.X - player.width, player.Center.Y + player.height / 2), player.width * 2 - 3, 0, Utils.SelectRandom(Main.rand, DustID.Demonite, DustID.Shadowflame), 0, Main.rand.Next(-5, -2), 150, default, 0.5f);
+                    int newDust = Dust.NewDust(new Vector2(player.Center.X - player.width, player.Center.Y + player.height / 2), player.width * 2 - 3, 0, Utils.SelectRandom(Main.rand, DustID.Demonite, DustID.Shadowflame), 0, Main.rand.Next(-5, -2), 150, default, 0.8f);
                     Main.dust[newDust].fadeIn = 0.3f;
                     Main.dust[newDust].noGravity = true;
                 }

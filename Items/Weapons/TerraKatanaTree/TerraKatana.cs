@@ -18,14 +18,13 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 {
     public class TerraKatana : KatanaItem, IAddDrawLayer
     {
-        public const int ShieldRechargeTime = 30 * 60;
         public const int ShieldDurabilityMax = 100;
         public const int ShieldDefenseBoost = 10;
 
         public const int DustType = DustID.Terra;
         public static Color[] TerraColor = [new Color(96, 248, 96), new Color(0, 162, 230)];
 
-        public override LocalizedText FunctionText => base.FunctionText.WithFormatArgs(ShieldDurabilityMax, ShieldDefenseBoost, ShieldRechargeTime / 60);
+        public override LocalizedText FunctionText => base.FunctionText.WithFormatArgs(ShieldDurabilityMax, ShieldDefenseBoost, MoreKatanaPlayer.ShieldRechargeTime / 60);
 
         public override void SetStaticDefaults()
         {
@@ -49,7 +48,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             Item.value = Item.sellPrice(gold: 20);
             Item.rare = ItemRarityID.Yellow;
 
-            Item.MKItem().SetKatanaDefaults(Item, 10 * 60, false, ModContent.ProjectileType<TerraKatanaSwing>(), 5);
+            Item.MKItem().SetKatanaDefaults(Item, 10 * 60, ModContent.ProjectileType<TerraKatanaSwing>(), 5);
         }
 
         public override void PassiveSkill(Player player, bool equipment)
@@ -162,7 +161,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             {
                 // ゲージの充填率
                 float durabilityRatio = (float)drawPlayer.MKPlayer().TerraShieldDurability / ShieldDurabilityMax;
-                float cooldownRatio = (float)drawPlayer.MKPlayer().ShieldCD / ShieldRechargeTime;
+                float cooldownRatio = (float)drawPlayer.MKPlayer().ShieldCD / MoreKatanaPlayer.ShieldRechargeTime;
 
                 // ゲージの位置
                 Vector2 gaugePos = new Vector2(drawinfo.Center.X, drawinfo.Center.Y) + new Vector2(0, 35);

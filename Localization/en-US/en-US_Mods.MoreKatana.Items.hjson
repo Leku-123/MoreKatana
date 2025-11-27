@@ -17,6 +17,19 @@ THXForPlaying: {
 		'''
 }
 
+# -------- Accessories --------
+ArtifactItem: Artifact
+
+AncientScroll: {
+	DisplayName: Ancient Scroll
+	Tooltip: ""
+}
+
+SturdySheath: {
+	DisplayName: Sturdy Sheath
+	Tooltip: Reduces the cooldown of {$Tooltips.AS} by {0}%
+}
+
 # -------- Materials --------
 BrokenHeroKatana: {
 	DisplayName: Broken Hero Katana
@@ -40,10 +53,10 @@ Katana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/FFD700:<Technical Tactics>]
-		- Change normal attacks to charged attacks.
-		- A fully charged attack has the power to deflect enemy projectiles. But it has no effect on the boss.
+		- Change normal attacks to charged attacks
+		- A fully charged attack has the power to deflect enemy projectiles. But it has no effect on the boss
 		{$Tooltips.AS} [c/FFFFFF:<Flash of Lightning>]
-		- Perform a dash slash. It chains to up to 6 enemies.
+		- Perform a dash slash. It chains to up to 6 enemies
 		'''
 }
 
@@ -52,10 +65,10 @@ Muramasa: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/0000FA:<Revengeance>]
-		- When damaged, the ghost will counterattack.
+		- When damaged, the ghost will counterattack
 		{$Tooltips.AS} [c/0000CD:<Bloodthirsty Ghost>]
-		- Summon a ghost for 10 seconds.
-		- When the player attacks, the ghost will perform an additional attack.
+		- Summon a ghost for 10 seconds
+		- When the player attacks, the ghost will perform an additional attack
 		'''
 }
 
@@ -66,7 +79,7 @@ WoodenKatana: {
 		'''
 		{$Tooltips.PS} [c/A3A3A3:<None>]
 		{$Tooltips.AS} [c/A6512B:<Charge Attack>]
-		- Swing down heavily. 
+		- Swing down heavily
 		'''
 }
 
@@ -76,9 +89,9 @@ CopperKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/C56A2B:<Copper Protection>]
-		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
+		- +{0} defense. If the ore type matches the armor, additional +{1} defense
 		{$Tooltips.AS} [c/FFFFFF:<Flash Attack>]
-		- Dash and attack the enemy.
+		- Dash and attack the enemy
 		'''
 }
 
@@ -88,9 +101,9 @@ TinKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/ADAC58:<Tin Protection>]
-		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
+		- +{0} defense. If the ore type matches the armor, additional +{1} defense
 		{$Tooltips.AS} [c/FFFFFF:<Flash Attack>]
-		- Dash and attack the enemy.
+		- Dash and attack the enemy
 		'''
 }
 
@@ -100,9 +113,9 @@ IronKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/A79862:<Iron Protection>]
-		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
+		- +{0} defense. If the ore type matches the armor, additional +{1} defense
 		{$Tooltips.AS} [c/FFFFFF:<Flash Attack>]
-		- Dash and attack the enemy.
+		- Dash and attack the enemy
 		'''
 }
 
@@ -112,9 +125,9 @@ LeadKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/6B8C9E:<Lead Protection>]
-		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
+		- +{0} defense. If the ore type matches the armor, additional +{1} defense
 		{$Tooltips.AS} [c/FFFFFF:<Flash Attack>]
-		- Dash and attack the enemy.
+		- Dash and attack the enemy
 		'''
 }
 
@@ -124,9 +137,9 @@ SilverKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/B5BCBF:<Silver Protection>]
-		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
+		- +{0} defense. If the ore type matches the armor, additional +{1} defense
 		{$Tooltips.AS} [c/FFFFFF:<Flash Attack>]
-		- Dash and attack the enemy.
+		- Dash and attack the enemy
 		'''
 }
 
@@ -136,9 +149,9 @@ TungstenKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/C4E5C2:<Tungsten Protection>]
-		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
+		- +{0} defense. If the ore type matches the armor, additional +{1} defense
 		{$Tooltips.AS} [c/FFFFFF:<Flash Attack>]
-		- Dash and attack the enemy.
+		- Dash and attack the enemy
 		'''
 }
 
@@ -148,9 +161,9 @@ GoldKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/D5DA5D:<Gold Protection>]
-		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
+		- +{0} defense. If the ore type matches the armor, additional +{1} defense
 		{$Tooltips.AS} [c/FFFFFF:<Flash Attack>]
-		- Dash and attack the enemy.
+		- Dash and attack the enemy
 		'''
 }
 
@@ -160,9 +173,9 @@ PlatinumKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/E6E6E6:<Platinum Protection>]
-		- +{0} defense. If the ore type matches the armor, additional +{1} defense.
+		- +{0} defense. If the ore type matches the armor, additional +{1} defense
 		{$Tooltips.AS} [c/FFFFFF:<Flash Attack>]
-		- Dash and attack the enemy.
+		- Dash and attack the enemy
 		'''
 }
 
@@ -172,9 +185,9 @@ AmethystKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/DB61FF:<Gem Shards>]
-		- Spawn gems that revolve around the player.
+		- Spawn gems that revolve around the player
 		{$Tooltips.AS} [c/C030F5:<Gem Crusher>]
-		- Shoot compressed gems.
+		- Shoot compressed gems
 		'''
 }
 
@@ -184,9 +197,9 @@ TopazKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/FFC600:<Gem Shards>]
-		- Spawn gems that revolve around the player.
+		- Spawn gems that revolve around the player
 		{$Tooltips.AS} [c/D9891A:<Gem Crusher>]
-		- Shoot compressed gems.
+		- Shoot compressed gems
 		'''
 }
 
@@ -196,9 +209,9 @@ SapphireKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/0F94EB:<Gem Shards>]
-		- Spawn gems that revolve around the player.
+		- Spawn gems that revolve around the player
 		{$Tooltips.AS} [c/056BD9:<Gem Crusher>]
-		- Shoot compressed gems.
+		- Shoot compressed gems
 		'''
 }
 
@@ -208,7 +221,7 @@ EmeraldKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/1CBA73:<Gem Shards>]
-		- Spawn gems that revolve around the player.
+		- Spawn gems that revolve around the player
 		{$Tooltips.AS} [c/03905C:<Gem Crusher>]
 		- Shoot compressed gems.
 		'''
@@ -220,9 +233,9 @@ RubyKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/EF3032:<Gem Shards>]
-		- Spawn gems that revolve around the player.
+		- Spawn gems that revolve around the player
 		{$Tooltips.AS} [c/C52528:<Gem Crusher>]
-		- Shoot compressed gems.
+		- Shoot compressed gems
 		'''
 }
 
@@ -232,9 +245,9 @@ DiamondKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/8A7FBD:<Gem Shards>]
-		- Spawn gems that revolve around the player.
+		- Spawn gems that revolve around the player
 		{$Tooltips.AS} [c/6170AE:<Gem Crusher>]
-		- Shoot compressed gems.
+		- Shoot compressed gems
 		'''
 }
 
@@ -244,9 +257,9 @@ GrassKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/00FF00:<Photosynthesis>]
-		- Applies the Photosynthesis Buff.
+		- Applies the Photosynthesis Buff
 		{$Tooltips.AS} [c/ADFF2F:<Grass Dance>]
-		- Swinging the katana in all directions and firing leaves.
+		- Swinging the katana in all directions and firing leaves
 		'''
 }
 
@@ -270,7 +283,7 @@ LightsSlasher: {
 		{$Tooltips.PS} <Oboro Style>
 		- Increased movement speed and acceleration through the power of shadows
 		{$Tooltips.AS} <Haze Step>
-		- Teleport and perform a powerful slash to the enemy.
+		- Teleport and perform a powerful slash to the enemy
 		'''
 }
 
@@ -304,11 +317,11 @@ SacredNaginata: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/FFD700:<Guardian Angel>]
-		- Projects an holy shield that absorbs up to {0} damage. The shield grants {1} defense while active.
-		- After the shield is broken, it takes {2} seconds to charge back up.
-		- Using a healing potion fully restores the shield's durability and cooldown.
+		- Projects an holy shield that absorbs up to {0} damage. The shield grants {1} defense while active
+		- After the shield is broken, it takes {2} seconds to charge back up
+		- Using a healing potion fully restores the shield's durability and cooldown
 		{$Tooltips.AS} [c/FFD700:<The Judgment>]
-		- Summon a sacred magic circle and shoot a bunch of blades.
+		- Summon a sacred magic circle and shoot a bunch of blades
 		'''
 }
 
@@ -318,11 +331,11 @@ TrueSacredNaginata: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/FFD700:<Guardian Archangel>]
-		- Projects an holy shield that absorbs up to {0} damage. The shield grants {1} defense while active.
-		- After the shield is broken, it takes {2} seconds to charge back up.
-		- Using a healing potion fully restores the shield's durability and cooldown.
+		- Projects an holy shield that absorbs up to {0} damage. The shield grants {1} defense while active
+		- After the shield is broken, it takes {2} seconds to charge back up
+		- Using a healing potion fully restores the shield's durability and cooldown
 		{$Tooltips.AS} [c/FFD700:<The Judgment of Trinity>]
-		- Summon three magic circles and shoot beams and blades.
+		- Summon three magic circles and shoot beams and blades
 		'''
 }
 
@@ -332,13 +345,13 @@ TerraKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/00FF00:<Guardian of Terra>]
-		- Projects an terra shield that absorbs up to {0} damage. The shield grants {1} defense while active.
-		- After the shield is broken, it takes {2} seconds to charge back up.
-		- Using a healing potion fully restores the shield's durability and cooldown.
+		- Projects an terra shield that absorbs up to {0} damage. The shield grants {1} defense while active
+		- After the shield is broken, it takes {2} seconds to charge back up
+		- Using a healing potion fully restores the shield's durability and cooldown
 		{$Tooltips.AS} [c/60F860:<Terra Destruction>]
-		- Press and hold the Right-click to aim. And press the Left-click to disable auto-aiming on enemies.
-		- When released, it teleports and unleashes a continuous barrage of slashes.
-		- During the slash, the player takes no damage, and the final slash brings down a bolt of lightning.
+		- Press and hold the Right-click to aim. And press the Left-click to disable auto-aiming on enemies
+		- When released, it teleports and unleashes a continuous barrage of slashes
+		- During the slash, the player takes no damage, and the final slash brings down a bolt of lightning
 		'''
 }
 
@@ -350,7 +363,7 @@ ObsidianKatana: {
 		{$Tooltips.PS} [c/35194D:<Obsidian Protection>]
 		- +{0} defense. Grants immunity to fire blocks
 		{$Tooltips.AS} [c/A93128:<Awake>]
-		- 
+		- Applies the buff that enhances normal attacks for {1} seconds
 		'''
 }
 
@@ -362,10 +375,10 @@ EnchantedKatana: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/3232A4:<Mana Manipulation>]
-		- Absorbs up to half damage taken using mana.
-		- The cooldown lasts 5 seconds, during which mana regeneration stops.
+		- Absorbs up to half damage taken using mana
+		- The cooldown lasts {0} seconds, during which mana regeneration stops
 		{$Tooltips.AS} [c/3795C8:<Enchant Slash>]
-		- 
+		- Performs a dash attack while spreading an enchanted beam forward
 		'''
 }
 
@@ -374,9 +387,10 @@ SkyKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.PS} <Feather Jump>
-		- Fires a total of {0} feathers during a double jump.
-		{$Tooltips.AS} <>
-		- 
+		{$Tooltips.PS} [c/2385E7:<Feather Jump>]
+		- Fires a total of {0} feathers during a double jump
+		{$Tooltips.AS} [c/B5D6f7:<Tornado Slash>]
+		- Charge and release the tornado
+		- The tornado deals powerful knockback to enemies
 		'''
 }

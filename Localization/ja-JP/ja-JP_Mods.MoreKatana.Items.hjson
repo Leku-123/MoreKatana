@@ -17,6 +17,19 @@ THXForPlaying: {
 		'''
 }
 
+# -------- Accessories --------
+ArtifactItem: アーティファクト
+
+AncientScroll: {
+	DisplayName: Ancient Scroll
+	Tooltip: ""
+}
+
+SturdySheath: {
+	DisplayName: Sturdy Sheath
+	Tooltip: Reduces the cooldown of {$Tooltips.AS} by {0}%
+}
+
 # -------- Materials --------
 BrokenHeroKatana: {
 	DisplayName: 壊れた英雄のカタナ
@@ -351,8 +364,8 @@ ObsidianKatana: {
 		'''
 		{$Tooltips.PS} [c/35194D:<黒曜石の守護>]
 		- 防御が{0}増加。燃えるブロックのダメージを無効化
-		{$Tooltips.AS} [c/A93128:<Ignition>]
-		- 
+		{$Tooltips.AS} [c/A93128:<Awake>]
+		- Applies the buff that enhances normal attacks for {1} seconds
 		'''
 }
 
@@ -365,9 +378,9 @@ EnchantedKatana: {
 		'''
 		{$Tooltips.PS} [c/3232A4:<Mana Manipulation>]
 		- Absorbs up to half damage taken using mana.
-		- The cooldown lasts 5 seconds, during which mana regeneration stops.
+		- The cooldown lasts {0} seconds, during which mana regeneration stops
 		{$Tooltips.AS} [c/3795C8:<Enchant Slash>]
-		- 
+		- Performs a dash attack while spreading an enchanted beam forward
 		'''
 }
 
@@ -376,9 +389,11 @@ SkyKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.PS} <>
+		{$Tooltips.PS} [c/2385E7:<Feather Jump>]
 		- 二段ジャンプ時、合計 {0} 本の羽を放つ
-		{$Tooltips.AS} <>
-		- 
+		{$Tooltips.AS} [c/B5D6f7:<Tornado Slash>]
+		- Charge and release the tornado
+		- The tornado deals powerful knockback to enemies
+		'''
 		'''
 }

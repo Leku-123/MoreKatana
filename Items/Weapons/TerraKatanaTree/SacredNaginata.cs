@@ -17,11 +17,10 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 {
     public class SacredNaginata : KatanaItem, IAddDrawLayer
     {
-        public static int ShieldRechargeTime = 30 * 60;
         public static int ShieldDurabilityMax = 50;
         public const int ShieldDefenseBoost = 10;
 
-        public override LocalizedText FunctionText => base.FunctionText.WithFormatArgs(ShieldDurabilityMax, ShieldDefenseBoost, ShieldRechargeTime / 60);
+        public override LocalizedText FunctionText => base.FunctionText.WithFormatArgs(ShieldDurabilityMax, ShieldDefenseBoost, MoreKatanaPlayer.ShieldRechargeTime / 60);
 
         public override void SetStaticDefaults()
         {
@@ -45,7 +44,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             Item.value = Item.sellPrice(0, 4, 60);
             Item.rare = ItemRarityID.Pink;
 
-            Item.MKItem().SetKatanaDefaults(Item, 60, false, ModContent.ProjectileType<SacredNaginataSwing>(), 3);
+            Item.MKItem().SetKatanaDefaults(Item, 60, ModContent.ProjectileType<SacredNaginataSwing>(), 3);
         }
 
         public override void PassiveSkill(Player player, bool equipment)
@@ -138,7 +137,7 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
             {
                 // ゲージの充填率
                 float durabilityRatio = (float)drawPlayer.MKPlayer().HolyShieldDurability / ShieldDurabilityMax;
-                float cooldownRatio = (float)drawPlayer.MKPlayer().ShieldCD / ShieldRechargeTime;
+                float cooldownRatio = (float)drawPlayer.MKPlayer().ShieldCD / MoreKatanaPlayer.ShieldRechargeTime;
 
                 // ゲージの位置
                 Vector2 gaugePos = new Vector2(drawinfo.Center.X, drawinfo.Center.Y) + new Vector2(0, 35);

@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace MoreKatana.Items.Weapons.Misc
@@ -14,6 +15,9 @@ namespace MoreKatana.Items.Weapons.Misc
     {
         public static int[] EnchantedDustType = [DustID.MagicMirror, DustID.Enchanted_Gold, DustID.Enchanted_Pink];
         public static Color EnchantedDamageColor = new(150, 60, 255, 255);
+        public const int EnchantedHurtCD = 5 * 60;
+
+        public override LocalizedText FunctionText => base.FunctionText.WithFormatArgs(EnchantedHurtCD / 60);
 
         public override void SetStaticDefaults()
         {

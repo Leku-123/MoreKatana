@@ -5,7 +5,6 @@ using MoreKatana.Items.Weapons;
 using MoreKatana.Projectiles;
 using MoreKatana.Projectiles.Misc;
 using MoreKatana.Projectiles.TerraKatanaTree;
-using MoreKatana.UI;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -39,10 +38,9 @@ namespace MoreKatana.Items
         /// </summary>
         /// <param name="item"></param>
         /// <param name="delay"> アクティブスキルのCD </param>
-        /// <param name="equipment"> 装備可能かどうか </param>
         /// <param name="type"> 振りの種類 </param>
         /// <param name="combo"> 振りのコンボ数 </param>
-        public void SetKatanaDefaults(Item item, int delay, bool equipment = false, int? type = null, int combo = 1)
+        public void SetKatanaDefaults(Item item, int delay, int? type = null, int combo = 1)
         {
             item.DamageType = DamageClass.Melee;
             item.useStyle = ItemUseStyleID.Shoot;
@@ -53,8 +51,6 @@ namespace MoreKatana.Items
             item.useTurn = false;
             item.noUseGraphic = true;
             item.noMelee = true;
-
-            item.accessory = equipment;
 
             // 発射体が指定されていない場合、ダミーの発射体を発射する
             // Shoot()を適用させたいため
@@ -100,14 +96,14 @@ namespace MoreKatana.Items
                 item.useAnimation = 30;
                 UseSound = SoundID.Item1;
                 AltDamage = 36;
-                SetKatanaDefaults(item, 60, false, ModContent.ProjectileType<KatanaHoldout>());
+                SetKatanaDefaults(item, 60, ModContent.ProjectileType<KatanaHoldout>());
                 item.autoReuse = false;
             }
             if (item.type == ItemID.Muramasa && MoreKatanaConfig.Instance.MuramasaRework)
             {
                 UseSound = SoundID.Item1;
                 AltDamage = 48;
-                SetKatanaDefaults(item, 60, true, combo: 2);
+                SetKatanaDefaults(item, 60, combo: 2);
             }
         }
 
@@ -286,31 +282,6 @@ namespace MoreKatana.Items
                 SoundEngine.PlaySound(SoundID.NPCDeath33, player.Center);
                 Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<MuramasaGhost>(), AltDamage, item.knockBack, player.whoAmI);
             }
-        }
-
-        public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player)
-        {
-            if (Katana)
-            {
-                if ((equippedItem.type is ItemID.Katana or ItemID.Muramasa || equippedItem.ModItem is KatanaItem)
-                    && (incomingItem.type is ItemID.Katana or ItemID.Muramasa || incomingItem.ModItem is KatanaItem))
-                {
-                    // 刀は同時に装備させないようにする
-                    return false;
-                }
-            }
-            return base.CanAccessoryBeEquippedWith(equippedItem, incomingItem, player);
-        }
-
-        public override bool CanEquipAccessory(Item item, Player player, int slot, bool modded)
-        {
-            if (Katana)
-            {
-                // ModのスロットかつKatanaSlotsの時装備できる
-                return modded && slot == AccessorySystem.KatanaSlots;
-            }
-
-            return base.CanEquipAccessory(item, player, slot, modded);
         }
 
         private bool Japanese;

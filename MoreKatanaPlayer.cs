@@ -29,6 +29,38 @@ namespace MoreKatana
         public int ShieldCD;
 
         // -------- Player Effect --------
+        public const int Down = 0;
+        public const int Up = 1;
+        public const int Right = 2;
+        public const int Left = 3;
+        public bool[] DoubleTap = new bool[4];
+        public int DoubleTapDelay = 0;
+
+        public void IsDoubleTap()
+        {
+            if (Player.controlDown && Player.releaseDown && Player.doubleTapCardinalTimer[Down] < 15)
+            {
+                DoubleTap[Down] = true;
+            }
+            else if (Player.controlUp && Player.releaseUp && Player.doubleTapCardinalTimer[Up] < 15)
+            {
+                DoubleTap[Up] = true;
+            }
+            else if (Player.controlRight && Player.releaseRight && Player.doubleTapCardinalTimer[Right] < 15 && Player.doubleTapCardinalTimer[Left] == 0)
+            {
+                DoubleTap[Right] = true;
+            }
+            else if (Player.controlLeft && Player.releaseLeft && Player.doubleTapCardinalTimer[Left] < 15 && Player.doubleTapCardinalTimer[Right] == 0)
+            {
+                DoubleTap[Left] = true;
+            }
+            else
+            {
+                for (int i = 0; i < 4; i++)
+                    DoubleTap[i] = false;
+            }
+        }
+
         public bool DashState;
         public bool GeneralDash;
         public bool SuddenStop;
@@ -91,6 +123,7 @@ namespace MoreKatana
 
         public override void ResetEffects()
         {
+            IsDoubleTap();
             DashState = false;
             if (!GeneralDash)
                 DashTimer = 0f;
@@ -198,6 +231,9 @@ namespace MoreKatana
                 CounterattackCD--;
             if (ShieldCD > 0)
                 ShieldCD--;
+
+            if (DoubleTapDelay > 0)
+                DoubleTapDelay--;
 
             if (slowFallEffect > 0)
                 Player.slowFall = true;
@@ -438,7 +474,7 @@ namespace MoreKatana
 
                 // マナを消費する
                 Player.CheckMana(manaDamageBlocked, true, true);
-                Player.manaRegenDelay = 5 * 60;
+                Player.manaRegenDelay = EnchantedKatana.EnchantedHurtCD;
 
                 // 実際の被弾のダメージを軽減する
                 info.Damage -= manaDamageBlocked;
