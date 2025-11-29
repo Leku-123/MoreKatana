@@ -21,44 +21,44 @@ THXForPlaying: {
 ArtifactItem: アーティファクト
 
 AncientScroll: {
-	DisplayName: Ancient Scroll
+	DisplayName: 古代の巻物
 	Tooltip: ""
 }
 
 SturdySheath: {
-	DisplayName: Sturdy Sheath
-	Tooltip: Reduces the cooldown of {$Tooltips.AS} by {0}%
+	DisplayName: 強靭刀鞘
+	Tooltip: "{$Tooltips.AS}クールダウンが{0}%減少"
 }
 
 SecretBook_FlashAttack: {
-	DisplayName: Secret Book <Flash Attack>
+	DisplayName: 秘技書 <電光斬>
 	Tooltip:
 		'''
-		Enable "Flash Attack" when holding a Katana item
-		Double tap either Left or Right
+		カタナ武器を使用中、『電光斬』が使用可能となる
+		左右どちらかを二回入力
 		'''
 }
 
 SecretBook_BackflipSlash: {
-	DisplayName: Secret Book <Backflip Slash>
+	DisplayName: 秘伝書 <宙返り斬り>
 	Tooltip:
 		'''
-		Enable "Backflip Slash" when holding a Katana item
-		Double tap the UP
+		カタナ武器を使用中、『宙返り斬り』が使用可能となる
+		上方向を二回入力
 		'''
 }
 
 SecretBook_DesolateDive: {
-	DisplayName: Secret Book <Desolate Dive>
+	DisplayName: 秘伝書 <荒寂突き>
 	Tooltip:
 		'''
-		Enable "Desolate Dive" when holding a Katana item
-		Double tap the DOWN
+		カタナ武器を使用中、『荒寂突き』が使用可能となる
+		下方向を二回入力
 		'''
 }
 
 SecretBook_Compilation: {
-	DisplayName: Secret Book <Compilation>
+	DisplayName: 秘伝書 <コンピレーション>
 	Tooltip: ""
 }
 
@@ -300,10 +300,10 @@ VolcanoKatana: {
 	Tooltip: 「心を燃やせ」
 	FunctionText:
 		'''
-		{$Tooltips.PS} [c/FD3E03:<Heat Heart>]
-		- Provides immunity to chill, freezing and frostburn effects
-		{$Tooltips.AS} [c/FE7902:<Volcanic Eruption>]
-		- Fire up to 5 volcanic projectiles
+		{$Tooltips.PS} [c/FD3E03:<熱い心>]
+		- 凍え、凍結、霜焼け耐性
+		{$Tooltips.AS} [c/FE7902:<超降火山>]
+		- 最大5発の火山弾を放つ
 		'''
 }
 
@@ -313,9 +313,9 @@ LightsSlasher: {
 	FunctionText:
 		'''
 		{$Tooltips.PS} [c/3D176D:<朧の型>]
-		- Increased movement speed and acceleration through the power of shadows
+		- 影の力により移動性能が上昇
 		{$Tooltips.AS} [c/3A1D87:<霞歩き>]
-		- Teleport and perform a powerful slash to the enemy.
+		- 敵へ瞬間移動し、斬撃を繰り出す
 		'''
 }
 
@@ -332,7 +332,7 @@ NightKatana: {
 }
 
 TrueNightKatana: {
-	DisplayName: 真・ツクヨミ
+	DisplayName: 真なるツクヨミ
 	Tooltip: ""
 	FunctionText:
 		'''
@@ -359,7 +359,7 @@ SacredNaginata: {
 }
 
 TrueSacredNaginata: {
-	DisplayName: トゥルー・ゲイボルグ
+	DisplayName: トゥルーゲイボルグ
 	Tooltip: ""
 	FunctionText:
 		'''
@@ -396,8 +396,8 @@ ObsidianKatana: {
 		'''
 		{$Tooltips.PS} [c/35194D:<黒曜石の守護>]
 		- 防御が{0}増加。燃えるブロックのダメージを無効化
-		{$Tooltips.AS} [c/A93128:<Awake>]
-		- Applies the buff that enhances normal attacks for {1} seconds
+		{$Tooltips.AS} [c/A93128:<覚醒>]
+		- {0}秒間、通常攻撃強化のバフを付与
 		'''
 }
 
@@ -408,11 +408,11 @@ EnchantedKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.PS} [c/3232A4:<Mana Manipulation>]
-		- Absorbs up to half damage taken using mana.
-		- The cooldown lasts {0} seconds, during which mana regeneration stops
-		{$Tooltips.AS} [c/3795C8:<Enchant Slash>]
-		- Performs a dash attack while spreading an enchanted beam forward
+		{$Tooltips.PS} [c/3232A4:<マナ防衛>]
+		- 被ダメージの半分をマナで吸収する
+		- クールダウン中（{0} 秒間）はマナ再生が停止
+		{$Tooltips.AS} [c/3795C8:<エンチャントスラッシュ>]
+		- 前方へ光刃を放ちながら斬撃突進する
 		'''
 }
 
@@ -421,10 +421,10 @@ SkyKatana: {
 	Tooltip: ""
 	FunctionText:
 		'''
-		{$Tooltips.PS} [c/2385E7:<Feather Jump>]
+		{$Tooltips.PS} [c/2385E7:<羽跳び>]
 		- 二段ジャンプ時、合計 {0} 本の羽を放つ
-		{$Tooltips.AS} [c/B5D6f7:<Tornado Slash>]
-		- Charge and release the tornado
-		- The tornado deals powerful knockback to enemies
+		{$Tooltips.AS} [c/B5D6f7:<トルネードスラッシュ>]
+		- 旋風を纏い、ためて解き放つ
+		- 旋風は敵を大きく吹き飛ばす
 		'''
 }
