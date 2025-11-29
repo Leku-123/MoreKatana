@@ -36,12 +36,12 @@ namespace MoreKatana.Items.Accessories
 
         public override bool CanEquipAccessory(Player player, int slot, bool modded)
         {
-            return modded && slot == AccessorySystem.KatanaSlots;
+            return modded && slot == AccessorySystem.ArtifactSlotType;
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            int index = tooltips.FindIndex(x => x.Name == "Tooltip0");
+            int index = tooltips.FindIndex(x => x.Name == "Tooltip" + (Item.ToolTip.Lines - 1));
             if (index < 0)
                 return;
 
@@ -59,7 +59,7 @@ namespace MoreKatana.Items.Accessories
                 for (int i = 0; i < 4; i++)
                 {
                     float amount = 2f;
-                    if (MoreKatanaUtil.IsJapanese(line.Text))
+                    if (line.Text.IsJapanese())
                         amount = 1.4f;
 
                     Vector2 drawpos = lineposition + new Vector2(0, amount * ((float)Math.Sin(Main.GlobalTimeWrappedHourly * 4) / 2)).RotatedBy(i * MathHelper.PiOver2);

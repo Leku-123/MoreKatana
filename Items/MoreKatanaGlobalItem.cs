@@ -289,7 +289,7 @@ namespace MoreKatana.Items
         {
             if (Katana)
             {
-                if (MoreKatanaUtil.IsJapanese(line.Text))
+                if (line.Text.IsJapanese())
                     Japanese = true;
 
                 if (line.Name == "DefaultText")

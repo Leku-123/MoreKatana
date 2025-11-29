@@ -4,7 +4,6 @@ using MoreKatana.Projectiles.TerraKatanaTree;
 using MoreKatana.Systems.CrossMod;
 using System;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using Terraria.ID;
@@ -43,56 +42,34 @@ namespace MoreKatana.Items.Weapons.TerraKatanaTree
 
         public override void PassiveSkill(Player player, bool equipment)
         {
-            float ratio = (float)player.MKPlayer().nightHitCount / MaxHitCount;
             player.MKPlayer().nightAuraEffect = true;
+
+            float ratio = (float)player.MKPlayer().nightHitCount / MaxHitCount;
             player.statDefense += (int)(5 * ratio);
             player.GetDamage(DamageClass.Melee) += 0.5f * ratio;
             player.DrawColorEffect(Color.Lerp(Color.White, Color.Indigo, ratio).ToVector3());
 
             if (ratio > 0.5f)
+            {
                 player.tipsy = true;
+
+                if (player.velocity.Y == 0 && !player.mount.Active)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        int newDust = Dust.NewDust(new Vector2(player.Center.X - player.width, player.Center.Y + player.height / 2), player.width * 2 - 3, 0, Utils.SelectRandom(Main.rand, DustID.Demonite, DustID.Shadowflame), 0, Main.rand.Next(-5, -2), 150, default, 0.8f);
+                        Main.dust[newDust].fadeIn = 0.3f;
+                        Main.dust[newDust].noGravity = true;
+                    }
+                }
+            }
             if (ratio == 1f)
             {
                 player.moveSpeed += 0.35f;
+                player.MKPlayer().NightDoubleTap = true;
 
                 if (player.yoraiz0rEye < 2)
                     player.yoraiz0rEye = 2;
-
-                int[] triggers = [MoreKatanaPlayer.Right, MoreKatanaPlayer.Left];
-                for (int i = 0; i < triggers.Length; i++)
-                {
-                    int dashDirection = triggers[i] == MoreKatanaPlayer.Right ? 1 : -1;
-                    float dashVelocity = 10f;
-
-                    if (player.MKPlayer().DoubleTap[triggers[i]] && player.MKPlayer().DoubleTapDelay == 0 && !player.mount.Active)
-                    {
-                        player.immune = true;
-                        player.immuneTime = 30;
-                        player.UpdateRotation(1, dashDirection, 15);
-                        player.MKPlayer().DoubleTapDelay = 120;
-
-                        Vector2 newVelocity = player.velocity;
-                        newVelocity.X = dashVelocity * dashDirection;
-                        player.velocity = newVelocity;
-                        NetMessage.SendData(MessageID.PlayerControls, number: player.whoAmI);
-                    }
-                }
-
-                if (player.MKPlayer().DoubleTapDelay == 1)
-                {
-                    SoundEngine.PlaySound(SoundID.MaxMana, player.Center);
-                    MoreKatanaUtil.DrawRing(player.Center, DustID.Shadowflame, 24, 10, dustScale: 1.5f);
-                }
-            }
-
-            if (player.velocity.Y == 0 && !player.mount.Active)
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    int newDust = Dust.NewDust(new Vector2(player.Center.X - player.width, player.Center.Y + player.height / 2), player.width * 2 - 3, 0, Utils.SelectRandom(Main.rand, DustID.Demonite, DustID.Shadowflame), 0, Main.rand.Next(-5, -2), 150, default, 0.8f);
-                    Main.dust[newDust].fadeIn = 0.3f;
-                    Main.dust[newDust].noGravity = true;
-                }
             }
         }
 

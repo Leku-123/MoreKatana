@@ -71,7 +71,7 @@ namespace MoreKatana.Projectiles.Base
         protected float SwingDelay;
 
         /// <summary> 剣の位置 </summary>
-        private Vector2 swordPos;
+        protected Vector2 swordPos;
 
         /// <summary> 剣の振りの開始角度 </summary>
         private float startRotation;

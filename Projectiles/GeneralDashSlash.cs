@@ -109,6 +109,7 @@ namespace MoreKatana.Projectiles
             if (Projectile.timeLeft > (int)DashTime)
             {
                 Projectile.alpha = 0;
+                Owner.legFrame.Y = 56 * 5;
 
                 if (Owner.velocity.Length() > 2f)
                 {

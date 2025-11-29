@@ -1,5 +1,3 @@
-KatanaSlot.Katana: Katana
-
 Tooltips: {
 	DefaultText: - Press-Shift to learn more -
 	ActiveSkillCD: Cooldown
@@ -24,7 +22,7 @@ Configs: {
 		}
 
 		KatanaRework: {
-			Label: "[i:2273]Katana Reworkk"
+			Label: "[i:2273]Katana Rework"
 			Tooltip: If you change this, please reload the world
 		}
 

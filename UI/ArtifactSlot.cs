@@ -10,10 +10,10 @@ namespace MoreKatana.UI
 {
     public class AccessorySystem : ModSystem
     {
-        public static int KatanaSlots;
+        public static int ArtifactSlotType;
     }
 
-    public class KatanaSlot : ModAccessorySlot
+    public class ArtifactSlot : ModAccessorySlot
     {
         internal const float DefaultPosX = 50f;
         internal const float DefaultPosY = 50f;
@@ -28,10 +28,10 @@ namespace MoreKatana.UI
 
         public override void SetupContent()
         {
-            AccessorySystem.KatanaSlots = Type;
+            AccessorySystem.ArtifactSlotType = Type;
 
             // マウスをホバーしたときのテキスト
-            KatanasText = Mod.GetLocalization($"{nameof(KatanaSlot)}.Katana");
+            KatanasText = MoreKatanaUtil.GetText("Items.ArtifactItem");
         }
 
         public override Vector2? CustomLocation
@@ -45,8 +45,7 @@ namespace MoreKatana.UI
             }
         }
 
-        //public override string FunctionalTexture => "MoreKatana/UI/KatanaSlot_Icon";
-        public override string FunctionalBackgroundTexture => "MoreKatana/UI/KatanaSlot_Back";
+        public override string FunctionalBackgroundTexture => "MoreKatana/UI/ArtifactSlot_Back";
 
         public override bool DrawFunctionalSlot => Main.EquipPage != 1 && (!UILinkPointNavigator.Shortcuts.NPCS_IconsDisplay || !PlayerInput.UsingGamepad);
 
@@ -56,8 +55,8 @@ namespace MoreKatana.UI
 
         public override bool CanAcceptItem(Item checkItem, AccessorySlotType context)
         {
-            if (AccessorySystem.KatanaSlots != Type)
-                AccessorySystem.KatanaSlots = Type;
+            if (AccessorySystem.ArtifactSlotType != Type)
+                AccessorySystem.ArtifactSlotType = Type;
 
             return checkItem.ModItem is ArtifactItem;
         }

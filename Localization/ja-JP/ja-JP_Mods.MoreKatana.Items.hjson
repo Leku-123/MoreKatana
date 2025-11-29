@@ -30,6 +30,38 @@ SturdySheath: {
 	Tooltip: Reduces the cooldown of {$Tooltips.AS} by {0}%
 }
 
+SecretBook_FlashAttack: {
+	DisplayName: Secret Book <Flash Attack>
+	Tooltip:
+		'''
+		Enable "Flash Attack" when holding a Katana item
+		Double tap either Left or Right
+		'''
+}
+
+SecretBook_BackflipSlash: {
+	DisplayName: Secret Book <Backflip Slash>
+	Tooltip:
+		'''
+		Enable "Backflip Slash" when holding a Katana item
+		Double tap the UP
+		'''
+}
+
+SecretBook_DesolateDive: {
+	DisplayName: Secret Book <Desolate Dive>
+	Tooltip:
+		'''
+		Enable "Desolate Dive" when holding a Katana item
+		Double tap the DOWN
+		'''
+}
+
+SecretBook_Compilation: {
+	DisplayName: Secret Book <Compilation>
+	Tooltip: ""
+}
+
 # -------- Materials --------
 BrokenHeroKatana: {
 	DisplayName: 壊れた英雄のカタナ
@@ -394,6 +426,5 @@ SkyKatana: {
 		{$Tooltips.AS} [c/B5D6f7:<Tornado Slash>]
 		- Charge and release the tornado
 		- The tornado deals powerful knockback to enemies
-		'''
 		'''
 }

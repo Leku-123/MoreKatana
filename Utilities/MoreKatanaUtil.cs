@@ -42,6 +42,11 @@ namespace MoreKatana
         /// <returns></returns>
         public static bool CantUseHoldout(this Player player, bool needsToHold = true) => player == null || !player.active || player.dead || (!player.channel && needsToHold) || player.CCed || player.noItems;
 
+        public static bool StandingStill(this Player player, float velocity = 0.05f)
+        {
+            return player.velocity.Length() < velocity;
+        }
+
         public static void ReplaceItem(this Player player, Item itemToReplace, int itemIDtoReplaceWith)
         {
             bool foundSlot = false;
@@ -594,9 +599,9 @@ namespace MoreKatana
             return Language.GetOrRegister("Mods.MoreKatana." + key);
         }
 
-        public static bool IsJapanese(string text)
+        public static bool IsJapanese(this string text)
         {
-            return Regex.IsMatch(text, @"[\p{IsHiragana}\p{IsKatakana}\p{IsCJKUnifiedIdeographs}]+"); ;
+            return Regex.IsMatch(text, @"[\p{IsHiragana}\p{IsKatakana}\p{IsCJKUnifiedIdeographs}]+");
         }
         #endregion
 

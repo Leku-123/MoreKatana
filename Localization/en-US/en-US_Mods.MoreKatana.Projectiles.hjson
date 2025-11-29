@@ -15,7 +15,6 @@ KatanaHoldout.DisplayName: Katana
 KatanaSwing.DisplayName: Katana
 KatanaSlash.DisplayName: Katana Slash
 KatanaSlashHoldout.DisplayName: Katana Slash
-KatanaSlashEffect.DisplayName: Katana Slash
 ChargingSkyKatana.DisplayName: Sky Katana
 SkyTornado.DisplayName: Sky Tornado
 SkyFeather.DisplayName: Sky Feather
@@ -56,7 +55,8 @@ ChargingWoodenSwing.DisplayName: Wooden Katana
 Empty.DisplayName: Empty
 GeneralKatanaSwing.DisplayName: Katana
 GeneralDashSlash.DisplayName: Dash Slash
+KatanaSlashEffect.DisplayName: Katana Slash
+BackflipSlash.DisplayName: Backflip Slash
 ShockWaveEffect.DisplayName: Shockwave
 # -------- Not yet --------
 NightKatanaSwing.DisplayName: Night Katana Swing
-NightCycloneSlash.DisplayName: Night Cyclone Slash

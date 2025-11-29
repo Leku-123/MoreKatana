@@ -46,13 +46,13 @@ namespace MoreKatana
         //[BackgroundColor(192, 54, 64, 192)]
         //[SliderColor(224, 165, 56, 128)]
         [Range(0f, 100f)]
-        [DefaultValue(KatanaSlot.DefaultPosX)]
+        [DefaultValue(ArtifactSlot.DefaultPosX)]
         public float CustomAccSlotPosX { get; set; }
 
         //[BackgroundColor(192, 54, 64, 192)]
         //[SliderColor(224, 165, 56, 128)]
         [Range(0f, 100f)]
-        [DefaultValue(KatanaSlot.DefaultPosY)]
+        [DefaultValue(ArtifactSlot.DefaultPosY)]
         public float CustomAccSlotPosY { get; set; }
 
         [Range(0f, 100f)]

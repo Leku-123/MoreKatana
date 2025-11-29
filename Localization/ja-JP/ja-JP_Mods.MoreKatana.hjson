@@ -1,12 +1,10 @@
-KatanaSlot.Katana: カタナ
-
 Tooltips: {
 	DefaultText: - Shiftで詳細表示 -
 	ActiveSkillCD: クールダウン
 	Second: 秒
 	Life: ライフ
 	GetIt: 手に入れる
-	CooldownOver: 秘剣準備完了！
+	CooldownOver: チャージ完了！
 	PS: パッシブスキル
 	AS: アクティブスキル
 }

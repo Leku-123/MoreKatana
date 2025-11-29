@@ -1,8 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MoreKatana.Assets.ExtraTextures;
 using MoreKatana.Dusts;
+using MoreKatana.Items.Accessories;
 using MoreKatana.Items.Weapons.Misc;
 using MoreKatana.Items.Weapons.TerraKatanaTree;
+using MoreKatana.Projectiles;
 using MoreKatana.Projectiles.Misc;
 using MoreKatana.Projectiles.TerraKatanaTree;
 using System;
@@ -17,7 +20,7 @@ using static MoreKatana.MoreKatana;
 
 namespace MoreKatana
 {
-    public class MoreKatanaPlayer : ModPlayer
+    public partial class MoreKatanaPlayer : ModPlayer
     {
         // -------- Timer --------
         public int ExtraJumpTimer;
@@ -34,7 +37,12 @@ namespace MoreKatana
         public const int Right = 2;
         public const int Left = 3;
         public bool[] DoubleTap = new bool[4];
-        public int DoubleTapDelay = 0;
+        public int[] DoubleTapDelay = new int[4];
+        public int[] DoubleTapDrawTimer = new int[4] { -1, -1, -1, -1 };
+
+        public bool FlashAttackDoubleTap;
+        public bool BackflipSlashDoubleTap;
+        public bool NightDoubleTap;
 
         public void IsDoubleTap()
         {
@@ -56,9 +64,13 @@ namespace MoreKatana
             }
             else
             {
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < DoubleTap.Length; i++)
                     DoubleTap[i] = false;
             }
+
+            FlashAttackDoubleTap = false;
+            BackflipSlashDoubleTap = false;
+            NightDoubleTap = false;
         }
 
         public bool DashState;
@@ -232,8 +244,23 @@ namespace MoreKatana
             if (ShieldCD > 0)
                 ShieldCD--;
 
-            if (DoubleTapDelay > 0)
-                DoubleTapDelay--;
+            for (int i = 0; i < DoubleTap.Length; i++)
+            {
+                if (DoubleTap[i] && DoubleTapDelay[i] <= 0)
+                    DoubleTapEffects(i);
+            }
+
+            for (int i = 0; i < DoubleTapDelay.Length; i++)
+            {
+                if (DoubleTapDelay[i] == 1)
+                {
+                    SoundEngine.PlaySound(SoundID.MaxMana, Player.Center);
+                    DoubleTapDrawTimer[i] = 0;
+                }
+
+                if (DoubleTapDelay[i] > 0)
+                    DoubleTapDelay[i]--;
+            }
 
             if (slowFallEffect > 0)
                 Player.slowFall = true;
@@ -277,6 +304,100 @@ namespace MoreKatana
                 {
                     SoundEngine.PlaySound(SoundID.Item4, Player.position);
                     MoreKatanaUtil.DrawRing(Player.Center, DustID.ManaRegeneration, 36, 10);
+                }
+            }
+        }
+
+        public void DoubleTapEffects(int trigger)
+        {
+            Item item = Player.ActiveItem();
+            int damage = Player.GetWeaponDamage(item);
+            float knockBack = Player.GetWeaponKnockback(item, item.knockBack);
+            float scale = Player.GetAdjustedItemScale(item);
+
+            if (trigger == Down)
+            {
+
+            }
+            if (trigger == Up)
+            {
+                if (BackflipSlashDoubleTap)
+                {
+                    if (item.IsAir)
+                        return;
+
+                    if (item.MKItem().Katana && !Player.ItemAnimationActive && !Player.mount.Active)
+                    {
+                        int direction = MouseWorld.X > Player.Center.X ? 1 : -1;
+                        float speed = 8f;
+                        Vector2 newVelocity = Player.velocity;
+                        newVelocity.X = speed * direction;
+                        newVelocity.Y = -speed;
+                        Player.velocity = newVelocity;
+                        NetMessage.SendData(MessageID.PlayerControls, number: Player.whoAmI);
+
+                        float spinTime = 20f;
+                        Player.UpdateRotation(2, direction, spinTime);
+                        Player.immune = true;
+                        Player.immuneTime = 30;
+                        Player.immuneNoBlink = true;
+
+                        SoundEngine.PlaySound(MoreKatanaSounds.Spinning, Player.Center);
+
+                        if (Player.whoAmI == Main.myPlayer)
+                            Projectile.NewProjectile(Player.GetSource_FromThis(), Player.MountedCenter, new Vector2(direction, 0f), ModContent.ProjectileType<BackflipSlash>(), damage, knockBack, Player.whoAmI, direction * Player.gravDir, spinTime, scale);
+
+                        DoubleTapDelay[Up] = 2 * 60;
+                    }
+                }
+            }
+            if (trigger == Right || trigger == Left)
+            {
+                int direction = trigger == Right ? 1 : -1;
+
+                if (FlashAttackDoubleTap)
+                {
+                    if (item.IsAir)
+                        return;
+
+                    if (item.MKItem().Katana && SecretBook_FlashAttack.ValidItem(item) && !Player.ItemAnimationActive && !Player.mount.Active)
+                    {
+                        // プレイヤーの向きを変える
+                        Player.ChangeDir(direction);
+
+                        // サウンド
+                        SoundEngine.PlaySound(MoreKatanaSounds.SwordSlash_2, Player.Center);
+
+                        // ダッシュ切りの発射体
+                        if (Player.whoAmI == Main.myPlayer)
+                        {
+                            float dashDistance = 400;
+                            float dashTime = 15;
+                            Projectile.NewProjectile(Player.GetSource_ItemUse(item), Player.MountedCenter, new Vector2(direction, 0), ModContent.ProjectileType<GeneralDashSlash>(), damage, knockBack, Player.whoAmI, dashDistance, dashTime);
+                        }
+
+                        DoubleTapDelay[Right] = DoubleTapDelay[Left] = 2 * 60;
+                    }
+                }
+                else if (NightDoubleTap)
+                {
+                    if (!Player.mount.Active)
+                    {
+                        Player.immune = true;
+                        Player.immuneTime = 30;
+                        Player.UpdateRotation(1, direction, 15);
+
+                        if (Player.whoAmI == Main.myPlayer)
+                        {
+                            float dashVelocity = 10f;
+                            Vector2 newVelocity = Player.velocity;
+                            newVelocity.X = dashVelocity * direction;
+                            Player.velocity = newVelocity;
+                            NetMessage.SendData(MessageID.PlayerControls, number: Player.whoAmI);
+                        }
+
+                        DoubleTapDelay[Right] = DoubleTapDelay[Left] = 2 * 60;
+                    }
                 }
             }
         }
@@ -574,15 +695,18 @@ namespace MoreKatana
 
                     if (npc != null)
                     {
-                        Vector2 vector = Vector2.Normalize(npc.Center - Player.Bottom) * 10f;
-                        int damage = Player.GetWeaponDamage(Player.HeldItem);
-                        float knockBack = Player.GetWeaponKnockback(Player.HeldItem, Player.HeldItem.knockBack);
-                        Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, vector, ModContent.ProjectileType<MuramasaCounterattack>(), damage, knockBack, Main.myPlayer);
+                        if (Player.whoAmI == Main.myPlayer)
+                        {
+                            Vector2 vector = Vector2.Normalize(npc.Center - Player.Bottom) * 10f;
+                            int damage = Player.GetWeaponDamage(Player.HeldItem);
+                            float knockBack = Player.GetWeaponKnockback(Player.HeldItem, Player.HeldItem.knockBack);
+                            Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, vector, ModContent.ProjectileType<MuramasaCounterattack>(), damage, knockBack, Main.myPlayer);
 
-                        int dir = -1;
-                        if (npc.position.X + (npc.width / 2) < Player.position.X + (Player.width / 2))
-                            dir = 1;
-                        Player.ApplyDamageToNPC(npc, damage, knockBack, -dir, false);
+                            int dir = -1;
+                            if (npc.position.X + (npc.width / 2) < Player.position.X + (Player.width / 2))
+                                dir = 1;
+                            Player.ApplyDamageToNPC(npc, damage, knockBack, -dir, false);
+                        }
                     }
                 }
             }
@@ -594,6 +718,27 @@ namespace MoreKatana
 
             if (FullBright)
                 fullBright = true;
+
+            for (int i = 0; i < DoubleTapDrawTimer.Length; i++)
+            {
+                float progress = DoubleTapDrawTimer[i] / 15f;
+
+                if (DoubleTapDrawTimer[i] != -1 && progress != 1)
+                {
+                    Texture2D texture = MoreKatanaTextures.DirectionalTexture[i].Value;
+
+                    Vector2 position = drawInfo.Center - Main.screenPosition;
+                    position = new Vector2((int)position.X, (int)position.Y);
+
+                    Color color = Color.White with { A = 0 };
+                    color *= 1 - progress;
+                 
+                    if (drawInfo.shadow == 0f)
+                        drawInfo.DrawDataCache.Add(new DrawData(texture, position, null, color, 0f, texture.Size() / 2, 1f + (1f * progress), SpriteEffects.None, 0));
+
+                    DoubleTapDrawTimer[i]++;
+                }
+            }
         }
 
         public static void SyncMouseWorld(Mod mod, BinaryReader reader, int whoAmI)
