@@ -37,12 +37,12 @@ Configs: {
 		}
 
 		CustomAccSlotPosX: {
-			Label: カタナスロット (X方向)
+			Label: アーティファクトスロット (X方向)
 			Tooltip: ""
 		}
 
 		CustomAccSlotPosY: {
-			Label: カタナスロット (Y方向)
+			Label: アーティファクトスロット (Y方向)
 			Tooltip: ""
 		}
 
